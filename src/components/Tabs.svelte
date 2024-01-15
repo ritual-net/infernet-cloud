@@ -24,7 +24,7 @@
 
 
 	// Transitions/animations
-	import { crossfade, fly } from 'svelte/transition'
+	import { crossfade } from 'svelte/transition'
 	import { cubicInOut } from 'svelte/easing'
 
 	const [indicatorIn, indicatorOut] = crossfade({
@@ -60,8 +60,6 @@
 
 	{#each items as item}
 		<div
-			in:fly={{ x: -100 }}
-			out:fly={{ x: 100 }}
 			use:melt={$content(item.id)}
 		>
 			<slot name="content" {item} />
