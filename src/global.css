@@ -3,6 +3,8 @@
 	--fontFamily-display: 'Izoard', sans-serif;
 
 	--ritual-black: #000;
+
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -16,6 +18,7 @@
 	font: inherit;
 	font-style: normal;
 	text-decoration: none;
+	transition-timing-function: var(--ease-out-expo);
 }
 
 :root {
