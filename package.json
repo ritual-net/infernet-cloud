@@ -37,7 +37,8 @@
 		"vitest": "^1.0.0"
 	},
 	"dependencies": {
-		"@fontsource/barlow": "^5.0.8"
+		"@fontsource/barlow": "^5.0.8",
+		"svelte-headless-table": "^0.18.1"
 	},
 	"type": "module"
 }
