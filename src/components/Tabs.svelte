@@ -12,15 +12,19 @@
 
 
 	// Internal state
-	import { createTabs, melt } from '@melt-ui/svelte'
+	import { melt, createTabs, createSync } from '@melt-ui/svelte'
 
-	$: ({
+	const {
 		elements: { root, list, content, trigger },
 		states: { value },
+		options,
 	} = createTabs({
 		orientation,
 		defaultValue: items[0]?.id,
-	}))
+	})
+
+	const sync = createSync(options)
+  	$: sync.orientation(orientation, value => { orientation = value })
 
 
 	// Transitions/animations
