@@ -1,11 +1,15 @@
 <script lang="ts">
+	type TabId = $$Generic<string>
+
+
 	// Inputs
 	export let items: {
-		id: string,
+		id: TabId,
 		label?: string,
 	}[]
 
 	// (View options)
+	export let value: TabId
 	export let orientation: 'horizontal' | 'vertical' = 'horizontal'
 	let className = ''
 	export { className as class }
@@ -16,15 +20,15 @@
 
 	const {
 		elements: { root, list, content, trigger },
-		states: { value },
+		states,
 		options,
 	} = createTabs({
 		orientation,
 		defaultValue: items[0]?.id,
 	})
 
-	const sync = createSync(options)
-  	$: sync.orientation(orientation, value => { orientation = value })
+  	$: createSync(states).value(value, _ => { value = _ as TabId })
+  	$: createSync(options).orientation(orientation, _ => { orientation = _ })
 
 
 	// Transitions/animations
@@ -51,7 +55,7 @@
 			>
 				{item.label}
 
-				{#if $value === item.id}
+				{#if value === item.id}
 					<div
 						class="trigger-indicator"
 						in:indicatorIn={{ key: 'trigger' }}
