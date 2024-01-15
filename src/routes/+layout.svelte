@@ -1,11 +1,42 @@
 <script lang="ts">
+	// Context
+	import { page } from '$app/stores'
+
+	import { setContext } from 'svelte'
+	import { writable } from 'svelte/store'
+
+	const isSignedIn = writable(false)
+	setContext('isSignedIn', isSignedIn)
+
+
+	// Internal state
+
+	let navItems: {
+		href: string,
+		label: string,
+	}[]
+	$: navItems = [
+		{
+			href: '/clusters',
+			label: 'Clusters',
+		},
+		{
+			href: '/nodes',
+			label: 'Nodes',
+		},
+		$isSignedIn ? {
+			href: '/login',
+			label: 'Sign out',
+		} : {
+			href: '/login',
+			label: 'Login',
+		},
+	]
+
+	
 	// Global Styles
 	import '../fonts.css'
 	import '../global.css'
-
-
-	// Context
-	import { page } from '$app/stores'
 </script>
 
 
@@ -22,25 +53,13 @@
 		</a>
 
 		<ul class="row">
-			{#each [
-				{
-					href: '/clusters',
-					label: 'Clusters',
-				},
-				{
-					href: '/nodes',
-					label: 'Nodes',
-				}
-			] as {
-				href,
-				label,
-			}}
+			{#each navItems as item}
 				<li>
 					<a	
-						{href}
-						data-active={$page.url.pathname === href}
+						href={item.href}
+						data-active={$page.url.pathname === item.href}
 					>
-						{label}
+						{item.label}
 					</a>
 				</li>
 			{/each}

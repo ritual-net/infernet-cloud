@@ -13,6 +13,7 @@
 	border: none;
 
 	color: inherit;
+	font: inherit;
 	font-style: normal;
 	text-decoration: none;
 }
@@ -38,4 +39,10 @@ a {
 }
 a:hover {
 	color: #000;
+}
+
+button {
+	border-radius: 0.2em;
+	padding: 0.5em 1em;
+	cursor: pointer;
 }
