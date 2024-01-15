@@ -1,0 +1,41 @@
+:root {
+	--fontFamily-base: 'Barlow', sans-serif;
+	--fontFamily-display: 'Izoard', sans-serif;
+
+	--ritual-black: #000;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+
+	border: none;
+
+	color: inherit;
+	font-style: normal;
+	text-decoration: none;
+}
+
+:root {
+	color: var(--ritual-black);
+	font-family: var(--fontFamily-base);
+	font-size: 18px;
+}
+
+.row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1em;
+}
+.row.wrap {
+	flex-wrap: wrap;
+}
+
+a {
+	transition: 0.2s color;
+}
+a:hover {
+	color: #000;
+}
