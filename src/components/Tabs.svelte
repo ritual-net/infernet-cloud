@@ -6,6 +6,7 @@
 	}[]
 
 	// (View options)
+	export let orientation: 'horizontal' | 'vertical' = 'horizontal'
 	let className = ''
 	export { className as class }
 
@@ -13,12 +14,13 @@
 	// Internal state
 	import { createTabs, melt } from '@melt-ui/svelte'
 
-	const {
+	$: ({
 		elements: { root, list, content, trigger },
 		states: { value },
 	} = createTabs({
-		defaultValue: 'tab-1',
-	})
+		orientation,
+		defaultValue: items[0]?.id,
+	}))
 
 
 	// Transitions/animations
@@ -74,14 +76,15 @@
 
 		&[data-orientation="horizontal"] {
 			grid:
-				'tabs-list'
-				'tabs-content'
+				'tabs-list' auto
+				'tabs-content' 1fr
 			;
 		}
 
 		&[data-orientation="vertical"] {
 			grid:
 				'tabs-list tabs-content'
+				/ auto 1fr
 			;
 		}
 	}
@@ -89,20 +92,31 @@
 	[data-melt-tabs-list] {
 		grid-area: tabs-list;
 		position: relative;
+
+		&[data-orientation="horizontal"] {
+			display: flex;
+		}
+
+		&[data-orientation="vertical"] {
+			display: grid;
+		}
 	}
 
 	[data-melt-tabs-trigger] {
 		position: relative;
 	}
-
 	.trigger-indicator {
 		position: absolute;
 		inset: 0;
 		z-index: 1;
 
-		border-bottom: var(--ritual-black) 2px solid;
-
 		pointer-events: none;
+	}
+	[data-melt-tabs-trigger][data-orientation="horizontal"] .trigger-indicator {
+		border-bottom: var(--ritual-black) 2px solid;
+	}
+	[data-melt-tabs-trigger][data-orientation="vertical"] .trigger-indicator {
+		border-right: var(--ritual-black) 2px solid;
 	}
 
 	[data-melt-tabs-content] {
