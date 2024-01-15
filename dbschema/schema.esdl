@@ -18,14 +18,18 @@ module default {
   type Container {
     required config: json;
 
-    required node: InfernetNode;
+    required node: InfernetNode {
+      on target delete delete source
+    };
   }
 
   type InfernetNode {
     required config: json;
     containers := .<node[is Container];
 
-    required cluster: Cluster;
+    required cluster: Cluster {
+      on target delete delete source;
+    };
   }
 
   type Cluster {

@@ -2,5 +2,5 @@ import { createClient } from 'edgedb';
 
 export const client = createClient();
 
-import e from '@schema/edgeql-js';
-export { e };
+import e, { type $infer } from '$schema/edgeql-js';
+export { e, type $infer };

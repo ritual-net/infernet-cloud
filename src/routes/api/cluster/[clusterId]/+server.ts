@@ -1,7 +1,13 @@
-import { client, e } from '@db';
+import { client, e } from '$db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 
+/**
+ * Retrieve a cluster by its ID.
+ * 
+ * @param params - The request parameters object, expected to contain 'clusterId'.
+ * @returns Cluster object.
+ */
 export const GET: RequestHandler = async ({ params }) => {
 	const id = params.clusterId;
 
@@ -33,6 +39,12 @@ export const GET: RequestHandler = async ({ params }) => {
 // export const PATCH: RequestHandler = async ({ params, request }) => {
 // }
 
+/**
+ * Delete a cluster by its ID.
+ * 
+ * @param params - The request parameters object, expected to contain 'clusterId'.
+ * @returns ID of the deleted cluster.
+ */
 export const DELETE: RequestHandler = async ({ params }) => {
 	const id = params.clusterId;
 
@@ -45,14 +57,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 	// TODO: Call terraform to destroy cluster
 	// If successful, delete cluster + nodes from db
 
-	// Delete nodes
-	await e
-		.delete(e.InfernetNode, (node) => ({
-			filter: e.op(node.cluster.id, '=', e.uuid(id))
-		}))
-		.run(client);
-
-	// Delete cluster
+	// Delete cluster, nodes and containers deleted through cascade
 	const cluster = await e
 		.delete(e.Cluster, (cluster) => ({
 			filter_single: e.op(cluster.id, '=', e.uuid(id))

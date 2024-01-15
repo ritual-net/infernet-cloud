@@ -1,7 +1,12 @@
-import { client, e } from '@db';
+import { client, e } from '$db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 
+/**
+ * Retrieve all service accounts for a user.
+ * 
+ * @returns Array of ServiceAccount objects.
+ */
 export const GET: RequestHandler = async ({ url }) => {
 	const user = url.searchParams.get('user');
 
@@ -24,6 +29,12 @@ export const GET: RequestHandler = async ({ url }) => {
 	return json(result);
 };
 
+/**
+ * Create a new service account.
+ * 
+ * @param request - The request object containing 'provider' and 'credentials'.
+ * @returns Newly created ServiceAccount object.
+ */
 export const POST: RequestHandler = async ({ request }) => {
 	// TODO: get user through auth, not through body
 	const { user, provider, credentials } = await request.json();
@@ -46,6 +57,12 @@ export const POST: RequestHandler = async ({ request }) => {
 	return json(result);
 };
 
+/**
+ * Delete a service account by its ID.
+ * 
+ * @param request - The request object containing 'id'.
+ * @returns ID of the deleted service account.
+ */
 export const DELETE: RequestHandler = async ({ request }) => {
 	const { id } = await request.json();
 	if (!id) {
