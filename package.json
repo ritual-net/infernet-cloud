@@ -13,8 +13,9 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"interfaces:edgedb": "cd src/server && npx @edgedb/generate interfaces -I infernet_cloud",
-		"qb:edgedb": "cd src/server && npx @edgedb/generate edgeql-js --target ts"
+		"edgedb:init": "edgedb project init; npm run edgedb:generate",
+		"edgedb:migrate": "edgedb migrate; edgedb migration create; npm run edgedb:generate",
+		"edgedb:generate": "cd src/server && npx @edgedb/generate edgeql-js --target ts"
 	},
 	"devDependencies": {
 		"@edgedb/generate": "^0.4.1",
