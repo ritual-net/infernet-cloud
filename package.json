@@ -12,9 +12,13 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"edgedb:init": "edgedb project init; npm run edgedb:generate",
+		"edgedb:migrate": "edgedb migrate; edgedb migration create; npm run edgedb:generate",
+		"edgedb:generate": "cd src/server && npx @edgedb/generate edgeql-js --target ts"
 	},
 	"devDependencies": {
+		"@edgedb/generate": "^0.4.1",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
@@ -34,5 +38,8 @@
 		"vite": "^5.0.3",
 		"vitest": "^1.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"edgedb": "^1.4.1"
+	}
 }
