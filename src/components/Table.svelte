@@ -1,14 +1,17 @@
 <script lang="ts">
 	// Types
+	import type { Table } from 'svelte-headless-table'
 	type Datum = $$Generic<any>
-		
+
+
+	// Imports
 	export let data: Datum[]
 	export let columns: Parameters<Table<Datum>['column']>[0][]
-			
-			
+
+
 	// Internal state
 	import { writable } from 'svelte/store'
-	import { createTable, Subscribe, Render, type Table, type Column } from 'svelte-headless-table'
+	import { createTable, Subscribe, Render } from 'svelte-headless-table'
 	
 	const _data = writable(data)
 	$: $_data = data
