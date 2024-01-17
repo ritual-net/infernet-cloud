@@ -51,6 +51,7 @@
 	>
 		{#each items as item}
 			<button
+				type="button"
 				use:melt={$trigger(item.id)}
 			>
 				{item.label}
