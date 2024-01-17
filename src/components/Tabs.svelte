@@ -9,7 +9,7 @@
 	}[]
 
 	// (View options)
-	export let value: TabId
+	export let value: TabId | undefined
 	export let orientation: 'horizontal' | 'vertical' = 'horizontal'
 	let className = ''
 	export { className as class }
@@ -27,8 +27,8 @@
 		defaultValue: items[0]?.id,
 	})
 
-  	$: createSync(states).value(value, _ => { value = _ as TabId })
-  	$: createSync(options).orientation(orientation, _ => { orientation = _ })
+	$: createSync(states).value(value ?? items[0]?.id, _ => { value = _ as TabId })
+	$: createSync(options).orientation(orientation, _ => { orientation = _ })
 
 
 	// Transitions/animations
