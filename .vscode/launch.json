@@ -1,0 +1,35 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "SvelteKit server",
+			"type": "node-terminal",
+			"request": "launch",
+			"command": "npm run dev",
+		},
+		{
+			"name": "SvelteKit client (Chrome)",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:5173",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
+			"name": "SvelteKit client (Brave)",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:5173",
+			"webRoot": "${workspaceFolder}",
+			"runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+		},
+	],
+	"compounds": [
+		{
+			"name": "SvelteKit",
+			"configurations": [
+				"SvelteKit server",
+				"SvelteKit client (Brave)",
+			],
+		}
+	]
+}
