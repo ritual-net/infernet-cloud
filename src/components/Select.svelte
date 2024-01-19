@@ -21,6 +21,10 @@
 
 	export let labelText: string = ''
 	export let placeholder: string = 'Select...'
+
+	export let name: string | undefined
+	export let required: boolean = false
+	export let disabled: boolean = false
 	export let multiple: boolean = false
 
 
@@ -32,13 +36,17 @@
 		states,
 		helpers: { isSelected },
 	} = createSelect({
+		name,
+		required,
+		disabled,
+		multiple,
+
 		forceVisible: true,
 		positioning: {
 			placement: 'bottom',
 			fitViewport: true,
 			sameWidth: true,
 		},
-		multiple,
 	})
 
 	const {
@@ -47,7 +55,7 @@
 	} = states
 
 	$: createSync(states).selected(
-		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => item.value === value),
+		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
 		selected => { value = selected.value as Value },
 	)
 </script>
