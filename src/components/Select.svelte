@@ -125,10 +125,22 @@
 	}
 
 	[data-melt-select-menu] {
+		--select-borderColor: var(--borderColor);
+		--select-borderWidth: var(--borderWidth);
+		--select-textColor: var(--textColor);
+
 		display: grid;
 
 		backdrop-filter: blur(3px);
 		background-color: rgba(255, 255, 255, 0.5);
+
+		background-color: var(--select-backgroundColor);
+		box-shadow: 0 0 0 var(--select-borderWidth) var(--select-borderColor);
+		border-radius: 0.33em;
+
+		color: var(--button-textColor);
+
+		cursor: pointer;
 	}
 
 	[data-melt-select-group] {
