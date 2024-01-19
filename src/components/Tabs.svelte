@@ -120,10 +120,10 @@
 		pointer-events: none;
 	}
 	[data-melt-tabs-trigger][data-orientation="horizontal"] .trigger-indicator {
-		border-bottom: var(--ritual-black) 2px solid;
+		border-bottom: var(--color-ritualBlack) 2px solid;
 	}
 	[data-melt-tabs-trigger][data-orientation="vertical"] .trigger-indicator {
-		border-right: var(--ritual-black) 2px solid;
+		border-right: var(--color-ritualBlack) 2px solid;
 	}
 
 	[data-melt-tabs-content] {
