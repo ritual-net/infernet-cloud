@@ -41,7 +41,7 @@
 	:root {
 		--switch-default-backgroundColor: #D9D9D940;
 		--switch-checked-backgroundColor: var(--color-ritualBlack);
-		--switch-backgroundColor: #D9D9D940;
+		--switch-backgroundColor: #D9D9D988;
 		--switch-thumb-backgroundColor: #fff;
 		--switch-width: 2.5em;
 		--switch-height: 1.5em;
@@ -64,7 +64,7 @@
 
 		background-color: var(--switch-backgroundColor);
 		border-radius: var(--switch-height);
-		transition: 0.3s;
+		transition: 0.3s var(--ease-out-expo);
 
 		&[data-state='checked'] {
 			--switch-backgroundColor: var(--switch-checked-backgroundColor);
@@ -80,5 +80,13 @@
 		background-color: var(--switch-thumb-backgroundColor);
 		border-radius: 100%;
 		box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
+
+		transition: 0.3s var(--ease-out-expo);
+	}
+
+	button:active .thumb {
+		aspect-ratio: 1.1;
+
+		transition-duration: 0.2s;
 	}
 </style>
