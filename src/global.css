@@ -77,7 +77,7 @@ a:hover {
 	display: inline-flex;
 	align-items: baseline;
 	justify-content: start;
-	gap: 0.75ch;
+	gap: 0.25ch 0.75ch;
 }
 .row.wrap {
 	flex-wrap: wrap;
@@ -118,8 +118,8 @@ button.primary {
 }
 
 .card {
-	--card-paddingX: 1.5em;
-	--card-paddingY: 1.5em;
+	--card-paddingX: 1.75em;
+	--card-paddingY: 1em;
 	--card-backgroundColor: var(--card-default-backgroundColor);
 	--card-borderColor: var(--borderColor);
 	--card-borderWidth: var(--borderWidth);
@@ -138,7 +138,7 @@ button.primary {
 		padding: 0;
 		row-gap: var(--card-borderWidth);
 
-		& > section {
+		& > :is(header, section, footer) {
 			padding: var(--card-paddingY) var(--card-paddingX);
 
 			box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
