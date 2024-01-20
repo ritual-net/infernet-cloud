@@ -43,7 +43,9 @@
 	"dependencies": {
 		"@fontsource/barlow": "^5.0.8",
 		"edgedb": "^1.4.1",
-		"svelte-headless-table": "^0.18.1"
+		"svelte-headless-table": "^0.18.1",
+		"sveltekit-superforms": "^1.13.3",
+		"zod": "^3.22.4"
 	},
 	"type": "module"
 }
