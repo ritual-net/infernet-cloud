@@ -4,8 +4,10 @@
 		value: Value,
 		label: string,
 		disabled?: boolean,
+		icon?: string,
 	}
 	type ItemGroup<Value> = {
+		value?: Value,
 		label: string,
 		items: Items<Value>,
 		disabled?: boolean,
@@ -19,7 +21,7 @@
 	export let value: Value | undefined
 	export let items: Items<Value>
 
-	export let labelText: string = ''
+	export let labelText: string | undefined
 	export let placeholder: string = 'Select...'
 
 	export let name: string | undefined
@@ -62,8 +64,10 @@
 
 
 <div>
-	<!-- svelte-ignore a11y-label-has-associated-control -->
-	<label use:melt={$label}>{labelText}</label>
+	{#if labelText}
+		<!-- svelte-ignore a11y-label-has-associated-control -->
+		<label use:melt={$label}>{labelText}</label>
+	{/if}
 
 	<button
 		type="button"
@@ -82,7 +86,12 @@
 					<div use:melt={$group(item.value)}>
 						<div
 							use:melt={$groupLabel(item.label)}
+							class="row"
 						>
+							{#if item.icon}
+								{item.icon}
+							{/if}
+
 							{item.label}
 						</div>
 
@@ -93,7 +102,12 @@
 									label: subitem.label,
 									disabled: subitem.disabled,
 								})}
+								class="row"
 							>
+								{#if subitem.icon}
+									{subitem.icon}
+								{/if}
+
 								{subitem.label}
 							</div>
 						{/each}
@@ -105,7 +119,11 @@
 							label: item.label,
 							disabled: item.disabled,
 						})}
+						class="row"
 					>
+						{#if item.icon}
+							{item.icon}
+						{/if}
 						{item.label}
 					</div>
 				{/if}
@@ -116,6 +134,12 @@
 
 
 <style>
+	:root {
+		--select-borderColor: var(--borderColor);
+		--select-borderWidth: var(--borderWidth);
+		--select-textColor: var(--textColor);
+	}
+
 	[data-melt-select-trigger] {
 		display: inline-flex;
 		align-items: center;
@@ -133,10 +157,6 @@
 	}
 
 	[data-melt-select-menu] {
-		--select-borderColor: var(--borderColor);
-		--select-borderWidth: var(--borderWidth);
-		--select-textColor: var(--textColor);
-
 		display: grid;
 
 		backdrop-filter: blur(3px);
