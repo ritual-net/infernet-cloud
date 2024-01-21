@@ -15,9 +15,9 @@ const config = {
 		alias: {
 			$db: './src/server/db',
 			$schema: './dbschema',
-            $utils: './src/utils',
-            $structs: './src/structs',
-            $api: './src/routes/api'
+			$utils: './src/utils',
+			$structs: './src/structs',
+			$api: './src/routes/api'
 		}
 	}
 };
