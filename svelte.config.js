@@ -14,7 +14,10 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$db: './src/server/db',
-			$schema: './dbschema'
+			$schema: './dbschema',
+            $utils: './src/utils',
+            $structs: './src/structs',
+            $api: './src/routes/api'
 		}
 	}
 };
