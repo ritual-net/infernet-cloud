@@ -5,7 +5,7 @@ test("GCP fetching works.", async () => {
     const gcp = new GCP();
     console.log("Regions:", await gcp.getRegions());
     console.log("Zones:", await gcp.getZones("asia-east2"));
-    console.log("Machines:", await gcp.getMachines("us-central1-a"));
+    console.log("Machines:", await gcp.getMachines("asia-east2"));
 });
 
 

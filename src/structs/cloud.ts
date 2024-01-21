@@ -63,19 +63,26 @@ export class GCP extends CloudProvider {
             .map((zone: any) => zone.name);
     }
 
-    async getMachines(zone:string): Promise<Machine[]> {
+    async getMachines(region: string): Promise<Machine[]> {
         await this.authPromise;
-        const response = await this.googleCompute.machineTypes.list({
-            project: this.projectId,
-            zone: zone
-        });
-        return response.data.items
+        const zones = await this.getZones(region);
+    
+        const machines: Machine[] = [];
+        for (const zone of zones) {
+            const response = await this.googleCompute.machineTypes.list({
+                project: this.projectId,
+                zone: zone
+            });
+            const zoneMachines = response.data.items
                 .map((machine: any) => ({
                     id: machine.id,
                     name: machine.name,
                     description: machine.description,
                     link: machine.selfLink
                 } as Machine));
+            machines.push(...zoneMachines);
+        }
+        return machines;
     }
 }
 
