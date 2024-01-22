@@ -86,13 +86,14 @@
 					<div use:melt={$group(item.value)}>
 						<div
 							use:melt={$groupLabel(item.label)}
-							class="row"
 						>
-							{#if item.icon}
-								{item.icon}
-							{/if}
+							<div class="row">
+								{#if item.icon}
+									{item.icon}
+								{/if}
 
-							{item.label}
+								{item.label}
+							</div>
 						</div>
 
 						{#each item.items as subitem}
@@ -102,13 +103,14 @@
 									label: subitem.label,
 									disabled: subitem.disabled,
 								})}
-								class="row"
 							>
-								{#if subitem.icon}
-									{subitem.icon}
-								{/if}
+								<div class="row">
+									{#if subitem.icon}
+										{subitem.icon}
+									{/if}
 
-								{subitem.label}
+									<span>{subitem.label}</span>
+								</div>
 							</div>
 						{/each}
 					</div>
@@ -119,12 +121,14 @@
 							label: item.label,
 							disabled: item.disabled,
 						})}
-						class="row"
 					>
-						{#if item.icon}
-							{item.icon}
-						{/if}
-						{item.label}
+						<div class="row">
+							{#if item.icon}
+								{item.icon}
+							{/if}
+
+							<span>{item.label}</span>
+						</div>
 					</div>
 				{/if}
 			{/each}
@@ -139,11 +143,13 @@
 		--select-paddingY: 0.5em;
 		--select-groupOption-indentX: 1.5em;
 
-		--select-backgroundColor: rgb(255 255 255 / 0.5);
+		--select-backgroundColor: rgb(255 255 255 / 0.75);
 		--select-backdropFilter: blur(3px);
 		--select-borderColor: var(--borderColor);
 		--select-borderWidth: var(--borderWidth);
-		--select-borderRadius: 0.33em;
+		--select-cornerRadius: 0.33em;
+
+		--select-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
 		
 		--select-textColor: var(--textColor);
 	}
@@ -167,10 +173,11 @@
 	[data-melt-select-menu] {
 		display: grid;
 
+		clip-path: inset(calc(-1 * var(--select-borderWidth)) round calc(var(--select-cornerRadius) + var(--select-borderWidth)));
 		background-color: var(--select-backgroundColor);
 		backdrop-filter: var(--select-backdropFilter);
 		box-shadow: 0 0 0 var(--select-borderWidth) var(--select-borderColor);
-		border-radius: var(--select-borderRadius);
+		border-radius: var(--select-cornerRadius);
 
 		color: var(--button-textColor);
 
@@ -197,23 +204,36 @@
 
 		padding: var(--select-paddingY) var(--select-paddingX);
 
+		&:first-child {
+			border-start-start-radius: var(--select-cornerRadius);
+			border-start-end-radius: var(--select-cornerRadius);
+		}
+		&:last-child {
+			border-end-start-radius: var(--select-cornerRadius);
+			border-end-end-radius: var(--select-cornerRadius);
+		}
+
 		cursor: pointer;
 
 		transition: 0.1s;
 
-		&:active {
-			scale: 0.97;
-			opacity: 0.9;
-
-			transition-duration: 0.05s;
+		&:is(:hover, [data-highlighted]) {
+			background-color: var(--select-item-selected-backgroundColor);
 		}
 
-		&:hover, &[data-highlighted] {
-			background-color: rgba(0, 0, 0, 0.1);
-			filter: brightness(120%);
+		& > * {
+			width: max-content;
+
+			transition: 0.15s var(--ease-out-expo);
 		}
 
-		&[data-selected]:after {
+		&:active > * {
+			scale: 0.96;
+			opacity: 0.75;
+			transition-duration: 0.1s;
+		}
+
+		&[data-selected] > *:after {
 			content: '✓';
 			width: 1em;
 			flex: 0 auto;
