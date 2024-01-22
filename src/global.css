@@ -122,14 +122,24 @@ button {
 	border-radius: 0.33em;
 
 	color: var(--button-textColor);
-}
-button.primary {
-	--button-backgroundColor: var(--button-primary-backgroundColor);
-	--button-borderColor: transparent;
-	--button-textColor: var(--button-primary-textColor);
-}
-button.small {
-	font-size: 0.8em;
+
+	transition: 0.2s var(--ease-out-expo);
+
+	&:active {
+		transition-duration: 0.1s;
+		opacity: 0.8;
+		scale: 0.975;
+	}
+
+	&.primary {
+		--button-backgroundColor: var(--button-primary-backgroundColor);
+		--button-borderColor: transparent;
+		--button-textColor: var(--button-primary-textColor);
+	}
+
+	&.small {
+		font-size: 0.8em;
+	}
 }
 
 .card {
@@ -140,7 +150,8 @@ button.small {
 	--card-borderWidth: var(--borderWidth);
 	--card-cornerRadius: 0.33em;
 
-	clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth)));
+	/* clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth))); */
+	overflow: hidden;
 	
 	padding: var(--card-paddingY) var(--card-paddingX);
 	
@@ -152,7 +163,7 @@ button.small {
 		font-size: 0.888em;
 	}
 
-	&:has(> section) {
+	&:has(> :is(header, section, footer)) {
 		padding: 0;
 		row-gap: var(--card-borderWidth);
 
