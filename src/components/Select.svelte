@@ -1,5 +1,7 @@
 <script lang="ts">
 	// Types
+	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
+
 	type Item<Value> = {
 		value: Value,
 		label: string,
@@ -29,6 +31,10 @@
 	export let disabled: boolean = false
 	export let multiple: boolean = false
 
+	// (View options)
+	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
+
+
 
 	// Internal state
 	import { melt, createSelect, createSync } from '@melt-ui/svelte'
@@ -45,9 +51,8 @@
 
 		forceVisible: true,
 		positioning: {
-			placement: 'bottom',
+			placement,
 			fitViewport: true,
-			sameWidth: true,
 		},
 	})
 
