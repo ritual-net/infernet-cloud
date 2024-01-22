@@ -135,8 +135,16 @@
 
 <style>
 	:root {
+		--select-paddingX: 1em;
+		--select-paddingY: 0.5em;
+		--select-groupOption-indentX: 1.5em;
+
+		--select-backgroundColor: rgb(255 255 255 / 0.5);
+		--select-backdropFilter: blur(3px);
 		--select-borderColor: var(--borderColor);
 		--select-borderWidth: var(--borderWidth);
+		--select-borderRadius: 0.33em;
+		
 		--select-textColor: var(--textColor);
 	}
 
@@ -159,12 +167,10 @@
 	[data-melt-select-menu] {
 		display: grid;
 
-		backdrop-filter: blur(3px);
-		background-color: rgba(255, 255, 255, 0.5);
-
 		background-color: var(--select-backgroundColor);
+		backdrop-filter: var(--select-backdropFilter);
 		box-shadow: 0 0 0 var(--select-borderWidth) var(--select-borderColor);
-		border-radius: 0.33em;
+		border-radius: var(--select-borderRadius);
 
 		color: var(--button-textColor);
 
@@ -176,11 +182,11 @@
 
 		& [data-melt-select-group-label] {
 			font-weight: bold;
-			padding: 0.5em 1em;
+			padding: var(--select-paddingY) var(--select-paddingX);
 		}
 
 		& [data-melt-select-option] {
-			padding-left: 2em;
+			padding-left: calc(var(--select-paddingX) + var(--select-groupOption-indentX));
 		}
 	}
 
@@ -189,7 +195,7 @@
 		align-items: center;
 		gap: 1ch;
 
-		padding: 0.5em 1em;
+		padding: var(--select-paddingY) var(--select-paddingX);
 
 		cursor: pointer;
 
