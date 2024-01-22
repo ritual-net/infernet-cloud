@@ -10,7 +10,7 @@ export abstract class BaseClient {
 	 * @param JSON object containing credentials for the cloud provider.
 	 * @returns A promise that resolves when authentication is complete.
 	 */
-	abstract auth(credentials: Record<string, unknown>): Promise<void>;
+	abstract auth(credentials: Record<string, any>): Promise<void>;
 
 	/**
 	 * Get the list of regions available on the cloud provider.
