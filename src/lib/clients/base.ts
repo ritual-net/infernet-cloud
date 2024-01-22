@@ -32,26 +32,26 @@ export abstract class BaseClient {
 	 */
 	abstract getMachines(region: string): Promise<Machine[]>;
 
-    /**
-     * End to end method to get all provider info (regions, zones, machines).
-     * @param credentials JSON object containing credentials for the cloud provider.
-     * @returns Flat array of ProviderInfo objects.
-     */
-    async getProviderInfo(credentials : Record<string, unknown>): Promise<ProviderInfo[]> {
-        await this.auth(credentials);
-        const regions = await this.getRegions();
-        const providerInfo = await Promise.all(
-            regions.map(async (region) => {
-                const zones = await this.getZones(region);
-                const machines = await this.getMachines(region);
+	/**
+	 * End to end method to get all provider info (regions, zones, machines).
+	 * @param credentials JSON object containing credentials for the cloud provider.
+	 * @returns Flat array of ProviderInfo objects.
+	 */
+	async getProviderInfo(credentials: Record<string, unknown>): Promise<ProviderInfo[]> {
+		await this.auth(credentials);
+		const regions = await this.getRegions();
+		const providerInfo = await Promise.all(
+			regions.map(async (region) => {
+				const zones = await this.getZones(region);
+				const machines = await this.getMachines(region);
 
-                return {
-                    region: region,
-                    zones: zones,
-                    machines: machines
-                } as ProviderInfo;
-            })
-        );
-        return providerInfo;
-    }
+				return {
+					region: region,
+					zones: zones,
+					machines: machines
+				} as ProviderInfo;
+			})
+		);
+		return providerInfo;
+	}
 }

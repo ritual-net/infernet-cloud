@@ -4,7 +4,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve a node by its ID.
- * 
+ *
  * @param params - The request parameters object, expected to contain 'nodeId'.
  * @returns Node object.
  */
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
 /**
  * Modify a node by its ID.
- * 
+ *
  * @param params - The request parameters object, expected to contain 'nodeId'.
  * @param request - The request object containing the new node config.
  * @returns Updated Node object.
@@ -88,7 +88,7 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 
 /**
  * Delete a node by its ID.
- * 
+ *
  * @param params - The request parameters object, expected to contain 'nodeId'.
  * @returns ID of the deleted Node.
  */

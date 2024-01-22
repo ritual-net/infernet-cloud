@@ -16,7 +16,7 @@ const config = {
 			$db: './src/server/db',
 			$schema: './dbschema',
 			$lib: './src/lib',
-            $types: './src/lib/types'
+			$types: './src/lib/types'
 		}
 	}
 };

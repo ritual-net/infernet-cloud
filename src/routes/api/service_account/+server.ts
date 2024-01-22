@@ -4,7 +4,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve all service accounts for a user.
- * 
+ *
  * @returns Array of ServiceAccount objects.
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /**
  * Create a new service account.
- * 
+ *
  * @param request - The request object containing 'provider' and 'credentials'.
  * @returns Newly created ServiceAccount object.
  */
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 /**
  * Delete a service account by its ID.
- * 
+ *
  * @param request - The request object containing 'id'.
  * @returns ID of the deleted service account.
  */
