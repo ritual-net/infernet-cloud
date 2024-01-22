@@ -71,9 +71,11 @@
 	</nav>
 </header>
 
-<main>
-	<slot />
-</main>
+<div class="main-wrapper">
+	<main>
+		<slot />
+	</main>
+</div>
 
 <footer>
 
@@ -82,13 +84,57 @@
 
 <style>
 	:global(body) {
-		width: 50rem;
-		max-width: 100%;
-		margin: auto;
+		min-height: 100vh;
+		min-height: 100dvh;
+
+		display: grid;
+		grid:
+			'header' auto
+			'main' 1fr
+			'footer' auto
+			/ minmax(0, 1fr);
+		;
 	}
 
 	header, main, footer {
+		display: grid;
+		grid-template-columns: minmax(0, 50rem);
+		justify-content: center;
+
 		padding: 1rem;
+	}
+
+	header {
+		grid-area: header;
+		z-index: 1;
+
+		position: sticky;
+		top: 0;
+
+		backdrop-filter: blur(6px);
+	}
+
+	.main-wrapper {
+		grid-area: 1 / 1 / -1 / -1;
+
+		display: grid;
+		grid-template-rows: subgrid;
+		grid-template-columns: subgrid;
+	}
+
+	main {
+		grid-area: main;
+		align-content: start;
+	}
+
+	footer {
+		grid-area: footer;
+		z-index: 1;
+
+		position: sticky;
+		bottom: 0;
+
+		backdrop-filter: blur(6px);
 	}
 
 	[href="/"] {
