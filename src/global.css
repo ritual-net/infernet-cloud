@@ -67,6 +67,16 @@ a:hover {
 	color: #000;
 }
 
+.stack {
+	display: grid;
+	grid: 'stack';
+	align-items: start;
+
+	& > * {
+		grid-area: stack;
+	}
+}
+
 .row {
 	display: flex;
 	justify-content: space-between;
