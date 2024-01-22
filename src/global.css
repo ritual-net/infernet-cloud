@@ -138,12 +138,15 @@ button.small {
 	--card-backgroundColor: var(--card-default-backgroundColor);
 	--card-borderColor: var(--borderColor);
 	--card-borderWidth: var(--borderWidth);
+	--card-cornerRadius: 0.33em;
+
+	clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth)));
 	
 	padding: var(--card-paddingY) var(--card-paddingX);
 	
 	background-color: var(--card-backgroundColor);
 	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
-	border-radius: 0.33em;
+	border-radius: var(--card-cornerRadius);
 
 	& p {
 		font-size: 0.888em;
