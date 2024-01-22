@@ -15,7 +15,7 @@ export interface CloudProvider {
 	/**
 	 * Authenticate with the cloud provider.
 	 * This method should be called before any other methods.
-     * @param JSON object containing credentials for the cloud provider.
+	 * @param JSON object containing credentials for the cloud provider.
 	 * @returns A promise that resolves when authentication is complete.
 	 */
 	auth(credentials: any): Promise<void>;
@@ -106,7 +106,7 @@ export class AWS implements CloudProvider {
 
 	async auth(creds: any) {
 		try {
-            AWS_SDK.config.update(creds);
+			AWS_SDK.config.update(creds);
 			this.amazonCompute = new AWS_SDK.EC2({
 				region: 'us-east-1' // initial region does not matter
 			});
