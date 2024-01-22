@@ -47,7 +47,11 @@
 			data-active={$page.url.pathname === '/'}
 			class="home row"
 		>
-			<img src="/ritual.svg" alt="Ritual Logo" />
+			<img
+				class="logo"
+				src="/ritual.svg"
+				alt="Ritual Logo"
+			/>
 
 			<h1>Ritual</h1>
 		</a>
@@ -88,12 +92,14 @@
 	}
 
 	[href="/"] {
-		gap: 0.5em;
-		font-family: var(--fontFamily-display);
-	}
+		font-size: 1.5em;
 
-	img {
-		height: 1.75em;
+		gap: 0.33em;
+		font-family: var(--fontFamily-display);
+
+		& img {
+			height: 1.25em;
+		}
 	}
 
 	li {
