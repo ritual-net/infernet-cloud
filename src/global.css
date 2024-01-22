@@ -20,6 +20,8 @@
 
 	--card-default-backgroundColor: #fff;
 	--card-default-textColor: var(--textColor);
+
+	--backdropFilter: blur(6px);
 }
 
 * {

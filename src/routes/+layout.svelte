@@ -111,7 +111,7 @@
 		position: sticky;
 		top: 0;
 
-		backdrop-filter: blur(6px);
+		backdrop-filter: var(--backdropFilter);
 	}
 
 	.main-wrapper {
@@ -134,7 +134,7 @@
 		position: sticky;
 		bottom: 0;
 
-		backdrop-filter: blur(6px);
+		backdrop-filter: var(--backdropFilter);
 	}
 
 	[href="/"] {
