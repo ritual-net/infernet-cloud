@@ -1,7 +1,5 @@
 import { google } from 'googleapis';
 import * as AWS_SDK from 'aws-sdk';
-import dotenv from 'dotenv';
-dotenv.config();
 
 export type Machine = {
 	id: string;
@@ -17,9 +15,10 @@ export interface CloudProvider {
 	/**
 	 * Authenticate with the cloud provider.
 	 * This method should be called before any other methods.
+     * @param JSON object containing credentials for the cloud provider.
 	 * @returns A promise that resolves when authentication is complete.
 	 */
-	auth(): Promise<void>;
+	auth(credentials: any): Promise<void>;
 
 	/**
 	 * Get the list of regions available on the cloud provider.
@@ -46,20 +45,11 @@ export interface CloudProvider {
 export class GCP implements CloudProvider {
 	googleCompute: any;
 	projectId: string = '';
-	authPromise: Promise<void>;
 
-	constructor() {
-		this.authPromise = this.auth();
-	}
-
-	async auth() {
-		if (!process.env.GCLOUD_CREDENTIALS_FILE) {
-			throw new Error('The GCLOUD_CREDENTIALS_FILE environment variable is not set.');
-		}
-
+	async auth(creds: any) {
 		try {
 			const authObj = new google.auth.GoogleAuth({
-				keyFilename: process.env.GCLOUD_CREDENTIALS_FILE,
+				credentials: creds,
 				scopes: ['https://www.googleapis.com/auth/cloud-platform']
 			});
 			const authClient = await authObj.getClient();
@@ -71,7 +61,6 @@ export class GCP implements CloudProvider {
 	}
 
 	async getRegions(): Promise<string[]> {
-		await this.authPromise;
 		const response = await this.googleCompute.regions.list({
 			project: this.projectId
 		});
@@ -79,7 +68,6 @@ export class GCP implements CloudProvider {
 	}
 
 	async getZones(region: string): Promise<string[]> {
-		await this.authPromise;
 		const response = await this.googleCompute.zones.list({
 			project: this.projectId
 		});
@@ -89,7 +77,6 @@ export class GCP implements CloudProvider {
 	}
 
 	async getMachines(region: string): Promise<Machine[]> {
-		await this.authPromise;
 		const zones = await this.getZones(region);
 
 		const machines: Machine[] = [];
@@ -116,20 +103,10 @@ export class GCP implements CloudProvider {
 // Amazon Web Services implementation of CloudProvider interface.
 export class AWS implements CloudProvider {
 	amazonCompute: any;
-	authPromise: Promise<void>;
 
-	constructor() {
-		this.authPromise = this.auth();
-	}
-
-	async auth() {
-		if (!process.env.AWS_CONFIG_FILE || !process.env.AWS_SDK_LOAD_CONFIG) {
-			throw new Error(
-				'The AWS_CONFIG_FILE and/or AWS_SDK_LOAD_CONFIG environment variables are not set.'
-			);
-		}
-
+	async auth(creds: any) {
 		try {
+            AWS_SDK.config.update(creds);
 			this.amazonCompute = new AWS_SDK.EC2({
 				region: 'us-east-1' // initial region does not matter
 			});
@@ -139,20 +116,17 @@ export class AWS implements CloudProvider {
 	}
 
 	async getRegions(): Promise<string[]> {
-		await this.authPromise;
 		const response = await this.amazonCompute.describeRegions().promise();
 		return response.Regions.map((region: any) => region.RegionName);
 	}
 
 	async getZones(region: string): Promise<string[]> {
-		await this.authPromise;
 		this.amazonCompute = new AWS_SDK.EC2({ region: region });
 		const response = await this.amazonCompute.describeAvailabilityZones().promise();
 		return response.AvailabilityZones.map((zone: any) => zone.ZoneName);
 	}
 
 	async getMachines(region: string): Promise<Machine[]> {
-		await this.authPromise;
 		this.amazonCompute = new AWS_SDK.EC2({ region: region });
 		const response = await this.amazonCompute.describeInstanceTypeOfferings().promise();
 		return response.InstanceTypeOfferings.map(
