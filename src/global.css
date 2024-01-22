@@ -126,6 +126,9 @@ button.primary {
 	--button-borderColor: transparent;
 	--button-textColor: var(--button-primary-textColor);
 }
+button.small {
+	font-size: 0.8em;
+}
 
 .card {
 	--card-paddingX: 1.75em;
