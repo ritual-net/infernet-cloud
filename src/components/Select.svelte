@@ -227,13 +227,13 @@
 		}
 
 		& > * {
-			transition: 0.15s var(--ease-out-expo);
+			transition: var(--active-transitionOutDuration) var(--ease-out-expo);
 		}
 
 		&:active > * {
-			scale: 0.96;
-			opacity: 0.75;
-			transition-duration: 0.1s;
+			transition-duration: var(--active-transitionInDuration);
+			opacity: var(--active-opacity);
+			scale: var(--active-scale);
 		}
 
 		&[data-selected] > *:after {

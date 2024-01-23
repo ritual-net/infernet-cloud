@@ -22,6 +22,11 @@
 	--card-default-textColor: var(--textColor);
 
 	--backdropFilter: blur(6px);
+
+	--active-transitionInDuration: 0.1s;
+	--active-transitionOutDuration: 0.2s;
+	--active-scale: 0.975;
+	--active-opacity: 0.8;
 }
 
 * {
@@ -128,12 +133,12 @@ button {
 
 	color: var(--button-textColor);
 
-	transition: 0.2s var(--ease-out-expo);
+	transition: var(--active-transitionOutDuration) var(--ease-out-expo);
 
 	&:active {
-		transition-duration: 0.1s;
-		opacity: 0.8;
-		scale: 0.975;
+		transition-duration: var(--active-transitionInDuration);
+		opacity: var(--active-opacity);
+		scale: var(--active-scale);
 	}
 
 	&.primary {
@@ -179,6 +184,17 @@ button {
 		}
 	}
 }
+
+/* .card:has(> :is(header, section, footer)) {
+	padding: 0;
+	row-gap: var(--card-borderWidth);
+}
+
+.card > :is(header, section, footer) {
+	padding: var(--card-paddingY) var(--card-paddingX);
+
+	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
+} */
 
 .annotation {
 	opacity: 0.5;
