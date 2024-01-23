@@ -43,7 +43,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"dotenv": "^16.3.2",
 		"edgedb": "^1.4.1"
 	}
 }

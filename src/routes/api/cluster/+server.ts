@@ -4,7 +4,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Fetch all clusters for a user.
- * 
+ *
  * @returns Array of Cluster objects.
  */
 export const GET: RequestHandler = async () => {
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async () => {
 
 /**
  * Create a new cluster with a given service account and an array of node configs.
- * 
+ *
  * @param request - The request object containing 'service_account' and 'nodes'.
  * @returns Cluster object.
  */

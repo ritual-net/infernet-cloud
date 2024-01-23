@@ -1,17 +1,25 @@
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { getCreds, getRepos, getOrgs } from '$utils/docker'
+import type { RequestHandler, RequestEvent } from '@sveltejs/kit';
+import { DockerHubClient } from '$lib/docker/docker';
+import type { Creds } from '$types/docker';
 
 /**
- * Fetch all private and public containers user has access to.
- * 
- * @returns Flat array of container ids (including tag).
+ * Fetch all private and public images user has access to.
+ * @param request object containing DockerHub `user` (username)
+ * and `pat` (Personal Access Token) headers
+ * @returns Flat array of image ids (including tag).
  */
-export const GET: RequestHandler = async () => {
-    const creds = await getCreds();
-    const userReposPromise = getRepos(creds.user, creds.repoHeaders);
-    const orgs = await getOrgs(creds.orgHeaders);
-    const orgReposPromises = orgs.map(org => getRepos(org, creds.repoHeaders));
-    const allRepos = await Promise.all([userReposPromise, ...orgReposPromises]);
-    return json(allRepos.flat());
+export const GET: RequestHandler = async ({ request }: RequestEvent) => {
+	const user = request.headers.get('user');
+	const pat = request.headers.get('pat');
+	if (!user || !pat) {
+		return error(400, 'Missing user or pat in headers.');
+	}
+
+	return json(
+		await new DockerHubClient({
+			username: user,
+			password: pat
+		} as Creds).getAllTaggedRepos()
+	);
 };

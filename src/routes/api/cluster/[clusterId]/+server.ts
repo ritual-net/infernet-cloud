@@ -4,7 +4,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve a cluster by its ID.
- * 
+ *
  * @param params - The request parameters object, expected to contain 'clusterId'.
  * @returns Cluster object.
  */
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
 /**
  * Delete a cluster by its ID.
- * 
+ *
  * @param params - The request parameters object, expected to contain 'clusterId'.
  * @returns ID of the deleted cluster.
  */
