@@ -36,7 +36,7 @@
 <nav class="row">
 	<a
 		href="/"
-		data-active={$page.url.pathname === '/'}
+		aria-current={$page.url.pathname === '/' ? 'page' : undefined}
 		class="home row"
 	>
 		<img
@@ -56,7 +56,7 @@
 			<li>
 				<a	
 					href={item.href}
-					data-active={$page.url.pathname === item.href}
+					aria-current={$page.url.pathname === item.href ? 'page' : undefined}
 				>
 					{item.label}
 				</a>
@@ -82,7 +82,7 @@
 		list-style-type: none;
 	}
 
-	ul a[data-active="false"] {
+	ul a:not([aria-current="page"]) {
 		opacity: 0.7;
 	}
 </style>
