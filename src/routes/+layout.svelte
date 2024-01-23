@@ -9,66 +9,18 @@
 	setContext('isSignedIn', isSignedIn)
 
 
-	// Internal state
-
-	let navItems: {
-		href: string,
-		label: string,
-	}[]
-	$: navItems = [
-		{
-			href: '/clusters',
-			label: 'Clusters',
-		},
-		{
-			href: '/nodes',
-			label: 'Nodes',
-		},
-		$isSignedIn ? {
-			href: '/login',
-			label: 'Sign out',
-		} : {
-			href: '/login',
-			label: 'Login',
-		},
-	]
-
-	
 	// Global Styles
 	import '../fonts.css'
 	import '../global.css'
+
+
+	// Components
+	import Nav from './Nav.svelte'
 </script>
 
 
 <header>
-	<nav class="row">
-		<a
-			href="/"
-			data-active={$page.url.pathname === '/'}
-			class="home row"
-		>
-			<img
-				class="logo"
-				src="/ritual.svg"
-				alt="Ritual Logo"
-			/>
-
-			<h1>Ritual</h1>
-		</a>
-
-		<ul class="row">
-			{#each navItems as item}
-				<li>
-					<a	
-						href={item.href}
-						data-active={$page.url.pathname === item.href}
-					>
-						{item.label}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</nav>
+	<Nav />
 </header>
 
 <div class="main-wrapper">
@@ -135,24 +87,5 @@
 		bottom: 0;
 
 		backdrop-filter: var(--backdropFilter);
-	}
-
-	[href="/"] {
-		font-size: 1.5em;
-
-		gap: 0.33em;
-		font-family: var(--fontFamily-display);
-
-		& img {
-			height: 1.25em;
-		}
-	}
-
-	li {
-		list-style-type: none;
-	}
-
-	ul a[data-active="false"] {
-		opacity: 0.7;
 	}
 </style>
