@@ -67,14 +67,30 @@
 
 
 <style>
-	[href="/"] {
-		font-size: 1.5em;
+	:root {
+		--nav-link-default-opacity: 0.7;
+	}
 
-		gap: 0.33em;
-		font-family: var(--fontFamily-display);
+	a {
+		display: inline-flex;
 
-		& img {
-			height: 1.25em;
+		transition: var(--active-transitionOutDuration) var(--ease-out-expo);
+
+		&:active {
+			transition-duration: var(--active-transitionInDuration);
+			opacity: var(--active-opacity);
+			scale: var(--active-scale);
+		}
+
+		&[href="/"] {
+			font-size: 1.5em;
+
+			gap: 0.33em;
+			font-family: var(--fontFamily-display);
+
+			& img {
+				height: 1.25em;
+			}
 		}
 	}
 
@@ -83,6 +99,11 @@
 	}
 
 	ul a:not([aria-current="page"]) {
-		opacity: 0.7;
+		color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
+	}
+	@supports not (color: hsl(from #000 h s l)) {
+		ul a:not([aria-current="page"]) {
+			filter: opacity(0.7);
+		}
 	}
 </style>
