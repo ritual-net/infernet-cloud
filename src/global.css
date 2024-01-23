@@ -5,17 +5,11 @@
 	--color-ritualBlack: #000;
 	
 	--textColor: var(--color-ritualBlack);
+
 	--page-backgroundColor: #FBFBFB;
+
 	--borderColor: #e5e5e5;
 	--borderWidth: 1px;
-
-	--button-default-backgroundColor: #fff;
-	--button-default-textColor: var(--textColor);
-	--button-primary-backgroundColor: var(--color-ritualBlack);
-	--button-primary-textColor: #fff;
-
-	--card-default-backgroundColor: #fff;
-	--card-default-textColor: var(--textColor);
 
 	--backdropFilter: blur(6px);
 
@@ -25,6 +19,14 @@
 	--active-transitionOutDuration: 0.2s;
 	--active-scale: 0.975;
 	--active-opacity: 0.8;
+
+	--button-default-backgroundColor: #fff;
+	--button-default-textColor: var(--textColor);
+	--button-primary-backgroundColor: var(--color-ritualBlack);
+	--button-primary-textColor: #fff;
+
+	--card-default-backgroundColor: #fff;
+	--card-default-textColor: var(--textColor);
 }
 
 * {
