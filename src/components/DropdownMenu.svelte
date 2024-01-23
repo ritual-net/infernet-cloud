@@ -44,14 +44,18 @@
 					<div use:melt={$separator} />
 				{/if}
 
-				<div
-					use:melt={$item}
-					on:m-click={e => _subitem.onClick?.(_subitem)}
-				>
-					<div class="row">
-						{_subitem.label}
+				{#if 'items' in _subitem}
+					<!-- TODO: make recursive with Svelte 5 snippets -->
+				{:else}
+					<div
+						use:melt={$item}
+						on:m-click={e => _subitem.onClick?.(_subitem)}
+					>
+						<div class="row">
+							{_subitem.label}
+						</div>
 					</div>
-				</div>
+				{/if}
 			{/each}
 		{:else}
 			<div
