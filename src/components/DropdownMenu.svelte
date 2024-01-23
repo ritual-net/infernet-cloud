@@ -75,7 +75,6 @@
 	:root {
 		--dropdownMenu-paddingX: 1em;
 		--dropdownMenu-paddingY: 0.5em;
-		--dropdownMenu-groupOption-indentX: 1.5em;
 
 		--dropdownMenu-backgroundColor: rgb(255 255 255 / 0.75);
 		--dropdownMenu-backdropFilter: blur(3px);

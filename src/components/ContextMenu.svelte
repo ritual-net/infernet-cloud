@@ -75,7 +75,6 @@
 	:root {
 		--contextMenu-paddingX: 1em;
 		--contextMenu-paddingY: 0.5em;
-		--contextMenu-groupOption-indentX: 1.5em;
 
 		--contextMenu-backgroundColor: rgb(255 255 255 / 0.75);
 		--contextMenu-backdropFilter: blur(3px);
