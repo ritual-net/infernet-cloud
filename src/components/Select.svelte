@@ -227,8 +227,6 @@
 		}
 
 		& > * {
-			width: max-content;
-
 			transition: 0.15s var(--ease-out-expo);
 		}
 
