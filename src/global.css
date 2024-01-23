@@ -3,15 +3,11 @@
 	--fontFamily-display: 'Izoard', sans-serif;
 
 	--color-ritualBlack: #000;
-
-	--transition-easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
-
-	--page-backgroundColor: #FBFBFB;
-
+	
 	--textColor: var(--color-ritualBlack);
-
-	--borderWidth: 1px;
+	--page-backgroundColor: #FBFBFB;
 	--borderColor: #e5e5e5;
+	--borderWidth: 1px;
 
 	--button-default-backgroundColor: #fff;
 	--button-default-textColor: var(--textColor);
@@ -22,6 +18,8 @@
 	--card-default-textColor: var(--textColor);
 
 	--backdropFilter: blur(6px);
+
+	--transition-easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
 
 	--active-transitionInDuration: 0.1s;
 	--active-transitionOutDuration: 0.2s;
