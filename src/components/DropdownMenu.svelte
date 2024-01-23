@@ -130,7 +130,7 @@
 		}
 
 		& > * {
-			transition: var(--active-transitionOutDuration) var(--ease-out-expo);
+			transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 		}
 
 		&:active > * {

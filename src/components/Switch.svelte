@@ -64,7 +64,7 @@
 
 		background-color: var(--switch-backgroundColor);
 		border-radius: var(--switch-height);
-		transition: 0.3s var(--ease-out-expo);
+		transition: 0.3s var(--transition-easeOutExpo);
 
 		&[data-state='checked'] {
 			--switch-backgroundColor: var(--switch-checked-backgroundColor);
@@ -81,7 +81,7 @@
 		border-radius: 100%;
 		box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
 
-		transition: 0.3s var(--ease-out-expo);
+		transition: 0.3s var(--transition-easeOutExpo);
 	}
 
 	button:active .thumb {
