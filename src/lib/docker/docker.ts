@@ -1,21 +1,21 @@
 import axios from 'axios';
 import type { Creds, DockerHubHeaders, DockerHubRepo, DockerHubOrg } from '$types/docker';
 
+const BASEURL = 'https://hub.docker.com/v2';
+
 export class DockerHubClient {
 	private creds: Creds;
-	private baseUrl: string;
 	private headers!: DockerHubHeaders;
 
 	constructor(creds: Creds) {
 		this.creds = creds;
-		this.baseUrl = 'https://hub.docker.com/v2';
 	}
 
 	/**
 	 * Initialize headers for DockerHub API requests.
 	 */
 	private async authenticate(): Promise<void> {
-		const authUrl = `${this.baseUrl}/users/login/`;
+		const authUrl = `${BASEURL}/users/login/`;
 		try {
 			const response = await axios.post(authUrl, this.creds);
 			const dockerHubToken = response.data.token;
@@ -39,7 +39,7 @@ export class DockerHubClient {
 	 * @returns Tag string.
 	 */
 	private async getTag(repoName: string): Promise<string> {
-		const tagsUrl = `${this.baseUrl}/repositories/${repoName}/tags/?page_size=100`;
+		const tagsUrl = `${BASEURL}/repositories/${repoName}/tags/?page_size=100`;
 		try {
 			const response = await axios.get(tagsUrl, { headers: this.headers.repoHeaders });
 			const tagsList = response.data.results;
@@ -58,7 +58,7 @@ export class DockerHubClient {
 	 * @returns Flat array of tagged repo ids.
 	 */
 	private async getRepos(ownerName: string): Promise<string[]> {
-		const repoUrl = `${this.baseUrl}/repositories/${ownerName}/?page_size=100`;
+		const repoUrl = `${BASEURL}/repositories/${ownerName}/?page_size=100`;
 		try {
 			const response = await axios.get(repoUrl, { headers: this.headers.repoHeaders });
 			const repos = response.data.results;
@@ -83,10 +83,15 @@ export class DockerHubClient {
 	 * @returns Flat array of organization ids.
 	 */
 	private async getOrgs(): Promise<string[]> {
-		const orgsUrl = `${this.baseUrl}/user/orgs/`;
+		const orgsUrl = `${BASEURL}/user/orgs/`;
 		try {
 			const response = await axios.get(orgsUrl, { headers: this.headers.orgHeaders });
-			return response.data.results.map((org: DockerHubOrg) => org.orgname);
+			const orgs = response.data.results.map((org: DockerHubOrg) => org.orgname);
+            // All users should have access to public ritualnetwork imgs
+            if (!orgs.includes('ritualnetwork')) {
+                orgs.push('ritualnetwork');
+            }
+            return orgs;
 		} catch (error) {
 			throw new Error(`Failed to fetch organizations: ${(error as Error).message}`);
 		}
