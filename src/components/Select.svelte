@@ -89,21 +89,25 @@
 						</div>
 
 						{#each item.items as subitem}
-							<div
-								use:melt={$option({
-									value: subitem.value,
-									label: subitem.label,
-									disabled: subitem.disabled,
-								})}
-							>
-								<div class="row">
-									{#if subitem.icon}
-										{subitem.icon}
-									{/if}
+							{#if 'items' in subitem}
+								<!-- TODO: make recursive with Svelte 5 snippets -->
+							{:else}
+								<div
+									use:melt={$option({
+										value: subitem.value,
+										label: subitem.label,
+										disabled: subitem.disabled,
+									})}
+								>
+									<div class="row">
+										{#if subitem.icon}
+											{subitem.icon}
+										{/if}
 
-									<span>{subitem.label}</span>
+										<span>{subitem.label}</span>
+									</div>
 								</div>
-							</div>
+							{/if}
 						{/each}
 					</div>
 				{:else}
