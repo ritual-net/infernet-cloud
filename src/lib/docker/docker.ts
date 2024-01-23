@@ -87,11 +87,11 @@ export class DockerHubClient {
 		try {
 			const response = await axios.get(orgsUrl, { headers: this.headers.orgHeaders });
 			const orgs = response.data.results.map((org: DockerHubOrg) => org.orgname);
-            // All users should have access to public ritualnetwork imgs
-            if (!orgs.includes('ritualnetwork')) {
-                orgs.push('ritualnetwork');
-            }
-            return orgs;
+			// All users should have access to public ritualnetwork imgs
+			if (!orgs.includes('ritualnetwork')) {
+				orgs.push('ritualnetwork');
+			}
+			return orgs;
 		} catch (error) {
 			throw new Error(`Failed to fetch organizations: ${(error as Error).message}`);
 		}
