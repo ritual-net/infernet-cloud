@@ -75,7 +75,7 @@
 		>
 			{#each items as item (item.value)}
 				{#if 'items' in item}
-					<div use:melt={$group(item.value)}>
+					<div use:melt={$group(String(item.value))}>
 						<div
 							use:melt={$groupLabel(item.label)}
 						>

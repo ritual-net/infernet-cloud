@@ -7,10 +7,11 @@ export type MenuItem<Value> = {
 }
 
 export type MenuItemGroup<Value> = {
-	value?: Value,
+	value: Value,
 	label: string,
-	items: MenuItems<Value>,
 	disabled?: boolean,
+	icon?: string,
+	items: MenuItems<Value>,
 }
 
 export type MenuItems<Value> = (MenuItem<Value> | MenuItemGroup<Value>)[]
