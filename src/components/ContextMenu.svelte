@@ -1,27 +1,13 @@
 <script lang="ts">
 	// Types
+	import type { MenuItems } from '$lib/menus'
 	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
-
-	type Item<Value> = {
-		value: Value,
-		label: string,
-		disabled?: boolean,
-		icon?: string,
-		onClick?: (item: Item<Value>) => void
-	}
-	type ItemGroup<Value> = {
-		value?: Value,
-		label: string,
-		items: Items<Value>,
-		disabled?: boolean,
-	}
-	type Items<Value> = (Item<Value> | ItemGroup<Value>)[]
 
 	type Value = $$Generic<any>
 
 
 	// Inputs
-	export let items: Items<Value>
+	export let items: MenuItems<Value>
 	export let labelText: string | undefined
 
 	// (View options)
