@@ -72,9 +72,10 @@ p {
 
 a {
 	transition: 0.2s color;
-}
-a:hover {
-	color: #000;
+
+	&:hover {
+		color: #000;
+	}
 }
 
 .stack {
@@ -92,15 +93,17 @@ a:hover {
 	justify-content: space-between;
 	align-items: center;
 	gap: 0.75em 1em;
-}
-.row.inline {
-	display: inline-flex;
-	align-items: baseline;
-	justify-content: start;
-	gap: 0.25ch 0.75ch;
-}
-.row.wrap {
-	flex-wrap: wrap;
+
+	&.inline {
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: start;
+		gap: 0.25ch 0.75ch;
+	}
+
+	&.wrap {
+		flex-wrap: wrap;
+	}
 }
 
 .column {
@@ -110,9 +113,10 @@ a:hover {
 		/ minmax(0, 1fr)
 	;
 	gap: 1em;
-}
-.column.inline {
-	gap: 0.75ex;
+
+	&.inline {
+		gap: 0.75ex;
+	}
 }
 
 button {
