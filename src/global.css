@@ -4,7 +4,7 @@
 
 	--color-ritualBlack: #000;
 
-	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	--transition-easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
 
 	--page-backgroundColor: #FBFBFB;
 
@@ -42,7 +42,7 @@
 	text-align: inherit;
 	text-decoration: none;
 
-	transition-timing-function: var(--ease-out-expo);
+	transition-timing-function: var(--transition-easeOutExpo);
 }
 
 :root {
@@ -133,7 +133,7 @@ button {
 
 	color: var(--button-textColor);
 
-	transition: var(--active-transitionOutDuration) var(--ease-out-expo);
+	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 
 	&:active {
 		transition-duration: var(--active-transitionInDuration);
