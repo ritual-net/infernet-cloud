@@ -1,5 +1,7 @@
 <script lang="ts">
 	// Types
+	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
+
 	type Item<Value> = {
 		value: Value,
 		label: string,
@@ -22,6 +24,9 @@
 	export let items: Items<Value>
 	export let labelText: string | undefined
 
+	// (View options)
+	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-start'
+
 
 	// Internal state
 	import { melt, createContextMenu } from '@melt-ui/svelte'
@@ -29,7 +34,12 @@
 	const {
 		elements: { trigger, menu, item, separator },
 		builders: { createSubmenu, createMenuRadioGroup, createCheckboxItem },
-	} = createContextMenu()
+	} = createContextMenu({
+		positioning: {
+			placement,
+			fitViewport: true,
+		},
+	})
 </script>
 
 
