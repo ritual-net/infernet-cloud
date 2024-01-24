@@ -174,7 +174,8 @@
 						</div>
 
 						<Switch
-							bind:value={node.isOnchain}
+							bind:checked={node.isOnchain}
+							labelText="Onchain"
 						/>
 					</section>
 
