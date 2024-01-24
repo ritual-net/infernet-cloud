@@ -12,9 +12,3 @@ export enum ProviderTypeEnum {
 
 export type ProviderCluster = AWSCluster | GCPCluster;
 export type ProviderServiceAccount = AWSServiceAccount | GCPServiceAccount;
-
-// Define a custom error type
-export interface CommandExecutionError {
-	error: Error;
-	stderr: string;
-}

@@ -1,15 +1,16 @@
-import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 import { client, e } from '.';
+import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 import type { Queries } from './base';
+import type { TypeSet } from '$schema/edgeql-js/reflection';
 
-export class AWSQueries implements Queries {
+export const AWSQueries: Queries = {
 	/**
 	 * Get service account data by id
 	 * @param id of AWSServiceAccount
 	 * @returns AWSServiceAccount if found
 	 */
-	public async getServiceAccountById(id: string): Promise<AWSServiceAccount | null> {
-		const result = await e
+	async getServiceAccountById(id: string): Promise<AWSServiceAccount | null> {
+		return await e
 			.select(e.AWSServiceAccount, () => ({
 				...e.AWSServiceAccount['*'],
 				user: {
@@ -18,16 +19,14 @@ export class AWSQueries implements Queries {
 				filter_single: { id }
 			}))
 			.run(client);
-
-		return result;
-	}
+	},
 
 	/**
 	 * Get cluster data by id
 	 * @param id of AWSCluster
 	 * @returns AWSCluster if found
 	 */
-	public async getClusterById(id: string): Promise<AWSCluster | null> {
+	async getClusterById(id: string): Promise<AWSCluster | null> {
 		return await e
 			.select(e.AWSCluster, () => ({
 				service_account: {
@@ -48,16 +47,16 @@ export class AWSQueries implements Queries {
 				filter_single: { id }
 			}))
 			.run(client);
-	}
+	},
 
 	/**
 	 * Create insert query for AWSCluster
 	 * @param config of cluster
-	 * @param service_account associated with cluster
-	 * @param nodesQuery for inserting cluster nodes
+	 * @param serviceAccountId associated with cluster
+	 * @param nodesQuery the Edgedb query for inserting AWSCluster.nodes
 	 * @returns insert query
 	 */
-	public insertClusterQuery(
+	insertClusterQuery(
 		config: {
 			name: string;
 			deploy_router: boolean;
@@ -66,16 +65,16 @@ export class AWSQueries implements Queries {
 			region: string;
 			machine_type: string;
 		},
-		service_account: string,
+		serviceAccountId: string,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		nodesQuery: any
+		nodesQuery: TypeSet<any, any>
 	) {
 		return e.insert(e.AWSCluster, {
 			...config,
 			service_account: e.select(e.ServiceAccount, () => ({
-				filter_single: { id: service_account }
+				filter_single: { id: serviceAccountId }
 			})),
 			nodes: nodesQuery
 		});
 	}
-}
+};

@@ -1,4 +1,4 @@
-import { ProviderTypeEnum } from '$lib/types';
+import { ProviderTypeEnum } from '$types/provider';
 import { AWSTerraform } from './terraform/aws';
 import { GCPTerraform } from './terraform/gcp';
 

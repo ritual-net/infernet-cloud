@@ -1,12 +1,5 @@
 import { client, e } from '$lib/db';
-import { ProviderTypeEnum } from '$lib/types';
-import { AWSQueries } from './aws';
-import { GCPQueries } from './gcp';
-
-export const QueryByProvider = {
-	AWS: new AWSQueries(),
-	GCP: new GCPQueries()
-};
+import { ProviderTypeEnum } from '$types/provider';
 
 /**
  * Get the provider of a service account

@@ -1,7 +1,7 @@
-import { client, e } from '$lib/db';
-import { QueryByProvider, getProviderByClusterId } from '../../../../lib/db/queries';
-import { ProviderTerraform } from '$lib';
 import { error, json } from '@sveltejs/kit';
+import { getProviderByClusterId } from '$lib/db/provider';
+import { QueryByProvider, client, e } from '$lib/db';
+import { ProviderTerraform } from '$lib';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**

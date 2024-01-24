@@ -1,16 +1,12 @@
-import { ProviderTypeEnum } from '$lib/types';
 import path from 'path';
-import { TerraformUtils } from '$utils/terraform';
 import { BaseTerraform } from './base';
-import { SystemUtils } from '$utils/system';
+import { ProviderTypeEnum } from '$types/provider';
+import * as SystemUtils from '$utils/system';
+import * as TerraformUtils from '$utils/terraform';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 
 export class GCPTerraform extends BaseTerraform {
-	/**
-	 * Returns the provider type.
-	 * @returns ProviderTypeEnum
-	 */
-	public readonly type = (): ProviderTypeEnum => ProviderTypeEnum.GCP;
+	public readonly type = ProviderTypeEnum.GCP;
 
 	/**
 	 * Writes Terraform files to the temporary directory.

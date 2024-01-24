@@ -1,8 +1,9 @@
-import { client, e } from '$lib/db';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { QueryByProvider, getProviderByServiceAccountId } from '../../../lib/db/queries';
+import { QueryByProvider, client, e } from '$lib/db';
+import { getProviderByServiceAccountId } from '$lib/db/provider';
 import { ProviderTerraform } from '$lib';
+import type { RequestHandler } from '@sveltejs/kit';
+import type { Cluster } from '$schema/interfaces';
 
 /**
  * Fetch all clusters for a user.
@@ -39,13 +40,13 @@ export const GET: RequestHandler = async ({ request }) => {
 /**
  * Create a new cluster with a given service account and an array of node configs.
  *
- * @param request - The request object containing 'service_account', 'config', 'nodes'.
+ * @param request - The request object containing 'serviceAccountId', 'config', 'nodes'.
  * @returns Cluster object.
  */
 export const POST: RequestHandler = async ({ request }) => {
-	const { service_account, config, nodes } = await request.json();
+	const { serviceAccountId, config, nodes } = await request.json();
 
-	if (!service_account || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
+	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
 	}
 
@@ -54,13 +55,13 @@ export const POST: RequestHandler = async ({ request }) => {
 	// TODO: Enforce correctness of config, nodes + containers?
 
 	// Get provider of service account
-	const provider = await getProviderByServiceAccountId(service_account);
+	const provider = await getProviderByServiceAccountId(serviceAccountId);
 	if (!provider) {
 		return error(400, 'Service account could not be retrieved');
 	}
 
 	// Create cluster
-	const cluster = await e
+	const cluster = (await e
 		.params(
 			{
 				nodes: e.array(
@@ -95,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				// Choose cluster type based on provider
 				QueryByProvider[provider].insertClusterQuery(
 					config,
-					service_account,
+					serviceAccountId,
 					e.for(e.array_unpack(nodes), (node) =>
 						e.insert(e.InfernetNode, {
 							chain_enabled: node.config.chain_enabled,
@@ -123,14 +124,14 @@ export const POST: RequestHandler = async ({ request }) => {
 					)
 				)
 		)
-		.run(client, { nodes });
+		.run(client, { nodes })) as Cluster;
 
 	if (!cluster) {
 		return error(500, 'Failed to create cluster');
 	}
 
 	const clusterData = await QueryByProvider[provider].getClusterById(cluster.id);
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(service_account);
+	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(serviceAccountId);
 
 	if (!clusterData || !serviceAccount) {
 		return error(500, 'Failed to fetch cluster and credentials from database');
