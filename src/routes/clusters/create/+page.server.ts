@@ -1,26 +1,6 @@
-// Schemas
+// Data
+import { schema } from './schema'
 import { superValidate } from 'sveltekit-superforms/server'
-import { z } from 'zod'
-
-const schema = z.object({
-	'serviceAccount': z
-		.string(),
-
-	'region': z
-		.string(),
-	
-	'nodes': z
-		.array(
-			z.object({
-				'isOnchain': z.boolean(),
-			}),
-		)
-		.default([
-			{
-				isOnchain: true,
-			}
-		]),
-})
 
 
 // Server functions

@@ -3,6 +3,10 @@
 	import type { PageData } from './$types'
 
 
+	// Data
+	import { createNode } from './schema'
+
+
 	// Internal state
 	import { page } from '$app/stores'
 	import { superForm } from 'sveltekit-superforms/client'
@@ -142,7 +146,7 @@
 				</legend>
 			</header>
 
-			{#each $form.nodes as node, i (i)}
+			{#each $form.nodes as node, i (node.id)}
 				<article
 					class="card column"
 					transition:scale={{ start: 0.8 }}
@@ -209,7 +213,7 @@
 				<div class="row">
 					<button
 						type="button"
-						on:click={() => $form.nodes = [...$form.nodes, { isOnchain: true, }]}
+						on:click={() => $form.nodes = [...$form.nodes, createNode()]}
 					>
 						Add Node
 					</button>
