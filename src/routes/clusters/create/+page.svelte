@@ -26,6 +26,8 @@
 	import Switch from '$components/Switch.svelte'
 	import Select from '$components/Select.svelte'
 
+
+	// Transitions/animations
 	import { fly, scale } from 'svelte/transition'
 	import { flip } from 'svelte/animate'
 </script>
@@ -150,7 +152,7 @@
 				<article
 					class="card column"
 					transition:scale={{ start: 0.8 }}
-					animate:flip
+					animate:flip={{ duration: 300 }}
 				>
 					<header class="row">
 						<h3 class="annotation">Node #{i + 1}</h3>
