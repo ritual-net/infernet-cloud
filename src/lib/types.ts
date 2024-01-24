@@ -18,3 +18,41 @@ export interface CommandExecutionError {
 	error: Error;
 	stderr: string;
 }
+
+// DockerHub types
+export type DockerHubCreds = {
+	username: string;
+	password: string; // Personal Access Token
+};
+
+export type DockerHubHeaders = {
+	repoHeaders: {
+		Authorization: string;
+	};
+	orgHeaders: {
+		Authorization: string;
+	};
+};
+
+export type DockerHubRepo = {
+	namespace: string;
+	name: string;
+};
+
+export type DockerHubOrg = {
+	orgname: string;
+};
+
+// Cloud provider client types
+export type Machine = {
+	id: string;
+	name: string;
+	description: string;
+	link: string;
+};
+
+export type ProviderInfo = {
+	region: string;
+	zones: string[];
+	machines: Machine[];
+};
