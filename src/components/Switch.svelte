@@ -1,17 +1,27 @@
 <script lang="ts">
 	// Inputs
+	export let checked = false
 	export let labelText: string | undefined
 	export let disabled = false
 
 
 	// Internal state
-	import { createSwitch, melt } from '@melt-ui/svelte'
+	import { writable } from 'svelte/store'
+	import { melt, createSwitch, createSync } from '@melt-ui/svelte'
+
+	const _checked = writable(checked)
+	$: checked = $_checked
 	
 	const {
 		elements: { root, input },
+		states,
+		options,
 	} = createSwitch({
+		checked: _checked,
 		disabled,
 	})
+
+	$: createSync(options).disabled(disabled, _ => { disabled = _ })
 
 	const id = `switch-${crypto.randomUUID()}`
 </script>
