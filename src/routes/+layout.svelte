@@ -9,67 +9,25 @@
 	setContext('isSignedIn', isSignedIn)
 
 
-	// Internal state
-
-	let navItems: {
-		href: string,
-		label: string,
-	}[]
-	$: navItems = [
-		{
-			href: '/clusters',
-			label: 'Clusters',
-		},
-		{
-			href: '/nodes',
-			label: 'Nodes',
-		},
-		$isSignedIn ? {
-			href: '/login',
-			label: 'Sign out',
-		} : {
-			href: '/login',
-			label: 'Login',
-		},
-	]
-
-	
 	// Global Styles
 	import '../fonts.css'
 	import '../global.css'
+
+
+	// Components
+	import Nav from './Nav.svelte'
 </script>
 
 
 <header>
-	<nav class="row">
-		<a
-			href="/"
-			data-active={$page.url.pathname === '/'}
-			class="home row"
-		>
-			<img src="/ritual.svg" alt="Ritual Logo" />
-
-			<h1>Ritual</h1>
-		</a>
-
-		<ul class="row">
-			{#each navItems as item}
-				<li>
-					<a	
-						href={item.href}
-						data-active={$page.url.pathname === item.href}
-					>
-						{item.label}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</nav>
+	<Nav />
 </header>
 
-<main>
-	<slot />
-</main>
+<div class="main-wrapper">
+	<main>
+		<slot />
+	</main>
+</div>
 
 <footer>
 
@@ -78,29 +36,56 @@
 
 <style>
 	:global(body) {
-		width: 50rem;
-		max-width: 100%;
-		margin: auto;
+		min-height: 100vh;
+		min-height: 100dvh;
+
+		display: grid;
+		grid:
+			'header' auto
+			'main' 1fr
+			'footer' auto
+			/ minmax(0, 1fr);
+		;
 	}
 
 	header, main, footer {
+		display: grid;
+		grid-template-columns: minmax(0, 50rem);
+		justify-content: center;
+
 		padding: 1rem;
 	}
 
-	[href="/"] {
-		gap: 0.5em;
-		font-family: var(--fontFamily-display);
+	header {
+		grid-area: header;
+		z-index: 1;
+
+		position: sticky;
+		top: 0;
+
+		backdrop-filter: var(--backdropFilter);
 	}
 
-	img {
-		height: 1.75em;
+	.main-wrapper {
+		grid-area: 1 / 1 / -1 / -1;
+
+		display: grid;
+		grid-template-rows: subgrid;
+		grid-template-columns: subgrid;
 	}
 
-	li {
-		list-style-type: none;
+	main {
+		grid-area: main;
+		align-content: start;
 	}
 
-	ul a[data-active="false"] {
-		opacity: 0.7;
+	footer {
+		grid-area: footer;
+		z-index: 1;
+
+		position: sticky;
+		bottom: 0;
+
+		backdrop-filter: var(--backdropFilter);
 	}
 </style>

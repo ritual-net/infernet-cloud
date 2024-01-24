@@ -3,15 +3,22 @@
 	--fontFamily-display: 'Izoard', sans-serif;
 
 	--color-ritualBlack: #000;
-
-	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	
+	--textColor: var(--color-ritualBlack);
 
 	--page-backgroundColor: #FBFBFB;
 
-	--textColor: var(--color-ritualBlack);
-
-	--borderWidth: 1px;
 	--borderColor: #e5e5e5;
+	--borderWidth: 1px;
+
+	--backdropFilter: blur(6px);
+
+	--transition-easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
+
+	--active-transitionInDuration: 0.1s;
+	--active-transitionOutDuration: 0.2s;
+	--active-scale: 0.975;
+	--active-opacity: 0.8;
 
 	--button-default-backgroundColor: #fff;
 	--button-default-textColor: var(--textColor);
@@ -35,7 +42,7 @@
 	text-align: inherit;
 	text-decoration: none;
 
-	transition-timing-function: var(--ease-out-expo);
+	transition-timing-function: var(--transition-easeOutExpo);
 }
 
 :root {
@@ -48,6 +55,10 @@
 	line-height: 1.5;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	text-wrap: balance;
+}
+
 h2 {
 	font-size: 1.333em;
 }
@@ -58,13 +69,25 @@ h3 {
 
 p {
 	opacity: 0.75;
+	text-wrap: pretty;
 }
 
 a {
 	transition: 0.2s color;
+
+	&:hover {
+		color: #000;
+	}
 }
-a:hover {
-	color: #000;
+
+.stack {
+	display: grid;
+	grid: 'stack';
+	align-items: start;
+
+	& > * {
+		grid-area: stack;
+	}
 }
 
 .row {
@@ -72,15 +95,17 @@ a:hover {
 	justify-content: space-between;
 	align-items: center;
 	gap: 0.75em 1em;
-}
-.row.inline {
-	display: inline-flex;
-	align-items: baseline;
-	justify-content: start;
-	gap: 0.25ch 0.75ch;
-}
-.row.wrap {
-	flex-wrap: wrap;
+
+	&.inline {
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: start;
+		gap: 0.25ch 0.75ch;
+	}
+
+	&.wrap {
+		flex-wrap: wrap;
+	}
 }
 
 .column {
@@ -90,9 +115,10 @@ a:hover {
 		/ minmax(0, 1fr)
 	;
 	gap: 1em;
-}
-.column.inline {
-	gap: 0.75ex;
+
+	&.inline {
+		gap: 0.75ex;
+	}
 }
 
 button {
@@ -110,11 +136,24 @@ button {
 	border-radius: 0.33em;
 
 	color: var(--button-textColor);
-}
-button.primary {
-	--button-backgroundColor: var(--button-primary-backgroundColor);
-	--button-borderColor: transparent;
-	--button-textColor: var(--button-primary-textColor);
+
+	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+
+	&:active {
+		transition-duration: var(--active-transitionInDuration);
+		opacity: var(--active-opacity);
+		scale: var(--active-scale);
+	}
+
+	&.primary {
+		--button-backgroundColor: var(--button-primary-backgroundColor);
+		--button-borderColor: transparent;
+		--button-textColor: var(--button-primary-textColor);
+	}
+
+	&.small {
+		font-size: 0.8em;
+	}
 }
 
 .card {
@@ -123,18 +162,22 @@ button.primary {
 	--card-backgroundColor: var(--card-default-backgroundColor);
 	--card-borderColor: var(--borderColor);
 	--card-borderWidth: var(--borderWidth);
+	--card-cornerRadius: 0.33em;
+
+	/* clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth))); */
+	overflow: hidden;
 	
 	padding: var(--card-paddingY) var(--card-paddingX);
 	
 	background-color: var(--card-backgroundColor);
 	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
-	border-radius: 0.33em;
+	border-radius: var(--card-cornerRadius);
 
 	& p {
 		font-size: 0.888em;
 	}
 
-	&:has(> section) {
+	&:has(> :is(header, section, footer)) {
 		padding: 0;
 		row-gap: var(--card-borderWidth);
 

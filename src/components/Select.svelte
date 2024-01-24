@@ -1,25 +1,14 @@
 <script lang="ts">
 	// Types
-	type Item<Value> = {
-		value: Value,
-		label: string,
-		disabled?: boolean,
-		icon?: string,
-	}
-	type ItemGroup<Value> = {
-		value?: Value,
-		label: string,
-		items: Items<Value>,
-		disabled?: boolean,
-	}
-	type Items<Value> = (Item<Value> | ItemGroup<Value>)[]
+	import type { MenuItems } from '$lib/menus'
+	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
 
 	type Value = $$Generic<any>
 
 
 	// Inputs
 	export let value: Value | undefined
-	export let items: Items<Value>
+	export let items: MenuItems<Value>
 
 	export let labelText: string | undefined
 	export let placeholder: string = 'Select...'
@@ -28,6 +17,10 @@
 	export let required: boolean = false
 	export let disabled: boolean = false
 	export let multiple: boolean = false
+
+	// (View options)
+	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
+
 
 
 	// Internal state
@@ -45,9 +38,8 @@
 
 		forceVisible: true,
 		positioning: {
-			placement: 'bottom',
+			placement,
 			fitViewport: true,
-			sameWidth: true,
 		},
 	})
 
@@ -83,33 +75,39 @@
 		>
 			{#each items as item (item.value)}
 				{#if 'items' in item}
-					<div use:melt={$group(item.value)}>
+					<div use:melt={$group(String(item.value))}>
 						<div
 							use:melt={$groupLabel(item.label)}
-							class="row"
 						>
-							{#if item.icon}
-								{item.icon}
-							{/if}
+							<div class="row">
+								{#if item.icon}
+									{item.icon}
+								{/if}
 
-							{item.label}
+								{item.label}
+							</div>
 						</div>
 
 						{#each item.items as subitem}
-							<div
-								use:melt={$option({
-									value: subitem.value,
-									label: subitem.label,
-									disabled: subitem.disabled,
-								})}
-								class="row"
-							>
-								{#if subitem.icon}
-									{subitem.icon}
-								{/if}
+							{#if 'items' in subitem}
+								<!-- TODO: make recursive with Svelte 5 snippets -->
+							{:else}
+								<div
+									use:melt={$option({
+										value: subitem.value,
+										label: subitem.label,
+										disabled: subitem.disabled,
+									})}
+								>
+									<div class="row">
+										{#if subitem.icon}
+											{subitem.icon}
+										{/if}
 
-								{subitem.label}
-							</div>
+										<span>{subitem.label}</span>
+									</div>
+								</div>
+							{/if}
 						{/each}
 					</div>
 				{:else}
@@ -119,12 +117,14 @@
 							label: item.label,
 							disabled: item.disabled,
 						})}
-						class="row"
 					>
-						{#if item.icon}
-							{item.icon}
-						{/if}
-						{item.label}
+						<div class="row">
+							{#if item.icon}
+								{item.icon}
+							{/if}
+
+							<span>{item.label}</span>
+						</div>
 					</div>
 				{/if}
 			{/each}
@@ -135,8 +135,18 @@
 
 <style>
 	:root {
+		--select-paddingX: 1em;
+		--select-paddingY: 0.5em;
+		--select-groupItem-indentX: 1.5em;
+
+		--select-backgroundColor: rgb(255 255 255 / 0.75);
+		--select-backdropFilter: blur(3px);
 		--select-borderColor: var(--borderColor);
 		--select-borderWidth: var(--borderWidth);
+		--select-cornerRadius: 0.33em;
+
+		--select-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		
 		--select-textColor: var(--textColor);
 	}
 
@@ -159,12 +169,11 @@
 	[data-melt-select-menu] {
 		display: grid;
 
-		backdrop-filter: blur(3px);
-		background-color: rgba(255, 255, 255, 0.5);
-
+		clip-path: inset(calc(-1 * var(--select-borderWidth)) round calc(var(--select-cornerRadius) + var(--select-borderWidth)));
 		background-color: var(--select-backgroundColor);
+		backdrop-filter: var(--select-backdropFilter);
 		box-shadow: 0 0 0 var(--select-borderWidth) var(--select-borderColor);
-		border-radius: 0.33em;
+		border-radius: var(--select-cornerRadius);
 
 		color: var(--button-textColor);
 
@@ -176,11 +185,11 @@
 
 		& [data-melt-select-group-label] {
 			font-weight: bold;
-			padding: 0.5em 1em;
+			padding: var(--select-paddingY) var(--select-paddingX);
 		}
 
 		& [data-melt-select-option] {
-			padding-left: 2em;
+			padding-left: calc(var(--select-paddingX) + var(--select-groupItem-indentX));
 		}
 	}
 
@@ -189,25 +198,36 @@
 		align-items: center;
 		gap: 1ch;
 
-		padding: 0.5em 1em;
+		padding: var(--select-paddingY) var(--select-paddingX);
+
+		&:first-child {
+			border-start-start-radius: var(--select-cornerRadius);
+			border-start-end-radius: var(--select-cornerRadius);
+		}
+		&:last-child {
+			border-end-start-radius: var(--select-cornerRadius);
+			border-end-end-radius: var(--select-cornerRadius);
+		}
 
 		cursor: pointer;
 
 		transition: 0.1s;
 
-		&:active {
-			scale: 0.97;
-			opacity: 0.9;
-
-			transition-duration: 0.05s;
+		&:is(:hover, [data-highlighted]) {
+			background-color: var(--select-item-selected-backgroundColor);
 		}
 
-		&:hover, &[data-highlighted] {
-			background-color: rgba(0, 0, 0, 0.1);
-			filter: brightness(120%);
+		& > * {
+			transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 		}
 
-		&[data-selected]:after {
+		&:active > * {
+			transition-duration: var(--active-transitionInDuration);
+			opacity: var(--active-opacity);
+			scale: var(--active-scale);
+		}
+
+		&[data-selected] > *:after {
 			content: '✓';
 			width: 1em;
 			flex: 0 auto;
