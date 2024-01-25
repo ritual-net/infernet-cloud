@@ -160,7 +160,9 @@
 						{#if $form.nodes.length > 1}
 							<button
 								class="small"
-								on:click={() => $form.nodes = [...$form.nodes.slice(0, i), ...$form.nodes.slice(i + 1)]}
+								on:click={() => {
+									$form.nodes = $form.nodes.toSpliced(i, 1)
+								}}
 								transition:scale
 							>
 								Delete
