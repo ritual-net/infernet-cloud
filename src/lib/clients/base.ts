@@ -45,7 +45,6 @@ export abstract class BaseClient {
 	async getProviderInfo(credentials: Record<string, any>): Promise<ProviderInfo[]> {
 		await this.auth(credentials);
 		const regions = await this.getRegions();
-		console.log(regions);
 		const providerInfo = await Promise.all(
 			regions.map(async (region) => {
 				const [zones, machines] = await Promise.all([
