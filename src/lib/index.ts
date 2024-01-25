@@ -4,5 +4,5 @@ import { GCPTerraform } from './terraform/gcp';
 
 export const ProviderTerraform = {
 	[ProviderTypeEnum.AWS]: new AWSTerraform(),
-	[ProviderTypeEnum.GCP]: new GCPTerraform()
+	[ProviderTypeEnum.GCP]: new GCPTerraform(),
 };

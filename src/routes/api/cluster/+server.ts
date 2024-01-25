@@ -25,12 +25,12 @@ export const GET: RequestHandler = async ({ request }) => {
 		.select(e.Cluster, (cluster) => ({
 			service_account: {
 				name: true,
-				provider: true
+				provider: true,
 			},
 			id: true,
 			name: true,
 			node_count: e.count(cluster.nodes),
-			filter: e.op(cluster.service_account.user.id, '=', e.uuid(user))
+			filter: e.op(cluster.service_account.user.id, '=', e.uuid(user)),
 		}))
 		.run(client);
 
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
 							coordinator_address: e.str,
 							max_gas_limit: e.int64,
 							private_key: e.str,
-							forward_stats: e.bool
+							forward_stats: e.bool,
 						}),
 						containers: e.array(
 							e.tuple({
@@ -86,11 +86,11 @@ export const POST: RequestHandler = async ({ request }) => {
 								allowed_ips: e.array(e.str),
 								command: e.str,
 								env: e.json,
-								gpu: e.bool
+								gpu: e.bool,
 							})
-						)
+						),
 					})
-				)
+				),
 			},
 			({ nodes }) =>
 				// Choose cluster type based on provider
@@ -117,9 +117,9 @@ export const POST: RequestHandler = async ({ request }) => {
 									allowed_ips: container.allowed_ips,
 									command: container.command,
 									env: container.env,
-									gpu: container.gpu
+									gpu: container.gpu,
 								})
-							)
+							),
 						})
 					)
 				)
@@ -146,8 +146,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		.update(e.Cluster, () => ({
 			filter_single: { id: cluster.id },
 			set: {
-				tfstate: JSON.stringify(state)
-			}
+				tfstate: JSON.stringify(state),
+			},
 		}))
 		.run(client);
 

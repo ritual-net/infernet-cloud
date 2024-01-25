@@ -9,5 +9,5 @@ import { AWSQueries } from './aws';
 import { GCPQueries } from './gcp';
 export const QueryByProvider = {
 	[ProviderTypeEnum.AWS]: AWSQueries,
-	[ProviderTypeEnum.GCP]: GCPQueries
+	[ProviderTypeEnum.GCP]: GCPQueries,
 };

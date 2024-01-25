@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ request }) => {
 			id: true,
 			name: true,
 			provider: true,
-			filter: e.op(sa.user.id, '=', e.uuid(user))
+			filter: e.op(sa.user.id, '=', e.uuid(user)),
 		}))
 		.run(client);
 
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		case ProviderTypeEnum.GCP: {
 			query = e.insert(e.GCPServiceAccount, {
 				user: e.select(e.User, () => ({
-					filter_single: { id: user }
+					filter_single: { id: user },
 				})),
 				name,
 				creds: e.tuple({
@@ -66,15 +66,15 @@ export const POST: RequestHandler = async ({ request }) => {
 					token_uri: e.str(credentials.token_uri),
 					auth_provider_x509_cert_url: e.str(credentials.auth_provider_x509_cert_url),
 					client_x509_cert_url: e.str(credentials.client_x509_cert_url),
-					universe_domain: e.str(credentials.universe_domain)
-				})
+					universe_domain: e.str(credentials.universe_domain),
+				}),
 			});
 			break;
 		}
 		case ProviderTypeEnum.AWS: {
 			query = e.insert(e.AWSServiceAccount, {
 				user: e.select(e.User, () => ({
-					filter_single: { id: user }
+					filter_single: { id: user },
 				})),
 				name,
 				creds: e.tuple({
@@ -83,8 +83,8 @@ export const POST: RequestHandler = async ({ request }) => {
 					access_key_id: e.str(credentials.AccessKeyId),
 					status: e.str(credentials.Status),
 					secret_access_key: e.str(credentials.SecretAccessKey),
-					create_date: e.str(credentials.CreateDate)
-				})
+					create_date: e.str(credentials.CreateDate),
+				}),
 			});
 			break;
 		}

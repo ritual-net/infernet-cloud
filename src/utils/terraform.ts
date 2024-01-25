@@ -20,7 +20,7 @@ export async function createTempDir(provider: string): Promise<string> {
 	// Untar the provider-specific Terraform files
 	await tar.x({
 		file: `${srcDir}/${provider.toLowerCase()}.tar.gz`,
-		C: tempDir
+		C: tempDir,
 	});
 
 	// Copy the deployment tarball
@@ -122,8 +122,8 @@ function formatNodeConfig(node: InfernetNode) {
 			coordinator_address: node.coordinator_address,
 			wallet: {
 				max_gas_limit: node.max_gas_limit,
-				private_key: node.private_key
-			}
+				private_key: node.private_key,
+			},
 		},
 		forward_stats: node.forward_stats,
 		containers: node.containers?.map((container) => ({
@@ -137,17 +137,17 @@ function formatNodeConfig(node: InfernetNode) {
 			command: container.command,
 			env: container.env,
 			gpu: container.gpu,
-			port: port--
+			port: port--,
 		})),
 		// defaulted
 		log_path: 'infernet_node.log',
 		server: {
-			port: 4000
+			port: 4000,
 		},
 		redis: {
 			host: 'redis',
-			port: 6379
-		}
+			port: 6379,
+		},
 	};
 }
 

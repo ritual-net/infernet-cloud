@@ -8,12 +8,14 @@ export interface Queries {
 	 * @returns ProviderServiceAccount if found
 	 */
 	getServiceAccountById: (id: string) => Promise<ProviderServiceAccount | null>;
+
 	/**
 	 * Get cluster data by id
 	 * @param id of cluster
 	 * @returns ProviderCluster if found
 	 */
 	getClusterById: (id: string) => Promise<ProviderCluster | null>;
+
 	/**
 	 * Create insert query for cluster
 	 * @param config of cluster

@@ -22,9 +22,9 @@ export const GET: RequestHandler = async ({ params }) => {
 		.select(e.InfernetNode, () => ({
 			...e.InfernetNode['*'],
 			containers: {
-				...e.Container['*']
+				...e.Container['*'],
 			},
-			filter_single: { id }
+			filter_single: { id },
 		}))
 		.run(client);
 

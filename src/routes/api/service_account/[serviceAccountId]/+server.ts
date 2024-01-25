@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			id: true,
 			name: true,
 			provider: true,
-			filter_single: { id }
+			filter_single: { id },
 		}))
 		.run(client);
 
@@ -49,7 +49,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 	// Check if service account is in use by any clusters
 	const cluster_count = await e
 		.select(e.Cluster, (cluster) => ({
-			filter: e.op(cluster.service_account.id, '=', e.uuid(id))
+			filter: e.op(cluster.service_account.id, '=', e.uuid(id)),
 		}))
 		.run(client);
 
@@ -60,7 +60,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 	// Delete service account
 	const result = await e
 		.delete(e.ServiceAccount, () => ({
-			filter_single: { id }
+			filter_single: { id },
 		}))
 		.run(client);
 

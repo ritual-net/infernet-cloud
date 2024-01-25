@@ -71,7 +71,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 		// Delete cluster, nodes and containers deleted through cascade
 		await e
 			.delete(e.Cluster, (cluster) => ({
-				filter_single: e.op(cluster.id, '=', e.uuid(id))
+				filter_single: e.op(cluster.id, '=', e.uuid(id)),
 			}))
 			.run(client);
 	} else {
@@ -80,8 +80,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
 			.update(e.Cluster, () => ({
 				filter_single: { id: cluster.id! },
 				set: {
-					tfstate: JSON.stringify(state)
-				}
+					tfstate: JSON.stringify(state),
+				},
 			}))
 			.run(client);
 	}

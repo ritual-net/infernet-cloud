@@ -37,7 +37,7 @@ export class GCPTerraform extends BaseTerraform {
 			service_account_email: credentials.client_email,
 			image: 'ubuntu-2004-focal-v20231101',
 			ip_allow_http_ports: ['4000'],
-			is_production: true
+			is_production: true,
 		});
 
 		// Write service account credentials to file

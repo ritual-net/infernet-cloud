@@ -14,9 +14,9 @@ export const GCPQueries: Queries = {
 			.select(e.GCPServiceAccount, () => ({
 				...e.GCPServiceAccount['*'],
 				user: {
-					...e.User['*']
+					...e.User['*'],
 				},
-				filter_single: { id }
+				filter_single: { id },
 			}))
 			.run(client);
 
@@ -36,17 +36,17 @@ export const GCPQueries: Queries = {
 					name: true,
 					provider: true,
 					user: {
-						...e.User['*']
-					}
+						...e.User['*'],
+					},
 				},
 				nodes: {
 					...e.InfernetNode['*'],
 					containers: {
-						...e.Container['*']
-					}
+						...e.Container['*'],
+					},
 				},
 				...e.GCPCluster['*'],
-				filter_single: { id }
+				filter_single: { id },
 			}))
 			.run(client);
 	},
@@ -75,9 +75,9 @@ export const GCPQueries: Queries = {
 		return e.insert(e.GCPCluster, {
 			...config,
 			service_account: e.select(e.ServiceAccount, () => ({
-				filter_single: { id: serviceAccountId }
+				filter_single: { id: serviceAccountId },
 			})),
-			nodes: nodesQuery
+			nodes: nodesQuery,
 		});
-	}
+	},
 };

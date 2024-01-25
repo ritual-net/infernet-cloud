@@ -76,7 +76,7 @@ export abstract class BaseTerraform {
 		serviceAccount: ProviderServiceAccount
 	): Promise<{
 		success: boolean;
-		message?: unknown;
+		message?: string;
 		state?: object;
 	}> {
 		// Set up temporary directory

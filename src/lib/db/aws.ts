@@ -14,9 +14,9 @@ export const AWSQueries: Queries = {
 			.select(e.AWSServiceAccount, () => ({
 				...e.AWSServiceAccount['*'],
 				user: {
-					...e.User['*']
+					...e.User['*'],
 				},
-				filter_single: { id }
+				filter_single: { id },
 			}))
 			.run(client);
 	},
@@ -34,17 +34,17 @@ export const AWSQueries: Queries = {
 					name: true,
 					provider: true,
 					user: {
-						...e.User['*']
-					}
+						...e.User['*'],
+					},
 				},
 				nodes: {
 					...e.InfernetNode['*'],
 					containers: {
-						...e.Container['*']
-					}
+						...e.Container['*'],
+					},
 				},
 				...e.AWSCluster['*'],
-				filter_single: { id }
+				filter_single: { id },
 			}))
 			.run(client);
 	},
@@ -72,9 +72,9 @@ export const AWSQueries: Queries = {
 		return e.insert(e.AWSCluster, {
 			...config,
 			service_account: e.select(e.ServiceAccount, () => ({
-				filter_single: { id: serviceAccountId }
+				filter_single: { id: serviceAccountId },
 			})),
-			nodes: nodesQuery
+			nodes: nodesQuery,
 		});
-	}
+	},
 };
