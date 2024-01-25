@@ -13,10 +13,11 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter(),
 		alias: {
-			$db: './src/server/db',
-			$schema: './dbschema'
-		}
-	}
+			$schema: './dbschema',
+			$types: './src/types',
+			$utils: './src/utils',
+		},
+	},
 };
 
 export default config;

@@ -1,1 +1,8 @@
-// place files you want to import through the `$lib` alias in this folder.
+import { ProviderTypeEnum } from '$types/provider';
+import { AWSTerraform } from './terraform/aws';
+import { GCPTerraform } from './terraform/gcp';
+
+export const ProviderTerraform = {
+	[ProviderTypeEnum.AWS]: new AWSTerraform(),
+	[ProviderTypeEnum.GCP]: new GCPTerraform(),
+};
