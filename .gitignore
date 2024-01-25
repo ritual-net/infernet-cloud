@@ -13,3 +13,5 @@ tests
 
 # EdgeDB
 **/dbschema/edgeql-js
+
+dbschema/edgeql-js

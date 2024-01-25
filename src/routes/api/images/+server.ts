@@ -4,10 +4,11 @@ import { DockerHubClient } from '$lib/docker/docker';
 import type { DockerHubCreds } from '$lib/types';
 
 /**
- * Fetch all images (public or private) owned by user, an
- * organization the user is in, or ritualnetwork.
- * @param request object containing DockerHub `user` (username)
- * and `pat` (Personal Access Token) headers
+ * Fetch all images (public or private) owned by user, an organization the user is in,
+ * or ritualnetwork.
+ *
+ * @param request object containing DockerHub `user` (username) and `pat` (Personal
+ * Access Token) headers
  * @returns Flat array of image ids (including tag).
  */
 export const GET: RequestHandler = async ({ request }: RequestEvent) => {
@@ -18,9 +19,9 @@ export const GET: RequestHandler = async ({ request }: RequestEvent) => {
 	}
 
 	return json(
-		await new DockerHubClient({
+		await new DockerHubClient().getAllTaggedRepos({
 			username: user,
 			password: pat
-		} as DockerHubCreds).getAllTaggedRepos()
+		} as DockerHubCreds)
 	);
 };

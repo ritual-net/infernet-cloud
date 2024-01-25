@@ -4,20 +4,15 @@ import type { DockerHubCreds, DockerHubHeaders, DockerHubRepo, DockerHubOrg } fr
 const BASEURL = 'https://hub.docker.com/v2';
 
 export class DockerHubClient {
-	private creds: DockerHubCreds;
 	private headers!: DockerHubHeaders;
-
-	constructor(creds: DockerHubCreds) {
-		this.creds = creds;
-	}
 
 	/**
 	 * Initialize headers for DockerHub API requests.
 	 */
-	private async authenticate(): Promise<void> {
+	private async authenticate(creds: DockerHubCreds): Promise<void> {
 		const authUrl = `${BASEURL}/users/login/`;
 		try {
-			const response = await axios.post(authUrl, this.creds);
+			const response = await axios.post(authUrl, creds);
 			const dockerHubToken = response.data.token;
 			this.headers = {
 				repoHeaders: {
@@ -102,9 +97,9 @@ export class DockerHubClient {
 	 *
 	 * @returns Flat array of tagged repo ids.
 	 */
-	public async getAllTaggedRepos(): Promise<string[]> {
-		await this.authenticate();
-		const userReposPromise = this.getRepos(this.creds.username);
+	public async getAllTaggedRepos(creds: DockerHubCreds): Promise<string[]> {
+		await this.authenticate(creds); // initialize headers
+		const userReposPromise = this.getRepos(creds.username);
 		const orgs = await this.getOrgs();
 		const orgReposPromises = orgs.map((org) => this.getRepos(org));
 		const allRepos = await Promise.all([userReposPromise, ...orgReposPromises]);
