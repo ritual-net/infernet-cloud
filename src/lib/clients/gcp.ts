@@ -80,10 +80,10 @@ export class GCPClient extends BaseClient {
 	 * @returns A flat array of machine types.
 	 * Example return value: [
 	 *   {
-	 *     "id": "1210048",
+	 *     "id": "1210042",
 	 *     "name": "t2d-standard-48",
 	 *     "description": "48 vCPUs, 192 GB RAM",
-	 *     "link": "https://www.googleapis.com/compute/v1/projects/prod-frug/zones/us-west4-c/machineTypes/t2d-standard-48"
+	 *     "link": "https://www.googleapis.com/compute/v1/projects/project/zones/us-west4-c/machineTypes/t2d-standard-48"
 	 *   }, ...]
 	 */
 	async getMachines(region: string): Promise<Machine[]> {
