@@ -38,14 +38,23 @@
 	:global(body) {
 		min-height: 100vh;
 		min-height: 100dvh;
+	/* } */
 
-		display: grid;
+	/* :global(body > div) { */
+		min-height: 100vh;
+		min-height: 100dvh;
+
+		display: grid !important;
 		grid:
 			'header' auto
 			'main' 1fr
 			'footer' auto
 			/ minmax(0, 1fr);
 		;
+
+		/* & > div { */
+			/* isolation: isolate; */
+		/* } */
 	}
 
 	header, main, footer {
