@@ -1,7 +1,7 @@
 import compute, { InstancesClient } from '@google-cloud/compute';
 import type { BaseNodeClient } from '$lib/node_clients/base';
-import { ProviderTypeEnum, GCPInstanceStatus } from '$lib/types';
-import type { GCPNodeClientArgs, NodeInfo } from '$lib/types';
+import { ProviderTypeEnum, GCPInstanceStatus } from '$types/provider';
+import type { GCPNodeClientArgs, NodeInfo } from '$types/provider';
 import type { GCPServiceAccount } from '$schema/interfaces';
 
 export class GCPNodeClient implements BaseNodeClient {
@@ -12,8 +12,8 @@ export class GCPNodeClient implements BaseNodeClient {
 			projectId: credentials.project_id,
 			credentials: {
 				client_email: credentials.client_email,
-				private_key: credentials.private_key!.split(String.raw`\n`).join('\n')
-			}
+				private_key: credentials.private_key!.split(String.raw`\n`).join('\n'),
+			},
 		});
 	}
 
@@ -36,7 +36,7 @@ export class GCPNodeClient implements BaseNodeClient {
 		for (const id of ids) {
 			await this.client.start({
 				...args,
-				instance: id
+				instance: id,
 			});
 		}
 	}
@@ -51,7 +51,7 @@ export class GCPNodeClient implements BaseNodeClient {
 		for (const id of ids) {
 			await this.client.stop({
 				...args,
-				instance: id
+				instance: id,
 			});
 		}
 	}
@@ -68,13 +68,14 @@ export class GCPNodeClient implements BaseNodeClient {
 		for (const id of ids) {
 			const result = await this.client.get({
 				...args,
-				instance: id
+				instance: id,
 			});
 			if (result[0].networkInterfaces && result[0].networkInterfaces[0].accessConfigs) {
 				nodesInfo.push({
 					id: id,
 					status: result[0].status as GCPInstanceStatus,
-					ip: result[0].networkInterfaces[0].accessConfigs[0].natIP
+					ip: result[0].networkInterfaces[0].accessConfigs[0].natIP,
+					node: null,
 				});
 			}
 		}

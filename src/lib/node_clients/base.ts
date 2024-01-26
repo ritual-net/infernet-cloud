@@ -1,4 +1,4 @@
-import type { ProviderTypeEnum, NodeInfo } from '$lib/types';
+import type { ProviderTypeEnum, NodeInfo } from '$types/provider';
 
 export interface BaseNodeClient {
 	/**

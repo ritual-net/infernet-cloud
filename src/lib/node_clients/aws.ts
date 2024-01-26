@@ -1,8 +1,8 @@
 import AWS from 'aws-sdk';
 import type { BaseNodeClient } from '$lib/node_clients/base';
 import type { AWSServiceAccount } from '$schema/interfaces';
-import { ProviderTypeEnum, AWSInstanceStatus } from '$lib/types';
-import type { NodeInfo } from '$lib/types';
+import { ProviderTypeEnum, AWSInstanceStatus } from '$types/provider';
+import type { NodeInfo } from '$types/provider';
 
 export class AWSNodeClient implements BaseNodeClient {
 	client: AWS.EC2;
@@ -11,7 +11,7 @@ export class AWSNodeClient implements BaseNodeClient {
 		this.client = new AWS.EC2({
 			accessKeyId: credentials.access_key_id,
 			secretAccessKey: credentials.secret_access_key,
-			region: 'us-east-1'
+			region: 'us-east-1',
 		});
 	}
 
@@ -31,7 +31,7 @@ export class AWSNodeClient implements BaseNodeClient {
 	 */
 	async startNodes(ids: string[]): Promise<void> {
 		const params: AWS.EC2.StartInstancesRequest = {
-			InstanceIds: ids
+			InstanceIds: ids,
 		};
 
 		await this.client.startInstances(params).promise();
@@ -44,7 +44,7 @@ export class AWSNodeClient implements BaseNodeClient {
 	 */
 	async stopNodes(ids: string[]): Promise<void> {
 		const params: AWS.EC2.StopInstancesRequest = {
-			InstanceIds: ids
+			InstanceIds: ids,
 		};
 
 		await this.client.stopInstances(params).promise();
@@ -58,7 +58,7 @@ export class AWSNodeClient implements BaseNodeClient {
 	 */
 	async getNodesInfo(ids: string[]): Promise<NodeInfo[]> {
 		const params: AWS.EC2.DescribeInstancesRequest = {
-			InstanceIds: ids
+			InstanceIds: ids,
 		};
 
 		const result = await this.client.describeInstances(params).promise();
@@ -70,7 +70,8 @@ export class AWSNodeClient implements BaseNodeClient {
 					nodesInfo.push({
 						id: instance.InstanceId,
 						status: instance.State.Name as AWSInstanceStatus,
-						ip: instance.PublicIpAddress
+						ip: instance.PublicIpAddress,
+						node: null,
 					});
 				}
 			});
