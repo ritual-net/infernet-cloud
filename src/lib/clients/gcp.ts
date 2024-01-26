@@ -20,12 +20,13 @@ export class GCPClient extends BaseClient {
 				credentials: {
 					client_email: creds.client_email,
 					private_key: creds.private_key!.split(String.raw`\n`).join('\n'),
-					project_id: creds.project_id
+					project_id: creds.project_id,
 				},
-				scopes: ['https://www.googleapis.com/auth/cloud-platform']
+				scopes: ['https://www.googleapis.com/auth/cloud-platform'],
 			});
+
 			const authClient = (await authObj.getClient()) as OAuth2Client;
-			this.projectId = creds.project_id!;
+			this.projectId = creds.project_id;
 			this.googleCompute = google.compute({ version: 'v1', auth: authClient });
 		} catch (error) {
 			throw new Error(`Error during GCP authentication: ${(error as Error).message}`);
@@ -40,7 +41,7 @@ export class GCPClient extends BaseClient {
 	 */
 	async getRegions(): Promise<string[]> {
 		const response = await this.googleCompute.regions.list({
-			project: this.projectId
+			project: this.projectId,
 		});
 		return (
 			response.data.items
@@ -60,7 +61,7 @@ export class GCPClient extends BaseClient {
 	 */
 	async getZones(region: string): Promise<string[]> {
 		const response = await this.googleCompute.zones.list({
-			project: this.projectId
+			project: this.projectId,
 		});
 		return (
 			response.data.items
@@ -92,7 +93,7 @@ export class GCPClient extends BaseClient {
 			zones.flatMap(async (zone) => {
 				const response = await this.googleCompute.machineTypes.list({
 					project: this.projectId,
-					zone: zone
+					zone: zone,
 				});
 				return (
 					response.data.items?.map(
@@ -101,7 +102,7 @@ export class GCPClient extends BaseClient {
 								id: machine.id,
 								name: machine.name,
 								description: machine.description,
-								link: machine.selfLink
+								link: machine.selfLink,
 							}) as Machine
 					) ?? []
 				);

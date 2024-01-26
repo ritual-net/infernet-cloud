@@ -23,6 +23,10 @@ export type Machine = {
 
 export type ProviderInfo = {
 	region: string;
-	zones: string[];
-	machines: Machine[];
+	zones: ZoneInfo[];
+};
+
+export type ZoneInfo = {
+	name: string;
+	machines: Machine[]; // all machines available in region not zone
 };

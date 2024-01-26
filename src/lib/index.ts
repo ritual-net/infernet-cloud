@@ -11,6 +11,6 @@ export const ProviderTerraform = {
 };
 
 export const ProviderClient: Record<string, BaseClient> = {
-	[ProviderTypeEnum.AWS]: new AWSClient(),
-	[ProviderTypeEnum.GCP]: new GCPClient()
+	[ProviderTypeEnum.AWS]: AWSClient,
+	[ProviderTypeEnum.GCP]: GCPClient,
 };

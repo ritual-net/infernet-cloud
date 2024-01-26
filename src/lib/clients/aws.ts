@@ -18,7 +18,7 @@ export class AWSClient extends BaseClient {
 		return new AWS_SDK.EC2({
 			accessKeyId: this.creds.access_key_id,
 			secretAccessKey: this.creds.secret_access_key,
-			region: region
+			region: region,
 		});
 	}
 
@@ -92,7 +92,7 @@ export class AWSClient extends BaseClient {
 						id: offering.InstanceType,
 						name: offering.InstanceType,
 						description: offering.InstanceType,
-						link: 'https://aws.amazon.com/ec2/instance-types/'
+						link: 'https://aws.amazon.com/ec2/instance-types/',
 					}) as Machine
 			) ?? []
 		);

@@ -1,4 +1,4 @@
-import type { Machine, ProviderInfo } from '$types/provider';
+import type { Machine, ProviderInfo, ZoneInfo } from '$types/provider';
 
 /**
  * Base abstract class for cloud providers.
@@ -47,15 +47,16 @@ export abstract class BaseClient {
 		const regions = await this.getRegions();
 		const providerInfo = await Promise.all(
 			regions.map(async (region) => {
-				const [zones, machines] = await Promise.all([
-					this.getZones(region),
-					this.getMachines(region)
-				]);
+				const machines = await this.getMachines(region);
+				const zones = await this.getZones(region);
+				const zonesInfo: ZoneInfo[] = zones.map((zone) => ({
+					name: zone,
+					machines: machines,
+				}));
 
 				return {
 					region: region,
-					zones: zones,
-					machines: machines
+					zones: zonesInfo,
 				} as ProviderInfo;
 			})
 		);

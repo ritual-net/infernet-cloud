@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ request }: RequestEvent) => {
 	return json(
 		await new DockerHubClient().getAllTaggedRepos({
 			username: user,
-			password: pat
+			password: pat,
 		} as DockerHubCreds)
 	);
 };
