@@ -14,7 +14,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$schema: './dbschema',
-            $types: './src/types',
+			$types: './src/types',
 			$utils: './src/utils'
 		}
 	}

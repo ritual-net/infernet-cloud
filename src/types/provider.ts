@@ -2,12 +2,12 @@ import type {
 	AWSCluster,
 	AWSServiceAccount,
 	GCPCluster,
-	GCPServiceAccount,
+	GCPServiceAccount
 } from '$schema/interfaces';
 
 export enum ProviderTypeEnum {
 	AWS = 'AWS',
-	GCP = 'GCP',
+	GCP = 'GCP'
 }
 
 export type ProviderCluster = AWSCluster | GCPCluster;
