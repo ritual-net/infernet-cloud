@@ -122,6 +122,8 @@ a {
 }
 
 button {
+	--button-paddingX: 1em;
+	--button-paddingY: 0.5em;
 	--button-backgroundColor: var(--button-default-backgroundColor);
 	--button-borderColor: var(--borderColor);
 	--button-borderWidth: var(--borderWidth);
@@ -129,7 +131,7 @@ button {
 
 	cursor: pointer;
 
-	padding: 0.5em 1em;
+	padding: var(--button-paddingY) var(--button-paddingX);
 
 	background-color: var(--button-backgroundColor);
 	box-shadow: 0 0 0 var(--button-borderWidth) var(--button-borderColor);

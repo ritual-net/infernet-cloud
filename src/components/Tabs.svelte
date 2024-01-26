@@ -1,5 +1,6 @@
 <script lang="ts">
-	type TabId = $$Generic<string>
+	// Types
+	type TabId = $$Generic<string | number>
 
 
 	// Inputs
@@ -7,12 +8,15 @@
 		id: TabId,
 		label?: string,
 	}[]
+	export let value: TabId | undefined
+	export let labelText: string
 
 	// (View options)
-	export let value: TabId | undefined
 	export let orientation: 'horizontal' | 'vertical' = 'horizontal'
 	let className = ''
 	export { className as class }
+
+	export let layout: 'default' | 'tooltip-dots' = 'default'
 
 
 	// Internal state
@@ -24,11 +28,15 @@
 		options,
 	} = createTabs({
 		orientation,
-		defaultValue: items[0]?.id,
+		defaultValue: String(value ?? items[0]?.id),
 	})
 
-	$: createSync(states).value(value ?? items[0]?.id, _ => { value = _ as TabId })
+	$: createSync(states).value(String(value), _ => { value = _ as TabId })
 	$: createSync(options).orientation(orientation, _ => { orientation = _ })
+
+
+	// Components
+	import Tooltip from './Tooltip.svelte'
 
 
 	// Transitions/animations
@@ -44,32 +52,59 @@
 
 <div
 	use:melt={$root}
+	data-layout={layout}
 >
 	<div
 		use:melt={$list}
-		aria-label="Manage your account"
+		aria-label={labelText}
 	>
-		{#each items as item}
-			<button
-				type="button"
-				use:melt={$trigger(item.id)}
-			>
-				{item.label}
+		{#if layout === 'default'}
+			{#each items as item (item.id)}
+				<button
+					type="button"
+					use:melt={$trigger(String(item.id))}
+				>
+					{item.label}
 
-				{#if value === item.id}
-					<div
-						class="trigger-indicator"
-						in:indicatorIn={{ key: 'trigger' }}
-						out:indicatorOut={{ key: 'trigger' }}
-					/>
-				{/if}
-			</button>
-		{/each}
+					{#if String(value) === String(item.id)}
+						<div
+							class="trigger-indicator"
+							in:indicatorIn={{ key: 'trigger' }}
+							out:indicatorOut={{ key: 'trigger' }}
+						/>
+					{/if}
+				</button>
+			{/each}
+
+		{:else if layout === 'tooltip-dots'}
+			{#each items as item (item.id)}
+				<Tooltip
+					labelText={item.label}
+				>
+					<button
+						type="button"
+						use:melt={$trigger(String(item.id))}
+					>
+						{#if String(value) === String(item.id)}
+							<div
+								class="trigger-indicator"
+								in:indicatorIn={{ key: 'trigger' }}
+								out:indicatorOut={{ key: 'trigger' }}
+							/>
+						{/if}
+					</button>
+
+					<svelte:fragment slot="content">
+						{item.label}
+					</svelte:fragment>
+				</Tooltip>
+			{/each}
+		{/if}
 	</div>
 
 	{#each items as item}
 		<div
-			use:melt={$content(item.id)}
+			use:melt={$content(String(item.id))}
 		>
 			<slot name="content" {item} />
 		</div>
@@ -111,19 +146,20 @@
 
 	[data-melt-tabs-trigger] {
 		position: relative;
-	}
-	.trigger-indicator {
-		position: absolute;
-		inset: 0;
-		z-index: 1;
 
-		pointer-events: none;
-	}
-	[data-melt-tabs-trigger][data-orientation="horizontal"] .trigger-indicator {
-		border-bottom: var(--color-ritualBlack) 2px solid;
-	}
-	[data-melt-tabs-trigger][data-orientation="vertical"] .trigger-indicator {
-		border-right: var(--color-ritualBlack) 2px solid;
+		& .trigger-indicator {
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+
+			pointer-events: none;
+		}
+		&[data-orientation="horizontal"] .trigger-indicator {
+			border-bottom: var(--color-ritualBlack) 2px solid;
+		}
+		&[data-orientation="vertical"] .trigger-indicator {
+			border-right: var(--color-ritualBlack) 2px solid;
+		}
 	}
 
 	[data-melt-tabs-content] {
@@ -139,6 +175,33 @@
 			scale: 0.95;
 			opacity: 0;
 			filter: blur(2px);
+		}
+	}
+
+
+	[data-melt-tabs][data-layout="tooltip-dots"] {
+		grid:
+			[tabs-list-start tabs-content] '.' [tabs-list-end tabs-content-end]
+		;
+
+		& [data-melt-tabs-list] {
+			place-self: start end;
+
+			gap: 0.66em;
+
+			& [data-melt-tabs-trigger] {
+				--button-paddingX: 5px;
+				--button-paddingY: 5px;
+				--button-backgroundColor: hsl(from var(--textColor) h s l / 0.16);
+				--button-borderWidth: 0;
+				--button-cornerRadius: 100%;
+
+				& .trigger-indicator {
+					background-color: var(--textColor);
+					border: none;
+					border-radius: inherit;
+				}
+			}
 		}
 	}
 </style>
