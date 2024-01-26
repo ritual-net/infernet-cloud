@@ -1,5 +1,6 @@
 <script lang="ts">
-	type TabId = $$Generic<string>
+	// Types
+	type TabId = $$Generic<string | number>
 
 
 	// Inputs
@@ -7,9 +8,9 @@
 		id: TabId,
 		label?: string,
 	}[]
+	export let value: TabId | undefined
 
 	// (View options)
-	export let value: TabId | undefined
 	export let orientation: 'horizontal' | 'vertical' = 'horizontal'
 	let className = ''
 	export { className as class }
@@ -24,10 +25,10 @@
 		options,
 	} = createTabs({
 		orientation,
-		defaultValue: items[0]?.id,
+		defaultValue: String(value ?? items[0]?.id),
 	})
 
-	$: createSync(states).value(value ?? items[0]?.id, _ => { value = _ as TabId })
+	$: createSync(states).value(String(value), _ => { value = _ as TabId })
 	$: createSync(options).orientation(orientation, _ => { orientation = _ })
 
 
@@ -49,14 +50,14 @@
 		use:melt={$list}
 		aria-label="Manage your account"
 	>
-		{#each items as item}
+		{#each items as item (item.id)}
 			<button
 				type="button"
-				use:melt={$trigger(item.id)}
+				use:melt={$trigger(String(item.id))}
 			>
 				{item.label}
 
-				{#if value === item.id}
+				{#if String(value) === String(item.id)}
 					<div
 						class="trigger-indicator"
 						in:indicatorIn={{ key: 'trigger' }}
@@ -69,7 +70,7 @@
 
 	{#each items as item}
 		<div
-			use:melt={$content(item.id)}
+			use:melt={$content(String(item.id))}
 		>
 			<slot name="content" {item} />
 		</div>
