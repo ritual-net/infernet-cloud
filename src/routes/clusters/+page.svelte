@@ -1,6 +1,8 @@
 <script lang="ts">
 	// Context
-	let clusters = [
+	import { page } from '$app/stores'
+
+	$: clusters = $page.data.clusters ?? [
 		{ id: '1', name: 'Cluster A' },
 		{ id: '2', name: 'Cluster B' },
 	]
