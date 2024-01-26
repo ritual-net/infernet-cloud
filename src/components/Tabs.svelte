@@ -16,6 +16,8 @@
 	let className = ''
 	export { className as class }
 
+	export let layout: 'default' | 'tooltip-dots' = 'default'
+
 
 	// Internal state
 	import { melt, createTabs, createSync } from '@melt-ui/svelte'
@@ -33,6 +35,10 @@
 	$: createSync(options).orientation(orientation, _ => { orientation = _ })
 
 
+	// Components
+	import Tooltip from './Tooltip.svelte'
+
+
 	// Transitions/animations
 	import { crossfade } from 'svelte/transition'
 	import { cubicInOut } from 'svelte/easing'
@@ -46,27 +52,54 @@
 
 <div
 	use:melt={$root}
+	data-layout={layout}
 >
 	<div
 		use:melt={$list}
 		aria-label={labelText}
 	>
-		{#each items as item (item.id)}
-			<button
-				type="button"
-				use:melt={$trigger(String(item.id))}
-			>
-				{item.label}
+		{#if layout === 'default'}
+			{#each items as item (item.id)}
+				<button
+					type="button"
+					use:melt={$trigger(String(item.id))}
+				>
+					{item.label}
 
-				{#if String(value) === String(item.id)}
-					<div
-						class="trigger-indicator"
-						in:indicatorIn={{ key: 'trigger' }}
-						out:indicatorOut={{ key: 'trigger' }}
-					/>
-				{/if}
-			</button>
-		{/each}
+					{#if String(value) === String(item.id)}
+						<div
+							class="trigger-indicator"
+							in:indicatorIn={{ key: 'trigger' }}
+							out:indicatorOut={{ key: 'trigger' }}
+						/>
+					{/if}
+				</button>
+			{/each}
+
+		{:else if layout === 'tooltip-dots'}
+			{#each items as item (item.id)}
+				<Tooltip
+					labelText={item.label}
+				>
+					<button
+						type="button"
+						use:melt={$trigger(String(item.id))}
+					>
+						{#if String(value) === String(item.id)}
+							<div
+								class="trigger-indicator"
+								in:indicatorIn={{ key: 'trigger' }}
+								out:indicatorOut={{ key: 'trigger' }}
+							/>
+						{/if}
+					</button>
+
+					<svelte:fragment slot="content">
+						{item.label}
+					</svelte:fragment>
+				</Tooltip>
+			{/each}
+		{/if}
 	</div>
 
 	{#each items as item}
@@ -142,6 +175,33 @@
 			scale: 0.95;
 			opacity: 0;
 			filter: blur(2px);
+		}
+	}
+
+
+	[data-melt-tabs][data-layout="tooltip-dots"] {
+		grid:
+			[tabs-list-start tabs-content] '.' [tabs-list-end tabs-content-end]
+		;
+
+		& [data-melt-tabs-list] {
+			place-self: start end;
+
+			gap: 0.66em;
+
+			& [data-melt-tabs-trigger] {
+				--button-paddingX: 5px;
+				--button-paddingY: 5px;
+				--button-backgroundColor: hsl(from var(--textColor) h s l / 0.16);
+				--button-borderWidth: 0;
+				--button-cornerRadius: 100%;
+
+				& .trigger-indicator {
+					background-color: var(--textColor);
+					border: none;
+					border-radius: inherit;
+				}
+			}
 		}
 	}
 </style>
