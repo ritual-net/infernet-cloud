@@ -113,19 +113,20 @@
 
 	[data-melt-tabs-trigger] {
 		position: relative;
-	}
-	.trigger-indicator {
-		position: absolute;
-		inset: 0;
-		z-index: 1;
 
-		pointer-events: none;
-	}
-	[data-melt-tabs-trigger][data-orientation="horizontal"] .trigger-indicator {
-		border-bottom: var(--color-ritualBlack) 2px solid;
-	}
-	[data-melt-tabs-trigger][data-orientation="vertical"] .trigger-indicator {
-		border-right: var(--color-ritualBlack) 2px solid;
+		& .trigger-indicator {
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+
+			pointer-events: none;
+		}
+		&[data-orientation="horizontal"] .trigger-indicator {
+			border-bottom: var(--color-ritualBlack) 2px solid;
+		}
+		&[data-orientation="vertical"] .trigger-indicator {
+			border-right: var(--color-ritualBlack) 2px solid;
+		}
 	}
 
 	[data-melt-tabs-content] {
