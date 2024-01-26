@@ -1,0 +1,49 @@
+import path from 'path';
+import { BaseTerraform } from './base';
+import { ProviderTypeEnum } from '$types/provider';
+import * as SystemUtils from '$utils/system';
+import * as TerraformUtils from '$utils/terraform';
+import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
+
+export class GCPTerraform extends BaseTerraform {
+	public readonly type = ProviderTypeEnum.GCP;
+
+	/**
+	 * Writes Terraform files to the temporary directory.
+	 *
+	 * @param tempDir The path to the temporary directory.
+	 * @param cluster The GCPCluster to deploy.
+	 * @param serviceAccount The GCPServiceAccount to use for deployment.
+	 */
+	protected override async writeTerraformFiles(
+		tempDir: string,
+		cluster: GCPCluster,
+		serviceAccount: GCPServiceAccount
+	): Promise<void> {
+		const credentials = serviceAccount.creds;
+
+		await TerraformUtils.createTerraformVarsFile(tempDir, {
+			instance_name: cluster.id,
+			node_count: cluster.nodes.length,
+			deploy_router: cluster.deploy_router,
+			ip_allow_http: cluster.ip_allow_http,
+			ip_allow_ssh: cluster.ip_allow_ssh,
+			region: cluster.region,
+			zone: cluster.zone,
+			project: credentials.project_id,
+			machine_type: cluster.machine_type,
+
+			// defaulted
+			service_account_email: credentials.client_email,
+			image: 'ubuntu-2004-focal-v20231101',
+			ip_allow_http_ports: ['4000'],
+			is_production: true,
+		});
+
+		// Write service account credentials to file
+		await SystemUtils.writeJsonToFile(
+			path.join(tempDir, 'terraform-deployer-key.json'),
+			credentials
+		);
+	}
+}

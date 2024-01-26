@@ -1,28 +1,58 @@
-# create-svelte
+# Infernet Cloud
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## Development
 
-## Creating a project
+### Setup Local DB
 
-If you're seeing this, you've probably already done this step. Congrats!
+After [installing EdgeDB](https://www.edgedb.com/install), create a local instance of the database deploy the schema:
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
+# Initialize project (named "infernet_cloud" by default)
+edgedb project init
 
-# create a new project in my-app
-npm create svelte@latest my-app
+# Deploy schema and generate TS files
+npm run edgedb:migrate
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+To access the EdgeDB UI:
 
 ```bash
-npm run dev
+edgedb ui
+```
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+#### Updating schema
+
+Every time you update the schema, you can create and execute an incremental schema migration file with:
+
+```bash
+# Create and run migration
+npm run edgedb:migrate
+```
+
+If you make braking changes, or simply want to start with a fresh database, you can **destroy** the local database:
+
+```bash
+# Destroy local "infernet_cloud" database
+edgedb instance destroy -I "infernet_cloud" --force
+```
+
+### Run source
+
+```bash
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+```
+
+### Before pushing
+
+Make sure to always lint and format your code before pushing:
+
+```bash
+npm run lint
+npm run format
 ```
 
 ## Building
@@ -30,9 +60,8 @@ npm run dev -- --open
 To create a production version of your app:
 
 ```bash
+# Run in production mode
 npm run build
 ```
 
 You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

@@ -5,13 +5,13 @@
 			"name": "SvelteKit (VSCode)",
 			"type": "node-terminal",
 			"request": "launch",
-			"command": "pnpm dev",
+			"command": "pnpm dev"
 		},
 		{
 			"name": "SvelteKit (Browser DevTools)",
 			"type": "node-terminal",
 			"request": "launch",
-			"command": "pnpm dev:debug",
+			"command": "pnpm dev:debug"
 		},
 		{
 			"name": "SvelteKit (Chrome)",
@@ -27,6 +27,6 @@
 			"url": "http://localhost:5173",
 			"webRoot": "${workspaceFolder}",
 			"runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
-		},
-	],
+		}
+	]
 }

@@ -17,8 +17,9 @@ export default {
 		adapter: adapter(),
 		alias: {
 			'$components': './src/components',
-			'$db': './src/server/db',
 			'$schema': './dbschema',
+			'$types': './src/types',
+			'$utils': './src/utils',
 		}
 	}
 }
