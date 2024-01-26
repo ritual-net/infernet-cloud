@@ -188,6 +188,7 @@
 			place-self: start end;
 
 			gap: 0.66em;
+			padding-block: 0.75em;
 
 			& [data-melt-tabs-trigger] {
 				--button-paddingX: 5px;
