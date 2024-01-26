@@ -1,8 +1,8 @@
 import path from 'path';
 import { BaseTerraform } from './base';
 import { ProviderTypeEnum } from '$types/provider';
-import * as SystemUtils from '$utils/system';
-import * as TerraformUtils from '$utils/terraform';
+import * as SystemUtils from '$lib/utils/system';
+import * as TerraformUtils from '$lib/utils/terraform';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 
 export class GCPTerraform extends BaseTerraform {
@@ -22,19 +22,28 @@ export class GCPTerraform extends BaseTerraform {
 	): Promise<void> {
 		const credentials = serviceAccount.creds;
 
+		// Format nodes as a map of node id to node name
+		const nodes = cluster.nodes.reduce((result, item) => {
+			const key = item.id;
+
+			(result as { [key: string]: string })[key] = key;
+
+			return result;
+		}, {});
+
 		await TerraformUtils.createTerraformVarsFile(tempDir, {
-			instance_name: cluster.id,
-			node_count: cluster.nodes.length,
+			nodes,
+			name: cluster.id,
 			deploy_router: cluster.deploy_router,
 			ip_allow_http: cluster.ip_allow_http,
 			ip_allow_ssh: cluster.ip_allow_ssh,
 			region: cluster.region,
 			zone: cluster.zone,
-			project: credentials.project_id,
 			machine_type: cluster.machine_type,
+			project: credentials.project_id,
+			service_account_email: credentials.client_email,
 
 			// defaulted
-			service_account_email: credentials.client_email,
 			image: 'ubuntu-2004-focal-v20231101',
 			ip_allow_http_ports: ['4000'],
 			is_production: true,

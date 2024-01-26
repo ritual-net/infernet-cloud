@@ -1,6 +1,6 @@
 import path from 'path';
-import * as SystemUtils from '$utils/system';
-import * as TerraformUtils from '$utils/terraform';
+import * as SystemUtils from '$lib/utils/system';
+import * as TerraformUtils from '$lib/utils/terraform';
 import type { CommandExecutionError } from '$types/error';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$types/provider';
 

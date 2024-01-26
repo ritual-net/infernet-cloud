@@ -1,4 +1,4 @@
-import { client, e } from '.';
+import { client, e } from '..';
 import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 import type { Queries } from './base';
 import type { TypeSet } from '$schema/edgeql-js/reflection';
@@ -76,5 +76,24 @@ export const AWSQueries: Queries = {
 			})),
 			nodes: nodesQuery,
 		});
+	},
+
+	/**
+	 * Create insert query for single AWSCluster node
+	 * @param clusterId associated with node
+	 * @param node the Edgedb query for inserting an InfernetNode
+	 * @returns insert query
+	 */
+	insertNodeToClusterQuery(
+		clusterId: string,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		nodeQuery: TypeSet<any, any>
+	) {
+		return e.update(e.AWSCluster, () => ({
+			set: {
+				nodes: { '+=': nodeQuery },
+			},
+			filter_single: { id: clusterId },
+		}));
 	},
 };

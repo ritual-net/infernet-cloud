@@ -38,3 +38,32 @@ export const getProviderByClusterId = async (
 
 	return result ? (result.service_account.provider as ProviderTypeEnum) : null;
 };
+
+/**
+ * Generic params for inserting an InfernetNode
+ */
+export const createNodeParams = e.tuple({
+	config: e.tuple({
+		chain_enabled: e.bool,
+		trail_head_blocks: e.int16,
+		rpc_url: e.str,
+		coordinator_address: e.str,
+		max_gas_limit: e.int64,
+		private_key: e.str,
+		forward_stats: e.bool,
+	}),
+	containers: e.array(
+		e.tuple({
+			image: e.str,
+			container_id: e.str,
+			description: e.str,
+			external: e.bool,
+			allowed_addresses: e.array(e.str),
+			allowed_delegate_addresses: e.array(e.str),
+			allowed_ips: e.array(e.str),
+			command: e.str,
+			env: e.json,
+			gpu: e.bool,
+		})
+	),
+});

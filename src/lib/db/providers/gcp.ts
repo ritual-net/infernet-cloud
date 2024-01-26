@@ -1,6 +1,6 @@
 import type { TypeSet } from '$schema/edgeql-js/reflection';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
-import { client, e } from '.';
+import { client, e } from '..';
 import type { Queries } from './base';
 
 export const GCPQueries: Queries = {
@@ -79,5 +79,24 @@ export const GCPQueries: Queries = {
 			})),
 			nodes: nodesQuery,
 		});
+	},
+
+	/**
+	 * Create insert query for single GCPCluster node
+	 * @param clusterId associated with node
+	 * @param node the Edgedb query for inserting an InfernetNode
+	 * @returns insert query
+	 */
+	insertNodeToClusterQuery(
+		clusterId: string,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		nodeQuery: TypeSet<any, any>
+	) {
+		return e.update(e.GCPCluster, () => ({
+			set: {
+				nodes: { '+=': nodeQuery },
+			},
+			filter_single: { id: clusterId },
+		}));
 	},
 };
