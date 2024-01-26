@@ -1,16 +1,16 @@
 import { ProviderTypeEnum } from '$lib/types';
 import { AWSTerraform } from './terraform/aws';
 import { GCPTerraform } from './terraform/gcp';
-import { BaseClient } from './clients/base';
-import { AWSClient } from './clients/aws';
-import { GCPClient } from './clients/gcp';
+import { BaseResourceClient } from './resource_clients/base';
+import { AWSResourceClient } from './resource_clients/aws';
+import { GCPResourceClient } from './resource_clients/gcp';
 
 export const ProviderTerraform = {
 	[ProviderTypeEnum.AWS]: new AWSTerraform(),
 	[ProviderTypeEnum.GCP]: new GCPTerraform()
 };
 
-export const ProviderClient: Record<string, BaseClient> = {
-	[ProviderTypeEnum.AWS]: new AWSClient(),
-	[ProviderTypeEnum.GCP]: new GCPClient()
+export const ProviderClient: Record<string, BaseResourceClient> = {
+	[ProviderTypeEnum.AWS]: new AWSResourceClient(),
+	[ProviderTypeEnum.GCP]: new GCPResourceClient()
 };

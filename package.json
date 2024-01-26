@@ -20,6 +20,7 @@
 	},
 	"devDependencies": {
 		"@edgedb/generate": "^0.4.1",
+		"@google-cloud/compute": "^4.1.0",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",

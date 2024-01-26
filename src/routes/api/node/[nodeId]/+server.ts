@@ -28,6 +28,9 @@ export const GET: RequestHandler = async ({ params }) => {
 		}))
 		.run(client);
 
+	// TODO: provider_id in node object if aws query, if gcp access project and zone as well for node
+	// go through and figure out how to find out what provider a node is on
+	// write function to get cluster given node id
 	return json(result);
 };
 

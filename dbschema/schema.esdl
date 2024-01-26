@@ -100,6 +100,10 @@ module default {
       default := "";
     }
 
+    provider_id: str {
+      default := "";
+    }
+
     multi containers: Container {
       constraint exclusive;
       on source delete delete target;

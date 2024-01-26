@@ -1,11 +1,11 @@
 import { google, compute_v1 } from 'googleapis';
-import { BaseClient } from '$lib/clients/base';
+import { BaseResourceClient } from '$lib/resource_clients/base';
 import type { OAuth2Client } from 'google-auth-library';
 import type { Machine } from '$lib/types';
 import type { GCPServiceAccount } from '$schema/interfaces';
 
-// Google Cloud Provider extension of BaseClient abstract class.
-export class GCPClient extends BaseClient {
+// Google Cloud Provider extension of BaseResourceClient abstract class.
+export class GCPResourceClient extends BaseResourceClient {
 	googleCompute!: compute_v1.Compute;
 	projectId: string = '';
 
@@ -80,10 +80,10 @@ export class GCPClient extends BaseClient {
 	 * @returns A flat array of machine types.
 	 * Example return value: [
 	 *   {
-	 *     "id": "1210048",
+	 *     "id": "1210042",
 	 *     "name": "t2d-standard-48",
 	 *     "description": "48 vCPUs, 192 GB RAM",
-	 *     "link": "https://www.googleapis.com/compute/v1/projects/prod-frug/zones/us-west4-c/machineTypes/t2d-standard-48"
+	 *     "link": "https://www.googleapis.com/compute/v1/projects/project/zones/us-west4-c/machineTypes/t2d-standard-48"
 	 *   }, ...]
 	 */
 	async getMachines(region: string): Promise<Machine[]> {

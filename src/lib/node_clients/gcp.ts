@@ -1,107 +1,83 @@
-// npm install @google-cloud/compute
-// npm install @types/google-cloud__compute
-
 import compute, { InstancesClient } from '@google-cloud/compute';
-import { BaseClient } from "./base";
+import type { BaseNodeClient } from '$lib/node_clients/base';
+import { ProviderTypeEnum, GCPInstanceStatus } from '$lib/types';
+import type { GCPNodeClientArgs, NodeInfo } from '$lib/types';
+import type { GCPServiceAccount } from '$schema/interfaces';
 
-import { ProviderTypeEnum } from './types';
+export class GCPNodeClient implements BaseNodeClient {
+	client: InstancesClient;
 
-/**
- * 
- * NOTE to future self.
- * 
- * In AWS deployments, terraform outputs:
-    nodes = [
-      {
-        "id" = "projects/prod-frug/zones/us-east5-a/instances/infernet-0"
-        "ip" = "34.162.226.196"
-        "name" = "infernet-0"
-      },
-      {
-        "id" = "projects/prod-frug/zones/us-east5-a/instances/infernet-1"
-        "ip" = "34.162.108.60"
-        "name" = "infernet-1"
-      },
-    ]
+	constructor(credentials: GCPServiceAccount['creds']) {
+		this.client = new compute.InstancesClient({
+			projectId: credentials.project_id,
+			credentials: {
+				client_email: credentials.client_email,
+				private_key: credentials.private_key!.split(String.raw`\n`).join('\n')
+			}
+		});
+	}
 
-  Here, we need to extract the "name" field, get the "zone" from the Cluster object,
-  in db, and get the "project" from GCPServiceAccount.creds. Then we can call:
+	/**
+	 * Get the type of provider this client is for.
+	 *
+	 * @returns provider type (gcp)
+	 */
+	type(): ProviderTypeEnum {
+		return ProviderTypeEnum.GCP;
+	}
 
-  GCPClient.startNodes(["infernet-0"], {zone: "us-east5-a", project: "prod-frug"})
-  GCPClient.stopNodes(["infernet-0"], {zone: "us-east5-a", project: "prod-frug"})
-  GCPClient.getNodesStatus(["infernet-0"], {zone: "us-east5-a", project: "prod-frug"})
- */
+	/**
+	 * Start set of GCP infernet nodes.
+	 *
+	 * @param ids - List of node ids to start
+	 * @param args - Additional arguments needed to start nodes (project id, zone)
+	 */
+	async startNodes(ids: string[], args: GCPNodeClientArgs): Promise<void> {
+		for (const id of ids) {
+			await this.client.start({
+				...args,
+				instance: id
+			});
+		}
+	}
 
-interface GoogleCredentials {
-  projectId: string;
-  clientEmail: string;
-  privateKey: string;
+	/**
+	 * Stop set of GCP infernet nodes.
+	 *
+	 * @param ids - List of node ids to stop
+	 * @param args - Additional arguments needed to stop nodes (project id, zone)
+	 */
+	async stopNodes(ids: string[], args: GCPNodeClientArgs): Promise<void> {
+		for (const id of ids) {
+			await this.client.stop({
+				...args,
+				instance: id
+			});
+		}
+	}
+
+	/**
+	 * Get status and ip of set of GCP infernet nodes.
+	 *
+	 * @param ids - List of node ids to get status and ip of
+	 * @param args - Additional arguments needed to get node info (project id, zone)
+	 * @returns Flat array of node info objects
+	 */
+	async getNodesInfo(ids: string[], args: GCPNodeClientArgs): Promise<NodeInfo[]> {
+		const nodesInfo: NodeInfo[] = [];
+		for (const id of ids) {
+			const result = await this.client.get({
+				...args,
+				instance: id
+			});
+			if (result[0].networkInterfaces && result[0].networkInterfaces[0].accessConfigs) {
+				nodesInfo.push({
+					id: id,
+					status: result[0].status as GCPInstanceStatus,
+					ip: result[0].networkInterfaces[0].accessConfigs[0].natIP
+				});
+			}
+		}
+		return nodesInfo;
+	}
 }
-
-export class GCPClient implements BaseClient {
-  client: InstancesClient;
-
-  constructor(credentials: GoogleCredentials) {
-    this.client = new compute.InstancesClient({
-      projectId: credentials.projectId,
-      credentials: {
-        client_email: credentials.clientEmail,
-        private_key: credentials.privateKey,
-      },
-    });
-  }
-
-  type(): ProviderTypeEnum {
-    return ProviderTypeEnum.GCP;
-  }
-
-  async startNodes(ids: string[], args: object): Promise<void> {
-    for (const id of ids) {
-      // Start the instance
-      await this.client.start({
-        ...args,
-        instance: id // I think this might have to be gcp name, not id
-      });
-    }
-  }
-
-  async stopNodes(ids: string[], args: object): Promise<void> {
-    for (const id of ids) {
-      // Stop the instance
-      await this.client.stop({
-        ...args,
-        instance: id // I think this might have to be gcp name, not id
-      });
-    }
-  }
-
-  async getNodesStatus(ids: string[], args: object): Promise<Map<string, any>> {
-    const statusMap = new Map<string, any>();
-    for (const id of ids) {
-      // Get the instance info
-      const result = await this.client.get({
-        ...args,
-        instance: id // I think this might have to be gcp name, not id
-      });
-      statusMap.set(id, result[0].status);
-    }
-    return statusMap;
-  }
-}
-
-
-
-async function main() {
-  const client = new GCPClient({
-    projectId: 'random',
-    clientEmail: 'random',
-    privateKey: 'random'
-  });
-
-  // console.log(await client.startNodes(["infernet-0"], {zone: "us-east5-a", project: "prod-frug"}))
-  // console.log(await client.stopNodes(["infernet-0"], {zone: "us-east5-a", project: "prod-frug"}))
-  // console.log(await client.getNodesStatus(["infernet-0"], {zone: "us-east5-a", project: "prod-frug"}))
-
-  // 'RUNNING', 'TERMINATED', 'STOPPING'
-}
-main();

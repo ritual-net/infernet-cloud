@@ -1,34 +1,37 @@
-import { type ProviderType } from "$types";
+import type { ProviderTypeEnum, NodeInfo } from '$lib/types';
 
-export interface BaseClient {
-  /**
-   * Client object for interacting with provider
-   */
-  client: unknown;
-  /**
-   * Helper utility to map provider to type
-   */
-  type(): ProviderType;
+export interface BaseNodeClient {
+	/**
+	 * Client object for interacting with nodes
+	 */
+	client: unknown;
+	/**
+	 * Helper utility to map client instance to type
+	 */
+	type(): ProviderTypeEnum;
 
-  // getClusterStatus(): Promise<void>;
-  // getClusterConfig(): Promise<void>;
-  // getClusterInfo(): Promise<void>;
+	/**
+	 * Start set of infernet nodes.
+	 *
+	 * @param ids - List of node ids to start
+	 * @param args - Additional arguments needed to start nodes
+	 */
+	startNodes(ids: string[], args: object): Promise<void>;
 
-  // Start node
-  /**
-   *
-    For GCP, extra args should be.
-      - zone
-      - project
-    - id = NAME of the node
-    
-    For AWS, extra no args.
-    - id = ID of the node
-   */
+	/**
+	 * Stop set of infernet nodes.
+	 *
+	 * @param ids - List of node ids to stop
+	 * @param args - Additional arguments needed to stop nodes
+	 */
+	stopNodes(ids: string[], args: object): Promise<void>;
 
-  startNodes(ids: string[], args: object): Promise<void>;
-  // Stop node
-  stopNodes(ids: string[], args: object): Promise<void>;
-  // Get node status
-  getNodesStatus(ids: string[], args: object): Promise<Map<string, any>>;
+	/**
+	 * Get status and ip of set of infernet nodes.
+	 *
+	 * @param ids - List of node ids to get status and ip of
+	 * @param args - Additional arguments needed to get node info
+	 * @returns Flat array of node info objects
+	 */
+	getNodesInfo(ids: string[], args: object): Promise<NodeInfo[]>;
 }

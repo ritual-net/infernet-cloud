@@ -1,9 +1,9 @@
 import type { Machine, ProviderInfo } from '$lib/types';
 
 /**
- * Base abstract class for cloud providers.
+ * Base abstract class for fetching data from cloud providers.
  */
-export abstract class BaseClient {
+export abstract class BaseResourceClient {
 	/**
 	 * Authenticate with the cloud provider.
 	 * This method should be called before any other methods.
