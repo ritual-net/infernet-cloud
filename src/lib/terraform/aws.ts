@@ -1,14 +1,10 @@
-import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
-import { ProviderTypeEnum } from '$lib/types';
-import { TerraformUtils } from '$utils/terraform';
 import { BaseTerraform } from './base';
+import { ProviderTypeEnum } from '$types/provider';
+import * as TerraformUtils from '$utils/terraform';
+import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 
 export class AWSTerraform extends BaseTerraform {
-	/**
-	 * Returns the provider type.
-	 * @returns ProviderTypeEnum
-	 */
-	public readonly type = (): ProviderTypeEnum => ProviderTypeEnum.AWS;
+	public readonly type = ProviderTypeEnum.AWS;
 
 	/**
 	 * Writes Terraform files to the temporary directory.
@@ -39,7 +35,7 @@ export class AWSTerraform extends BaseTerraform {
 			image: 'ami-07b36ea9852e986ad',
 			ip_allow_http_from_port: 4000,
 			ip_allow_http_to_port: 4000,
-			is_production: true
+			is_production: true,
 		});
 	}
 }

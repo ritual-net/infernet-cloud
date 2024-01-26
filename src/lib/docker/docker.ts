@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { DockerHubCreds, DockerHubHeaders, DockerHubRepo, DockerHubOrg } from '$lib/types';
+import type { DockerHubCreds, DockerHubHeaders, DockerHubRepo, DockerHubOrg } from '$types/docker';
 
 const BASEURL = 'https://hub.docker.com/v2';
 
@@ -16,11 +16,11 @@ export class DockerHubClient {
 			const dockerHubToken = response.data.token;
 			this.headers = {
 				repoHeaders: {
-					Authorization: `JWT ${dockerHubToken}`
+					Authorization: `JWT ${dockerHubToken}`,
 				},
 				orgHeaders: {
-					Authorization: `Bearer ${dockerHubToken}`
-				}
+					Authorization: `Bearer ${dockerHubToken}`,
+				},
 			} as DockerHubHeaders;
 		} catch (error) {
 			throw new Error(`Failed to authenticate with DockerHub: ${(error as Error).message}`);

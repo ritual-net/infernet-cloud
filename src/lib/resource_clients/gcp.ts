@@ -1,7 +1,7 @@
 import { google, compute_v1 } from 'googleapis';
 import { BaseResourceClient } from '$lib/resource_clients/base';
 import type { OAuth2Client } from 'google-auth-library';
-import type { Machine } from '$lib/types';
+import type { Machine } from '$types/provider';
 import type { GCPServiceAccount } from '$schema/interfaces';
 
 // Google Cloud Provider extension of BaseResourceClient abstract class.
@@ -20,12 +20,13 @@ export class GCPResourceClient extends BaseResourceClient {
 				credentials: {
 					client_email: creds.client_email,
 					private_key: creds.private_key!.split(String.raw`\n`).join('\n'),
-					project_id: creds.project_id
+					project_id: creds.project_id,
 				},
-				scopes: ['https://www.googleapis.com/auth/cloud-platform']
+				scopes: ['https://www.googleapis.com/auth/cloud-platform'],
 			});
+
 			const authClient = (await authObj.getClient()) as OAuth2Client;
-			this.projectId = creds.project_id!;
+			this.projectId = creds.project_id;
 			this.googleCompute = google.compute({ version: 'v1', auth: authClient });
 		} catch (error) {
 			throw new Error(`Error during GCP authentication: ${(error as Error).message}`);
@@ -40,7 +41,7 @@ export class GCPResourceClient extends BaseResourceClient {
 	 */
 	async getRegions(): Promise<string[]> {
 		const response = await this.googleCompute.regions.list({
-			project: this.projectId
+			project: this.projectId,
 		});
 		return (
 			response.data.items
@@ -60,7 +61,7 @@ export class GCPResourceClient extends BaseResourceClient {
 	 */
 	async getZones(region: string): Promise<string[]> {
 		const response = await this.googleCompute.zones.list({
-			project: this.projectId
+			project: this.projectId,
 		});
 		return (
 			response.data.items
@@ -92,7 +93,7 @@ export class GCPResourceClient extends BaseResourceClient {
 			zones.flatMap(async (zone) => {
 				const response = await this.googleCompute.machineTypes.list({
 					project: this.projectId,
-					zone: zone
+					zone: zone,
 				});
 				return (
 					response.data.items?.map(
@@ -101,7 +102,7 @@ export class GCPResourceClient extends BaseResourceClient {
 								id: machine.id,
 								name: machine.name,
 								description: machine.description,
-								link: machine.selfLink
+								link: machine.selfLink,
 							}) as Machine
 					) ?? []
 				);

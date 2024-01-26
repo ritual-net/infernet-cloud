@@ -1,12 +1,5 @@
 import { client, e } from '$lib/db';
-import { ProviderTypeEnum } from '$lib/types';
-import { AWSQueries } from './aws';
-import { GCPQueries } from './gcp';
-
-export const QueryByProvider = {
-	AWS: new AWSQueries(),
-	GCP: new GCPQueries()
-};
+import { ProviderTypeEnum } from '$types/provider';
 
 /**
  * Get the provider of a service account
@@ -19,7 +12,7 @@ export const getProviderByServiceAccountId = async (
 	const result = await e
 		.select(e.ServiceAccount, () => ({
 			provider: true,
-			filter_single: { id: serviceAccountId }
+			filter_single: { id: serviceAccountId },
 		}))
 		.run(client);
 
@@ -37,9 +30,9 @@ export const getProviderByClusterId = async (
 	const result = await e
 		.select(e.Cluster, () => ({
 			service_account: {
-				provider: true
+				provider: true,
 			},
-			filter_single: { id: clusterId }
+			filter_single: { id: clusterId },
 		}))
 		.run(client);
 

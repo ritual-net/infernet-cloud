@@ -14,6 +14,12 @@ edgedb project init
 npm run edgedb:migrate
 ```
 
+To access the EdgeDB UI:
+
+```bash
+edgedb ui
+```
+
 #### Updating schema
 
 Every time you update the schema, you can create and execute an incremental schema migration file with:

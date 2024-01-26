@@ -1,6 +1,6 @@
 import AWS_SDK from 'aws-sdk';
 import { BaseResourceClient } from '$lib/resource_clients/base';
-import type { Machine } from '$lib/types';
+import type { Machine } from '$types/provider';
 import type { AWSServiceAccount } from '$schema/interfaces';
 
 // Amazon Web Services extension of BaseResourceClient abstract class.
@@ -18,7 +18,7 @@ export class AWSResourceClient extends BaseResourceClient {
 		return new AWS_SDK.EC2({
 			accessKeyId: this.creds.access_key_id,
 			secretAccessKey: this.creds.secret_access_key,
-			region: region
+			region: region,
 		});
 	}
 
@@ -92,7 +92,7 @@ export class AWSResourceClient extends BaseResourceClient {
 						id: offering.InstanceType,
 						name: offering.InstanceType,
 						description: offering.InstanceType,
-						link: 'https://aws.amazon.com/ec2/instance-types/'
+						link: 'https://aws.amazon.com/ec2/instance-types/',
 					}) as Machine
 			) ?? []
 		);
