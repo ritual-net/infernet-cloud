@@ -1,6 +1,6 @@
 import AWS_SDK from 'aws-sdk';
 import { BaseClient } from '$lib/clients/base';
-import type { Machine } from '$lib/types';
+import type { Machine } from '$types/provider';
 import type { AWSServiceAccount } from '$schema/interfaces';
 
 // Amazon Web Services extension of BaseClient abstract class.

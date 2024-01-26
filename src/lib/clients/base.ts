@@ -1,4 +1,4 @@
-import type { Machine, ProviderInfo } from '$lib/types';
+import type { Machine, ProviderInfo } from '$types/provider';
 
 /**
  * Base abstract class for cloud providers.

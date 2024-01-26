@@ -1,7 +1,7 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler, RequestEvent } from '@sveltejs/kit';
 import { DockerHubClient } from '$lib/docker/docker';
-import type { DockerHubCreds } from '$lib/types';
+import type { DockerHubCreds } from '$types/docker';
 
 /**
  * Fetch all images (public or private) owned by user, an organization the user is in,

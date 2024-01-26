@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { DockerHubCreds, DockerHubHeaders, DockerHubRepo, DockerHubOrg } from '$lib/types';
+import type { DockerHubCreds, DockerHubHeaders, DockerHubRepo, DockerHubOrg } from '$types/docker';
 
 const BASEURL = 'https://hub.docker.com/v2';
 
