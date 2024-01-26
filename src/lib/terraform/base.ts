@@ -1,12 +1,8 @@
-import type {
-	ProviderCluster,
-	CommandExecutionError,
-	ProviderServiceAccount,
-	ProviderTypeEnum
-} from '$lib/types';
-import { SystemUtils } from '$utils/system';
-import { TerraformUtils } from '$utils/terraform';
 import path from 'path';
+import * as SystemUtils from '$utils/system';
+import * as TerraformUtils from '$utils/terraform';
+import type { CommandExecutionError } from '$types/error';
+import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$types/provider';
 
 /**
  * Base class for Terraform deployments.
@@ -14,16 +10,11 @@ import path from 'path';
  * @remarks This class is NOT menat to be instantiated directly. Instead, use one of the subclasses.
  * The subclasses are supposed to override the setupTmpDir method to handle provider-specific setup.
  */
-export class BaseTerraform {
+export abstract class BaseTerraform {
 	/**
-	 * Returns the provider type.
-	 * @returns ProviderTypeEnum
-	 *
-	 * @remarks This method is supposed to be overridden by subclasses.
+	 * The provider type.
 	 */
-	public type(): ProviderTypeEnum {
-		throw new Error('Do not instantiate BaseTerraform directly. Use a subclass instead.');
-	}
+	public abstract readonly type: ProviderTypeEnum;
 
 	/**
 	 * Writes Terraform files to the temporary directory.
@@ -34,14 +25,11 @@ export class BaseTerraform {
 	 *
 	 * @remarks This method is supposed to be overridden by subclasses.
 	 */
-	protected async writeTerraformFiles(
+	protected abstract writeTerraformFiles(
 		tempDir: string,
 		cluster: ProviderCluster,
 		serviceAccount: ProviderServiceAccount
-	): Promise<void> {
-		console.log(tempDir, cluster.id, serviceAccount.id);
-		throw new Error('Do not instantiate BaseTerraform directly. Use a subclass instead.');
-	}
+	): Promise<void>;
 
 	/**
 	 * Sets up the temporary directory for Terraform deployment.
@@ -55,10 +43,10 @@ export class BaseTerraform {
 		serviceAccount: ProviderServiceAccount
 	): Promise<string> {
 		// Create fresh temporary directory
-		const tempDir = await TerraformUtils.createTempDir(this.type());
+		const tempDir = await TerraformUtils.createTempDir(this.type);
 
 		// Create terraform files
-		this.writeTerraformFiles(tempDir, cluster, serviceAccount);
+		await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
 
 		// Create node config files under configs/
 		await TerraformUtils.createNodeConfigFiles(tempDir, cluster.nodes);
@@ -80,19 +68,19 @@ export class BaseTerraform {
 	 * Applies the Terraform deployment.
 	 *
 	 * @param cluster The ProviderCluster to deploy.
-	 * @param credentials The ProviderServiceAccount to use.
+	 * @param serviceAccount The ProviderServiceAccount to use.
 	 * @returns An object with the success status, message, and terraform state.
 	 */
 	public async apply(
 		cluster: ProviderCluster,
-		credentials: ProviderServiceAccount
+		serviceAccount: ProviderServiceAccount
 	): Promise<{
 		success: boolean;
-		message?: unknown;
+		message?: string;
 		state?: object;
 	}> {
 		// Set up temporary directory
-		const tempDir = await this.setupTmpDir(cluster, credentials);
+		const tempDir = await this.setupTmpDir(cluster, serviceAccount);
 		if (!tempDir) {
 			return { success: false, message: 'Cluster could not be retrieved.' };
 		}

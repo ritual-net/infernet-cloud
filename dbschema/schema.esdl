@@ -132,21 +132,26 @@ module default {
 
   type GCPCluster extending Cluster {
     required region: str {
+      # e.g. "us-east2"
       readonly := true;
     }
     required zone: str {
+      # e.g. "us-east2-a"
       readonly := true;
     }
     required machine_type: str {
+      # e.g. "e2-standard-2"
       readonly := true;
     }
   }
 
   type AWSCluster extending Cluster {
     required region: str {
+      # e.g. "us-east-2"
       readonly := true;
     }
     required machine_type: str {
+      # e.g. "t2.medium"
       readonly := true;
     }
   }

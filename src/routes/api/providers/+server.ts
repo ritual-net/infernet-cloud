@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
 	// Get all providers
 	const providers = e.CloudProvider.__values__.map((provider) => {
 		return {
-			id: provider
+			id: provider,
 		};
 	});
 	return json(providers);

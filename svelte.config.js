@@ -15,9 +15,9 @@ const config = {
 		alias: {
 			$schema: './dbschema',
 			$types: './src/types',
-			$utils: './src/utils'
-		}
-	}
+			$utils: './src/utils',
+		},
+	},
 };
 
 export default config;

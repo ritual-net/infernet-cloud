@@ -7,7 +7,7 @@ import { GCPClient } from './clients/gcp';
 
 export const ProviderTerraform = {
 	[ProviderTypeEnum.AWS]: new AWSTerraform(),
-	[ProviderTypeEnum.GCP]: new GCPTerraform()
+	[ProviderTypeEnum.GCP]: new GCPTerraform(),
 };
 
 export const ProviderClient: Record<string, BaseClient> = {

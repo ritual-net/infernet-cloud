@@ -1,7 +1,7 @@
-import { client, e } from '$lib/db';
-import { QueryByProvider, getProviderByClusterId } from '../../../../lib/db/queries';
-import { ProviderTerraform } from '$lib';
 import { error, json } from '@sveltejs/kit';
+import { getProviderByClusterId } from '$lib/db/provider';
+import { QueryByProvider, client, e } from '$lib/db';
+import { ProviderTerraform } from '$lib';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
@@ -71,7 +71,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 		// Delete cluster, nodes and containers deleted through cascade
 		await e
 			.delete(e.Cluster, (cluster) => ({
-				filter_single: e.op(cluster.id, '=', e.uuid(id))
+				filter_single: e.op(cluster.id, '=', e.uuid(id)),
 			}))
 			.run(client);
 	} else {
@@ -80,8 +80,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
 			.update(e.Cluster, () => ({
 				filter_single: { id: cluster.id! },
 				set: {
-					tfstate: JSON.stringify(state)
-				}
+					tfstate: JSON.stringify(state),
+				},
 			}))
 			.run(client);
 	}
