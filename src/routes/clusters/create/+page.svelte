@@ -9,7 +9,7 @@
 
 
 	// Data
-	import { createNode } from './schema'
+	import { Node } from './schema'
 
 
 	// Internal state
@@ -72,7 +72,7 @@
 						<section class="row wrap">
 							<div class="column inline">
 								<h3>
-									<label for="region">
+									<label for="serviceAccount">
 										Service Account
 									</label>
 								</h3>
@@ -84,10 +84,10 @@
 								required
 								name="serviceAccount"
 								labelText="Service Account"
-								bind:value={$form.serviceAccount}
+								bind:value={$form.serviceAccountId}
 								items={[
 									{
-										value: 'service-account-1',
+										value: crypto.randomUUID(),
 										label: 'Service Account 1',
 										icon: '',
 									},
@@ -95,7 +95,7 @@
 							/>
 						</section>
 
-						<section class="row wrap">
+						<!-- <section class="row wrap">
 							<div class="column inline">
 								<h3>
 									<label for="region">
@@ -110,7 +110,7 @@
 								required
 								name="region"
 								labelText="Region"
-								bind:value={$form.region}
+								bind:value={$form.cluster.region}
 								items={[
 									{
 										value: 'US-north-1',
@@ -118,25 +118,7 @@
 									},
 								]}
 							/>
-						</section>
-
-						<section class="row wrap">
-							<div class="column inline">
-								<h3 class="row inline wrap">
-									<label for="credentials">
-										Docker Credentials
-									</label>
-
-									<span class="annotation">Optional</span>
-								</h3>
-
-								<p>Upload your config.json for Docker, or sign in with oAuth.</p>
-							</div>
-
-							<button type="button">
-								Sign in with Docker
-							</button>
-						</section>
+						</section> -->
 					</div>
 
 					<footer class="row">
@@ -181,7 +163,7 @@
 							<section class="row">
 								<div class="column inline">
 									<h3>
-										<label for="region">
+										<label for="regchain_enabledion">
 											Onchain?
 										</label>
 									</h3>
@@ -190,28 +172,119 @@
 								</div>
 
 								<Switch
-									bind:checked={node.isOnchain}
+									bind:checked={node.chain_enabled}
 									labelText="Onchain"
 								/>
 							</section>
 
-							<section class="row">
-								<div class="column inline">
-									<h3 class="row inline">
-										<label for="credentials">
-											Docker Credentials
-										</label>
+							<fieldset disabled={!node.chain_enabled} class="card column">
+								<section class="row">
+									<div class="column inline">
+										<h3>
+											<label for="trail_head_blocks">
+												Trail Head Blocks
+											</label>
+										</h3>
 
-										<span class="annotation">Optional</span>
-									</h3>
+										<p>The number of blocks.</p>
+									</div>
 
-									<p>Upload your config.json for Docker, or sign in with oAuth..</p>
-								</div>
+									<input
+										type="number"
+										bind:value={node.trail_head_blocks}
+										{...$constraints.nodes?.trail_head_blocks ?? {}}
+									/>
+								</section>
 
-								<button type="button">
-									Sign in with Docker
-								</button>
-							</section>
+								<section class="row">
+									<div class="column inline">
+										<h3 class="row inline">
+											<label for="rpc_url">
+												RPC URL
+											</label>
+										</h3>
+
+										<p>The Ethereum node RPC URL.</p>
+									</div>
+
+									<input
+										type="url"
+										bind:value={node.rpc_url}
+										{...$constraints.nodes?.rpc_url ?? {}}
+									/>
+								</section>
+
+								<section class="row">
+									<div class="column inline">
+										<h3 class="row inline">
+											<label for="coordinator_address">
+												Coordinator Address
+											</label>
+										</h3>
+
+										<p>The address of the Coordinator smart contract.</p>
+									</div>
+
+									<input
+										type="text"
+										bind:value={node.coordinator_address}
+										{...$constraints.nodes?.coordinator_address ?? {}}
+									/>
+								</section>
+
+								<section class="row">
+									<div class="column inline">
+										<h3>
+											<label for="max_gas_limit">
+												Max Gas Limit
+											</label>
+										</h3>
+
+										<p>The threshold to trigger an Ethereum transaction in gwei.</p>
+									</div>
+
+									<input
+										type="number"
+										bind:value={node.max_gas_limit}
+										{...$constraints.nodes?.max_gas_limit ?? {}}
+									/>
+								</section>
+
+								<section class="row">
+									<div class="column inline">
+										<h3 class="row inline">
+											<label for="private_key">
+												Private Key
+											</label>
+										</h3>
+
+										<p>The private key of the node.</p>
+									</div>
+
+									<input
+										type="text"
+										bind:value={node.private_key}
+										{...$constraints.nodes?.private_key ?? {}}
+									/>
+								</section>
+
+								<section class="row">
+									<div class="column inline">
+										<h3 class="row inline">
+											<label for="private_key">
+												Forward Stats?
+											</label>
+										</h3>
+
+										<p>If checked, register this node to be shown publicly on the Infernet explorer.</p>
+									</div>
+
+									<Switch
+										bind:checked={node.forward_stats}
+										labelText="Forward Stats?"
+									/>
+								</section>
+							</fieldset>
 						</article>
 					{/each}
 
@@ -225,7 +298,7 @@
 						<div class="row">
 							<button
 								type="button"
-								on:click={() => $form.nodes = [...$form.nodes, createNode()]}
+								on:click={() => $form.nodes = [...$form.nodes, Node.parse({})]}
 							>
 								Add Node
 							</button>
