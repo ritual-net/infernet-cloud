@@ -65,6 +65,7 @@
 					<Select
 						required
 						name="serviceAccount"
+						labelText="Service Account"
 						bind:value={$form.serviceAccount}
 						items={[
 							{
@@ -90,6 +91,7 @@
 					<Select
 						required
 						name="region"
+						labelText="Region"
 						bind:value={$form.region}
 						items={[
 							{
