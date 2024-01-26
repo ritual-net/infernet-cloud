@@ -9,6 +9,7 @@
 		label?: string,
 	}[]
 	export let value: TabId | undefined
+	export let labelText: string
 
 	// (View options)
 	export let orientation: 'horizontal' | 'vertical' = 'horizontal'
@@ -48,7 +49,7 @@
 >
 	<div
 		use:melt={$list}
-		aria-label="Manage your account"
+		aria-label={labelText}
 	>
 		{#each items as item (item.id)}
 			<button
