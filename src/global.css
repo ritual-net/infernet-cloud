@@ -25,6 +25,9 @@
 	--button-primary-backgroundColor: var(--color-ritualBlack);
 	--button-primary-textColor: #fff;
 
+	--input-default-backgroundColor: #fbfbfb;
+	--input-default-textColor: var(--textColor);
+
 	--card-default-backgroundColor: #fff;
 	--card-default-textColor: var(--textColor);
 }
@@ -120,6 +123,30 @@ a {
 		gap: 0.75ex;
 	}
 }
+
+input {
+	--input-paddingX: 1em;
+	--input-paddingY: 0.5em;
+	--input-backgroundColor: var(--input-default-backgroundColor);
+	--input-borderColor: var(--borderColor);
+	--input-borderWidth: var(--borderWidth);
+	--input-textColor: var(--input-default-textColor);
+
+	padding: var(--input-paddingY) var(--input-paddingX);
+
+	background-color: var(--input-backgroundColor);
+	box-shadow: 0 0 0 var(--input-borderWidth) var(--input-borderColor);
+	border-radius: 0.33em;
+
+	color: var(--input-textColor);
+
+	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+
+	&.small {
+		font-size: 0.8em;
+	}
+}
+
 
 button {
 	--button-paddingX: 1em;
