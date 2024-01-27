@@ -21,7 +21,7 @@ export class GCPTerraform extends BaseTerraform {
 		serviceAccount: GCPServiceAccount
 	): Promise<void> {
 		const credentials = serviceAccount.creds;
-        credentials.private_key = credentials.private_key!.split(String.raw`\n`).join('\n');
+		credentials.private_key = credentials.private_key!.split(String.raw`\n`).join('\n');
 		await TerraformUtils.createTerraformVarsFile(tempDir, {
 			instance_name: cluster.id,
 			node_count: cluster.nodes.length,

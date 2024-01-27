@@ -11,7 +11,7 @@ import type {
 } from '$schema/interfaces';
 import { GCPNodeClient } from '$lib/node_clients/gcp';
 import { AWSNodeClient } from '$lib/node_clients/aws';
-import type { GCPNodeClientArgs, NodeInfo } from '$types/provider';
+import type { GCPNodeClientArgs } from '$types/provider';
 
 /**
  * Stop a node by its ID.
@@ -28,7 +28,6 @@ export const POST: RequestHandler = async ({ params }) => {
 
 	// TODO: Make sure node belongs to user through auth
 
-	// Get node by id
 	const node = await e
 		.select(e.InfernetNode, () => ({
 			...e.InfernetNode['*'],
@@ -41,22 +40,26 @@ export const POST: RequestHandler = async ({ params }) => {
 
 	const GCPCluster = (await GCPQueries.getClusterByNodeId(id)) as GCPCluster;
 	const AWSCluster = (await AWSQueries.getClusterByNodeId(id)) as AWSCluster;
-	if (GCPCluster !== null) {
-		const creds = (GCPCluster.service_account as GCPServiceAccount).creds;
-		const args = {
-			project: creds.project_id,
-			zone: GCPCluster.zone,
-		} as GCPNodeClientArgs;
-		await new GCPNodeClient(creds).stopNodes([node!.provider_id!], args);
-	} else if (AWSCluster !== null) {
-		const creds = (AWSCluster.service_account as AWSServiceAccount).creds;
-		await new AWSNodeClient(creds).stopNodes([node!.provider_id!]);
-	} else {
-		return error(404, 'Cluster not found for node id.');
+	try {
+		if (GCPCluster !== null) {
+			const creds = ((await GCPQueries.getServiceAccountById(
+				GCPCluster.service_account.id
+			)) as GCPServiceAccount)!.creds;
+			const args = {
+				project: creds.project_id,
+				zone: GCPCluster.zone,
+			} as GCPNodeClientArgs;
+			await new GCPNodeClient(creds).stopNodes([node!.provider_id!], args);
+		} else if (AWSCluster !== null) {
+			const creds = ((await AWSQueries.getServiceAccountById(
+				AWSCluster.service_account.id
+			)) as AWSServiceAccount)!.creds;
+			await new AWSNodeClient(creds).stopNodes([node!.provider_id!]);
+		} else {
+			return error(404, 'Cluster not found for node id.');
+		}
+	} catch (err) {
+		return error(500, `Failed to stop node: ${(err as Error).message}`);
 	}
-	return json(true);
+	return json({ id: id, success: true, message: 'Node stopped successfully' });
 };
-
-// TODO: PATCH
-
-// TODO: DELETE

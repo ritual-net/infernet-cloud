@@ -28,7 +28,6 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	// TODO: Make sure node belongs to user through auth
 
-	// Get node by id
 	const node = await e
 		.select(e.InfernetNode, () => ({
 			...e.InfernetNode['*'],
@@ -38,12 +37,13 @@ export const GET: RequestHandler = async ({ params }) => {
 			filter_single: { id },
 		}))
 		.run(client);
-
 	const GCPCluster = (await GCPQueries.getClusterByNodeId(id)) as GCPCluster;
 	const AWSCluster = (await AWSQueries.getClusterByNodeId(id)) as AWSCluster;
 	let nodeInfo: NodeInfo;
 	if (GCPCluster !== null) {
-		const creds = (GCPCluster.service_account as GCPServiceAccount).creds;
+		const creds = ((await GCPQueries.getServiceAccountById(
+			GCPCluster.service_account.id
+		)) as GCPServiceAccount)!.creds;
 		const args = {
 			project: creds.project_id,
 			zone: GCPCluster.zone,
@@ -51,7 +51,9 @@ export const GET: RequestHandler = async ({ params }) => {
 		nodeInfo = (await new GCPNodeClient(creds).getNodesInfo([node!.provider_id!], args))[0];
 		nodeInfo.node = node;
 	} else if (AWSCluster !== null) {
-		const creds = (AWSCluster.service_account as AWSServiceAccount).creds;
+		const creds = ((await AWSQueries.getServiceAccountById(
+			AWSCluster.service_account.id
+		)) as AWSServiceAccount)!.creds;
 		nodeInfo = (await new AWSNodeClient(creds).getNodesInfo([node!.provider_id!]))[0];
 		nodeInfo.node = node;
 	} else {
