@@ -14,10 +14,10 @@ import { AWSNodeClient } from '$lib/node_clients/aws';
 import type { GCPNodeClientArgs, NodeInfo } from '$types/provider';
 
 /**
- * Retrieve a node by its ID.
+ * Retrieve a node and its status/info by its ID.
  *
  * @param params - The parameters object, expected to contain 'nodeId'.
- * @returns Node object.
+ * @returns NodeInfo object.
  */
 export const GET: RequestHandler = async ({ params }) => {
 	const id = params.nodeId;
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		const args = {
 			project: creds.project_id,
 			zone: GCPCluster.zone,
-		};
+		} as GCPNodeClientArgs;
 		nodeInfo = (await new GCPNodeClient(creds).getNodesInfo([node!.provider_id!], args))[0];
 		nodeInfo.node = node;
 	} else if (AWSCluster !== null) {

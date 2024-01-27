@@ -45,7 +45,6 @@ export const GET: RequestHandler = async ({ request }) => {
  */
 export const POST: RequestHandler = async ({ request }) => {
 	const { serviceAccountId, config, nodes } = await request.json();
-
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
 	}
