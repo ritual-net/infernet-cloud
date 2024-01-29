@@ -1,8 +1,8 @@
 import { client, e } from '$lib/db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { AWSQueries } from '$lib/db/aws';
-import { GCPQueries } from '$lib/db/gcp';
+import { AWSQueries } from '$lib/db/providers/aws';
+import { GCPQueries } from '$lib/db/providers/gcp';
 import type {
 	GCPServiceAccount,
 	AWSServiceAccount,

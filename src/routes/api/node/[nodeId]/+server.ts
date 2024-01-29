@@ -8,12 +8,13 @@ import type {
 	AWSServiceAccount,
 	GCPCluster,
 	AWSCluster,
+	InfernetNode,
 } from '$schema/interfaces';
 import { GCPNodeClient } from '$lib/node_clients/gcp';
 import { AWSNodeClient } from '$lib/node_clients/aws';
-import type { GCPNodeClientArgs, NodeInfo } from '$types/provider';
+import type { GCPNodeClientArgs, NodeInfo, ProviderCluster } from '$types/provider';
 import { clusterAction } from '$lib/terraform/common';
-
+import { NodeClient } from '$lib/index';
 /**
  * Retrieve a node and its status/info by its ID.
  *
@@ -31,35 +32,34 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	const node = await e
 		.select(e.InfernetNode, () => ({
-			...e.InfernetNode['*'],
-			containers: {
-				...e.Container['*'],
-			},
 			filter_single: { id },
 		}))
 		.run(client);
-	const GCPCluster = (await GCPQueries.getClusterByNodeId(id)) as GCPCluster;
-	const AWSCluster = (await AWSQueries.getClusterByNodeId(id)) as AWSCluster;
-	let nodeInfo: NodeInfo;
-	if (GCPCluster !== null) {
-		const creds = ((await GCPQueries.getServiceAccountById(
-			GCPCluster.service_account.id
-		)) as GCPServiceAccount)!.creds;
-		const args = {
-			project: creds.project_id,
-			zone: GCPCluster.zone,
-		} as GCPNodeClientArgs;
-		nodeInfo = (await new GCPNodeClient(creds).getNodesInfo([node!.provider_id!], args))[0];
-		nodeInfo.node = node;
-	} else if (AWSCluster !== null) {
-		const creds = ((await AWSQueries.getServiceAccountById(
-			AWSCluster.service_account.id
-		)) as AWSServiceAccount)!.creds;
-		nodeInfo = (await new AWSNodeClient(creds).getNodesInfo([node!.provider_id!]))[0];
-		nodeInfo.node = node;
-	} else {
-		return error(404, 'Cluster not found for node id.');
+
+	const clusters = await e
+		.select(e.Cluster, () => ({
+			id: true,
+			service_account: {
+				id: true,
+				provider: true,
+				creds: true,
+			},
+			filter: e.op(node, 'in', cluster.nodes),
+		}))
+		.run(client);
+
+	if (clusters.length !== 1) {
+		return error(400, 'Cluster could not be retrieved');
 	}
+    // TODO refactor into common.ts
+
+	const cluster = clusters[0];
+	const provider = cluster.service_account.provider;
+	const creds = cluster.service_account.creds;
+	const nodeClient = new NodeClient[provider].class(creds);
+	const args = NodeClient[provider].args(cluster);
+	const nodeInfo = (await nodeClient.getNodesInfo([node.provider_id], args))[0];
+	nodeInfo.node = node;
 	return json(nodeInfo);
 };
 
