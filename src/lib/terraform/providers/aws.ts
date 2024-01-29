@@ -1,6 +1,6 @@
-import { BaseTerraform } from './base';
+import { BaseTerraform } from '$lib/terraform/base';
 import { ProviderTypeEnum } from '$types/provider';
-import * as TerraformUtils from '$utils/terraform';
+import * as TerraformUtils from '$lib/utils/terraform';
 import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 
 export class AWSTerraform extends BaseTerraform {
@@ -20,16 +20,19 @@ export class AWSTerraform extends BaseTerraform {
 	): Promise<void> {
 		const credentials = serviceAccount.creds;
 
+		// Format nodes as a map of node id to node name
+		const nodes = Object.fromEntries(cluster.nodes.map((node) => [node.id, node.id]));
+
 		await TerraformUtils.createTerraformVarsFile(tempDir, {
-			access_key_id: credentials.access_key_id,
-			secret_access_key: credentials.secret_access_key,
-			region: cluster.region,
+			nodes,
+			name: cluster.id,
 			deploy_router: cluster.deploy_router,
-			node_count: cluster.nodes.length,
-			instance_name: cluster.id,
-			machine_type: cluster.machine_type,
 			ip_allow_http: cluster.ip_allow_http,
 			ip_allow_ssh: cluster.ip_allow_ssh,
+			region: cluster.region,
+			machine_type: cluster.machine_type,
+			access_key_id: credentials.access_key_id,
+			secret_access_key: credentials.secret_access_key,
 
 			// defaulted
 			image: 'ami-07b36ea9852e986ad',

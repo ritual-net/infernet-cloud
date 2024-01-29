@@ -1,5 +1,5 @@
-import type { TypeSet } from '$schema/edgeql-js/reflection';
 import type { ProviderCluster, ProviderServiceAccount } from '$types/provider';
+import type { TypeSet } from '$schema/edgeql-js/reflection';
 
 export interface Queries {
 	/**
@@ -32,4 +32,13 @@ export interface Queries {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	insertClusterQuery: (config: any, serviceAccountId: string, nodesQuery: TypeSet<any, any>) => any;
+
+	/**
+	 * Create insert query for node
+	 * @param clusterId associated with node
+	 * @param node the Edgedb query for inserting an InfernetNode
+	 * @returns insert query
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	insertNodeToClusterQuery: (clusterId: string, node: TypeSet<any, any>) => any;
 }

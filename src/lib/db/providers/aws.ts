@@ -1,36 +1,34 @@
+import { client, e } from '$lib/db';
+import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
+import type { Queries } from '$lib/db/base';
 import type { TypeSet } from '$schema/edgeql-js/reflection';
-import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
-import { client, e } from '.';
-import type { Queries } from './base';
 
-export const GCPQueries: Queries = {
+export const AWSQueries: Queries = {
 	/**
 	 * Get service account data by id
-	 * @param id of GCPServiceAccount
-	 * @returns GCPServiceAccount if found
+	 * @param id of AWSServiceAccount
+	 * @returns AWSServiceAccount if found
 	 */
-	async getServiceAccountById(id: string): Promise<GCPServiceAccount | null> {
-		const result = await e
-			.select(e.GCPServiceAccount, () => ({
-				...e.GCPServiceAccount['*'],
+	async getServiceAccountById(id: string): Promise<AWSServiceAccount | null> {
+		return await e
+			.select(e.AWSServiceAccount, () => ({
+				...e.AWSServiceAccount['*'],
 				user: {
 					...e.User['*'],
 				},
 				filter_single: { id },
 			}))
 			.run(client);
-
-		return result;
 	},
 
 	/**
 	 * Get cluster data by id
-	 * @param id of GCPCluster
-	 * @returns GCPCluster if found
+	 * @param id of AWSCluster
+	 * @returns AWSCluster if found
 	 */
-	async getClusterById(id: string): Promise<GCPCluster | null> {
+	async getClusterById(id: string): Promise<AWSCluster | null> {
 		return await e
-			.select(e.GCPCluster, () => ({
+			.select(e.AWSCluster, () => ({
 				service_account: {
 					id: true,
 					name: true,
@@ -45,7 +43,7 @@ export const GCPQueries: Queries = {
 						...e.Container['*'],
 					},
 				},
-				...e.GCPCluster['*'],
+				...e.AWSCluster['*'],
 				filter_single: { id },
 			}))
 			.run(client);
@@ -54,11 +52,11 @@ export const GCPQueries: Queries = {
 	/**
 	 * Get cluster data by node id
 	 * @param id of node
-	 * @returns GCPCluster if found
+	 * @returns AWSCluster if found
 	 */
-	async getClusterByNodeId(id: string): Promise<GCPCluster | null> {
+	async getClusterByNodeId(id: string): Promise<AWSCluster | null> {
 		const clusters = await e
-			.select(e.GCPCluster, () => ({
+			.select(e.AWSCluster, () => ({
 				service_account: {
 					id: true,
 					name: true,
@@ -73,7 +71,7 @@ export const GCPQueries: Queries = {
 						...e.Container['*'],
 					},
 				},
-				...e.GCPCluster['*'],
+				...e.AWSCluster['*'],
 			}))
 			.run(client);
 		for (const cluster of clusters) {
@@ -85,10 +83,10 @@ export const GCPQueries: Queries = {
 	},
 
 	/**
-	 * Create insert query for GCPCluster
+	 * Create insert query for AWSCluster
 	 * @param config of cluster
-	 * @param serviceAccountId
-	 * @param nodesQuery the Edgedb query for inserting GCPCluster.nodes
+	 * @param serviceAccountId associated with cluster
+	 * @param nodesQuery the Edgedb query for inserting AWSCluster.nodes
 	 * @returns insert query
 	 */
 	insertClusterQuery(
@@ -98,19 +96,37 @@ export const GCPQueries: Queries = {
 			ip_allow_http: string[];
 			ip_allow_ssh: string[];
 			region: string;
-			zone: string;
 			machine_type: string;
 		},
 		serviceAccountId: string,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		nodesQuery: TypeSet<any, any>
 	) {
-		return e.insert(e.GCPCluster, {
+		return e.insert(e.AWSCluster, {
 			...config,
 			service_account: e.select(e.ServiceAccount, () => ({
 				filter_single: { id: serviceAccountId },
 			})),
 			nodes: nodesQuery,
 		});
+	},
+
+	/**
+	 * Create insert query for single AWSCluster node
+	 * @param clusterId associated with node
+	 * @param node the Edgedb query for inserting an InfernetNode
+	 * @returns insert query
+	 */
+	insertNodeToClusterQuery(
+		clusterId: string,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		nodeQuery: TypeSet<any, any>
+	) {
+		return e.update(e.AWSCluster, () => ({
+			set: {
+				nodes: { '+=': nodeQuery },
+			},
+			filter_single: { id: clusterId },
+		}));
 	},
 };

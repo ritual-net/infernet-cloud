@@ -11,6 +11,7 @@ export abstract class BaseResourceClient {
 	 * @param JSON object containing credentials for the cloud provider.
 	 * @returns A promise that resolves when authentication is complete.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	abstract auth(credentials: Record<string, any>): Promise<void>;
 
 	/**
@@ -42,6 +43,7 @@ export abstract class BaseResourceClient {
 	 * @param credentials JSON object containing credentials for the cloud provider.
 	 * @returns Flat array of ProviderInfo objects.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async getProviderInfo(credentials: Record<string, any>): Promise<ProviderInfo[]> {
 		await this.auth(credentials);
 		const regions = await this.getRegions();
