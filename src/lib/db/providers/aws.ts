@@ -114,7 +114,7 @@ export const AWSQueries: Queries = {
 	/**
 	 * Create insert query for single AWSCluster node
 	 * @param clusterId associated with node
-	 * @param node the Edgedb query for inserting an InfernetNode
+	 * @param nodeQuery the Edgedb query for inserting an InfernetNode
 	 * @returns insert query
 	 */
 	insertNodeToClusterQuery(

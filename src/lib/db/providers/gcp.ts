@@ -117,7 +117,7 @@ export const GCPQueries: Queries = {
 	/**
 	 * Create insert query for single GCPCluster node
 	 * @param clusterId associated with node
-	 * @param node the Edgedb query for inserting an InfernetNode
+	 * @param nodeQuery the Edgedb query for inserting an InfernetNode
 	 * @returns insert query
 	 */
 	insertNodeToClusterQuery(
