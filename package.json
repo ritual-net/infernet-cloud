@@ -44,6 +44,9 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"edgedb": "^1.4.1"
+		"aws-sdk": "^2.1540.0",
+		"axios": "^1.6.5",
+		"edgedb": "^1.4.1",
+		"googleapis": "^131.0.0"
 	}
 }
