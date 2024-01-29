@@ -6,7 +6,7 @@ export { e, type $infer };
 
 import { AWSQueries } from './providers/aws';
 import { GCPQueries } from './providers/gcp';
-import type { Queries } from './providers/base';
+import type { Queries } from './base';
 import type { CloudProvider } from '$schema/interfaces';
 
 export const QueryByProvider: { [key in CloudProvider]: Queries } = {

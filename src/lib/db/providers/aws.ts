@@ -1,6 +1,6 @@
-import { client, e } from '..';
+import { client, e } from '$lib/db';
 import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
-import type { Queries } from './base';
+import type { Queries } from '$lib/db/base';
 import type { TypeSet } from '$schema/edgeql-js/reflection';
 
 export const AWSQueries: Queries = {

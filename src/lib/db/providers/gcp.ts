@@ -1,7 +1,7 @@
-import type { TypeSet } from '$schema/edgeql-js/reflection';
+import { client, e } from '$lib/db';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
-import { client, e } from '..';
-import type { Queries } from './base';
+import type { Queries } from '$lib/db/base';
+import type { TypeSet } from '$schema/edgeql-js/reflection';
 
 export const GCPQueries: Queries = {
 	/**

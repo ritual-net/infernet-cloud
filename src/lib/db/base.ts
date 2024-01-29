@@ -1,5 +1,5 @@
-import type { TypeSet } from '$schema/edgeql-js/reflection';
 import type { ProviderCluster, ProviderServiceAccount } from '$types/provider';
+import type { TypeSet } from '$schema/edgeql-js/reflection';
 
 export interface Queries {
 	/**
