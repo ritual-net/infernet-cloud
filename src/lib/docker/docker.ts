@@ -57,14 +57,13 @@ export class DockerHubClient {
 		try {
 			const response = await axios.get(repoUrl, { headers: this.headers.repoHeaders });
 			const repos = response.data.results;
-			const repoNames = await Promise.all(
+			return await Promise.all(
 				repos.map(async (repo: DockerHubRepo) => {
 					const repoName = `${repo.namespace}/${repo.name}`;
 					const tag = await this.getTag(repoName);
 					return tag ? `${repoName}:${tag}` : repoName;
 				})
 			);
-			return repoNames;
 		} catch (error) {
 			throw new Error(
 				`Failed to fetch repositories for owner ${ownerName}: ${(error as Error).message}`
@@ -98,11 +97,17 @@ export class DockerHubClient {
 	 * @returns Flat array of tagged repo ids.
 	 */
 	public async getAllTaggedRepos(creds: DockerHubCreds): Promise<string[]> {
-		await this.authenticate(creds); // initialize headers
-		const userReposPromise = this.getRepos(creds.username);
+		// Authenticate with DockerHub
+		await this.authenticate(creds);
+
+		// Get all orgs that user belongs to
 		const orgs = await this.getOrgs();
-		const orgReposPromises = orgs.map((org) => this.getRepos(org));
-		const allRepos = await Promise.all([userReposPromise, ...orgReposPromises]);
+
+		// Get all repos for user and orgs
+		const allRepos = await Promise.all([
+			this.getRepos(creds.username),
+			...orgs.map((org) => this.getRepos(org)),
+		]);
 		return allRepos.flat();
 	}
 }
