@@ -29,9 +29,9 @@ export interface Queries {
 	/**
 	 * Create insert query for node
 	 * @param clusterId associated with node
-	 * @param node the Edgedb query for inserting an InfernetNode
+	 * @param nodeQuery the Edgedb query for inserting an InfernetNode
 	 * @returns insert query
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	insertNodeToClusterQuery: (clusterId: string, node: TypeSet<any, any>) => any;
+	insertNodeToClusterQuery: (clusterId: string, nodeQuery: TypeSet<any, any>) => any;
 }
