@@ -23,13 +23,7 @@ export class GCPTerraform extends BaseTerraform {
 		const credentials = serviceAccount.creds;
 
 		// Format nodes as a map of node id to node name
-		const nodes = cluster.nodes.reduce((result, item) => {
-			const key = item.id;
-
-			(result as { [key: string]: string })[key] = key;
-
-			return result;
-		}, {});
+		const nodes = Object.fromEntries(cluster.nodes.map((node) => [node.id, node.id]));
 
 		await TerraformUtils.createTerraformVarsFile(tempDir, {
 			nodes,

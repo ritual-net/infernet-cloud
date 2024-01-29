@@ -1,8 +1,8 @@
 import { error, json } from '@sveltejs/kit';
 import { getProviderByClusterId } from '$lib/db/common';
 import { QueryByProvider, client, e } from '$lib/db';
-import { ProviderTerraform } from '$lib';
 import type { RequestHandler } from '@sveltejs/kit';
+import { clusterAction } from '$lib/terraform/common';
 
 /**
  * Retrieve a cluster by its ID.
@@ -71,51 +71,18 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 		return error(500, 'Failed to update cluster');
 	}
 
-	// Get service account
-	const serviceAccountData = await e
-		.select(e.Cluster, () => ({
-			service_account: {
-				id: true,
-				provider: true,
-			},
-			filter_single: { id },
-		}))
-		.run(client);
-
-	if (!serviceAccountData) {
-		return error(500, 'Failed to fetch cluster and credentials from database');
+	// Get provider
+	const provider = await getProviderByClusterId(cluster.id);
+	if (!provider) {
+		return error(400, 'Cluster could not be retrieved');
 	}
 
-	const {
-		service_account: { provider, id: serviceAccountId },
-	} = serviceAccountData;
-
-	// Get cluster and service account data
-	const clusterData = await QueryByProvider[provider].getClusterById(cluster.id);
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(serviceAccountId);
-
-	if (!clusterData || !serviceAccount) {
-		return error(500, 'Failed to fetch cluster and credentials from database');
-	}
-
-	const { success, message, state } = await ProviderTerraform[provider].apply(
-		clusterData,
-		serviceAccount
-	);
-
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: cluster.id },
-			set: {
-				tfstate: JSON.stringify(state),
-			},
-		}))
-		.run(client);
-
-	if (success) {
-		return json({ id: cluster.id, success, message: 'Cluster updated successfully' });
-	}
-	return json({ id: cluster.id, success, message });
+	// Apply Terraform changes to cluster
+	const { error: errorMessage, success } = await clusterAction(cluster.id, provider, 'apply');
+	return json({
+		message: success ? 'Cluster updated successfully' : errorMessage,
+		success,
+	});
 };
 
 /**
@@ -138,22 +105,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
 		return error(400, 'Cluster could not be retrieved');
 	}
 
-	const cluster = await QueryByProvider[provider].getClusterById(id);
-	if (!cluster || !cluster.service_account?.id) {
-		return error(404, 'Cluster not found');
-	}
-
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(
-		cluster.service_account.id
-	);
-	if (!serviceAccount) {
-		return error(404, 'Service Account not found');
-	}
-
-	const { success, message, state } = await ProviderTerraform[provider].destroy(
-		cluster,
-		serviceAccount
-	);
+	// Apply Terraform changes to cluster
+	const { error: errorMessage, success } = await clusterAction(id, provider, 'destroy');
 
 	if (success) {
 		// Delete cluster, nodes and containers deleted through cascade
@@ -162,18 +115,10 @@ export const DELETE: RequestHandler = async ({ params }) => {
 				filter_single: e.op(cluster.id, '=', e.uuid(id)),
 			}))
 			.run(client);
-		return json({ success, message: 'Cluster deleted successfully' });
-	} else {
-		// Update state of cluster in db
-		await e
-			.update(e.Cluster, () => ({
-				filter_single: { id: cluster.id! },
-				set: {
-					tfstate: JSON.stringify(state),
-				},
-			}))
-			.run(client);
-
-		return json({ success, message });
 	}
+
+	return json({
+		message: success ? 'Cluster destroyed successfully' : errorMessage,
+		success,
+	});
 };

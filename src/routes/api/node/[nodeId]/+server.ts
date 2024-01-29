@@ -1,7 +1,7 @@
-import { ProviderTerraform } from '$lib';
-import { QueryByProvider, client, e } from '$lib/db';
+import { client, e } from '$lib/db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
+import { clusterAction } from '$lib/terraform/common';
 
 /**
  * Retrieve a node by its ID.
@@ -48,11 +48,11 @@ export const DELETE: RequestHandler = async ({ params }) => {
 
 	// TODO: Make sure node belongs to user through auth
 
-	// Get cluster id and provider
 	const node = e.select(e.InfernetNode, () => ({
 		filter_single: { id },
 	}));
 
+	// Get cluster id and service account
 	const clusters = await e
 		.with(
 			[node],
@@ -90,33 +90,10 @@ export const DELETE: RequestHandler = async ({ params }) => {
 		)
 		.run(client);
 
-	// Terraform apply
-	// TODO: Perhaps factor out the following, repeated > 3 times
-	const clusterData = await QueryByProvider[provider].getClusterById(cluster.id);
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(
-		cluster.service_account.id
-	);
-	if (!clusterData || !serviceAccount) {
-		return error(404, 'Cluster not found');
-	}
-
-	const { success, message, state } = await ProviderTerraform[provider].apply(
-		clusterData,
-		serviceAccount
-	);
-
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: cluster.id },
-			set: {
-				tfstate: JSON.stringify(state),
-			},
-		}))
-		.run(client);
-
-	if (success) {
-		return json({ id, success, message: 'Node deleted successfully' });
-	}
-
-	return json({ id, success, message });
+	// Apply Terraform changes to cluster
+	const { error: errorMessage, success } = await clusterAction(cluster.id, provider, 'apply');
+	return json({
+		message: success ? 'Node destroyed successfully.' : errorMessage,
+		success,
+	});
 };

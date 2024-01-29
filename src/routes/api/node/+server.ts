@@ -1,8 +1,8 @@
-import { ProviderTerraform } from '$lib';
 import { QueryByProvider, client, e } from '$lib/db';
 import { createNodeParams, getProviderByClusterId } from '$lib/db/common';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
+import { clusterAction } from '$lib/terraform/common';
 
 /**
  * Add a node to a cluster.
@@ -60,37 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		)
 		.run(client, { node });
 
-	// Terraform apply
-	// TODO: Perhaps factor out the following, repeated > 3 times
-	const clusterData = await QueryByProvider[provider].getClusterById(clusterId);
-	if (!clusterData) {
-		return error(404, 'Cluster not found');
-	}
-
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(
-		clusterData.service_account.id
-	);
-
-	if (!serviceAccount) {
-		return error(404, 'Service Account not found');
-	}
-
-	const { success, message, state } = await ProviderTerraform[provider].apply(
-		clusterData,
-		serviceAccount
-	);
-
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: clusterId },
-			set: {
-				tfstate: JSON.stringify(state),
-			},
-		}))
-		.run(client);
-
-	if (success) {
-		return json({ id: clusterId, success, message: 'Node created successfully' });
-	}
-	return json({ id: clusterId, success, message });
+	// Apply Terraform changes to cluster
+	const { error: errorMessage, success } = await clusterAction(clusterId, provider, 'apply');
+	return json({ message: success ? 'Node created successfully' : errorMessage, success });
 };

@@ -1,9 +1,9 @@
 import { error, json } from '@sveltejs/kit';
 import { QueryByProvider, client, e } from '$lib/db';
 import { createNodeParams, getProviderByServiceAccountId } from '$lib/db/common';
-import { ProviderTerraform } from '$lib';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { Cluster } from '$schema/interfaces';
+import { clusterAction } from '$lib/terraform/common';
 
 /**
  * Fetch all clusters for a user.
@@ -104,26 +104,10 @@ export const POST: RequestHandler = async ({ request }) => {
 		return error(500, 'Failed to create cluster');
 	}
 
-	const clusterData = await QueryByProvider[provider].getClusterById(cluster.id);
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(serviceAccountId);
-
-	if (!clusterData || !serviceAccount) {
-		return error(500, 'Failed to fetch cluster and credentials from database');
-	}
-
-	const { success, message, state } = await ProviderTerraform[provider].apply(
-		clusterData,
-		serviceAccount
-	);
-
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: cluster.id },
-			set: {
-				tfstate: JSON.stringify(state),
-			},
-		}))
-		.run(client);
-
-	return json({ id: cluster.id, success, message });
+	// Apply Terraform changes to create cluster
+	const { error: errorMessage, success } = await clusterAction(cluster.id, provider, 'apply');
+	return json({
+		message: success ? 'Cluster created successfully' : errorMessage,
+		success,
+	});
 };
