@@ -84,8 +84,10 @@ export abstract class BaseTerraform {
 				`terraform ${action} -auto-approve`
 			);
 
-			const nodeInfo = TerraformUtils.parseTerraformOutput(result);
-			console.log(nodeInfo);
+			if (action === 'apply') {
+				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
+				console.log(nodeInfo);
+			}
 			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db
 			// TODO: Store nodeInfo in db, probably as a json (aws/gcp agnostic?)
 		} catch (e) {
