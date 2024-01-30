@@ -1,17 +1,8 @@
-import { client, e } from '$lib/db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { AWSQueries } from '$lib/db/providers/aws';
-import { GCPQueries } from '$lib/db/providers/gcp';
-import type {
-	GCPServiceAccount,
-	AWSServiceAccount,
-	GCPCluster,
-	AWSCluster,
-} from '$schema/interfaces';
-import { GCPNodeClient } from '$lib/node_clients/gcp';
-import { AWSNodeClient } from '$lib/node_clients/aws';
-import type { GCPNodeClientArgs } from '$types/provider';
+import { getClusterByNodeId, getNodeById } from '$lib/db/common';
+import type { ProviderTypeEnum, ProviderServiceAccount } from '$types/provider';
+import { NodeClient } from '$lib/index';
 
 /**
  * Start a node by its ID.
@@ -28,38 +19,19 @@ export const POST: RequestHandler = async ({ params }) => {
 
 	// TODO: Make sure node belongs to user through auth
 
-	const node = await e
-		.select(e.InfernetNode, () => ({
-			...e.InfernetNode['*'],
-			containers: {
-				...e.Container['*'],
-			},
-			filter_single: { id },
-		}))
-		.run(client);
-
-	const GCPCluster = (await GCPQueries.getClusterByNodeId(id)) as GCPCluster;
-	const AWSCluster = (await AWSQueries.getClusterByNodeId(id)) as AWSCluster;
-	try {
-		if (GCPCluster !== null) {
-			const creds = ((await GCPQueries.getServiceAccountById(
-				GCPCluster.service_account.id
-			)) as GCPServiceAccount)!.creds;
-			const args = {
-				project: creds.project_id,
-				zone: GCPCluster.zone,
-			} as GCPNodeClientArgs;
-			await new GCPNodeClient(creds).startNodes([node!.provider_id!], args);
-		} else if (AWSCluster !== null) {
-			const creds = ((await AWSQueries.getServiceAccountById(
-				AWSCluster.service_account.id
-			)) as AWSServiceAccount)!.creds;
-			await new AWSNodeClient(creds).startNodes([node!.provider_id!]);
-		} else {
-			return error(404, 'Cluster not found for node id.');
-		}
-	} catch (err) {
-		return error(500, `Failed to start node: ${(err as Error).message}`);
+	const node = await getNodeById(id);
+	const cluster = await getClusterByNodeId(id);
+	if (!node || !cluster) {
+		return error(400, 'Node could not be retrieved or it does not belong to a cluster.');
 	}
+	const provider = cluster.service_account.provider as ProviderTypeEnum;
+	const creds = (cluster.service_account as ProviderServiceAccount).creds;
+	const nodeClient = new NodeClient[provider].class(creds);
+	const args = NodeClient[provider].args(cluster);
+    try {
+        await nodeClient.startNodes([node.provider_id], args);
+    } catch (err) {
+        return error(500, `Error when starting node ${(err as Error).message}`);
+    }
 	return json({ id: id, success: true, message: 'Node started successfully' });
 };

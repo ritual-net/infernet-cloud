@@ -52,39 +52,6 @@ export const GCPQueries: Queries = {
 	},
 
 	/**
-	 * Get cluster data by node id
-	 * @param id of node
-	 * @returns GCPCluster if found
-	 */
-	async getClusterByNodeId(id: string): Promise<GCPCluster | null> {
-		const clusters = await e
-			.select(e.GCPCluster, () => ({
-				service_account: {
-					id: true,
-					name: true,
-					provider: true,
-					user: {
-						...e.User['*'],
-					},
-				},
-				nodes: {
-					...e.InfernetNode['*'],
-					containers: {
-						...e.Container['*'],
-					},
-				},
-				...e.GCPCluster['*'],
-			}))
-			.run(client);
-		for (const cluster of clusters) {
-			if (cluster.nodes.some((node) => node.id === id)) {
-				return cluster;
-			}
-		}
-		return null;
-	},
-
-	/**
 	 * Create insert query for GCPCluster
 	 * @param config of cluster
 	 * @param serviceAccountId

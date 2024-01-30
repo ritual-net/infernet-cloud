@@ -1,5 +1,7 @@
 import { client, e } from '$lib/db';
 import { ProviderTypeEnum } from '$types/provider';
+import type { ProviderCluster } from '$types/provider';
+import type { InfernetNode } from '$schema/interfaces';
 
 /**
  * Get the provider of a service account
@@ -37,6 +39,58 @@ export const getProviderByClusterId = async (
 		.run(client);
 
 	return result ? (result.service_account.provider as ProviderTypeEnum) : null;
+};
+
+/**
+ * Get node data by node id
+ * @param id of node
+ * @returns ProviderCluster if found
+ */
+
+export const getNodeById = async (id: string): Promise<InfernetNode | null> => {
+	const node = await e
+		.select(e.InfernetNode, () => ({
+			...e.InfernetNode['*'],
+			containers: {
+				...e.Container['*'],
+			},
+			filter_single: { id },
+		}))
+		.run(client);
+	return node;
+};
+
+/**
+ * Get cluster data by node id
+ * @param id of node
+ * @returns ProviderCluster if found
+ */
+export const getClusterByNodeId = async (id: string): Promise<ProviderCluster | null> => {
+	const clusters = await e
+		.select(e.Cluster, () => ({
+			service_account: {
+				id: true,
+				name: true,
+				provider: true,
+				user: {
+					...e.User['*'],
+				},
+			},
+			nodes: {
+				...e.InfernetNode['*'],
+				containers: {
+					...e.Container['*'],
+				},
+			},
+			...e.AWSCluster['*'],
+		}))
+		.run(client);
+	for (const cluster of clusters) {
+		if (cluster.nodes.some((node) => node.id === id)) {
+			return cluster;
+		}
+	}
+	return null;
 };
 
 /**

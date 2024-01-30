@@ -1,4 +1,5 @@
 import path from 'path';
+import { client, e } from '$lib/db';
 import * as SystemUtils from '$lib/utils/system';
 import * as TerraformUtils from '$lib/utils/terraform';
 import type { CommandExecutionError } from '$types/error';
@@ -87,6 +88,14 @@ export abstract class BaseTerraform {
 			if (action === 'apply') {
 				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
 				console.log(nodeInfo);
+				for (let obj of nodeInfo) {
+					e.update(e.InfernetNode, () => ({
+						set: {
+							provider_id: obj.id,
+						},
+						filter_single: { id: obj.key },
+					}));
+				}
 			}
 			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db
 			// TODO: Store nodeInfo in db, probably as a json (aws/gcp agnostic?)

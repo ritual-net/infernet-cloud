@@ -6,7 +6,7 @@ import { ProviderTypeEnum } from '$types/provider';
 import { AWSNodeClient } from './node_clients/aws';
 import { GCPNodeClient } from './node_clients/gcp';
 import type { GCPNodeClientArgs } from '$types/provider';
-import type { GCPCluster, AWSCluster } from '$schema/interfaces';
+import type { GCPCluster, AWSCluster, GCPServiceAccount } from '$schema/interfaces';
 
 /**
  * The Terraform provider for each cloud provider. Since these classes are stateless,
@@ -31,12 +31,16 @@ export const ProviderClient = {
  * must be instantiated for each request.
  */
 export const NodeClient = {
-    [ProviderTypeEnum.AWS]: {
-        class: AWSNodeClient,
-        args: (cluster: AWSCluster) => ({})
-    },
-    [ProviderTypeEnum.GCP]: {
-        class: GCPNodeClient,
-        args: (cluster: GCPCluster) => ({project: cluster.service_account.creds.project_id, zone: cluster.zone}) as GCPNodeClientArgs,
-    }
+	[ProviderTypeEnum.AWS]: {
+		class: AWSNodeClient,
+		args: (cluster: AWSCluster) => ({}),
+	},
+	[ProviderTypeEnum.GCP]: {
+		class: GCPNodeClient,
+		args: (cluster: GCPCluster) =>
+			({
+				project: (cluster.service_account as GCPServiceAccount).creds.project_id,
+				zone: cluster.zone,
+			}) as GCPNodeClientArgs,
+	},
 };
