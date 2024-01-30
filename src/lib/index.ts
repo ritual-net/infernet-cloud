@@ -2,7 +2,7 @@ import { AWSClient } from './clients/aws';
 import { AWSTerraform } from './terraform/providers/aws';
 import { GCPClient } from './clients/gcp';
 import { GCPTerraform } from './terraform/providers/gcp';
-import { ProviderTypeEnum } from '$types/provider';
+import { ProviderTypeEnum } from '$/types/provider';
 
 /**
  * The Terraform provider for each cloud provider. Since these classes are stateless,

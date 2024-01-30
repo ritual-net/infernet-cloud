@@ -1,15 +1,15 @@
-import { QueryByProvider, client, e } from '$lib/db';
-import { createNodeParams, getProviderByClusterId } from '$lib/db/common';
 import { error, json } from '@sveltejs/kit';
+import { QueryByProvider, client, e } from '$/lib/db';
+import { createNodeParams, getProviderByClusterId } from '$/lib/db/common';
+import { clusterAction } from '$/lib/terraform/common';
+import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
-import { clusterAction } from '$lib/terraform/common';
 
 /**
  * Add a node to a cluster.
  *
  * @param request - The request object containing 'node' and 'cluster_id'.
- * @returns { id: string, success: boolean, message: string} - Node id, success
- *      boolean, and Terraform message.
+ * @returns - Success boolean and Terraform message.
  */
 export const POST: RequestHandler = async ({ request }) => {
 	// TODO: Make sure cluster belongs to user through auth
@@ -61,6 +61,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		.run(client, { node });
 
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(clusterId, provider, 'apply');
+	const { error: errorMessage, success } = await clusterAction(clusterId, provider, TFAction.Apply);
 	return json({ message: success ? 'Node created successfully' : errorMessage, success });
 };

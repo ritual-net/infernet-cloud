@@ -1,8 +1,8 @@
 import path from 'path';
-import { BaseTerraform } from '$lib/terraform/base';
-import { ProviderTypeEnum } from '$types/provider';
-import * as SystemUtils from '$lib/utils/system';
-import * as TerraformUtils from '$lib/utils/terraform';
+import { BaseTerraform } from '$/lib/terraform/base';
+import { ProviderTypeEnum } from '$/types/provider';
+import * as SystemUtils from '$/lib/utils/system';
+import * as TerraformUtils from '$/lib/utils/terraform';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 
 export class GCPTerraform extends BaseTerraform {

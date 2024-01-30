@@ -1,8 +1,9 @@
-import { client, e } from '$lib/db';
-import { ProviderTypeEnum } from '$types/provider';
+import { client, e } from '$/lib/db';
+import { ProviderTypeEnum } from '$/types/provider';
 
 /**
  * Get the provider of a service account
+ *
  * @param serviceAccountId Service account id
  * @returns Provider type if found
  */
@@ -21,6 +22,7 @@ export const getProviderByServiceAccountId = async (
 
 /**
  * Get the provider of a cluster
+ *
  * @param clusterId Cluster id
  * @returns Provider type if found
  */

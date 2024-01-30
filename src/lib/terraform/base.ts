@@ -1,9 +1,9 @@
 import path from 'path';
-import * as SystemUtils from '$lib/utils/system';
-import * as TerraformUtils from '$lib/utils/terraform';
-import type { CommandExecutionError } from '$types/error';
-import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$types/provider';
-import type { TerraformAction } from '$types/terraform';
+import * as SystemUtils from '$/lib/utils/system';
+import * as TerraformUtils from '$/lib/utils/terraform';
+import type { CommandExecutionError } from '$/types/error';
+import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
+import { TFAction } from '$/types/terraform';
 
 /**
  * Base class for Terraform deployments.
@@ -51,7 +51,7 @@ export abstract class BaseTerraform {
 	public async action(
 		cluster: ProviderCluster,
 		serviceAccount: ProviderServiceAccount,
-		action: TerraformAction
+		action: TFAction
 	) {
 		// Create fresh temporary directory
 		const tempDir = await TerraformUtils.createTempDir(this.type);
@@ -84,7 +84,7 @@ export abstract class BaseTerraform {
 				`terraform ${action} -auto-approve`
 			);
 
-			if (action === 'apply') {
+			if (action === TFAction.Apply) {
 				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
 				console.log(nodeInfo);
 			}
