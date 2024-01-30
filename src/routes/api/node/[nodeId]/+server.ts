@@ -23,24 +23,26 @@ export const GET: RequestHandler = async ({ params }) => {
 	// TODO: Make sure node belongs to user through auth
 
 	const node = await getNodeById(id);
-    if (!node) {
-        return error(400, 'Node could not be retrieved');
-    }
+	if (!node) {
+		return error(400, 'Node could not be retrieved');
+	}
 
 	const provider = await getProviderByNodeId(id);
-    if (!provider) {
-        return error(400, 'Provider could not be retrieved for node.');
-    }
+	if (!provider) {
+		return error(400, 'Provider could not be retrieved for node.');
+	}
 
-    const cluster = await ProviderQueries[provider].getClusterByNodeId(id);
-    if (!cluster) {
-        return error(400, 'Cluster could not be retrieved for node.');
-    }
+	const cluster = await ProviderQueries[provider].getClusterByNodeId(id);
+	if (!cluster) {
+		return error(400, 'Cluster could not be retrieved for node.');
+	}
 
-    const service_account = await ProviderQueries[provider].getServiceAccountById(cluster.service_account.id);
-    if (!service_account) {
-        return error(400, 'Service account could not be retrieved for cluster.');
-    }
+	const service_account = await ProviderQueries[provider].getServiceAccountById(
+		cluster.service_account.id
+	);
+	if (!service_account) {
+		return error(400, 'Service account could not be retrieved for cluster.');
+	}
 
 	const nodeClient = new NodeClient[provider].class(service_account.creds);
 	const args = NodeClient[provider!].args(cluster, service_account);

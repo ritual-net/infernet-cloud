@@ -75,7 +75,7 @@ export const GCPQueries: Queries = {
 				}))
 			)
 			.run(client);
-		return clusters ? clusters[0] as GCPCluster : null;
+		return clusters ? (clusters[0] as GCPCluster) : null;
 	},
 
 	/**

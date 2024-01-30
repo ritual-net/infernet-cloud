@@ -111,7 +111,7 @@ export abstract class BaseTerraform {
 				);
 
 				await query.run(client, {
-					nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) }))
+					nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
 				});
 			}
 			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db

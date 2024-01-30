@@ -84,7 +84,7 @@ export const getProviderByNodeId = async (id: string): Promise<ProviderTypeEnum 
 			}))
 		)
 		.run(client);
-    return clusters ? (clusters[0].service_account.provider as ProviderTypeEnum) : null;
+	return clusters ? (clusters[0].service_account.provider as ProviderTypeEnum) : null;
 };
 
 /**

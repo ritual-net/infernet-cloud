@@ -49,35 +49,35 @@ export const AWSQueries: Queries = {
 			.run(client);
 	},
 
-    /**
-     * Get cluster data by node id
-     * @param id of node
-     * @returns AWSCluster if found
-     */
-    async getClusterByNodeId(id: string): Promise<AWSCluster | null> {
-	const node = e.select(e.InfernetNode, () => ({
-		filter_single: { id },
-	}));
+	/**
+	 * Get cluster data by node id
+	 * @param id of node
+	 * @returns AWSCluster if found
+	 */
+	async getClusterByNodeId(id: string): Promise<AWSCluster | null> {
+		const node = e.select(e.InfernetNode, () => ({
+			filter_single: { id },
+		}));
 
-	// Get cluster id and service account
-	const clusters = await e
-		.with(
-			[node],
-			e.select(e.AWSCluster, (cluster) => ({
-				id: true,
-				service_account: {
+		// Get cluster id and service account
+		const clusters = await e
+			.with(
+				[node],
+				e.select(e.AWSCluster, (cluster) => ({
 					id: true,
-					provider: true,
-				},
-				filter: e.op(node, 'in', cluster.nodes),
-			}))
-		)
-		.run(client);
-    if (clusters.length === 0) {
-        return null;
-    }
-    return clusters[0] as AWSCluster;
-    },
+					service_account: {
+						id: true,
+						provider: true,
+					},
+					filter: e.op(node, 'in', cluster.nodes),
+				}))
+			)
+			.run(client);
+		if (clusters.length === 0) {
+			return null;
+		}
+		return clusters[0] as AWSCluster;
+	},
 
 	/**
 	 * Create insert query for AWSCluster

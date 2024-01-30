@@ -6,7 +6,12 @@ import { ProviderTypeEnum } from '$types/provider';
 import { AWSNodeClient } from './clients/node/aws';
 import { GCPNodeClient } from './clients/node/gcp';
 import type { GCPNodeClientArgs } from '$types/provider';
-import type { GCPCluster, AWSCluster, GCPServiceAccount, AWSServiceAccount } from '$schema/interfaces';
+import type {
+	GCPCluster,
+	AWSCluster,
+	GCPServiceAccount,
+	AWSServiceAccount,
+} from '$schema/interfaces';
 import { GCPQueries } from '$lib/db/providers/gcp';
 import { AWSQueries } from '$lib/db/providers/aws';
 
@@ -51,6 +56,6 @@ export const NodeClient = {
  * DB query functions for each cloud provider. Does not have to be instantiated.
  */
 export const ProviderQueries = {
-    [ProviderTypeEnum.AWS]: AWSQueries,
-    [ProviderTypeEnum.GCP]: GCPQueries,
-}
+	[ProviderTypeEnum.AWS]: AWSQueries,
+	[ProviderTypeEnum.GCP]: GCPQueries,
+};
