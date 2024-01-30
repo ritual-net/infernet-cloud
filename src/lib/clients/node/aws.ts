@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import type { BaseNodeClient } from '$lib/node_clients/base';
+import type { BaseNodeClient } from '$lib/clients/node/base';
 import type { AWSServiceAccount } from '$schema/interfaces';
 import { ProviderTypeEnum, AWSInstanceStatus } from '$types/provider';
 import type { NodeInfo } from '$types/provider';

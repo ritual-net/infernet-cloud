@@ -28,10 +28,10 @@ export const POST: RequestHandler = async ({ params }) => {
 	const creds = (cluster.service_account as ProviderServiceAccount).creds;
 	const nodeClient = new NodeClient[provider].class(creds);
 	const args = NodeClient[provider].args(cluster);
-    try {
-        await nodeClient.startNodes([node.provider_id], args);
-    } catch (err) {
-        return error(500, `Error when starting node ${(err as Error).message}`);
-    }
+	try {
+		await nodeClient.startNodes([node.provider_id], args);
+	} catch (err) {
+		return error(500, `Error when starting node ${(err as Error).message}`);
+	}
 	return json({ id: id, success: true, message: 'Node started successfully' });
 };

@@ -2,6 +2,7 @@ import { client, e } from '$lib/db';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 import type { Queries } from '$lib/db/base';
 import type { TypeSet } from '$schema/edgeql-js/reflection';
+import type { GpuCount } from 'aws-sdk/clients/computeoptimizer';
 
 export const GCPQueries: Queries = {
 	/**
@@ -49,6 +50,32 @@ export const GCPQueries: Queries = {
 				filter_single: { id },
 			}))
 			.run(client);
+	},
+
+	/**
+	 * Get cluster data by node id
+	 * @param id of node
+	 * @returns GCPCluster if found
+	 */
+	async getClusterByNodeId(id: string): Promise<GCPCluster | null> {
+		const node = e.select(e.InfernetNode, () => ({
+			filter_single: { id },
+		}));
+
+		// Get cluster id and service account
+		const clusters = await e
+			.with(
+				[node],
+				e.select(e.GCPCluster, (cluster) => ({
+					...e.GCPCluster['*'],
+					service_account: {
+						...e.ServiceAccount['*'],
+					},
+					filter: e.op(node, 'in', cluster.nodes),
+				}))
+			)
+			.run(client);
+		return clusters ? clusters[0] as GCPCluster : null;
 	},
 
 	/**

@@ -57,40 +57,34 @@ export const getNodeById = async (id: string): Promise<InfernetNode | null> => {
 			filter_single: { id },
 		}))
 		.run(client);
-	return node;
+	return node ? node : null;
 };
 
 /**
- * Get cluster data by node id
+ * Get provider by node id
  * @param id of node
- * @returns ProviderCluster if found
+ * @returns ProviderType if found
  */
-export const getClusterByNodeId = async (id: string): Promise<ProviderCluster | null> => {
+export const getProviderByNodeId = async (id: string): Promise<ProviderTypeEnum | null> => {
+	const node = e.select(e.InfernetNode, () => ({
+		filter_single: { id },
+	}));
+
+	// Get cluster id and service account
 	const clusters = await e
-		.select(e.Cluster, () => ({
-			service_account: {
+		.with(
+			[node],
+			e.select(e.Cluster, (cluster) => ({
 				id: true,
-				name: true,
-				provider: true,
-				user: {
-					...e.User['*'],
+				service_account: {
+					id: true,
+					provider: true,
 				},
-			},
-			nodes: {
-				...e.InfernetNode['*'],
-				containers: {
-					...e.Container['*'],
-				},
-			},
-			...e.AWSCluster['*'],
-		}))
+				filter: e.op(node, 'in', cluster.nodes),
+			}))
+		)
 		.run(client);
-	for (const cluster of clusters) {
-		if (cluster.nodes.some((node) => node.id === id)) {
-			return cluster;
-		}
-	}
-	return null;
+    return clusters ? (clusters[0].service_account.provider as ProviderTypeEnum) : null;
 };
 
 /**

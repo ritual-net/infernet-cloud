@@ -16,6 +16,13 @@ export interface Queries {
 	 */
 	getClusterById: (id: string) => Promise<ProviderCluster | null>;
 
+    /**
+     * Get cluster data by node id
+     * @param id of node
+     * @returns ProviderCluster if found
+     */
+    getClusterByNodeId: (id: string) => Promise<ProviderCluster | null>;
+
 	/**
 	 * Create insert query for cluster
 	 * @param config of cluster

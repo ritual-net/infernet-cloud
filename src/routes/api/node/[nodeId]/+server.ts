@@ -1,10 +1,11 @@
 import { client, e } from '$lib/db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { getClusterByNodeId, getNodeById } from '$lib/db/common';
+import { getProviderByNodeId, getNodeById } from '$lib/db/common';
 import type { ProviderTypeEnum, ProviderServiceAccount } from '$types/provider';
 import { clusterAction } from '$lib/terraform/common';
-import { NodeClient } from '$lib/index';
+import { NodeClient, ProviderQueries } from '$lib/index';
+import { c } from 'tar';
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -22,15 +23,28 @@ export const GET: RequestHandler = async ({ params }) => {
 	// TODO: Make sure node belongs to user through auth
 
 	const node = await getNodeById(id);
-	const cluster = await getClusterByNodeId(id);
-	if (!node || !cluster) {
-		return error(400, 'Node could not be retrieved or it does not belong to a cluster.');
-	}
-	const provider = cluster.service_account.provider as ProviderTypeEnum;
-	const creds = (cluster.service_account as ProviderServiceAccount).creds;
-	const nodeClient = new NodeClient[provider].class(creds);
-	const args = NodeClient[provider].args(cluster);
-	const nodeInfo = (await nodeClient.getNodesInfo([node.provider_id], args))[0];
+    if (!node) {
+        return error(400, 'Node could not be retrieved');
+    }
+
+	const provider = await getProviderByNodeId(id);
+    if (!provider) {
+        return error(400, 'Provider could not be retrieved for node.');
+    }
+
+    const cluster = await ProviderQueries[provider].getClusterByNodeId(id);
+    if (!cluster) {
+        return error(400, 'Cluster could not be retrieved for node.');
+    }
+
+    const service_account = await ProviderQueries[provider].getServiceAccountById(cluster.service_account.id);
+    if (!service_account) {
+        return error(400, 'Service account could not be retrieved for cluster.');
+    }
+
+	const nodeClient = new NodeClient[provider].class(service_account.creds);
+	const args = NodeClient[provider!].args(cluster, service_account);
+	const nodeInfo = (await nodeClient.getNodesInfo([node.provider_id!], args))[0];
 	nodeInfo.node = node;
 	return json(nodeInfo);
 };

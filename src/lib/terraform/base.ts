@@ -5,6 +5,7 @@ import * as TerraformUtils from '$lib/utils/terraform';
 import type { CommandExecutionError } from '$types/error';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$types/provider';
 import type { TerraformAction } from '$types/terraform';
+import { c } from 'tar';
 
 /**
  * Base class for Terraform deployments.
@@ -88,14 +89,30 @@ export abstract class BaseTerraform {
 			if (action === 'apply') {
 				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
 				console.log(nodeInfo);
-				for (let obj of nodeInfo) {
-					e.update(e.InfernetNode, () => ({
-						set: {
-							provider_id: obj.id,
-						},
-						filter_single: { id: obj.key },
-					}));
-				}
+				const query = e.params(
+					{
+						nodeInfo: e.array(
+							e.tuple({
+								id: e.str,
+								key: e.uuid,
+							})
+						),
+					},
+					(params) => {
+						return e.for(e.array_unpack(params.nodeInfo), (obj) => {
+							return e.update(e.InfernetNode, () => ({
+								filter_single: { id: obj.key },
+								set: {
+									provider_id: obj.id,
+								},
+							}));
+						});
+					}
+				);
+
+				await query.run(client, {
+					nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) }))
+				});
 			}
 			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db
 			// TODO: Store nodeInfo in db, probably as a json (aws/gcp agnostic?)

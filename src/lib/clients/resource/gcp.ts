@@ -1,5 +1,5 @@
 import { google, compute_v1 } from 'googleapis';
-import { BaseResourceClient } from '$lib/resource_clients/base';
+import { BaseResourceClient } from '$lib/clients/resource/base';
 import type { OAuth2Client } from 'google-auth-library';
 import type { Machine } from '$types/provider';
 import type { GCPServiceAccount } from '$schema/interfaces';

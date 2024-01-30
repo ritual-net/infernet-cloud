@@ -1,5 +1,5 @@
 import AWS_SDK from 'aws-sdk';
-import { BaseResourceClient } from '$lib/resource_clients/base';
+import { BaseResourceClient } from '$lib/clients/resource/base';
 import type { Machine } from '$types/provider';
 import type { AWSServiceAccount } from '$schema/interfaces';
 
