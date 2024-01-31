@@ -1,6 +1,6 @@
-import { getProviderByNodeId, getNodesByIds } from '$/lib/db/common';
-import { NodeClient, ProviderQueries } from '$/lib/index';
-import { NodeAction, type NodeInfo, type ProviderServiceAccountCreds } from '$/types/provider';
+import { getNodesByIds, getClusterByNodeId } from '$/lib/db/common';
+import { NodeClient } from '$/lib/index';
+import type { NodeInfo } from '$/types/provider';
 
 /**
  * Given an array of InfernetNode ids and an action, complete action via node client.
@@ -19,22 +19,13 @@ export const executeNodeAction = async (
 		throw Error('Nodes could not be retrieved.');
 	}
 
-	const provider = await getProviderByNodeId(nodeIds[0]);
-	if (!provider) {
-		throw Error('Provider could not be retrieved for nodes.');
-	}
-
-	const cluster = await ProviderQueries[provider].getClusterByNodeId(nodeIds[0]);
+	const cluster = await getClusterByNodeId(nodeIds[0]);
 	if (!cluster) {
 		throw Error('Cluster could not be retrieved for nodes.');
 	}
 
-	const service_account = await ProviderQueries[provider].getServiceAccountById(
-		cluster.service_account.id
-	);
-	if (!service_account) {
-		throw Error('Service account could not be retrieved for cluster.');
-	}
+	const service_account = cluster.service_account;
+	const provider = service_account.provider;
 
 	const classArgs = NodeClient[provider].classArgs(cluster, service_account) as [
 		ProviderServiceAccountCreds,

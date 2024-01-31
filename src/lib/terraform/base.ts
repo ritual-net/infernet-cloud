@@ -113,8 +113,6 @@ export abstract class BaseTerraform {
 						nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
 					});
 			}
-			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db
-			// TODO: Store nodeInfo in db, probably as a json (aws/gcp agnostic?)
 		} catch (e) {
 			// We catch the error here so we can store the state file in the db.
 			// Even if the apply fails, the cluster may be partially created / updated,

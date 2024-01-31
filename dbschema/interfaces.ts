@@ -132,9 +132,9 @@ export interface InfernetNode extends std.$Object {
 	forward_stats: boolean;
 	max_gas_limit?: number | null;
 	private_key?: string | null;
+	provider_id?: string | null;
 	rpc_url?: string | null;
 	trail_head_blocks?: number | null;
-	provider_id?: string | null;
 }
 export interface User extends std.$Object {
 	email: string;
