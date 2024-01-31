@@ -30,7 +30,7 @@
 		elements: { trigger, menu, option, group, groupLabel, label },
 		states,
 		helpers: { isSelected },
-	} = createSelect({
+	} = createSelect<Value>({
 		name,
 		required,
 		disabled,
@@ -46,6 +46,7 @@
 	const {
 		open,
 		selectedLabel,
+		selected,
 	} = states
 
 	$: createSync(states).selected(
@@ -65,7 +66,12 @@
 		type="button"
 		use:melt={$trigger}
 		aria-label={labelText}
+		class="row"
 	>
+		{#if $selected?.icon}
+			<img src={$selected.icon} />
+		{/if}
+
 		{$selectedLabel || placeholder}
 	</button>
 
@@ -77,11 +83,12 @@
 				{#if 'items' in item}
 					<div use:melt={$group(String(item.value))}>
 						<div
+							class="row"
 							use:melt={$groupLabel(item.label)}
 						>
 							<div class="row">
 								{#if item.icon}
-									{item.icon}
+									<img src={item.icon} />
 								{/if}
 
 								{item.label}
@@ -93,6 +100,7 @@
 								<!-- TODO: make recursive with Svelte 5 snippets -->
 							{:else}
 								<div
+									class="row"
 									use:melt={$option({
 										value: subitem.value,
 										label: subitem.label,
@@ -101,7 +109,7 @@
 								>
 									<div class="row">
 										{#if subitem.icon}
-											{subitem.icon}
+											<img src={item.icon} />
 										{/if}
 
 										<span>{subitem.label}</span>
@@ -112,6 +120,7 @@
 					</div>
 				{:else}
 					<div
+						class="row"
 						use:melt={$option({
 							value: item.value,
 							label: item.label,
@@ -120,7 +129,7 @@
 					>
 						<div class="row">
 							{#if item.icon}
-								{item.icon}
+								<img src={item.icon} />
 							{/if}
 
 							<span>{item.label}</span>
@@ -218,6 +227,7 @@
 		}
 
 		& > * {
+			gap: 1ch;
 			transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 		}
 
@@ -227,12 +237,18 @@
 			scale: var(--active-scale);
 		}
 
-		&[data-selected] > *:after {
+		&[data-selected]:after {
 			content: '✓';
 			width: 1em;
 			flex: 0 auto;
 			margin-right: -0.25em;
 			text-align: center;
 		}
+	}
+
+	img {
+		width: 1.5em;
+		height: 1.5em;
+		object-fit: contain;
 	}
 </style>
