@@ -42,10 +42,10 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!service_account) {
 		return error(400, 'Service account could not be retrieved for cluster.');
 	}
-
-	const nodeClient = new NodeClient[provider].class(service_account.creds);
-	const args = NodeClient[provider!].args(cluster, service_account);
-	const nodeInfo = (await nodeClient.getNodesInfo([node.provider_id!], args))[0];
+	const classArgs = NodeClient[provider].classArgs(cluster, service_account);
+	const nodeClient = new NodeClient[provider].class(classArgs);
+	const functionArgs = NodeClient[provider].functionArgs(cluster, service_account);
+	const nodeInfo = (await nodeClient.getNodesInfo([node.provider_id!], functionArgs))[0];
 	nodeInfo.node = node;
 	return json(nodeInfo);
 };

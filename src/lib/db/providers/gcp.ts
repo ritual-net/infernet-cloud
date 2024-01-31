@@ -56,12 +56,13 @@ export const GCPQueries: Queries<$GCPCluster> = {
 
 	/**
 	 * Get cluster data by node id
-	 * @param id of node
+	 *
+	 * @param nodeId of node
 	 * @returns GCPCluster if found
 	 */
-	async getClusterByNodeId(id: string): Promise<GCPCluster | null> {
+	async getClusterByNodeId(nodeId: string): Promise<GCPCluster | null> {
 		const node = e.select(e.InfernetNode, () => ({
-			filter_single: { id },
+			filter_single: { id: nodeId },
 		}));
 
 		// Get cluster id and service account

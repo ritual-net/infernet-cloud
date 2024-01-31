@@ -1,19 +1,12 @@
+import { AWSNodeClient } from './clients/node/aws';
 import { AWSResourceClient } from './clients/resource/aws';
 import { AWSTerraform } from './terraform/providers/aws';
+import { AWSQueries } from '$/lib/db/providers/aws';
+import { GCPNodeClient } from './clients/node/gcp';
 import { GCPResourceClient } from './clients/resource/gcp';
 import { GCPTerraform } from './terraform/providers/gcp';
-import { ProviderTypeEnum } from '$/types/provider';
-import { AWSNodeClient } from './clients/node/aws';
-import { GCPNodeClient } from './clients/node/gcp';
-import type { GCPNodeClientArgs } from '$/types/provider';
-import type {
-	GCPCluster,
-	AWSCluster,
-	GCPServiceAccount,
-	AWSServiceAccount,
-} from '$schema/interfaces';
 import { GCPQueries } from '$/lib/db/providers/gcp';
-import { AWSQueries } from '$/lib/db/providers/aws';
+import { ProviderTypeEnum } from '$/types/provider';
 
 /**
  * The Terraform provider for each cloud provider. Since these classes are stateless,
@@ -40,15 +33,21 @@ export const ProviderClient = {
 export const NodeClient = {
 	[ProviderTypeEnum.AWS]: {
 		class: AWSNodeClient,
-		args: (_1: AWSCluster, _2: AWSServiceAccount) => ({}),
+		classArgs: (cluster, service_account) => ({
+			credentials: service_account.creds,
+			region: cluster.region,
+		}),
+		functionArgs: (_1, _2) => ({}),
 	},
 	[ProviderTypeEnum.GCP]: {
 		class: GCPNodeClient,
-		args: (cluster: GCPCluster, service_account: GCPServiceAccount) =>
-			({
-				project: service_account.creds.project_id,
-				zone: cluster.zone,
-			}) as GCPNodeClientArgs,
+		classArgs: (_, service_account) => ({
+			credentials: service_account.creds,
+		}),
+		functionArgs: (cluster, service_account) => ({
+			project: service_account.creds.project_id,
+			zone: cluster.zone,
+		}),
 	},
 };
 

@@ -54,12 +54,13 @@ export const AWSQueries: Queries<$AWSCluster> = {
 
 	/**
 	 * Get cluster data by node id
-	 * @param id of node
+	 *
+	 * @param nodeId of node
 	 * @returns AWSCluster if found
 	 */
-	async getClusterByNodeId(id: string): Promise<AWSCluster | null> {
+	async getClusterByNodeId(nodeId: string): Promise<AWSCluster | null> {
 		const node = e.select(e.InfernetNode, () => ({
-			filter_single: { id },
+			filter_single: { id: nodeId },
 		}));
 
 		// Get cluster id and service account
@@ -67,19 +68,15 @@ export const AWSQueries: Queries<$AWSCluster> = {
 			.with(
 				[node],
 				e.select(e.AWSCluster, (cluster) => ({
-					id: true,
+					...e.AWSCluster['*'],
 					service_account: {
-						id: true,
-						provider: true,
+						...e.ServiceAccount['*'],
 					},
 					filter: e.op(node, 'in', cluster.nodes),
 				}))
 			)
 			.run(client);
-		if (clusters.length === 0) {
-			return null;
-		}
-		return clusters[0] as AWSCluster;
+		return clusters ? (clusters[0] as AWSCluster) : null;
 	},
 
 	/**

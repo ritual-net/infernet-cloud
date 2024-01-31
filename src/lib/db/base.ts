@@ -21,10 +21,11 @@ export interface Queries<T extends BaseType> {
 
 	/**
 	 * Get cluster data by node id
-	 * @param id of node
+	 *
+	 * @param nodeId of node
 	 * @returns ProviderCluster if found
 	 */
-	getClusterByNodeId: (id: string) => Promise<ProviderCluster | null>;
+	getClusterByNodeId: (nodeId: string) => Promise<ProviderCluster | null>;
 
 	/**
 	 * Create insert query for cluster

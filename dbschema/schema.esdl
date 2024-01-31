@@ -100,9 +100,7 @@ module default {
       default := "";
     }
 
-    provider_id: str {
-      default := "";
-    }
+    provider_id: str;
 
     multi containers: Container {
       constraint exclusive;

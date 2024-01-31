@@ -1,17 +1,17 @@
 import AWS from 'aws-sdk';
-import type { BaseNodeClient } from '$/lib/clients/node/base';
-import type { AWSServiceAccount } from '$schema/interfaces';
 import { ProviderTypeEnum, AWSInstanceStatus } from '$/types/provider';
+import type { AWSServiceAccount } from '$schema/interfaces';
+import type { BaseNodeClient } from '$/lib/clients/node/base';
 import type { NodeInfo } from '$/types/provider';
 
 export class AWSNodeClient implements BaseNodeClient {
 	client: AWS.EC2;
 
-	constructor(credentials: AWSServiceAccount['creds']) {
+	constructor(credentials: AWSServiceAccount['creds'], region: string) {
 		this.client = new AWS.EC2({
 			accessKeyId: credentials.access_key_id,
 			secretAccessKey: credentials.secret_access_key,
-			region: 'us-east-1',
+			region: region,
 		});
 	}
 
