@@ -33,17 +33,12 @@ export const ProviderClient = {
 export const NodeClient = {
 	[ProviderTypeEnum.AWS]: {
 		class: AWSNodeClient,
-		classArgs: (cluster, service_account) => [
-			service_account.creds,
-			cluster.region,
-        ],
+		classArgs: (cluster, service_account) => [service_account.creds, cluster.region],
 		functionArgs: (_1, _2) => ({}),
 	},
 	[ProviderTypeEnum.GCP]: {
 		class: GCPNodeClient,
-		classArgs: (_, service_account) => [
-			service_account.creds,
-        ],
+		classArgs: (_, service_account) => [service_account.creds],
 		functionArgs: (cluster, service_account) => ({
 			project: service_account.creds.project_id,
 			zone: cluster.zone,

@@ -14,9 +14,9 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
-    try {
-        return json(await executeNodeAction([id], 'stop'));
-    } catch (e) {
-        return error(400, (e as Error).message);
-    }
+	try {
+		return json(await executeNodeAction([id], 'stop'));
+	} catch (e) {
+		return error(400, (e as Error).message);
+	}
 };

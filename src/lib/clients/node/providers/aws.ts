@@ -8,7 +8,7 @@ export class AWSNodeClient implements BaseNodeClient {
 	client: AWS.EC2;
 
 	constructor(credentials: AWSServiceAccount['creds'], region: string) {
-        console.log(region)
+		console.log(region);
 		this.client = new AWS.EC2({
 			accessKeyId: credentials.access_key_id,
 			secretAccessKey: credentials.secret_access_key,
@@ -58,23 +58,23 @@ export class AWSNodeClient implements BaseNodeClient {
 	 * @returns Flat array of node info objects
 	 */
 	async getNodesInfo(ids: string[]): Promise<NodeInfo[]> {
-        const params: AWS.EC2.DescribeInstancesRequest = {
-            InstanceIds: ids,
-        };
-    
-        const result = await this.client.describeInstances(params).promise();
-    
-        const nodesInfo: NodeInfo[] = [];
-        result.Reservations?.forEach((reservation) => {
-            reservation.Instances?.forEach((instance) => {
-                nodesInfo.push({
-                    id: instance.InstanceId ?? undefined,
-                    status: instance.State?.Name ?? undefined,
-                    ip: instance.PublicIpAddress ?? undefined,
-                    node: undefined,
-                });
-            });
-        });
-        return nodesInfo;
-    }
+		const params: AWS.EC2.DescribeInstancesRequest = {
+			InstanceIds: ids,
+		};
+
+		const result = await this.client.describeInstances(params).promise();
+
+		const nodesInfo: NodeInfo[] = [];
+		result.Reservations?.forEach((reservation) => {
+			reservation.Instances?.forEach((instance) => {
+				nodesInfo.push({
+					id: instance.InstanceId ?? undefined,
+					status: instance.State?.Name ?? undefined,
+					ip: instance.PublicIpAddress ?? undefined,
+					node: undefined,
+				});
+			});
+		});
+		return nodesInfo;
+	}
 }

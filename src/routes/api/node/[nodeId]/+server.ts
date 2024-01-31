@@ -18,12 +18,12 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
-    try {
-        const nodeInfo = (await executeNodeAction([id], 'info') as NodeInfo[])[0];
-        return json(nodeInfo);
-    } catch (e) {
-        return error(400, (e as Error).message);
-    }
+	try {
+		const nodeInfo = ((await executeNodeAction([id], 'info')) as NodeInfo[])[0];
+		return json(nodeInfo);
+	} catch (e) {
+		return error(400, (e as Error).message);
+	}
 };
 
 /**
