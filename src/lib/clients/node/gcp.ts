@@ -1,7 +1,7 @@
 import compute, { InstancesClient } from '@google-cloud/compute';
-import type { BaseNodeClient } from '$lib/clients/node/base';
-import { ProviderTypeEnum, GCPInstanceStatus } from '$types/provider';
-import type { GCPNodeClientArgs, NodeInfo } from '$types/provider';
+import type { BaseNodeClient } from '$/lib/clients/node/base';
+import { ProviderTypeEnum, GCPInstanceStatus } from '$/types/provider';
+import type { GCPNodeClientArgs, NodeInfo } from '$/types/provider';
 import type { GCPServiceAccount } from '$schema/interfaces';
 
 export class GCPNodeClient implements BaseNodeClient {

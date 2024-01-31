@@ -2,7 +2,7 @@ import { AWSResourceClient } from './clients/resource/aws';
 import { AWSTerraform } from './terraform/providers/aws';
 import { GCPResourceClient } from './clients/resource/gcp';
 import { GCPTerraform } from './terraform/providers/gcp';
-import { ProviderTypeEnum } from '$types/provider';
+import { ProviderTypeEnum } from '$/types/provider';
 import { AWSNodeClient } from './clients/node/aws';
 import { GCPNodeClient } from './clients/node/gcp';
 import type { GCPNodeClientArgs } from '$/types/provider';
