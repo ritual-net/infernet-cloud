@@ -8,7 +8,6 @@ export class AWSNodeClient implements BaseNodeClient {
 	client: AWS.EC2;
 
 	constructor(credentials: AWSServiceAccount['creds'], region: string) {
-		console.log(region);
 		this.client = new AWS.EC2({
 			accessKeyId: credentials.access_key_id,
 			secretAccessKey: credentials.secret_access_key,

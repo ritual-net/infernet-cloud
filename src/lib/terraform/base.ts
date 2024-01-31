@@ -4,7 +4,7 @@ import * as SystemUtils from '$/lib/utils/system';
 import * as TerraformUtils from '$/lib/utils/terraform';
 import type { CommandExecutionError } from '$/types/error';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
-import type { TFAction } from '$/types/terraform';
+import { TFAction } from '$/types/terraform';
 
 /**
  * Base class for Terraform deployments.
@@ -120,7 +120,7 @@ export abstract class BaseTerraform {
 			// Even if the apply fails, the cluster may be partially created / updated,
 			// so we want the state file to reflect that.
 			const commandError = e as CommandExecutionError;
-			error = commandError.stderr ?? commandError.error ?? 'Unexpected error occured.';
+			error = commandError.stderr ?? commandError.error ?? commandError;
 			console.error(error);
 		}
 

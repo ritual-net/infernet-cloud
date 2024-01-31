@@ -8,7 +8,7 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns success boolean and message.
  */
-export const GET: RequestHandler = async ({ params }) => {
+export const POST: RequestHandler = async ({ params }) => {
 	const id = params.nodeId;
 
 	if (!id) {
