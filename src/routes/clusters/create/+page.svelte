@@ -1,5 +1,7 @@
 <script lang="ts">
 	// Types/constants
+	import { providers } from '$types/provider'
+
 	enum Fieldset {
 		CreateCluster,
 		AddNodes,
@@ -93,6 +95,7 @@
 								labelText="Service Account"
 								bind:value={$form.serviceAccountId}
 								items={serviceAccounts.map(serviceAccount => ({
+									icon: providers[serviceAccount.type].icon,
 									value: serviceAccount.id,
 									label: serviceAccount.name,
 								}))}
