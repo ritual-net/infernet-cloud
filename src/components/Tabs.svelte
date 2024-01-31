@@ -146,6 +146,7 @@
 
 	[data-melt-tabs-trigger] {
 		position: relative;
+		box-shadow: none;
 
 		& .trigger-indicator {
 			position: absolute;
@@ -181,23 +182,24 @@
 
 	[data-melt-tabs][data-layout="tooltip-dots"] {
 		grid:
-			[tabs-list-start tabs-content] '.' [tabs-list-end tabs-content-end]
+			'.' 1fr
+			/ [tabs-list-start tabs-content] 1fr [tabs-list-end tabs-content-end]
 		;
 
-		& [data-melt-tabs-list] {
+		& > [data-melt-tabs-list] {
 			place-self: start end;
 
 			gap: 0.66em;
 			padding-block: 0.75em;
 
-			& [data-melt-tabs-trigger] {
+			& > * > [data-melt-tabs-trigger] {
 				--button-paddingX: 5px;
 				--button-paddingY: 5px;
 				--button-backgroundColor: hsl(from var(--textColor) h s l / 0.16);
 				--button-borderWidth: 0;
 				--button-cornerRadius: 100%;
 
-				& .trigger-indicator {
+				& > .trigger-indicator {
 					background-color: var(--textColor);
 					border: none;
 					border-radius: inherit;
