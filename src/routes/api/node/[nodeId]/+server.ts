@@ -3,8 +3,8 @@ import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
 import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
-import { getProviderByNodeId, getNodeById } from '$/lib/db/common';
-import { NodeClient, ProviderQueries } from '$/lib/index';
+import { executeNodeAction } from '$/lib/clients/node/common';
+import type { NodeInfo } from '$/types/provider';
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -18,36 +18,12 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
-
-	// TODO: Make sure node belongs to user through auth
-
-	const node = await getNodeById(id);
-	if (!node) {
-		return error(400, 'Node could not be retrieved');
-	}
-
-	const provider = await getProviderByNodeId(id);
-	if (!provider) {
-		return error(400, 'Provider could not be retrieved for node.');
-	}
-
-	const cluster = await ProviderQueries[provider].getClusterByNodeId(id);
-	if (!cluster) {
-		return error(400, 'Cluster could not be retrieved for node.');
-	}
-
-	const service_account = await ProviderQueries[provider].getServiceAccountById(
-		cluster.service_account.id
-	);
-	if (!service_account) {
-		return error(400, 'Service account could not be retrieved for cluster.');
-	}
-	const classArgs = NodeClient[provider].classArgs(cluster, service_account);
-	const nodeClient = new NodeClient[provider].class(classArgs);
-	const functionArgs = NodeClient[provider].functionArgs(cluster, service_account);
-	const nodeInfo = (await nodeClient.getNodesInfo([node.provider_id!], functionArgs))[0];
-	nodeInfo.node = node;
-	return json(nodeInfo);
+    try {
+        const nodeInfo = (await executeNodeAction([id], 'info') as NodeInfo[])[0];
+        return json(nodeInfo);
+    } catch (e) {
+        return error(400, (e as Error).message);
+    }
 };
 
 /**

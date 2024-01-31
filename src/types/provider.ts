@@ -38,29 +38,9 @@ export type GCPNodeClientArgs = {
 	zone: string;
 };
 
-export enum GCPInstanceStatus {
-	PROVISIONING = 'PROVISIONING',
-	STAGING = 'STAGING',
-	RUNNING = 'RUNNING',
-	STOPPING = 'STOPPING',
-	STOPPED = 'STOPPED',
-	SUSPENDING = 'SUSPENDING',
-	SUSPENDED = 'SUSPENDED',
-	TERMINATED = 'TERMINATED',
-}
-
-export enum AWSInstanceStatus {
-	PENDING = 'pending',
-	RUNNING = 'running',
-	SHUTTING_DOWN = 'shutting-down',
-	TERMINATED = 'terminated',
-	STOPPING = 'stopping',
-	STOPPED = 'stopped',
-}
-
 export type NodeInfo = {
-	id: string;
-	status: AWSInstanceStatus | GCPInstanceStatus;
-	ip: string | null | undefined;
-	node: InfernetNode | null | undefined;
+	id: string | undefined;
+	status: string | undefined;
+	ip: string | undefined;
+	node: InfernetNode | undefined;
 };

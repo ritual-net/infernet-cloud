@@ -1,5 +1,5 @@
 import compute, { InstancesClient } from '@google-cloud/compute';
-import { ProviderTypeEnum, GCPInstanceStatus } from '$/types/provider';
+import { ProviderTypeEnum } from '$/types/provider';
 import type { BaseNodeClient } from '$/lib/clients/node/base';
 import type { GCPServiceAccount } from '$schema/interfaces';
 import type { GCPNodeClientArgs, NodeInfo } from '$/types/provider';
@@ -64,21 +64,17 @@ export class GCPNodeClient implements BaseNodeClient {
 	 * @returns Flat array of node info objects
 	 */
 	async getNodesInfo(ids: string[], args: GCPNodeClientArgs): Promise<NodeInfo[]> {
-		const nodesInfo: NodeInfo[] = [];
-		for (const id of ids) {
-			const result = await this.client.get({
-				...args,
-				instance: id,
-			});
-			if (result[0].networkInterfaces && result[0].networkInterfaces[0].accessConfigs) {
-				nodesInfo.push({
-					id: id,
-					status: result[0].status as GCPInstanceStatus,
-					ip: result[0].networkInterfaces[0].accessConfigs[0].natIP,
-					node: null,
-				});
-			}
-		}
-		return nodesInfo;
-	}
+        const nodesInfoPromises = ids.map(id =>
+            this.client.get({
+                ...args,
+                instance: id,
+            }).then(result => ({
+                id: id ?? undefined,
+                status: result[0]?.status ?? undefined,
+                ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
+                node: undefined,
+            }))
+        );
+        return Promise.all(nodesInfoPromises);
+    }
 }
