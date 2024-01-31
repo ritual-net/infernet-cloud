@@ -1,4 +1,4 @@
-import { getProviderByNodeId, getNodesByIds} from '$/lib/db/common';
+import { getProviderByNodeId, getNodesByIds } from '$/lib/db/common';
 import { NodeClient, ProviderQueries } from '$/lib/index';
 import { NodeAction, type NodeInfo, type ProviderServiceAccountCreds } from '$/types/provider';
 
@@ -15,9 +15,9 @@ export const executeNodeAction = async (
 	action: string
 ): Promise<NodeInfo[] | Object> => {
 	const nodes = await getNodesByIds(nodeIds);
-    if (!nodes) {
-        throw Error('Nodes could not be retrieved.');
-    }
+	if (!nodes) {
+		throw Error('Nodes could not be retrieved.');
+	}
 
 	const provider = await getProviderByNodeId(nodeIds[0]);
 	if (!provider) {

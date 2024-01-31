@@ -42,7 +42,7 @@ export type NodeInfo = {
 };
 
 export enum NodeAction {
-    start = 'start',
-    stop = 'stop',
-    info = 'info'
+	start = 'start',
+	stop = 'stop',
+	info = 'info',
 }
