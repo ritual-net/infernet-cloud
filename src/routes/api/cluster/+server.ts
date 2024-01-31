@@ -1,7 +1,7 @@
 import { error, json } from '@sveltejs/kit';
-import { QueryByProvider, client, e } from '$/lib/db';
-import { getServiceAccountById } from '$/lib/db/common';
-import { createNodeParams, insertNodeQuery } from '$/lib/db/queries';
+import { ClusterTypeByProvider, client, e } from '$/lib/db';
+import { getServiceAccountById } from '$/lib/db/queries';
+import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
 import { clusterAction } from '$/lib/terraform/common';
 import { TFAction } from '$/types/terraform';
 import type { Cluster } from '$schema/interfaces';
@@ -68,14 +68,15 @@ export const POST: RequestHandler = async ({ request }) => {
 			{
 				nodes: e.array(createNodeParams),
 			},
-			({ nodes }) => {
+			({ nodes }) =>
 				// Choose cluster type based on provider
-				return QueryByProvider[serviceAccount.provider].insertClusterQuery(
-					config,
-					serviceAccountId,
-					e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node))
-				);
-			}
+				e.insert(ClusterTypeByProvider[serviceAccount.provider], {
+					...config,
+					service_account: e.select(e.ServiceAccount, () => ({
+						filter_single: { id: serviceAccountId },
+					})),
+					nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
+				})
 		)
 		.run(client, { nodes })) as Cluster;
 

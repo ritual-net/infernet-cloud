@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { getClusterById } from '$/lib/db/common';
+import { getClusterById } from '$/lib/db/queries';
 import { client, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
 import { TFAction } from '$/types/terraform';

@@ -1,12 +1,10 @@
-import { error, json } from '@sveltejs/kit';
+import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { client, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
 import { executeNodeAction } from '$/lib/clients/node/common';
-import { getClusterByNodeId } from '$/lib/db/common';
-import { NodeAction } from '$/types/provider';
+import { getClusterByNodeId } from '$/lib/db/queries';
+import { NodeAction, type NodeInfo } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
-import type { NodeInfo } from '$/types/provider';
-import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve a node and its status/info by its ID.

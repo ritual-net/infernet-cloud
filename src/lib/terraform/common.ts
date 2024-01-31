@@ -1,7 +1,7 @@
 import { ProviderTerraform } from '$/lib';
 import { client, e } from '$/lib/db';
 import type { TFAction } from '$/types/terraform';
-import { getClusterById } from '../db/common';
+import { getClusterById } from '../db/queries';
 import type { ProviderServiceAccount } from '$/types/provider';
 
 /**

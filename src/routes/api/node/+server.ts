@@ -1,7 +1,7 @@
 import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
-import { getClusterById } from '$/lib/db/common';
-import { createNodeParams, insertNodeQuery } from '$/lib/db/queries';
+import { getClusterById } from '$/lib/db/queries';
+import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
 import { client, e } from '$/lib/db';
 import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';

@@ -1,87 +1,86 @@
-import { e } from '.';
-import type { $expr_ForVar } from '$schema/edgeql-js/for';
-import type { $expr_Param } from '$schema/edgeql-js/params';
+import { client, e } from '$/lib/db';
+import { getClusterSelectParams } from './components';
+import type { InfernetNode } from '$schema/interfaces';
+import { type ProviderCluster, type ProviderServiceAccount } from '$/types/provider';
 
 /**
- * Generic params for inserting an InfernetNode
+ * Get node data by node ids
+ *
+ * @param nodeIds of nodes
+ * @returns InfernetNodes array
  */
-export const createNodeParams = e.tuple({
-	config: e.tuple({
-		chain_enabled: e.bool,
-		trail_head_blocks: e.int16,
-		rpc_url: e.str,
-		coordinator_address: e.str,
-		max_gas_limit: e.int64,
-		private_key: e.str,
-		forward_stats: e.bool,
-	}),
-	containers: e.array(
-		e.tuple({
-			image: e.str,
-			container_id: e.str,
-			description: e.str,
-			external: e.bool,
-			allowed_addresses: e.array(e.str),
-			allowed_delegate_addresses: e.array(e.str),
-			allowed_ips: e.array(e.str),
-			command: e.str,
-			env: e.json,
-			gpu: e.bool,
-		})
-	),
-});
-
-export const insertNodeQuery = (
-	node: $expr_ForVar<typeof createNodeParams> | $expr_Param<'node', typeof createNodeParams>
-) => {
-	return e.insert(e.InfernetNode, {
-		chain_enabled: node.config.chain_enabled,
-		trail_head_blocks: node.config.trail_head_blocks,
-		rpc_url: node.config.rpc_url,
-		coordinator_address: node.config.coordinator_address,
-		max_gas_limit: node.config.max_gas_limit,
-		private_key: node.config.private_key,
-		forward_stats: node.config.forward_stats,
-		containers: e.for(e.array_unpack(node.containers), (container) =>
-			e.insert(e.Container, {
-				image: container.image,
-				container_id: container.container_id,
-				description: container.description,
-				external: container.external,
-				allowed_addresses: container.allowed_addresses,
-				allowed_delegate_addresses: container.allowed_delegate_addresses,
-				allowed_ips: container.allowed_ips,
-				command: container.command,
-				env: container.env,
-				gpu: container.gpu,
-			})
-		),
-	});
-};
-
-export const getClusterSelectParams = (creds: boolean, filter: object) => {
-	return {
-		service_account: {
-			user: {
-				...e.User['*'],
-			},
-			...e.ServiceAccount['*'],
-			...(creds
-				? {
-						...e.is(e.AWSCluster, { creds: true }),
-						...e.is(e.GCPServiceAccount, { creds: true }),
-					}
-				: {}),
-		},
-		nodes: {
+export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] | null> => {
+	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.InfernetNode, () => ({
 			...e.InfernetNode['*'],
 			containers: {
 				...e.Container['*'],
 			},
-		},
-		...e.Cluster['*'],
-		...e.is(e.AWSCluster, { region: true, machine_type: true }),
-		...e.is(e.GCPCluster, { region: true, zone: true, machine_type: true }),
-		...filter,
-	};
+			filter: e.op(e.InfernetNode.id, 'in', e.array_unpack(ids)),
+		}))
+	);
+	const nodes = await query.run(client, { ids: nodeIds });
+	return nodes.length > 0 ? nodes : null;
 };
+
+/**
+ * Get service account data by id
+ *
+ * @param id of ServiceAccount
+ * @returns ProviderServiceAccount if found
+ */
+export async function getServiceAccountById(id: string): Promise<ProviderServiceAccount | null> {
+	const result = await e
+		.select(e.ServiceAccount, () => ({
+			user: {
+				...e.User['*'],
+			},
+			...e.ServiceAccount['*'],
+			...e.is(e.AWSServiceAccount, { creds: true }),
+			...e.is(e.GCPServiceAccount, { creds: true }),
+			filter_single: { id },
+		}))
+		.run(client);
+
+	return result && (result as ProviderServiceAccount);
+}
+
+/**
+ * Get cluster data by id
+ *
+ * @param id of Cluster
+ * @param creds whether to include sensitive Service Account credentials
+ * @returns ProviderCluster if found
+ */
+export async function getClusterById(id: string, creds: boolean): Promise<ProviderCluster | null> {
+	return (await e
+		.select(e.Cluster, () => ({
+			...getClusterSelectParams(creds),
+			filter_single: { id },
+		}))
+		.run(client)) as ProviderCluster;
+}
+
+/**
+ * Get cluster data by node id
+ *
+ * @param nodeId of node
+ * @returns ProviderCluster if found
+ */
+export async function getClusterByNodeId(id: string): Promise<ProviderCluster | null> {
+	const node = e.select(e.InfernetNode, () => ({
+		filter_single: { id },
+	}));
+
+	// Get cluster id and service account
+	const clusters = await e
+		.with(
+			[node],
+			e.select(e.Cluster, (cluster) => ({
+				...getClusterSelectParams(false),
+				filter: e.op(node, 'in', cluster.nodes),
+			}))
+		)
+		.run(client);
+	return clusters.length > 0 ? (clusters[0] as ProviderCluster) : null;
+}

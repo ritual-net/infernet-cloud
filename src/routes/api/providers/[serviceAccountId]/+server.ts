@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { getServiceAccountById } from '$/lib/db/common';
+import { getServiceAccountById } from '$/lib/db/queries';
 import { ProviderClient } from '$/lib/index';
 import type { RequestHandler } from '@sveltejs/kit';
 

@@ -1,4 +1,4 @@
-import { getNodesByIds, getClusterByNodeId } from '$/lib/db/common';
+import { getNodesByIds, getClusterByNodeId } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import type { NodeInfo } from '$/types/provider';
 
