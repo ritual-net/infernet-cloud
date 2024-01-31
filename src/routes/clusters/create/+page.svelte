@@ -1,7 +1,5 @@
 <script lang="ts">
-	// Types
-	import type { PageData } from './$types'
-
+	// Types/constants
 	enum Fieldset {
 		CreateCluster,
 		AddNodes,
@@ -12,11 +10,20 @@
 	import { Node } from './schema'
 
 
+	// Context
+	import type { PageData } from './$types'
+
+	const {
+		form: formData,
+		serviceAccounts,
+	} = $page.data as PageData
+
+
 	// Internal state
 	import { page } from '$app/stores'
 	import { superForm } from 'sveltekit-superforms/client'
 
-	const { form, enhance, errors, constraints } = superForm(($page.data as PageData).form, {
+	const { form, enhance, errors, constraints } = superForm(formData, {
 		dataType: 'json',
 	})
 
