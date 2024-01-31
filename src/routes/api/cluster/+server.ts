@@ -1,9 +1,10 @@
 import { error, json } from '@sveltejs/kit';
-import { QueryByProvider, client, e } from '$lib/db';
-import { getProviderByServiceAccountId } from '$lib/db/provider';
-import { ProviderTerraform } from '$lib';
-import type { RequestHandler } from '@sveltejs/kit';
+import { QueryByProvider, client, e } from '$/lib/db';
+import { createNodeParams, getProviderByServiceAccountId } from '$/lib/db/common';
+import { clusterAction } from '$/lib/terraform/common';
 import type { Cluster } from '$schema/interfaces';
+import { TFAction } from '$/types/terraform';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Fetch all clusters for a user.
@@ -41,7 +42,7 @@ export const GET: RequestHandler = async ({ request }) => {
  * Create a new cluster with a given service account and an array of node configs.
  *
  * @param request - The request object containing 'serviceAccountId', 'config', 'nodes'.
- * @returns Cluster object.
+ * @returns Cluster ID, success boolean, and Terraform message.
  */
 export const POST: RequestHandler = async ({ request }) => {
 	const { serviceAccountId, config, nodes } = await request.json();
@@ -64,33 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const cluster = (await e
 		.params(
 			{
-				nodes: e.array(
-					e.tuple({
-						config: e.tuple({
-							chain_enabled: e.bool,
-							trail_head_blocks: e.int16,
-							rpc_url: e.str,
-							coordinator_address: e.str,
-							max_gas_limit: e.int64,
-							private_key: e.str,
-							forward_stats: e.bool,
-						}),
-						containers: e.array(
-							e.tuple({
-								image: e.str,
-								container_id: e.str,
-								description: e.str,
-								external: e.bool,
-								allowed_addresses: e.array(e.str),
-								allowed_delegate_addresses: e.array(e.str),
-								allowed_ips: e.array(e.str),
-								command: e.str,
-								env: e.json,
-								gpu: e.bool,
-							})
-						),
-					})
-				),
+				nodes: e.array(createNodeParams),
 			},
 			({ nodes }) =>
 				// Choose cluster type based on provider
@@ -130,26 +105,15 @@ export const POST: RequestHandler = async ({ request }) => {
 		return error(500, 'Failed to create cluster');
 	}
 
-	const clusterData = await QueryByProvider[provider].getClusterById(cluster.id);
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(serviceAccountId);
-
-	if (!clusterData || !serviceAccount) {
-		return error(500, 'Failed to fetch cluster and credentials from database');
-	}
-
-	const { success, message, state } = await ProviderTerraform[provider].apply(
-		clusterData,
-		serviceAccount
+	// Apply Terraform changes to create cluster
+	const { error: errorMessage, success } = await clusterAction(
+		cluster.id,
+		provider,
+		TFAction.Apply
 	);
-
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: cluster.id },
-			set: {
-				tfstate: JSON.stringify(state),
-			},
-		}))
-		.run(client);
-
-	return json({ id: cluster.id, success, message });
+	return json({
+		id: cluster.id,
+		message: success ? 'Cluster created successfully' : errorMessage,
+		success,
+	});
 };

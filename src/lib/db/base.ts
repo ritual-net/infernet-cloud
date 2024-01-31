@@ -1,9 +1,11 @@
-import type { TypeSet } from '$schema/edgeql-js/reflection';
-import type { ProviderCluster, ProviderServiceAccount } from '$types/provider';
+import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
+import type { BaseType, Cardinality, TypeSet } from '$schema/edgeql-js/reflection';
+import type { $InfernetNode } from '$schema/edgeql-js/modules/default';
 
-export interface Queries {
+export interface Queries<T extends BaseType> {
 	/**
 	 * Get service account data by id
+	 *
 	 * @param id of service account
 	 * @returns ProviderServiceAccount if found
 	 */
@@ -11,6 +13,7 @@ export interface Queries {
 
 	/**
 	 * Get cluster data by id
+	 *
 	 * @param id of cluster
 	 * @returns ProviderCluster if found
 	 */
@@ -18,11 +21,27 @@ export interface Queries {
 
 	/**
 	 * Create insert query for cluster
+	 *
 	 * @param config of cluster
 	 * @param serviceAccountId associated with cluster
 	 * @param nodesQuery the Edgedb query for inserting ProviderCluster.nodes
 	 * @returns insert query
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	insertClusterQuery: (config: any, serviceAccountId: string, nodesQuery: TypeSet<any, any>) => any;
+	insertClusterQuery: (
+		config: any,
+		serviceAccountId: string,
+		nodesQuery: TypeSet<$InfernetNode, Cardinality.Many>
+	) => TypeSet<T, Cardinality.One>;
+
+	/**
+	 * Create insert query for node
+	 *
+	 * @param clusterId associated with node
+	 * @param nodeQuery the Edgedb query for inserting an InfernetNode
+	 * @returns insert query
+	 */
+	insertNodeToClusterQuery: (
+		clusterId: string,
+		nodeQuery: TypeSet<$InfernetNode, Cardinality.One>
+	) => TypeSet<T, Cardinality.AtMostOne>;
 }

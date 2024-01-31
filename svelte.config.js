@@ -20,6 +20,7 @@ export default {
 			'$schema': './dbschema',
 			'$types': './src/types',
 			'$utils': './src/utils',
-		}
-	}
-}
+			'$': './src',
+		},
+	},
+};

@@ -46,7 +46,10 @@
 	},
 	"dependencies": {
 		"@fontsource/barlow": "^5.0.8",
+		"aws-sdk": "^2.1540.0",
+		"axios": "^1.6.5",
 		"edgedb": "^1.4.1",
+		"googleapis": "^131.0.0",
 		"svelte-headless-table": "^0.18.1",
 		"sveltekit-superforms": "^1.13.3",
 		"zod": "^3.22.4"
