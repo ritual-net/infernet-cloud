@@ -1,6 +1,6 @@
-import { getProviderByNodeId, getNodeById } from '$/lib/db/common';
+import { getProviderByNodeId, getNodesByIds} from '$/lib/db/common';
 import { NodeClient, ProviderQueries } from '$/lib/index';
-import type { NodeInfo } from '$/types/provider';
+import { NodeAction, type NodeInfo, type ProviderServiceAccountCreds } from '$/types/provider';
 
 /**
  * Given an array of InfernetNode ids and an action, complete action via node client.
@@ -14,16 +14,10 @@ export const executeNodeAction = async (
 	nodeIds: string[],
 	action: string
 ): Promise<NodeInfo[] | Object> => {
-	const nodes = await Promise.all(
-		nodeIds.map(async (id) => {
-			// TODO: Make sure node belongs to user through auth
-			const node = await getNodeById(id);
-			if (!node) {
-				throw Error(`Node could not be retrieved for id ${id}`);
-			}
-			return node;
-		})
-	);
+	const nodes = await getNodesByIds(nodeIds);
+    if (!nodes) {
+        throw Error('Nodes could not be retrieved.');
+    }
 
 	const provider = await getProviderByNodeId(nodeIds[0]);
 	if (!provider) {
@@ -42,19 +36,24 @@ export const executeNodeAction = async (
 		throw Error('Service account could not be retrieved for cluster.');
 	}
 
-	const classArgs = NodeClient[provider].classArgs(cluster, service_account);
+	const classArgs = NodeClient[provider].classArgs(cluster, service_account) as [
+		ProviderServiceAccountCreds,
+		string,
+	];
 	const nodeClient = new NodeClient[provider].class(...classArgs);
 	const functionArgs = NodeClient[provider].functionArgs(cluster, service_account);
 	const providerIds = nodes.map((node) => node.provider_id!);
 
 	switch (action) {
-		case 'start':
+		case NodeAction.start:
 			await nodeClient.startNodes(providerIds, functionArgs);
-			return { success: true, message: 'Started nodes' };
-		case 'stop':
+			return { success: true, message: 'Started nodes.' };
+
+		case NodeAction.stop:
 			await nodeClient.stopNodes(providerIds, functionArgs);
-			return { success: true, message: 'Stopped nodes' };
-		case 'info':
+			return { success: true, message: 'Stopped nodes.' };
+
+		case NodeAction.info:
 			const nodesInfo = await nodeClient.getNodesInfo(providerIds, functionArgs);
 			// add node objects to node info before returning
 			const nodesMap = new Map(nodes.map((node) => [node.provider_id, node]));
@@ -62,6 +61,7 @@ export const executeNodeAction = async (
 				nodeInfo.node = nodesMap.get(nodeInfo.id);
 			});
 			return nodesInfo;
+
 		default:
 			throw Error(`Action ${action} not supported`);
 	}

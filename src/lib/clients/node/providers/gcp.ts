@@ -2,7 +2,7 @@ import compute, { InstancesClient } from '@google-cloud/compute';
 import { ProviderTypeEnum } from '$/types/provider';
 import type { BaseNodeClient } from '$/lib/clients/node/base';
 import type { GCPServiceAccount } from '$schema/interfaces';
-import type { GCPNodeClientArgs, NodeInfo } from '$/types/provider';
+import type { NodeInfo } from '$/types/provider';
 
 export class GCPNodeClient implements BaseNodeClient {
 	client: InstancesClient;
@@ -32,7 +32,7 @@ export class GCPNodeClient implements BaseNodeClient {
 	 * @param ids - List of node ids to start
 	 * @param args - Additional arguments needed to start nodes (project id, zone)
 	 */
-	async startNodes(ids: string[], args: GCPNodeClientArgs): Promise<void> {
+	async startNodes(ids: string[], args: object): Promise<void> {
 		for (const id of ids) {
 			await this.client.start({
 				...args,
@@ -47,7 +47,7 @@ export class GCPNodeClient implements BaseNodeClient {
 	 * @param ids - List of node ids to stop
 	 * @param args - Additional arguments needed to stop nodes (project id, zone)
 	 */
-	async stopNodes(ids: string[], args: GCPNodeClientArgs): Promise<void> {
+	async stopNodes(ids: string[], args: object): Promise<void> {
 		for (const id of ids) {
 			await this.client.stop({
 				...args,
@@ -63,7 +63,7 @@ export class GCPNodeClient implements BaseNodeClient {
 	 * @param args - Additional arguments needed to get node info (project id, zone)
 	 * @returns Flat array of node info objects
 	 */
-	async getNodesInfo(ids: string[], args: GCPNodeClientArgs): Promise<NodeInfo[]> {
+	async getNodesInfo(ids: string[], args: object): Promise<NodeInfo[]> {
 		const nodesInfoPromises = ids.map((id) =>
 			this.client
 				.get({
@@ -71,7 +71,7 @@ export class GCPNodeClient implements BaseNodeClient {
 					instance: id,
 				})
 				.then((result) => ({
-					id: id ?? undefined,
+					id: id,
 					status: result[0]?.status ?? undefined,
 					ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
 					node: undefined,

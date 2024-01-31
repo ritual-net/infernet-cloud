@@ -67,9 +67,9 @@ export class AWSNodeClient implements BaseNodeClient {
 		result.Reservations?.forEach((reservation) => {
 			reservation.Instances?.forEach((instance) => {
 				nodesInfo.push({
-					id: instance.InstanceId ?? undefined,
-					status: instance.State?.Name ?? undefined,
-					ip: instance.PublicIpAddress ?? undefined,
+					id: instance.InstanceId!,
+					status: instance.State?.Name,
+					ip: instance.PublicIpAddress,
 					node: undefined,
 				});
 			});

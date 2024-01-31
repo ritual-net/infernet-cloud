@@ -13,6 +13,7 @@ export enum ProviderTypeEnum {
 
 export type ProviderCluster = AWSCluster | GCPCluster;
 export type ProviderServiceAccount = AWSServiceAccount | GCPServiceAccount;
+export type ProviderServiceAccountCreds = AWSServiceAccount['creds'] & GCPServiceAccount['creds'];
 
 // Cloud provider client types
 export type Machine = {
@@ -33,14 +34,15 @@ export type ZoneInfo = {
 };
 
 // Node client types
-export type GCPNodeClientArgs = {
-	project: string;
-	zone: string;
+export type NodeInfo = {
+	id: string;
+	status?: string;
+	ip?: string;
+	node?: InfernetNode;
 };
 
-export type NodeInfo = {
-	id: string | undefined;
-	status: string | undefined;
-	ip: string | undefined;
-	node: InfernetNode | undefined;
-};
+export enum NodeAction {
+    start = 'start',
+    stop = 'stop',
+    info = 'info'
+}

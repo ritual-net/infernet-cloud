@@ -88,30 +88,30 @@ export abstract class BaseTerraform {
 			if (action === TFAction.Apply) {
 				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
 				console.log(nodeInfo);
-				const query = e.params(
-					{
-						nodeInfo: e.array(
-							e.tuple({
-								id: e.str,
-								key: e.uuid,
-							})
-						),
-					},
-					(params) => {
-						return e.for(e.array_unpack(params.nodeInfo), (obj) => {
-							return e.update(e.InfernetNode, () => ({
-								filter_single: { id: obj.key },
-								set: {
-									provider_id: obj.id,
-								},
-							}));
-						});
-					}
-				);
-
-				await query.run(client, {
-					nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
-				});
+				await e
+					.params(
+						{
+							nodeInfo: e.array(
+								e.tuple({
+									id: e.str,
+									key: e.uuid,
+								})
+							),
+						},
+						(params) => {
+							return e.for(e.array_unpack(params.nodeInfo), (obj) => {
+								return e.update(e.InfernetNode, () => ({
+									filter_single: { id: obj.key },
+									set: {
+										provider_id: obj.id,
+									},
+								}));
+							});
+						}
+					)
+					.run(client, {
+						nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
+					});
 			}
 			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db
 			// TODO: Store nodeInfo in db, probably as a json (aws/gcp agnostic?)

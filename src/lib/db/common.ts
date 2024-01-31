@@ -43,22 +43,23 @@ export const getProviderByClusterId = async (
 };
 
 /**
- * Get node data by node id
+ * Get node data by node ids
  *
- * @param nodeId of node
- * @returns ProviderCluster if found
+ * @param nodeIds of nodes
+ * @returns InfernetNodes array if found
  */
-export const getNodeById = async (nodeId: string): Promise<InfernetNode | null> => {
-	const node = await e
-		.select(e.InfernetNode, () => ({
-			...e.InfernetNode['*'],
-			containers: {
-				...e.Container['*'],
-			},
-			filter_single: { id: nodeId },
-		}))
-		.run(client);
-	return node ? node : null;
+export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] | null> => {
+    const allNodes = await e
+        .select(e.InfernetNode, () => ({
+            ...e.InfernetNode['*'],
+            containers: {
+                ...e.Container['*'],
+            },
+        }))
+        .run(client);
+
+    const nodes = allNodes.filter(node => nodeIds.includes(node.id));
+    return nodes.length > 0 ? nodes : null;
 };
 
 /**
