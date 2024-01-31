@@ -36,7 +36,7 @@ export async function createTempDir(provider: string): Promise<string> {
  */
 export async function createTerraformVarsFile(
 	tempDir: string,
-	tfVars: Record<string, string[] | string | number | boolean>
+	tfVars: Record<string, string[] | string | number | boolean | Record<string, string>>
 ): Promise<void> {
 	const varsFile = path.join(tempDir, 'terraform.tfvars');
 	const varsString = formatTfVars(tfVars);
@@ -54,10 +54,10 @@ export async function createNodeConfigFiles(tempDir: string, nodes: InfernetNode
 	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true });
 
 	// Create node config files under configs/
-	for (let i = 0; i < nodes.length; i++) {
-		const jsonConfig = formatNodeConfig(nodes[i]);
+	for (const node of nodes) {
+		const jsonConfig = formatNodeConfig(node);
 		await fs.writeFile(
-			path.join(tempDir, `configs/${i}.json`),
+			path.join(tempDir, `configs/${node.id}.json`),
 			JSON.stringify(jsonConfig, null, 2)
 		);
 	}
@@ -159,22 +159,31 @@ function formatNodeConfig(node: InfernetNode) {
  * @param config Generic object to format. Should be flat (non-nested).
  * @returns Terraform variables file as a formatted string.
  */
-function formatTfVars(config: Record<string, string[] | string | number | boolean>): string {
-	const vars: string[] = [];
 
-	for (const [key, value] of Object.entries(config)) {
+function formatTfVars(
+	config: Record<string, string[] | string | number | boolean | Record<string, unknown>>
+): string {
+	const formatValue = (value: unknown): string => {
 		if (Array.isArray(value)) {
-			// Format array as a list of strings
-			const arrayValue = `[${value.map((v) => `"${v}"`).join(', ')}]`;
-			vars.push(`${key} = ${arrayValue}`);
+			// Format array, recursively format each element
+			return `[${value.map((v) => formatValue(v)).join(', ')}]`;
+		} else if (typeof value === 'object' && value !== null) {
+			// Format object as a map, recursively format each value
+			const objectValue = `{${Object.entries(value)
+				.map(([k, v]) => `"${k}" = ${formatValue(v)}`)
+				.join(', ')}}`;
+			return objectValue;
 		} else if (typeof value === 'string') {
 			// Wrap string values in quotes
-			vars.push(`${key} = "${value}"`);
+			return `"${value}"`;
 		} else {
-			// For non-string, non-array types (e.g., numbers, booleans)
-			vars.push(`${key} = ${value}`);
+			// Return non-string, non-array, non-object types (e.g., numbers, booleans)
+			return `${value}`;
 		}
-	}
-	// each key-value pair is "key = value" on a separate line
+	};
+
+	const vars: string[] = Object.entries(config).map(
+		([key, value]) => `${key} = ${formatValue(value)}`
+	);
 	return vars.join('\n');
 }

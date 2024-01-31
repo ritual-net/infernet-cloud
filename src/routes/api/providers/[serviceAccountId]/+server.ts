@@ -1,8 +1,8 @@
-import { getProviderByServiceAccountId } from '$lib/db/provider';
 import { error, json } from '@sveltejs/kit';
+import { getProviderByServiceAccountId } from '$/lib/db/common';
+import { QueryByProvider } from '$/lib/db/index';
+import { ProviderClient } from '$/lib/index';
 import type { RequestHandler } from '@sveltejs/kit';
-import { ProviderClient } from '$lib/index';
-import { QueryByProvider } from '$lib/db/index';
 
 /**
  * Fetch nested provider info (regions, zones, machines) from cloud providers
