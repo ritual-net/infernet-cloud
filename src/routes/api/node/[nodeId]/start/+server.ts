@@ -1,6 +1,6 @@
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
 import { executeNodeAction } from '$/lib/clients/node/common';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Start a node by its id.
