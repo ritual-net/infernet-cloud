@@ -5,15 +5,15 @@ import { GCPTerraform } from './terraform/providers/gcp';
 import { ProviderTypeEnum } from '$types/provider';
 import { AWSNodeClient } from './clients/node/aws';
 import { GCPNodeClient } from './clients/node/gcp';
-import type { GCPNodeClientArgs } from '$types/provider';
+import type { GCPNodeClientArgs } from '$/types/provider';
 import type {
 	GCPCluster,
 	AWSCluster,
 	GCPServiceAccount,
 	AWSServiceAccount,
 } from '$schema/interfaces';
-import { GCPQueries } from '$lib/db/providers/gcp';
-import { AWSQueries } from '$lib/db/providers/aws';
+import { GCPQueries } from '$/lib/db/providers/gcp';
+import { AWSQueries } from '$/lib/db/providers/aws';
 
 /**
  * The Terraform provider for each cloud provider. Since these classes are stateless,

@@ -1,12 +1,13 @@
-import { client, e } from '$lib/db';
+import { client, e } from '$/lib/db';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
-import type { Queries } from '$lib/db/base';
-import type { TypeSet } from '$schema/edgeql-js/reflection';
-import type { GpuCount } from 'aws-sdk/clients/computeoptimizer';
+import type { Queries } from '$/lib/db/base';
+import type { Cardinality, TypeSet } from '$schema/edgeql-js/reflection';
+import type { $GCPCluster, $InfernetNode } from '$schema/edgeql-js/modules/default';
 
-export const GCPQueries: Queries = {
+export const GCPQueries: Queries<$GCPCluster> = {
 	/**
 	 * Get service account data by id
+	 *
 	 * @param id of GCPServiceAccount
 	 * @returns GCPServiceAccount if found
 	 */
@@ -26,6 +27,7 @@ export const GCPQueries: Queries = {
 
 	/**
 	 * Get cluster data by id
+	 *
 	 * @param id of GCPCluster
 	 * @returns GCPCluster if found
 	 */
@@ -80,6 +82,7 @@ export const GCPQueries: Queries = {
 
 	/**
 	 * Create insert query for GCPCluster
+	 *
 	 * @param config of cluster
 	 * @param serviceAccountId
 	 * @param nodesQuery the Edgedb query for inserting GCPCluster.nodes
@@ -96,9 +99,8 @@ export const GCPQueries: Queries = {
 			machine_type: string;
 		},
 		serviceAccountId: string,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		nodesQuery: TypeSet<any, any>
-	) {
+		nodesQuery: TypeSet<$InfernetNode, Cardinality.Many>
+	): TypeSet<$GCPCluster, Cardinality.One> {
 		return e.insert(e.GCPCluster, {
 			...config,
 			service_account: e.select(e.ServiceAccount, () => ({
@@ -110,15 +112,15 @@ export const GCPQueries: Queries = {
 
 	/**
 	 * Create insert query for single GCPCluster node
+	 *
 	 * @param clusterId associated with node
 	 * @param nodeQuery the Edgedb query for inserting an InfernetNode
 	 * @returns insert query
 	 */
 	insertNodeToClusterQuery(
 		clusterId: string,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		nodeQuery: TypeSet<any, any>
-	) {
+		nodeQuery: TypeSet<$InfernetNode, Cardinality.One>
+	): TypeSet<$GCPCluster, Cardinality.AtMostOne> {
 		return e.update(e.GCPCluster, () => ({
 			set: {
 				nodes: { '+=': nodeQuery },

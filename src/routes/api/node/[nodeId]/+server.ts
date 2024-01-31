@@ -1,11 +1,10 @@
-import { client, e } from '$lib/db';
+import { client, e } from '$/lib/db';
 import { error, json } from '@sveltejs/kit';
+import { clusterAction } from '$/lib/terraform/common';
+import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
-import { getProviderByNodeId, getNodeById } from '$lib/db/common';
-import type { ProviderTypeEnum, ProviderServiceAccount } from '$types/provider';
-import { clusterAction } from '$lib/terraform/common';
-import { NodeClient, ProviderQueries } from '$lib/index';
-import { c } from 'tar';
+import { getProviderByNodeId, getNodeById } from '$/lib/db/common';
+import { NodeClient, ProviderQueries } from '$/lib/index';
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -55,8 +54,7 @@ export const GET: RequestHandler = async ({ params }) => {
  * Delete a node by its ID.
  *
  * @param params - The parameters object, expected to contain 'nodeId'.
- * @returns { id: string, success: boolean, message: string} - Node id, success
- * 		boolean, and Terraform message.
+ * @returns Success boolean and Terraform message.
  */
 export const DELETE: RequestHandler = async ({ params }) => {
 	const id = params.nodeId;
@@ -110,7 +108,11 @@ export const DELETE: RequestHandler = async ({ params }) => {
 		.run(client);
 
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(cluster.id, provider, 'apply');
+	const { error: errorMessage, success } = await clusterAction(
+		cluster.id,
+		provider,
+		TFAction.Apply
+	);
 	return json({
 		message: success ? 'Node destroyed successfully.' : errorMessage,
 		success,

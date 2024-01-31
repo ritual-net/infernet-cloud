@@ -1,1 +1,4 @@
-export type TerraformAction = 'apply' | 'destroy';
+export enum TFAction {
+	Apply = 'apply',
+	Destroy = 'destroy',
+}

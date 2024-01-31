@@ -1,8 +1,9 @@
 import { error, json } from '@sveltejs/kit';
-import { getProviderByClusterId } from '$lib/db/common';
-import { QueryByProvider, client, e } from '$lib/db';
+import { getProviderByClusterId } from '$/lib/db/common';
+import { QueryByProvider, client, e } from '$/lib/db';
+import { clusterAction } from '$/lib/terraform/common';
+import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
-import { clusterAction } from '$lib/terraform/common';
 
 /**
  * Retrieve a cluster by its ID.
@@ -37,7 +38,7 @@ export const GET: RequestHandler = async ({ params }) => {
  * 					- deploy_router: boolean
  * 					- ip_allow_http: string
  * 					- ip_allow_https: string
- * @returns Cluster object ID.
+ * @returns Success boolean and Terraform message.
  */
 export const PATCH: RequestHandler = async ({ params, request }) => {
 	const id = params.clusterId;
@@ -60,8 +61,8 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 				// Updateable fields, default to current value if not provided
 				name: e.op(data.name, '??', c.name),
 				deploy_router: e.op(data.deploy_router, '??', c.deploy_router),
-				...(data?.ip_allow_http ? { ip_allow_http: data.ip_allow_http } : {}),
-				...(data?.ip_allow_https ? { ip_allow_https: data.ip_allow_https } : {}),
+				...(data?.ip_allow_http && { ip_allow_http: data.ip_allow_http }),
+				...(data?.ip_allow_https && { ip_allow_https: data.ip_allow_https }),
 			},
 			filter_single: { id },
 		}))
@@ -78,7 +79,11 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 	}
 
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(cluster.id, provider, 'apply');
+	const { error: errorMessage, success } = await clusterAction(
+		cluster.id,
+		provider,
+		TFAction.Apply
+	);
 	return json({
 		message: success ? 'Cluster updated successfully' : errorMessage,
 		success,
@@ -89,7 +94,7 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
  * Delete a cluster by its ID.
  *
  * @param params - The parameters object, expected to contain 'clusterId'.
- * @returns ID of the deleted cluster.
+ * @returns Success boolean and Terraform message.
  */
 export const DELETE: RequestHandler = async ({ params }) => {
 	const id = params.clusterId;
@@ -106,7 +111,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 	}
 
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(id, provider, 'destroy');
+	const { error: errorMessage, success } = await clusterAction(id, provider, TFAction.Destroy);
 
 	if (success) {
 		// Delete cluster, nodes and containers deleted through cascade

@@ -1,4 +1,4 @@
-import { client, e } from '$lib/db';
+import { client, e } from '$/lib/db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 

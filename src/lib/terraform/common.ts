@@ -1,7 +1,7 @@
-import { ProviderTerraform } from '$lib';
-import { QueryByProvider, client, e } from '$lib/db';
+import { ProviderTerraform } from '$/lib';
+import { QueryByProvider, client, e } from '$/lib/db';
 import type { CloudProvider } from '$schema/interfaces';
-import type { TerraformAction } from '$types/terraform';
+import type { TFAction } from '$/types/terraform';
 
 /**
  * Applies the given action to a cluster, and persists the resulting Terraform state
@@ -12,11 +12,7 @@ import type { TerraformAction } from '$types/terraform';
  * @param action The Terraform action
  * @returns An object with the success status and (optional) error message
  */
-export async function clusterAction(
-	clusterId: string,
-	provider: CloudProvider,
-	action: TerraformAction
-) {
+export async function clusterAction(clusterId: string, provider: CloudProvider, action: TFAction) {
 	const cluster = await QueryByProvider[provider].getClusterById(clusterId);
 	if (!cluster) {
 		return { error: 'Cluster not found', success: false };

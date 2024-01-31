@@ -1,9 +1,10 @@
 import { error, json } from '@sveltejs/kit';
-import { QueryByProvider, client, e } from '$lib/db';
-import { createNodeParams, getProviderByServiceAccountId } from '$lib/db/common';
-import type { RequestHandler } from '@sveltejs/kit';
+import { QueryByProvider, client, e } from '$/lib/db';
+import { createNodeParams, getProviderByServiceAccountId } from '$/lib/db/common';
+import { clusterAction } from '$/lib/terraform/common';
 import type { Cluster } from '$schema/interfaces';
-import { clusterAction } from '$lib/terraform/common';
+import { TFAction } from '$/types/terraform';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Fetch all clusters for a user.
@@ -41,7 +42,7 @@ export const GET: RequestHandler = async ({ request }) => {
  * Create a new cluster with a given service account and an array of node configs.
  *
  * @param request - The request object containing 'serviceAccountId', 'config', 'nodes'.
- * @returns Cluster object ID, success boolean, and Terraform message.
+ * @returns Cluster ID, success boolean, and Terraform message.
  */
 export const POST: RequestHandler = async ({ request }) => {
 	const { serviceAccountId, config, nodes } = await request.json();
@@ -105,8 +106,13 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	// Apply Terraform changes to create cluster
-	const { error: errorMessage, success } = await clusterAction(cluster.id, provider, 'apply');
+	const { error: errorMessage, success } = await clusterAction(
+		cluster.id,
+		provider,
+		TFAction.Apply
+	);
 	return json({
+		id: cluster.id,
 		message: success ? 'Cluster created successfully' : errorMessage,
 		success,
 	});

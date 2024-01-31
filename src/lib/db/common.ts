@@ -1,10 +1,10 @@
-import { client, e } from '$lib/db';
-import { ProviderTypeEnum } from '$types/provider';
-import type { ProviderCluster } from '$types/provider';
+import { client, e } from '$/lib/db';
+import { ProviderTypeEnum } from '$/types/provider';
 import type { InfernetNode } from '$schema/interfaces';
 
 /**
  * Get the provider of a service account
+ *
  * @param serviceAccountId Service account id
  * @returns Provider type if found
  */
@@ -23,6 +23,7 @@ export const getProviderByServiceAccountId = async (
 
 /**
  * Get the provider of a cluster
+ *
  * @param clusterId Cluster id
  * @returns Provider type if found
  */
