@@ -92,13 +92,10 @@
 								name="serviceAccount"
 								labelText="Service Account"
 								bind:value={$form.serviceAccountId}
-								items={[
-									{
-										value: crypto.randomUUID(),
-										label: 'Service Account 1',
-										icon: '',
-									},
-								]}
+								items={serviceAccounts.map(serviceAccount => ({
+									value: serviceAccount.id,
+									label: serviceAccount.name,
+								}))}
 							/>
 						</section>
 
