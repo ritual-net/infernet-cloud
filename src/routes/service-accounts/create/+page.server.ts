@@ -17,19 +17,23 @@ export const load: PageServerLoad = async () => {
 import { type Actions, fail } from '@sveltejs/kit'
 
 export const actions: Actions = {
-	default: async (event) => {
-		const form = await superValidate(event.request, FormData)
+	default: async ({
+		request,
+		fetch,
+		locals,
+	}) => {
+		const form = await superValidate(request, FormData)
 
 		if (!form.valid) {
 			return fail(400, { form })
 		}
 
-		const user = ''
+		const { userId } = locals.getSession()
 
-		const result = await event.fetch('/api/service_account', {
+		const result = await fetch('/api/service_account', {
 			method: 'POST',
 			body: JSON.stringify({
-				user,
+				user: userId,
 				...form.data,
 			}),
 		})
