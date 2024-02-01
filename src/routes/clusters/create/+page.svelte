@@ -31,8 +31,11 @@
 
 	let currentFieldset = Fieldset.CreateCluster
 
+	let allowIps: 'all' | 'restricted' = 'all'
+
 
 	// Components
+	import Collapsible from '$components/Collapsible.svelte'
 	import Switch from '$components/Switch.svelte'
 	import Select from '$components/Select.svelte'
 	import Tabs from '$components/Tabs.svelte'
@@ -95,14 +98,106 @@
 								labelText="Service Account"
 								bind:value={$form.serviceAccountId}
 								items={serviceAccounts.map(serviceAccount => ({
-									icon: providers[serviceAccount.type].icon,
+									icon: providers[serviceAccount.provider].icon,
 									value: serviceAccount.id,
 									label: serviceAccount.name,
 								}))}
 							/>
 						</section>
 
-						<!-- <section class="row wrap">
+						<section class="row wrap">
+							<div class="column inline">
+								<h3 class="row inline">
+									<label for="cluster_name">
+										Cluster name
+									</label>
+								</h3>
+
+								<p>Give your cluster a human-readable name.</p>
+							</div>
+
+							<input
+								type="text"
+								name="cluster_name"
+								placeholder="my-cluster-1"
+								bind:value={$form.config.name}
+								{...$constraints.config?.name}
+							/>
+						</section>
+
+						<section class="column wrap">
+							<div class="row wrap">
+								<div class="column inline">
+									<h3 class="row inline">
+										<label for="coordinator_address">
+											Firewall
+										</label>
+									</h3>
+
+									<p>Determine which IP addresses will have permissions to this cluster.</p>
+								</div>
+
+								<Select
+									required
+									name="firewall"
+									labelText="Firewall"
+									bind:value={allowIps}
+									items={[
+										{
+											value: 'all',
+											label: 'All IPs',
+										},
+										{
+											value: 'restricted',
+											label: 'Only allowed IPs',
+										}
+									]}
+								/>
+							</div>
+
+							{#if allowIps !== 'all'}
+								<Tabs
+									value={0}
+									items={[
+										{
+											id: 0,
+											label: 'HTTP',
+										},
+										{
+											id: 1,
+											label: 'SSH',
+										},
+									]}
+								>
+									<svelte:fragment slot="content"
+										let:item
+									>
+										{#if item.id === 0}
+											<textarea
+												name="credentials"
+												rows="2"
+												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+												bind:value={$form.config.ip_allow_http}
+												{...$constraints.config?.ip_allow_http}
+												disabled={allowIps === 'all'}
+											/>
+
+										{:else}
+											<textarea
+												name="credentials"
+												rows="2"
+												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+												bind:value={$form.config.ip_allow_ssh}
+												{...$constraints.config?.ip_allow_ssh}
+												disabled={allowIps === 'all'}
+											/>
+										{/if}
+									</svelte:fragment>
+								</Tabs>
+							{/if}
+						</section>
+
+						<section class="row wrap">
 							<div class="column inline">
 								<h3>
 									<label for="region">
@@ -117,7 +212,32 @@
 								required
 								name="region"
 								labelText="Region"
-								bind:value={$form.cluster.region}
+								bind:value={$form.config.region}
+								items={[
+									{
+										value: 'US-north-1',
+										label: 'US-north-1',
+									},
+								]}
+							/>
+						</section>
+
+						<!-- <section class="row wrap">
+							<div class="column inline">
+								<h3>
+									<label for="zone">
+										Zone
+									</label>
+								</h3>
+
+								<p>Select the zone where your cluster should be deployed.</p>
+							</div>
+
+							<Select
+								required
+								name="zone"
+								labelText="Zone"
+								bind:value={$form.config.zone}
 								items={[
 									{
 										value: 'US-north-1',
@@ -126,6 +246,98 @@
 								]}
 							/>
 						</section> -->
+
+						<section class="row wrap">
+							<div class="column inline">
+								<h3>
+									<label for="machine_type">
+										Machine Type
+									</label>
+								</h3>
+
+								<p>Select the type of machine you would like to deploy.</p>
+							</div>
+
+							<Select
+								required
+								name="machine_type"
+								labelText="Machine Type"
+								bind:value={$form.config.machine_type}
+								items={[
+									{
+										value: 'e2-standard-2',
+										label: 'e2-standard-2',
+									},
+								]}
+							/>
+						</section>
+					</div>
+
+					<div class="card column">
+						<Collapsible>
+							<svelte:fragment slot="trigger">
+								<header>
+									<!-- {providers[$form.serviceAccountId]} -->
+									<!-- Google Cloud -->
+
+									Advanced
+								</header>
+							</svelte:fragment>
+
+							<section class="column wrap">
+								<div class="column inline">
+									<h3>
+										Docker Credentials
+										<span class="annotation">Optional</span>
+									</h3>
+
+									<p>Sign into your Docker account for simple container management.</p>
+								</div>
+
+								<div class="row equal">
+									<div class="column">
+										<label for="username">Username</label>
+
+										<input
+											type="text"
+											name="username"
+											placeholder="Enter Docker username..."
+											bind:value={$form.config.name}
+											{...$constraints.config?.name}
+										/>
+									</div>
+
+									<div class="column">
+										<label for="access_token">Private Access Token</label>
+
+										<input
+											type="text"
+											name="access_token"
+											placeholder="Enter Docker access token..."
+											bind:value={$form.config.name}
+											{...$constraints.config?.name}
+										/>
+									</div>
+								</div>
+							</section>
+
+							<section class="row wrap">
+								<div class="column inline">
+									<h3>
+										<label for="deploy_router">
+											Deploy Router?
+										</label>
+									</h3>
+
+									<p>Determine whether your cluster will be deployed with a router.</p>
+								</div>
+
+								<Switch
+									bind:checked={$form.config.deploy_router}
+									labelText="Deploy Router?"
+								/>
+							</section>
+						</Collapsible>
 					</div>
 
 					<footer class="row">

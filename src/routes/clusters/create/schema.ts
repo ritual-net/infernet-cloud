@@ -21,21 +21,13 @@ export const Config = z
 			.array(
 				IpWithAddressMask
 			)
-			.default(
-				[
-					'0.0.0.0/0',
-				]
-			),
+			.default([]),
 
 		'ip_allow_ssh': z
 			.array(
 				IpWithAddressMask
 			)
-			.default(
-				[
-					'0.0.0.0/0',
-				]
-			),
+			.default([]),
 
 		'region': z
 			.string()
@@ -44,7 +36,6 @@ export const Config = z
 		'machine_type': z
 			.string()
 			.default(''),
-
 	})
 
 export const Container = z
@@ -98,7 +89,6 @@ export const Container = z
 		'gpu': z
 			.boolean()
 			.default(false),
-
 	})
 
 export const Node = z.object({
