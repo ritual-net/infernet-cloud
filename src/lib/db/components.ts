@@ -75,6 +75,9 @@ export const getClusterSelectParams = (creds: boolean) => {
 	return {
 		service_account: {
 			user: {
+				identity: {
+					...e.ext.auth.Identity['*'],
+				},
 				...e.User['*'],
 			},
 			...e.ServiceAccount['*'],
