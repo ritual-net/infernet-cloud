@@ -53,6 +53,33 @@ export const AWSQueries: Queries<$AWSCluster> = {
 	},
 
 	/**
+	 * Get cluster data by node id
+	 *
+	 * @param nodeId of node
+	 * @returns AWSCluster if found
+	 */
+	async getClusterByNodeId(nodeId: string): Promise<AWSCluster | null> {
+		const node = e.select(e.InfernetNode, () => ({
+			filter_single: { id: nodeId },
+		}));
+
+		// Get cluster id and service account
+		const clusters = await e
+			.with(
+				[node],
+				e.select(e.AWSCluster, (cluster) => ({
+					...e.AWSCluster['*'],
+					service_account: {
+						...e.ServiceAccount['*'],
+					},
+					filter: e.op(node, 'in', cluster.nodes),
+				}))
+			)
+			.run(client);
+		return clusters ? (clusters[0] as AWSCluster) : null;
+	},
+
+	/**
 	 * Create insert query for AWSCluster
 	 *
 	 * @param config of cluster

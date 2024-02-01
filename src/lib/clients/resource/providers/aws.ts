@@ -1,10 +1,10 @@
 import AWS_SDK from 'aws-sdk';
-import { BaseClient } from '$/lib/clients/base';
-import type { Machine } from '$/types/provider';
+import { BaseResourceClient } from '$/lib/clients/resource/base';
 import type { AWSServiceAccount } from '$schema/interfaces';
+import type { Machine } from '$/types/provider';
 
-// Amazon Web Services extension of BaseClient abstract class.
-export class AWSClient extends BaseClient {
+// Amazon Web Services extension of BaseResourceClient abstract class.
+export class AWSResourceClient extends BaseResourceClient {
 	amazonCompute!: AWS_SDK.EC2;
 	creds!: AWSServiceAccount['creds'];
 

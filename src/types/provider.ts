@@ -3,6 +3,7 @@ import type {
 	AWSServiceAccount,
 	GCPCluster,
 	GCPServiceAccount,
+	InfernetNode,
 } from '$schema/interfaces';
 
 export enum ProviderTypeEnum {
@@ -12,6 +13,7 @@ export enum ProviderTypeEnum {
 
 export type ProviderCluster = AWSCluster | GCPCluster;
 export type ProviderServiceAccount = AWSServiceAccount | GCPServiceAccount;
+export type ProviderServiceAccountCreds = AWSServiceAccount['creds'] & GCPServiceAccount['creds'];
 
 // Cloud provider client types
 export type Machine = {
@@ -30,3 +32,17 @@ export type ZoneInfo = {
 	name: string;
 	machines: Machine[]; // all machines available in region not zone
 };
+
+// Node client types
+export type NodeInfo = {
+	id: string;
+	status?: string;
+	ip?: string;
+	node?: InfernetNode;
+};
+
+export enum NodeAction {
+	start = 'start',
+	stop = 'stop',
+	info = 'info',
+}

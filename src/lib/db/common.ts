@@ -1,5 +1,6 @@
 import { client, e } from '$/lib/db';
 import { ProviderTypeEnum } from '$/types/provider';
+import type { InfernetNode } from '$schema/interfaces';
 
 /**
  * Get the provider of a service account
@@ -24,7 +25,7 @@ export const getProviderByServiceAccountId = async (
  * Get the provider of a cluster
  *
  * @param clusterId Cluster id
- * @returns Provider type if found
+ * @returns Provider type
  */
 export const getProviderByClusterId = async (
 	clusterId: string
@@ -39,6 +40,54 @@ export const getProviderByClusterId = async (
 		.run(client);
 
 	return result ? (result.service_account.provider as ProviderTypeEnum) : null;
+};
+
+/**
+ * Get node data by node ids
+ *
+ * @param nodeIds of nodes
+ * @returns InfernetNodes array
+ */
+export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] | null> => {
+	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.InfernetNode, () => ({
+			...e.InfernetNode['*'],
+			containers: {
+				...e.Container['*'],
+			},
+			filter: e.op(e.InfernetNode.id, 'in', e.array_unpack(ids)),
+		}))
+	);
+	const nodes = await query.run(client, { ids: nodeIds });
+	return nodes.length > 0 ? nodes : null;
+};
+
+/**
+ * Get provider by node id
+ *
+ * @param nodeId of node
+ * @returns ProviderType
+ */
+export const getProviderByNodeId = async (nodeId: string): Promise<ProviderTypeEnum | null> => {
+	const node = e.select(e.InfernetNode, () => ({
+		filter_single: { id: nodeId },
+	}));
+
+	// Get cluster id and service account
+	const clusters = await e
+		.with(
+			[node],
+			e.select(e.Cluster, (cluster) => ({
+				id: true,
+				service_account: {
+					id: true,
+					provider: true,
+				},
+				filter: e.op(node, 'in', cluster.nodes),
+			}))
+		)
+		.run(client);
+	return clusters ? (clusters[0].service_account.provider as ProviderTypeEnum) : null;
 };
 
 /**
