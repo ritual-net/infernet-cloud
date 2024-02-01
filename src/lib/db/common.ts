@@ -25,7 +25,7 @@ export const getProviderByServiceAccountId = async (
  * Get the provider of a cluster
  *
  * @param clusterId Cluster id
- * @returns Provider type if found
+ * @returns Provider type
  */
 export const getProviderByClusterId = async (
 	clusterId: string
@@ -43,11 +43,10 @@ export const getProviderByClusterId = async (
 };
 
 /**
- * Get node data by node ids Type '$uuid' is not assignable to type '$str'.
-            Type '"std::uuid"' is not assignable to type '"std::str"'.ts(2769)
+ * Get node data by node ids
  *
  * @param nodeIds of nodes
- * @returns InfernetNodes array if found
+ * @returns InfernetNodes array
  */
 export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] | null> => {
 	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
@@ -67,7 +66,7 @@ export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] |
  * Get provider by node id
  *
  * @param nodeId of node
- * @returns ProviderType if found
+ * @returns ProviderType
  */
 export const getProviderByNodeId = async (nodeId: string): Promise<ProviderTypeEnum | null> => {
 	const node = e.select(e.InfernetNode, () => ({
