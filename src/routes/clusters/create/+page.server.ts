@@ -1,32 +1,47 @@
-// Data
-import type { PageServerLoad } from './$types'
+// Schema
 import { FormData } from './schema'
 import { superValidate } from 'sveltekit-superforms/server'
 
 
-// Server functions
-import { fail, type Actions, type Load } from '@sveltejs/kit'
+// Data
+import type { PageServerLoad } from './$types'
 
-// import { POST as createCluster } from '../../api/cluster/+server'
+export const load: PageServerLoad = async ({
+	request,
+	fetch,
+	locals,
+}) => {
+	const form = await superValidate(request, FormData)
+		
+	const { userId } = locals.getSession()
 
-export const load: PageServerLoad = async () => {
-	const form = await superValidate(FormData)
-  
-	return { form }
+	const serviceAccounts = await fetch(`/api/service_account?${new URLSearchParams({
+		user: userId,
+	})}`)
+		.then(response => response.json())
+
+	return {
+		form,
+		serviceAccounts,
+	}
 }
 
-export const actions: Actions = {
-	default: async (event) => {
-		const form = await superValidate(event.request, FormData)
 
-		console.log({form})
+// Actions
+import { type Actions, fail } from '@sveltejs/kit'
+
+export const actions: Actions = {
+	default: async ({
+		request,
+		fetch,
+	}) => {
+		const form = await superValidate(request, FormData)
 
 		if (!form.valid) {
 			return fail(400, { form })
 		}
 
-		// const result = await createCluster(event)
-		const result = await event.fetch('/api/cluster', {
+		const result = await fetch('/api/cluster', {
 			method: 'POST',
 			body: JSON.stringify(form.data),
 		})
