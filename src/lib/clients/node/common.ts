@@ -2,6 +2,7 @@
 import { getNodesByIds, getClusterByNodeId } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
+import type { Client } from 'edgedb';
 import type {
 	NodeInfo,
 	ProviderServiceAccount,
@@ -17,15 +18,16 @@ import type {
  * @remarks nodes have to belong to same cluster
  */
 export const executeNodeAction = async (
+	client: Client,
 	nodeIds: string[],
 	action: string
 ): Promise<NodeInfo[] | object> => {
-	const nodes = await getNodesByIds(nodeIds);
+	const nodes = await getNodesByIds(client, nodeIds);
 	if (!nodes) {
 		throw Error('Nodes could not be retrieved.');
 	}
 
-	const cluster = await getClusterByNodeId(nodeIds[0]);
+	const cluster = await getClusterByNodeId(client, nodeIds[0]);
 	if (!cluster) {
 		throw Error('Cluster could not be retrieved for nodes.');
 	}

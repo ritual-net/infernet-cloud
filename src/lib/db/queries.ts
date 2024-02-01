@@ -11,7 +11,10 @@ import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
  * @param nodeIds of nodes
  * @returns InfernetNodes array
  */
-export const getNodesByIds = async (client: Client, nodeIds: string[]): Promise<InfernetNode[] | null> => {
+export const getNodesByIds = async (
+	client: Client,
+	nodeIds: string[]
+): Promise<InfernetNode[] | null> => {
 	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.InfernetNode, () => ({
 			...e.InfernetNode['*'],

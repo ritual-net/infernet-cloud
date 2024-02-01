@@ -10,17 +10,18 @@ import type { RequestHandler } from '@sveltejs/kit';
 /**
  * Retrieve a node and its status/info by its ID.
  *
+ * @param locals - The locals object contains the client.
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns NodeInfo object.
  */
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ locals, params }) => {
 	const id = params.nodeId;
 
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
 	try {
-		const nodeInfo = ((await executeNodeAction([id], NodeAction.info)) as NodeInfo[])[0];
+		const nodeInfo = ((await executeNodeAction(locals.client, [id], 'info')) as NodeInfo[])[0];
 		return json(nodeInfo);
 	} catch (e) {
 		return error(400, (e as Error).message);
