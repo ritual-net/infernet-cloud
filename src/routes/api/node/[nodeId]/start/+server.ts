@@ -1,5 +1,6 @@
 import { error, json } from '@sveltejs/kit';
 import { executeNodeAction } from '$/lib/clients/node/common';
+import { NodeAction } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
@@ -15,7 +16,7 @@ export const POST: RequestHandler = async ({ params }) => {
 		return error(400, 'Node id is required');
 	}
 	try {
-		return json(await executeNodeAction([id], 'start'));
+		return json(await executeNodeAction([id], NodeAction.start));
 	} catch (e) {
 		return error(400, (e as Error).message);
 	}

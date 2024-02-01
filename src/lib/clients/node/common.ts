@@ -13,7 +13,7 @@ import { NodeAction, type NodeInfo, type ProviderServiceAccountCreds } from '$/t
 export const executeNodeAction = async (
 	nodeIds: string[],
 	action: string
-): Promise<NodeInfo[] | Object> => {
+): Promise<NodeInfo[] | object> => {
 	const nodes = await getNodesByIds(nodeIds);
 	if (!nodes) {
 		throw Error('Nodes could not be retrieved.');

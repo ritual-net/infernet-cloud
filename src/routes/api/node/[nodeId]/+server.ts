@@ -1,10 +1,11 @@
-import { client, e } from '$/lib/db';
 import { error, json } from '@sveltejs/kit';
-import { clusterAction } from '$/lib/terraform/common';
-import { TFAction } from '$/types/terraform';
-import type { RequestHandler } from '@sveltejs/kit';
 import { executeNodeAction } from '$/lib/clients/node/common';
+import { client, e } from '$/lib/db';
+import { clusterAction } from '$/lib/terraform/common';
+import { NodeAction } from '$/types/provider';
+import { TFAction } from '$/types/terraform';
 import type { NodeInfo } from '$/types/provider';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -19,7 +20,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		return error(400, 'Node id is required');
 	}
 	try {
-		const nodeInfo = ((await executeNodeAction([id], 'info')) as NodeInfo[])[0];
+		const nodeInfo = ((await executeNodeAction([id], NodeAction.info)) as NodeInfo[])[0];
 		return json(nodeInfo);
 	} catch (e) {
 		return error(400, (e as Error).message);

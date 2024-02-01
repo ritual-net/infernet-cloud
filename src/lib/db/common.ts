@@ -43,22 +43,23 @@ export const getProviderByClusterId = async (
 };
 
 /**
- * Get node data by node ids
+ * Get node data by node ids Type '$uuid' is not assignable to type '$str'.
+            Type '"std::uuid"' is not assignable to type '"std::str"'.ts(2769)
  *
  * @param nodeIds of nodes
  * @returns InfernetNodes array if found
  */
 export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] | null> => {
-	const allNodes = await e
-		.select(e.InfernetNode, () => ({
+	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.InfernetNode, () => ({
 			...e.InfernetNode['*'],
 			containers: {
 				...e.Container['*'],
 			},
+			filter: e.op(e.InfernetNode.id, 'in', e.array_unpack(ids)),
 		}))
-		.run(client);
-
-	const nodes = allNodes.filter((node) => nodeIds.includes(node.id));
+	);
+	const nodes = await query.run(client, { ids: nodeIds });
 	return nodes.length > 0 ? nodes : null;
 };
 
