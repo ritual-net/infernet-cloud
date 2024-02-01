@@ -1,5 +1,4 @@
 import path from 'path';
-import { client, e } from '$/lib/db';
 import { TFAction } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
 import * as TerraformUtils from '$/lib/utils/terraform';
@@ -77,7 +76,7 @@ export abstract class BaseTerraform {
 			return { success: false, error: 'Cluster could not be updated.', state: {} };
 		}
 
-		let error;
+		let error, nodeInfo;
 		try {
 			// Terraform action
 			const result = await SystemUtils.executeCommands(
@@ -86,32 +85,7 @@ export abstract class BaseTerraform {
 			);
 
 			if (action === TFAction.Apply) {
-				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
-				console.log(nodeInfo);
-				await e
-					.params(
-						{
-							nodeInfo: e.array(
-								e.tuple({
-									id: e.str,
-									key: e.uuid,
-								})
-							),
-						},
-						(params) => {
-							return e.for(e.array_unpack(params.nodeInfo), (obj) => {
-								return e.update(e.InfernetNode, () => ({
-									filter_single: { id: obj.key },
-									set: {
-										provider_id: obj.id,
-									},
-								}));
-							});
-						}
-					)
-					.run(client, {
-						nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
-					});
+				nodeInfo = TerraformUtils.parseTerraformOutput(result);
 			}
 		} catch (e) {
 			// We catch the error here so we can store the state file in the db.
@@ -128,6 +102,6 @@ export abstract class BaseTerraform {
 		// Remove temporary directory
 		SystemUtils.removeDir(tempDir);
 
-		return { success: error ? false : true, error, state };
+		return { success: error ? false : true, error, nodeInfo, state };
 	}
 }

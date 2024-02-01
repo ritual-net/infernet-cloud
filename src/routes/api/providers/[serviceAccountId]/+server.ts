@@ -7,19 +7,18 @@ import type { RequestHandler } from '@sveltejs/kit';
  * Fetch nested provider info (regions, zones, machines) from cloud providers
  * (e.g., GCP, AWS) given a service account.
  *
+ * @param locals - The locals object contains the client.
  * @param params - parameters object expected to contain a service account
- * `serviceAccountId`.
+ *	 `serviceAccountId`.
  * @returns Flat array of ProviderInfo objects.
  */
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ locals, params }) => {
 	const serviceAccountId = params.serviceAccountId;
 	if (!serviceAccountId) {
 		return error(400, `Service account ID is required.`);
 	}
 
-	// TODO: Make sure service account belongs to user through auth
-
-	const serviceAccount = await getServiceAccountById(serviceAccountId);
+	const serviceAccount = await getServiceAccountById(locals.client, serviceAccountId);
 	if (!serviceAccount) {
 		return error(400, `Service account ID ${serviceAccountId} does not exist.`);
 	}

@@ -1,15 +1,17 @@
-import { client, e } from '$/lib/db';
+import { e } from '$/lib/db';
 import { getClusterSelectParams } from './components';
+import type { Client } from 'edgedb';
 import type { InfernetNode } from '$schema/interfaces';
 import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
 
 /**
  * Get node data by node ids
  *
+ * @param client The database client
  * @param nodeIds of nodes
  * @returns InfernetNodes array
  */
-export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] | null> => {
+export const getNodesByIds = async (client: Client, nodeIds: string[]): Promise<InfernetNode[] | null> => {
 	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.InfernetNode, () => ({
 			...e.InfernetNode['*'],
@@ -26,10 +28,14 @@ export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] |
 /**
  * Get service account data by id
  *
+ * @param client The database client
  * @param id of ServiceAccount
  * @returns ProviderServiceAccount if found
  */
-export async function getServiceAccountById(id: string): Promise<ProviderServiceAccount | null> {
+export async function getServiceAccountById(
+	client: Client,
+	id: string
+): Promise<ProviderServiceAccount | null> {
 	const result = await e
 		.select(e.ServiceAccount, () => ({
 			user: {
@@ -48,11 +54,16 @@ export async function getServiceAccountById(id: string): Promise<ProviderService
 /**
  * Get cluster data by id
  *
+ * @param client The database client
  * @param id of Cluster
  * @param creds whether to include sensitive Service Account credentials
  * @returns ProviderCluster if found
  */
-export async function getClusterById(id: string, creds: boolean): Promise<ProviderCluster | null> {
+export async function getClusterById(
+	client: Client,
+	id: string,
+	creds: boolean
+): Promise<ProviderCluster | null> {
 	return (await e
 		.select(e.Cluster, () => ({
 			...getClusterSelectParams(creds),
@@ -64,10 +75,14 @@ export async function getClusterById(id: string, creds: boolean): Promise<Provid
 /**
  * Get cluster data by node id
  *
- * @param nodeId of node
+ * @param client The database client
+ * @param id of node
  * @returns ProviderCluster if found
  */
-export async function getClusterByNodeId(id: string): Promise<ProviderCluster | null> {
+export async function getClusterByNodeId(
+	client: Client,
+	id: string
+): Promise<ProviderCluster | null> {
 	const node = e.select(e.InfernetNode, () => ({
 		filter_single: { id },
 	}));

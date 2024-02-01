@@ -1,8 +1,8 @@
 import { error, json } from '@sveltejs/kit';
-import { ClusterTypeByProvider, client, e } from '$/lib/db';
-import { getServiceAccountById } from '$/lib/db/queries';
-import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
+import { ClusterTypeByProvider, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
+import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
+import { getServiceAccountById } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
 import type { Cluster } from '$schema/interfaces';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -10,31 +10,23 @@ import type { RequestHandler } from '@sveltejs/kit';
 /**
  * Fetch all clusters for a user.
  *
- * @param request - The request object containing 'user'.
+ * @param locals - The locals object contains the client.
  * @returns Array of Cluster objects.
  */
-export const GET: RequestHandler = async ({ request }) => {
-	const url = new URL(request.url);
-	const user = url.searchParams.get('user');
-
-	if (!user) {
-		return error(400, 'User id is required');
-	}
-	// TODO: Get user id from auth
-
+export const GET: RequestHandler = async ({ locals }) => {
 	// Get all clusters for user
 	const result = await e
 		.select(e.Cluster, (cluster) => ({
 			service_account: {
+				id: true,
 				name: true,
 				provider: true,
 			},
 			id: true,
 			name: true,
 			node_count: e.count(cluster.nodes),
-			filter: e.op(cluster.service_account.user.id, '=', e.uuid(user)),
 		}))
-		.run(client);
+		.run(locals.client);
 
 	return json(result);
 };
@@ -42,22 +34,22 @@ export const GET: RequestHandler = async ({ request }) => {
 /**
  * Create a new cluster with a given service account and an array of node configs.
  *
+ * @param locals - The locals object contains the client.
  * @param request - The request object containing 'serviceAccountId', 'config', 'nodes'.
  * @returns Cluster ID, success boolean, and Terraform message.
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ locals, request }) => {
 	const { serviceAccountId, config, nodes } = await request.json();
 
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
 	}
 
-	// TODO: Make sure service account belongs to user through auth
-
 	// TODO: Enforce correctness of config, nodes + containers?
 
 	// Get provider of service account
-	const serviceAccount = await getServiceAccountById(serviceAccountId);
+	const client = locals.client;
+	const serviceAccount = await getServiceAccountById(client, serviceAccountId);
 	if (!serviceAccount) {
 		return error(400, 'Service account could not be retrieved');
 	}
@@ -85,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	// Apply Terraform changes to create cluster
-	const { error: errorMessage, success } = await clusterAction(cluster.id, TFAction.Apply);
+	const { error: errorMessage, success } = await clusterAction(client, cluster.id, TFAction.Apply);
 	return json({
 		id: cluster.id,
 		message: success ? 'Cluster created successfully' : errorMessage,

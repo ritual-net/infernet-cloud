@@ -1,10 +1,11 @@
-import { error, json, type RequestHandler } from '@sveltejs/kit';
-import { client, e } from '$/lib/db';
+import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
+import { e } from '$/lib/db';
 import { executeNodeAction } from '$/lib/clients/node/common';
 import { getClusterByNodeId } from '$/lib/db/queries';
-import { NodeAction, type NodeInfo } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
+import type { NodeInfo } from '$/types/provider';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -29,20 +30,20 @@ export const GET: RequestHandler = async ({ params }) => {
 /**
  * Delete a node by its ID.
  *
+ * @param locals - The locals object contains the client.
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns Success boolean and Terraform message.
  */
-export const DELETE: RequestHandler = async ({ params }) => {
+export const DELETE: RequestHandler = async ({ locals, params }) => {
 	const id = params.nodeId;
 
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
 
-	// TODO: Make sure node belongs to user through auth
-
 	// Get cluster id and service account
-	const cluster = await getClusterByNodeId(id);
+	const client = locals.client;
+	const cluster = await getClusterByNodeId(client, id);
 
 	if (!cluster) {
 		return error(400, 'Cluster could not be retrieved');
@@ -63,7 +64,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 		.run(client);
 
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(cluster.id, TFAction.Apply);
+	const { error: errorMessage, success } = await clusterAction(client, cluster.id, TFAction.Apply);
 	return json({
 		message: success ? 'Node destroyed successfully.' : errorMessage,
 		success,
