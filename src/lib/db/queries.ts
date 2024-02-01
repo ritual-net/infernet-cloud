@@ -1,7 +1,7 @@
 import { client, e } from '$/lib/db';
 import { getClusterSelectParams } from './components';
 import type { InfernetNode } from '$schema/interfaces';
-import { type ProviderCluster, type ProviderServiceAccount } from '$/types/provider';
+import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
 
 /**
  * Get node data by node ids
