@@ -1,6 +1,7 @@
+/* eslint-disable no-case-declarations */
 import { getNodesByIds, getClusterByNodeId } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
-import type { NodeInfo } from '$/types/provider';
+import { NodeAction, type NodeInfo, type ProviderServiceAccount, type ProviderServiceAccountCreds } from '$/types/provider';
 
 /**
  * Given an array of InfernetNode ids and an action, complete action via node client.
@@ -24,7 +25,7 @@ export const executeNodeAction = async (
 		throw Error('Cluster could not be retrieved for nodes.');
 	}
 
-	const service_account = cluster.service_account;
+	const service_account = cluster.service_account as ProviderServiceAccount;
 	const provider = service_account.provider;
 
 	const classArgs = NodeClient[provider].classArgs(cluster, service_account) as [

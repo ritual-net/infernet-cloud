@@ -40,7 +40,7 @@ export const NodeClient = {
 			service_account.creds,
 			cluster.region,
 		],
-		functionArgs: (_1: ProviderCluster, _2: ProviderServiceAccount) => ({}),
+		functionArgs: (..._: [ProviderCluster, ProviderServiceAccount]) => ({}),
 	},
 	[ProviderTypeEnum.GCP]: {
 		class: GCPNodeClient,
