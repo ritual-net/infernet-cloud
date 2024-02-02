@@ -105,6 +105,9 @@
 	{#each items as item}
 		<div
 			use:melt={$content(String(item.id))}
+			on:focus|capture={(e) => {
+				value = item.id
+			}}
 		>
 			<slot name="content" {item} />
 		</div>
