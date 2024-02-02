@@ -117,6 +117,8 @@
 
 <style>
 	[data-melt-tabs] {
+		isolation: isolate;
+
 		display: grid;
 
 		&[data-orientation="horizontal"] {
