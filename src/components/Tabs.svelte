@@ -120,6 +120,7 @@
 		isolation: isolate;
 
 		display: grid;
+		gap: var(--borderWidth);
 
 		&[data-orientation="horizontal"] {
 			grid:
