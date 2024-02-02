@@ -1,44 +1,127 @@
-CREATE MIGRATION m1a7erskwy7mn3uz3n2s3v2wpy4s677f7yt2ksd55ri3ldznl6xsnq
+CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
     ONTO initial
 {
-  CREATE EXTENSION pgcrypto VERSION '1.3';
-  CREATE EXTENSION auth VERSION '1.0';
-  CREATE TYPE default::Cluster {
-      CREATE PROPERTY tfstate: std::str;
+  CREATE TYPE default::Container {
+      CREATE REQUIRED PROPERTY allowed_addresses: array<std::str> {
+          SET default := (<array<std::str>>[]);
+      };
+      CREATE REQUIRED PROPERTY allowed_delegate_addresses: array<std::str> {
+          SET default := (<array<std::str>>[]);
+      };
+      CREATE REQUIRED PROPERTY allowed_ips: array<std::str> {
+          SET default := (<array<std::str>>[]);
+      };
+      CREATE REQUIRED PROPERTY command: std::str {
+          SET default := '';
+      };
+      CREATE REQUIRED PROPERTY container_id: std::str;
+      CREATE OPTIONAL PROPERTY description: std::str;
+      CREATE REQUIRED PROPERTY env: std::json {
+          SET default := (<std::json>{});
+      };
+      CREATE REQUIRED PROPERTY external: std::bool {
+          SET default := true;
+      };
+      CREATE REQUIRED PROPERTY gpu: std::bool {
+          SET default := false;
+      };
+      CREATE REQUIRED PROPERTY image: std::str;
   };
   CREATE TYPE default::InfernetNode {
-      CREATE REQUIRED LINK cluster: default::Cluster;
-      CREATE REQUIRED PROPERTY config: std::json;
-  };
-  ALTER TYPE default::Cluster {
-      CREATE LINK nodes := (.<cluster[IS default::InfernetNode]);
-  };
-  CREATE SCALAR TYPE default::CloudProvider EXTENDING enum<AWS, GCP>;
-  CREATE TYPE default::ServiceAccount {
-      CREATE REQUIRED PROPERTY credentials: std::json;
-      CREATE REQUIRED PROPERTY provider: default::CloudProvider;
-  };
-  ALTER TYPE default::Cluster {
-      CREATE REQUIRED LINK serviceAccount: default::ServiceAccount;
-  };
-  ALTER TYPE default::ServiceAccount {
-      CREATE MULTI LINK cluster := (.<serviceAccount[IS default::Cluster]);
-  };
-  CREATE TYPE default::Container {
-      CREATE REQUIRED LINK node: default::InfernetNode;
-      CREATE REQUIRED PROPERTY config: std::json;
-  };
-  ALTER TYPE default::InfernetNode {
-      CREATE LINK containers := (.<node[IS default::Container]);
+      CREATE MULTI LINK containers: default::Container {
+          ON SOURCE DELETE DELETE TARGET;
+          CREATE CONSTRAINT std::exclusive;
+      };
+      CREATE REQUIRED PROPERTY chain_enabled: std::bool {
+          SET default := false;
+      };
+      CREATE PROPERTY coordinator_address: std::str {
+          SET default := '';
+      };
+      CREATE REQUIRED PROPERTY forward_stats: std::bool {
+          SET default := true;
+      };
+      CREATE PROPERTY max_gas_limit: std::int64 {
+          SET default := 0;
+      };
+      CREATE PROPERTY private_key: std::str {
+          SET default := '';
+      };
+      CREATE PROPERTY rpc_url: std::str {
+          SET default := '';
+      };
+      CREATE PROPERTY trail_head_blocks: std::int16 {
+          SET default := 0;
+      };
   };
   CREATE TYPE default::User {
       CREATE REQUIRED PROPERTY email: std::str;
       CREATE REQUIRED PROPERTY name: std::str;
   };
-  ALTER TYPE default::ServiceAccount {
-      CREATE REQUIRED LINK user: default::User;
+  CREATE SCALAR TYPE default::CloudProvider EXTENDING enum<AWS, GCP>;
+  CREATE ABSTRACT TYPE default::ServiceAccount {
+      CREATE REQUIRED LINK user: default::User {
+          SET readonly := true;
+      };
+      CREATE REQUIRED PROPERTY name: std::str;
+      CREATE REQUIRED PROPERTY provider: default::CloudProvider;
   };
-  ALTER TYPE default::User {
-      CREATE MULTI LINK serviceAccounts := (.<user[IS default::ServiceAccount]);
+  CREATE ABSTRACT TYPE default::Cluster {
+      CREATE MULTI LINK nodes: default::InfernetNode {
+          ON SOURCE DELETE DELETE TARGET;
+          CREATE CONSTRAINT std::exclusive;
+      };
+      CREATE REQUIRED LINK service_account: default::ServiceAccount {
+          SET readonly := true;
+      };
+      CREATE REQUIRED PROPERTY deploy_router: std::bool {
+          SET default := false;
+      };
+      CREATE REQUIRED PROPERTY ip_allow_http: array<std::str> {
+          SET default := (['0.0.0.0/0']);
+      };
+      CREATE REQUIRED PROPERTY ip_allow_ssh: array<std::str> {
+          SET default := (['0.0.0.0/0']);
+      };
+      CREATE REQUIRED PROPERTY name: std::str;
+      CREATE REQUIRED PROPERTY tfstate: std::str {
+          SET default := '';
+      };
+  };
+  CREATE TYPE default::AWSCluster EXTENDING default::Cluster {
+      CREATE REQUIRED PROPERTY ami: std::str {
+          SET readonly := true;
+      };
+      CREATE REQUIRED PROPERTY machine_type: std::str {
+          SET readonly := true;
+      };
+      CREATE REQUIRED PROPERTY region: std::str {
+          SET readonly := true;
+      };
+  };
+  CREATE TYPE default::AWSServiceAccount EXTENDING default::ServiceAccount {
+      CREATE REQUIRED PROPERTY creds: tuple<user_name: std::str, access_key_id: std::str, status: std::str, secret_access_key: std::str, create_date: std::str>;
+      ALTER PROPERTY provider {
+          SET default := (default::CloudProvider.AWS);
+          SET OWNED;
+      };
+  };
+  CREATE TYPE default::GCPCluster EXTENDING default::Cluster {
+      CREATE REQUIRED PROPERTY machine_type: std::str {
+          SET readonly := true;
+      };
+      CREATE REQUIRED PROPERTY region: std::str {
+          SET readonly := true;
+      };
+      CREATE REQUIRED PROPERTY zone: std::str {
+          SET readonly := true;
+      };
+  };
+  CREATE TYPE default::GCPServiceAccount EXTENDING default::ServiceAccount {
+      CREATE REQUIRED PROPERTY creds: tuple<type: std::str, project_id: std::str, private_key_id: std::str, private_key: std::str, client_email: std::str, client_id: std::str, auth_uri: std::str, token_uri: std::str, auth_provider_x509_cert_url: std::str, client_x509_cert_url: std::str, universe_domain: std::str>;
+      ALTER PROPERTY provider {
+          SET default := (default::CloudProvider.GCP);
+          SET OWNED;
+      };
   };
 };

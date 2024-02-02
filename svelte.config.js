@@ -19,6 +19,7 @@ export default {
 			'$components': './src/components',
 			'$db': './src/server/db',
 			'$schema': './dbschema',
-		}
-	}
+			'$': './src',
+		},
+	},
 }

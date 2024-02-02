@@ -1,14 +1,9 @@
-CREATE MIGRATION m1qlreusb3oxaosnkt5im777v6om5ba4xbzw6t52llzuo2bwhmqchq
-    ONTO m1ntfngp3jp7dg6rvddsujssuqta7zzn42yqyfldww2nmaifzsl2ya
+CREATE MIGRATION m1kkgga4khjjqaduu7plbu6jevzokvuo5clzv2y6hn324hpgftvaqq
+    ONTO m1jdi46lxl4mmrcjhoxhh62qwbbb6kzqdjhldsks5ybmd6zrsjhqaa
 {
-  ALTER TYPE default::Container {
-      ALTER LINK node {
-          ON TARGET DELETE DELETE SOURCE;
-      };
-  };
   ALTER TYPE default::InfernetNode {
-      ALTER LINK cluster {
-          ON TARGET DELETE DELETE SOURCE;
+      CREATE PROPERTY provider_id: std::str {
+          SET default := '';
       };
   };
 };
