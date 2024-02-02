@@ -33,7 +33,7 @@ export const createNodeParams = e.tuple({
 
 /**
  * Query to insert an InfernetNode
- * 
+ *
  * @param node The node expression params
  * @returns The insert query
  */

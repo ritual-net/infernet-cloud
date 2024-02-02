@@ -1,14 +1,15 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth/pkce';
+import { EDGEDB_AUTH_BASE_URL } from '$lib/auth';
 
 /**
  * Handles the link in the email verification flow.
  *
  * @param cookies - The cookies object contains the 'edgedb-pkce-verifier' cookie.
+ * @param fetch - The fetch function.
  * @param request - The request object containing 'verification_token'.
  * @returns The response object.
  */
-export const GET: RequestHandler = async ({ cookies, request }) => {
+export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 	const url = new URL(request.url);
 	const verification_token = url.searchParams.get('verification_token');
 	if (!verification_token) {

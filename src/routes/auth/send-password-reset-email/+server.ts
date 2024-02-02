@@ -1,18 +1,19 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL, SERVER_PORT, generatePKCE } from '$/lib/auth/pkce';
+import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
 
 /**
  * Request a password reset for an email.
  *
+ * @param fetch - The fetch function.
  * @param request - The request object containing 'email'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ fetch, request }) => {
 	const body = await request.json();
 	const { email } = body;
 
 	// TODO: Needs to change
-	const reset_url = `http://localhost:${SERVER_PORT}/auth/ui/reset-password`;
+	const reset_url = `${SERVER_HOST}/auth/ui/reset-password`;
 	const provider = 'builtin::local_emailpassword';
 	const pkce = generatePKCE();
 

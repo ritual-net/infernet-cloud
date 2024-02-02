@@ -1,16 +1,17 @@
 import { createClient } from 'edgedb';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { e } from '$/lib/db';
-import { EDGEDB_AUTH_BASE_URL, SERVER_PORT, generatePKCE } from '$/lib/auth/pkce';
+import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
 
 /**
  * Handles sign up with email and password.
  *
+ * @param fetch - The fetch function.
  * @param request - The request object containing 'email', 'name', 'password', and
  *   'provider'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ fetch, request }) => {
 	const body = await request.json();
 
 	const pkce = generatePKCE();
@@ -36,8 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			email,
 			password,
 			provider,
-			// TODO: This needs to change
-			verify_url: `http://localhost:${SERVER_PORT}/auth/verify`,
+			verify_url: `${SERVER_HOST}/auth/verify`,
 		}),
 	});
 
