@@ -8,6 +8,10 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+tmp
+tests
 
 # EdgeDB
 **/dbschema/edgeql-js
+
+dbschema/edgeql-js

@@ -1,12 +1,17 @@
-import { client, e, type $infer } from '$db';
 import { error, json } from '@sveltejs/kit';
+import { executeNodeAction } from '$/lib/clients/node/common';
+import { client, e } from '$/lib/db';
+import { clusterAction } from '$/lib/terraform/common';
+import { NodeAction } from '$/types/provider';
+import { TFAction } from '$/types/terraform';
+import type { NodeInfo } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
- * Retrieve a node by its ID.
- * 
- * @param params - The request parameters object, expected to contain 'nodeId'.
- * @returns Node object.
+ * Retrieve a node and its status/info by its ID.
+ *
+ * @param params - The parameters object, expected to contain 'nodeId'.
+ * @returns NodeInfo object.
  */
 export const GET: RequestHandler = async ({ params }) => {
 	const id = params.nodeId;
@@ -14,102 +19,79 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
-
-	// TODO: Make sure node belongs to user through auth
-
-	// Get node by id
-	const result = await e
-		.select(e.InfernetNode, () => ({
-			id: true,
-			config: true,
-			containers: {
-				id: true,
-				config: true
-			},
-			cluster: {
-				id: true
-			},
-			filter_single: { id }
-		}))
-		.run(client);
-
-	return json(result);
-};
-
-/**
- * Modify a node by its ID.
- * 
- * @param params - The request parameters object, expected to contain 'nodeId'.
- * @param request - The request object containing the new node config.
- * @returns Updated Node object.
- */
-export const PATCH: RequestHandler = async ({ params, request }) => {
-	const id = params.nodeId;
-	const newConfig = await request.json();
-
-	if (!id) {
-		return error(400, 'Node id is required');
+	try {
+		const nodeInfo = ((await executeNodeAction([id], NodeAction.info)) as NodeInfo[])[0];
+		return json(nodeInfo);
+	} catch (e) {
+		return error(400, (e as Error).message);
 	}
-
-	// TODO: Make sure node belongs to user through auth
-
-	// Get node by id
-	const node = await e
-		.select(e.InfernetNode, () => ({
-			config: true,
-			filter_single: { id }
-		}))
-		.run(client);
-
-	if (!node) {
-		return error(400, 'Node not found');
-	}
-
-	// Update existing node config with new config values
-	const config = node.config as Record<string, unknown>;
-	Object.keys(newConfig).forEach((key) => {
-		config[key] = newConfig[key];
-	});
-
-	// Update node
-	const newNode = await e
-		.update(e.InfernetNode, (node) => ({
-			filter_single: e.op(node.id, '=', e.uuid(id)),
-			set: {
-				config
-			}
-		}))
-		.run(client);
-
-	// TODO: Call terraform to update cluster, get back state file, update node.
-
-	return json(newNode);
 };
 
 /**
  * Delete a node by its ID.
- * 
- * @param params - The request parameters object, expected to contain 'nodeId'.
- * @returns ID of the deleted Node.
+ *
+ * @param params - The parameters object, expected to contain 'nodeId'.
+ * @returns Success boolean and Terraform message.
  */
 export const DELETE: RequestHandler = async ({ params }) => {
 	const id = params.nodeId;
-
-	// TODO: confirm node belongs to user through auth, before deleting
 
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
 
-	// TODO: Call terraform to update cluster
-	// If successful, delete node
+	// TODO: Make sure node belongs to user through auth
 
-	// Delete cluster, nodes and containers deleted through cascade
-	const node = await e
-		.delete(e.InfernetNode, (node) => ({
-			filter_single: e.op(node.id, '=', e.uuid(id))
-		}))
+	const node = e.select(e.InfernetNode, () => ({
+		filter_single: { id },
+	}));
+
+	// Get cluster id and service account
+	const clusters = await e
+		.with(
+			[node],
+			e.select(e.Cluster, (cluster) => ({
+				id: true,
+				service_account: {
+					id: true,
+					provider: true,
+				},
+				filter: e.op(node, 'in', cluster.nodes),
+			}))
+		)
 		.run(client);
 
-	return json(node);
+	if (clusters.length !== 1) {
+		return error(400, 'Cluster could not be retrieved');
+	}
+
+	const cluster = clusters[0];
+	const provider = cluster.service_account.provider;
+
+	// Delete node
+	const deleteNodeQuery = e.delete(e.InfernetNode, () => ({
+		filter_single: { id: e.uuid(id) },
+	}));
+	await e
+		.with(
+			[deleteNodeQuery],
+			e.update(e.Cluster, () => ({
+				filter_single: { id: cluster.id },
+				set: {
+					nodes: { '-=': deleteNodeQuery },
+				},
+			}))
+		)
+		.run(client);
+
+	// Apply Terraform changes to cluster
+	const { error: errorMessage, success } = await clusterAction(
+		cluster.id,
+		provider,
+		TFAction.Apply
+	);
+	return json({
+		message: success ? 'Node destroyed successfully.' : errorMessage,
+		success,
+	});
 };
