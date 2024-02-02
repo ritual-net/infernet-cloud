@@ -40,6 +40,8 @@
 
 
 	// Transitions/animations
+	import SizeTransition from './SizeTransition.svelte'
+
 	import { crossfade } from 'svelte/transition'
 	import { cubicInOut } from 'svelte/easing'
 
@@ -50,41 +52,23 @@
 </script>
 
 
-<div
-	use:melt={$root}
-	data-layout={layout}
->
+<SizeTransition>
 	<div
-		use:melt={$list}
-		aria-label={labelText}
+		use:melt={$root}
+		data-layout={layout}
 	>
-		{#if layout === 'default'}
-			{#each items as item (item.id)}
-				<button
-					type="button"
-					use:melt={$trigger(String(item.id))}
-				>
-					{item.label}
-
-					{#if String(value) === String(item.id)}
-						<div
-							class="trigger-indicator"
-							in:indicatorIn={{ key: 'trigger' }}
-							out:indicatorOut={{ key: 'trigger' }}
-						/>
-					{/if}
-				</button>
-			{/each}
-
-		{:else if layout === 'tooltip-dots'}
-			{#each items as item (item.id)}
-				<Tooltip
-					labelText={item.label}
-				>
+		<div
+			use:melt={$list}
+			aria-label={labelText}
+		>
+			{#if layout === 'default'}
+				{#each items as item (item.id)}
 					<button
 						type="button"
 						use:melt={$trigger(String(item.id))}
 					>
+						{item.label}
+
 						{#if String(value) === String(item.id)}
 							<div
 								class="trigger-indicator"
@@ -93,31 +77,54 @@
 							/>
 						{/if}
 					</button>
+				{/each}
 
-					<svelte:fragment slot="content">
-						{item.label}
-					</svelte:fragment>
-				</Tooltip>
-			{/each}
-		{/if}
-	</div>
+			{:else if layout === 'tooltip-dots'}
+				{#each items as item (item.id)}
+					<Tooltip
+						labelText={item.label}
+					>
+						<button
+							type="button"
+							use:melt={$trigger(String(item.id))}
+						>
+							{#if String(value) === String(item.id)}
+								<div
+									class="trigger-indicator"
+									in:indicatorIn={{ key: 'trigger' }}
+									out:indicatorOut={{ key: 'trigger' }}
+								/>
+							{/if}
+						</button>
 
-	{#each items as item}
-		<div
-			use:melt={$content(String(item.id))}
-			on:focus|capture={(e) => {
-				value = item.id
-			}}
-		>
-			<slot name="content" {item} />
+						<svelte:fragment slot="content">
+							{item.label}
+						</svelte:fragment>
+					</Tooltip>
+				{/each}
+			{/if}
 		</div>
-	{/each}
-</div>
+
+		{#each items as item}
+			<div
+				use:melt={$content(String(item.id))}
+				on:focus|capture={(e) => {
+					value = item.id
+				}}
+			>
+				<slot name="content" {item} />
+			</div>
+		{/each}
+	</div>
+</SizeTransition>
 
 
 <style>
 	[data-melt-tabs] {
+		isolation: isolate;
+
 		display: grid;
+		gap: var(--borderWidth);
 
 		&[data-orientation="horizontal"] {
 			grid:
@@ -171,11 +178,13 @@
 		display: block;
 
 		transition-duration: 0.3s;
+		height: max-height;
 
 		&[hidden] {
 			z-index: -1;
 			pointer-events: none;
 
+			height: 0;
 			scale: 0.95;
 			opacity: 0;
 			filter: blur(2px);

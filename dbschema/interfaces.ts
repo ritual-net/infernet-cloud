@@ -134,6 +134,7 @@ export interface InfernetNode extends std.$Object {
 	private_key?: string | null;
 	rpc_url?: string | null;
 	trail_head_blocks?: number | null;
+	provider_id?: string | null;
 }
 export interface User extends std.$Object {
 	email: string;

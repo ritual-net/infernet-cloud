@@ -1,14 +1,17 @@
-import { client, e } from '$/lib/db';
 import { error, json } from '@sveltejs/kit';
+import { executeNodeAction } from '$/lib/clients/node/common';
+import { client, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
+import { NodeAction } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
+import type { NodeInfo } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
- * Retrieve a node by its ID.
+ * Retrieve a node and its status/info by its ID.
  *
  * @param params - The parameters object, expected to contain 'nodeId'.
- * @returns Node object.
+ * @returns NodeInfo object.
  */
 export const GET: RequestHandler = async ({ params }) => {
 	const id = params.nodeId;
@@ -16,21 +19,12 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
-
-	// TODO: Make sure node belongs to user through auth
-
-	// Get node by id
-	const result = await e
-		.select(e.InfernetNode, () => ({
-			...e.InfernetNode['*'],
-			containers: {
-				...e.Container['*'],
-			},
-			filter_single: { id },
-		}))
-		.run(client);
-
-	return json(result);
+	try {
+		const nodeInfo = ((await executeNodeAction([id], NodeAction.info)) as NodeInfo[])[0];
+		return json(nodeInfo);
+	} catch (e) {
+		return error(400, (e as Error).message);
+	}
 };
 
 /**

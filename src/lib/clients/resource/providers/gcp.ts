@@ -1,11 +1,11 @@
-import { google, compute_v1 } from 'googleapis';
-import { BaseClient } from '$/lib/clients/base';
-import type { OAuth2Client } from 'google-auth-library';
-import type { Machine } from '$/types/provider';
+import { compute_v1, google } from 'googleapis';
+import { BaseResourceClient } from '$/lib/clients/resource/base';
 import type { GCPServiceAccount } from '$schema/interfaces';
+import type { Machine } from '$/types/provider';
+import type { OAuth2Client } from 'google-auth-library';
 
-// Google Cloud Provider extension of BaseClient abstract class.
-export class GCPClient extends BaseClient {
+// Google Cloud Provider extension of BaseResourceClient abstract class.
+export class GCPResourceClient extends BaseResourceClient {
 	googleCompute!: compute_v1.Compute;
 	projectId: string = '';
 

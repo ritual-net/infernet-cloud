@@ -1,4 +1,5 @@
 import path from 'path';
+import { client, e } from '$/lib/db';
 import * as SystemUtils from '$/lib/utils/system';
 import * as TerraformUtils from '$/lib/utils/terraform';
 import type { CommandExecutionError } from '$/types/error';
@@ -87,6 +88,30 @@ export abstract class BaseTerraform {
 			if (action === TFAction.Apply) {
 				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
 				console.log(nodeInfo);
+				await e
+					.params(
+						{
+							nodeInfo: e.array(
+								e.tuple({
+									id: e.str,
+									key: e.uuid,
+								})
+							),
+						},
+						(params) => {
+							return e.for(e.array_unpack(params.nodeInfo), (obj) => {
+								return e.update(e.InfernetNode, () => ({
+									filter_single: { id: obj.key },
+									set: {
+										provider_id: obj.id,
+									},
+								}));
+							});
+						}
+					)
+					.run(client, {
+						nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
+					});
 			}
 			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db
 			// TODO: Store nodeInfo in db, probably as a json (aws/gcp agnostic?)
@@ -95,7 +120,7 @@ export abstract class BaseTerraform {
 			// Even if the apply fails, the cluster may be partially created / updated,
 			// so we want the state file to reflect that.
 			const commandError = e as CommandExecutionError;
-			error = commandError.stderr ?? commandError.error ?? 'Unexpected error occured.';
+			error = commandError.stderr ?? commandError.error ?? commandError;
 			console.error(error);
 		}
 
