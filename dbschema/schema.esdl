@@ -12,10 +12,6 @@ module default {
     required name: str;
     required email: str;
     required identity: ext::auth::Identity;
-
-    access policy only_owner
-      allow all
-      using (.id ?= global current_user.id);
   }
 
   abstract type ServiceAccount {
@@ -129,6 +125,8 @@ module default {
     access policy only_owner
       allow all
       using (.<nodes[is Cluster].service_account.user ?= global current_user);
+    access policy allow_insert
+        allow insert;
   }
 
   abstract type Cluster {
@@ -145,6 +143,7 @@ module default {
     required tfstate: str {
       default := "";
     }
+    router_ip: str;
 
     required service_account: ServiceAccount {
       readonly := true;

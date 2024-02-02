@@ -1,4 +1,5 @@
 import { e } from '$/lib/db';
+import { ProviderClient } from '$/lib/index';
 import { ProviderTypeEnum } from '$/types/provider';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -40,7 +41,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const client = locals.client;
 
 	// TODO: Validate format of credentials
-	// TODO: Validate if credentials work or not, don't store them in db otherwise
+    try {
+        await (new ProviderClient[provider as ProviderTypeEnum]).auth(credentials);
+    } catch (err) {
+        return error(400, `Error validating credentials: ${(err as Error).message}`);
+    }
 
 	let query;
 	switch (provider) {

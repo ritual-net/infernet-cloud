@@ -23,17 +23,18 @@ export async function clusterAction(client: Client, clusterId: string, action: T
 	const { error, nodeInfo, state, success } = await ProviderTerraform[
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
-
+    console.log(nodeInfo);
 	// Store state in the database
 	await e
 		.update(e.Cluster, () => ({
 			filter_single: { id: clusterId },
 			set: {
 				tfstate: JSON.stringify(state),
+                router_id: nodeInfo![0].router_id,
 			},
 		}))
 		.run(client);
-
+    
 	// Update node provider IDs
 	if (nodeInfo) {
 		await e
@@ -52,6 +53,7 @@ export async function clusterAction(client: Client, clusterId: string, action: T
 							filter_single: { id: obj.key },
 							set: {
 								provider_id: obj.id,
+
 							},
 						}))
 					)
