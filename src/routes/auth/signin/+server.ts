@@ -1,13 +1,14 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL, generatePKCE } from '$/lib/auth/pkce';
+import { EDGEDB_AUTH_BASE_URL, generatePKCE } from '$/lib/auth';
 
 /**
  * Handles sign in with email and password.
  *
+ * @param fetch - The fetch function.
  * @param request - The request object containing 'email', 'password', and 'provider'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ fetch, request }) => {
 	const body = await request.json();
 
 	const pkce = generatePKCE();

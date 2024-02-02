@@ -1,14 +1,15 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth/pkce';
+import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
 
 /**
  * Send new password with reset token to EdgeDB Auth.
  *
  * @param cookies - The cookies object contains the 'edgedb-pkce-verifier' cookie.
+ * @param fetch - The fetch function.
  * @param request - The request object containing 'reset_token' and 'password'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ cookies, request }) => {
+export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	const body = await request.json();
 	const { reset_token, password } = body;
 

@@ -46,16 +46,15 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 						})
 					),
 				},
-				(params) => {
-					return e.for(e.array_unpack(params.nodeInfo), (obj) => {
-						return e.update(e.InfernetNode, () => ({
+				(params) =>
+					e.for(e.array_unpack(params.nodeInfo), (obj) =>
+						e.update(e.InfernetNode, () => ({
 							filter_single: { id: obj.key },
 							set: {
 								provider_id: obj.id,
 							},
-						}));
-					});
-				}
+						}))
+					)
 			)
 			.run(client, {
 				nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),

@@ -1,14 +1,15 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth/pkce';
+import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
 
 /**
  * Handles the PKCE callback and exchanges the `code` and `verifier
  * for an auth_token, setting the auth_token as an HttpOnly cookie.
  *
  * @param cookies - The cookies object contains the 'edgedb-pkce-verifier' cookie.
+ * @param fetch - The fetch function.
  * @param request - The request object containing 'code'.
  */
-export const GET: RequestHandler = async ({ cookies, request }) => {
+export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 	const url = new URL(request.url);
 
 	const code = url.searchParams.get('code');
