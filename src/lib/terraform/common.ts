@@ -19,7 +19,7 @@ export async function clusterAction(client: Client, clusterId: string, action: T
 	if (!cluster) {
 		return { error: 'Cluster not found', success: false };
 	}
-
+    console.log(cluster);
 	const { error, nodeInfo, state, success } = await ProviderTerraform[
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
@@ -30,7 +30,7 @@ export async function clusterAction(client: Client, clusterId: string, action: T
 			filter_single: { id: clusterId },
 			set: {
 				tfstate: JSON.stringify(state),
-                router_id: nodeInfo![0].router_id,
+                router_ip: String(nodeInfo![0].router_id),
 			},
 		}))
 		.run(client);

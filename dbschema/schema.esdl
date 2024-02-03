@@ -89,6 +89,8 @@ module default {
     access policy only_owner
       allow all
       using (.<containers[is InfernetNode].<nodes[is Cluster].service_account.user ?= global current_user);
+    access policy allow_insert
+        allow insert;
   }
 
   type InfernetNode {
