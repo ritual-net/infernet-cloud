@@ -29,7 +29,7 @@ export const nodeAction = async (
 		throw Error('Nodes could not be retrieved.');
 	}
 
-	const cluster = await getClusterByNodeId(client, nodeIds[0]);
+	const cluster = await getClusterByNodeId(client, nodeIds[0], true);
 	if (!cluster) {
 		throw Error('Cluster could not be retrieved for nodes.');
 	}
