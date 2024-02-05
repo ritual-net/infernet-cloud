@@ -1,4 +1,4 @@
-CREATE MIGRATION m1owa3hl2sybdorv4nkerctvrqi4c6zcjhr2nyren3scf7pnsd4laq
+CREATE MIGRATION m1spe5lzfruraih3l2q6vngoqp5mkxxjlau352wf7il3jue5zxw2da
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -7,6 +7,8 @@ CREATE MIGRATION m1owa3hl2sybdorv4nkerctvrqi4c6zcjhr2nyren3scf7pnsd4laq
       CREATE REQUIRED LINK identity: ext::auth::Identity;
       CREATE REQUIRED PROPERTY name: std::str;
       CREATE REQUIRED PROPERTY email: std::str;
+      CREATE ACCESS POLICY signup
+          ALLOW INSERT ;
   };
   CREATE GLOBAL default::current_user := (std::assert_single((SELECT
       default::User {
@@ -17,6 +19,8 @@ CREATE MIGRATION m1owa3hl2sybdorv4nkerctvrqi4c6zcjhr2nyren3scf7pnsd4laq
       (.identity = GLOBAL ext::auth::ClientTokenIdentity)
   )));
   CREATE TYPE default::Container {
+      CREATE ACCESS POLICY insertion
+          ALLOW INSERT ;
       CREATE REQUIRED PROPERTY allowed_addresses: array<std::str> {
           SET default := (<array<std::str>>[]);
       };
@@ -47,6 +51,8 @@ CREATE MIGRATION m1owa3hl2sybdorv4nkerctvrqi4c6zcjhr2nyren3scf7pnsd4laq
           ON SOURCE DELETE DELETE TARGET;
           CREATE CONSTRAINT std::exclusive;
       };
+      CREATE ACCESS POLICY insertion
+          ALLOW INSERT ;
       CREATE REQUIRED PROPERTY chain_enabled: std::bool {
           SET default := false;
       };
