@@ -12,6 +12,13 @@ module default {
     required name: str;
     required email: str;
     required identity: ext::auth::Identity;
+
+    access policy only_owner
+      allow all
+      using (.id ?= global current_user.id);
+
+    access policy signup
+      allow insert
   }
 
   abstract type ServiceAccount {
@@ -89,8 +96,9 @@ module default {
     access policy only_owner
       allow all
       using (.<containers[is InfernetNode].<nodes[is Cluster].service_account.user ?= global current_user);
-    access policy allow_insert
-        allow insert;
+
+    access policy insertion
+      allow insert
   }
 
   type InfernetNode {
@@ -127,8 +135,9 @@ module default {
     access policy only_owner
       allow all
       using (.<nodes[is Cluster].service_account.user ?= global current_user);
-    access policy allow_insert
-        allow insert;
+  
+    access policy insertion
+      allow insert
   }
 
   abstract type Cluster {

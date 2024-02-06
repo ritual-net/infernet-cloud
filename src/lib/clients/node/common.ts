@@ -31,7 +31,7 @@ export const getNodesClusterId = async (client: Client, nodes: InfernetNode[]): 
     }
 
     for (let node of nodes) {
-        const nodeCluster = await getClusterByNodeId(client, node.id);
+        const nodeCluster = await getClusterByNodeId(client, node.id, true);
         if (nodeCluster!.id !== cluster.id) {
             throw Error('Nodes do not belong to the same cluster.');
         }

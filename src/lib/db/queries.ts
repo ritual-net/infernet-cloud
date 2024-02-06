@@ -80,11 +80,13 @@ export async function getClusterById(
  *
  * @param client The database client
  * @param id of node
+ * @param creds whether to include sensitive Service Account credentials
  * @returns ProviderCluster if found
  */
 export async function getClusterByNodeId(
 	client: Client,
-	id: string
+	id: string,
+	creds = false,
 ): Promise<ProviderCluster | null> {
 	const node = e.select(e.InfernetNode, () => ({
 		filter_single: { id },
@@ -95,7 +97,7 @@ export async function getClusterByNodeId(
 		.with(
 			[node],
 			e.select(e.Cluster, (cluster) => ({
-				...getClusterSelectParams(false),
+				...getClusterSelectParams(creds),
 				filter: e.op(node, 'in', cluster.nodes),
 			}))
 		)
