@@ -1,18 +1,27 @@
-import AWS from 'aws-sdk';
+import {
+    DescribeInstancesCommand,
+	EC2Client, 
+    StartInstancesCommand,
+    StopInstancesCommand,
+} from '@aws-sdk/client-ec2';
 import { ProviderTypeEnum } from '$/types/provider';
 import type { AWSServiceAccount } from '$schema/interfaces';
+import type { EC2ClientConfig } from '@aws-sdk/client-ec2';
 import type { BaseNodeClient } from '$/lib/clients/node/base';
 import type { NodeInfo } from '$/types/provider';
 
 export class AWSNodeClient implements BaseNodeClient {
-	client: AWS.EC2;
+	client: EC2Client;
 
 	constructor(credentials: AWSServiceAccount['creds'], region: string) {
-		this.client = new AWS.EC2({
-			accessKeyId: credentials.access_key_id,
-			secretAccessKey: credentials.secret_access_key,
+        const config: EC2ClientConfig = {
 			region: region,
-		});
+			credentials: {
+				accessKeyId: credentials.access_key_id,
+				secretAccessKey: credentials.secret_access_key,
+			},
+		};
+		this.client = new EC2Client(config);
 	}
 
 	/**
@@ -30,12 +39,9 @@ export class AWSNodeClient implements BaseNodeClient {
 	 * @param ids - List of node ids to start
 	 */
 	async startNodes(ids: string[]): Promise<void> {
-		const params: AWS.EC2.StartInstancesRequest = {
-			InstanceIds: ids,
-		};
-
-		await this.client.startInstances(params).promise();
-	}
+        const command = new StartInstancesCommand({ InstanceIds: ids });
+        await this.client.send(command);
+    }
 
 	/**
 	 * Stop set of AWS infernet nodes.
@@ -43,12 +49,9 @@ export class AWSNodeClient implements BaseNodeClient {
 	 * @param ids - List of node ids to stop
 	 */
 	async stopNodes(ids: string[]): Promise<void> {
-		const params: AWS.EC2.StopInstancesRequest = {
-			InstanceIds: ids,
-		};
-
-		await this.client.stopInstances(params).promise();
-	}
+        const command = new StopInstancesCommand({ InstanceIds: ids });
+        await this.client.send(command);
+    }
 
 	/**
 	 * Get status and ip of set of AWS infernet nodes.
@@ -57,23 +60,19 @@ export class AWSNodeClient implements BaseNodeClient {
 	 * @returns Flat array of node info objects
 	 */
 	async getNodesInfo(ids: string[]): Promise<NodeInfo[]> {
-		const params: AWS.EC2.DescribeInstancesRequest = {
-			InstanceIds: ids,
-		};
-
-		const result = await this.client.describeInstances(params).promise();
-
-		const nodesInfo: NodeInfo[] = [];
-		result.Reservations?.forEach((reservation) => {
-			reservation.Instances?.forEach((instance) => {
-				nodesInfo.push({
-					id: instance.InstanceId!,
-					status: instance.State?.Name,
-					ip: instance.PublicIpAddress,
-					node: undefined,
-				});
-			});
-		});
-		return nodesInfo;
-	}
+        const command = new DescribeInstancesCommand({ InstanceIds: ids });
+        const result = await this.client.send(command);
+        const nodesInfo: NodeInfo[] = [];
+        result.Reservations?.forEach((reservation) => {
+            reservation.Instances?.forEach((instance) => {
+                nodesInfo.push({
+                    id: instance.InstanceId!,
+                    status: instance.State?.Name,
+                    ip: instance.PublicIpAddress,
+                    node: undefined,
+                });
+            });
+        });
+        return nodesInfo;
+    }
 }

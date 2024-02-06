@@ -1,11 +1,17 @@
-import AWS_SDK from 'aws-sdk';
+import {
+	EC2Client,
+	DescribeRegionsCommand,
+	DescribeAvailabilityZonesCommand,
+	DescribeInstanceTypeOfferingsCommand,
+} from '@aws-sdk/client-ec2';
 import { BaseResourceClient } from '$/lib/clients/resource/base';
 import type { AWSServiceAccount } from '$schema/interfaces';
+import type { EC2ClientConfig } from '@aws-sdk/client-ec2';
 import type { Machine } from '$/types/provider';
 
 // Amazon Web Services extension of BaseResourceClient abstract class.
 export class AWSResourceClient extends BaseResourceClient {
-	amazonCompute!: AWS_SDK.EC2;
+	amazonCompute!: EC2Client;
 	creds!: AWSServiceAccount['creds'];
 
 	/**
@@ -14,12 +20,15 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @param region - AWS region name
 	 * @returns EC2 instance
 	 */
-	async createInstance(region: string): Promise<AWS_SDK.EC2> {
-		return new AWS_SDK.EC2({
-			accessKeyId: this.creds.access_key_id,
-			secretAccessKey: this.creds.secret_access_key,
+	async createInstance(region: string): Promise<EC2Client> {
+		const config: EC2ClientConfig = {
 			region: region,
-		});
+			credentials: {
+				accessKeyId: this.creds.access_key_id,
+				secretAccessKey: this.creds.secret_access_key,
+			},
+		};
+		return new EC2Client(config);
 	}
 
 	/**
@@ -44,11 +53,10 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * Example return value: ['us-east-1', 'us-west-2', 'eu-west-1']
 	 */
 	async getRegions(): Promise<string[]> {
-		const response = await this.amazonCompute.describeRegions().promise();
-		return (
-			response.Regions?.map((region: AWS_SDK.EC2.Region) => region.RegionName).filter(
-				(name): name is string => name !== undefined
-			) ?? []
+		const command = new DescribeRegionsCommand({});
+		const response = await this.amazonCompute.send(command);
+		return (response.Regions?.map((region) => region.RegionName) ?? []).filter(
+			(name): name is string => !!name
 		);
 	}
 
@@ -61,11 +69,10 @@ export class AWSResourceClient extends BaseResourceClient {
 	 */
 	async getZones(region: string): Promise<string[]> {
 		this.amazonCompute = await this.createInstance(region);
-		const response = await this.amazonCompute.describeAvailabilityZones().promise();
-		return (
-			response.AvailabilityZones?.map((zone: AWS_SDK.EC2.AvailabilityZone) => zone.ZoneName).filter(
-				(name): name is string => name !== undefined
-			) ?? []
+		const command = new DescribeAvailabilityZonesCommand({});
+		const response = await this.amazonCompute.send(command);
+		return (response.AvailabilityZones?.map((zone) => zone.ZoneName) ?? []).filter(
+			(name): name is string => !!name
 		);
 	}
 
@@ -84,17 +91,15 @@ export class AWSResourceClient extends BaseResourceClient {
 	 */
 	async getMachines(region: string): Promise<Machine[]> {
 		this.amazonCompute = await this.createInstance(region);
-		const response = await this.amazonCompute.describeInstanceTypeOfferings().promise();
+		const command = new DescribeInstanceTypeOfferingsCommand({});
+		const response = await this.amazonCompute.send(command);
 		return (
-			response.InstanceTypeOfferings?.map(
-				(offering: AWS_SDK.EC2.InstanceTypeOffering) =>
-					({
-						id: offering.InstanceType,
-						name: offering.InstanceType,
-						description: offering.InstanceType,
-						link: 'https://aws.amazon.com/ec2/instance-types/',
-					}) as Machine
-			) ?? []
+			response.InstanceTypeOfferings?.map((offering) => ({
+				id: offering.InstanceType!,
+				name: offering.InstanceType!,
+				description: offering.InstanceType!,
+				link: 'https://aws.amazon.com/ec2/instance-types/',
+			})) ?? []
 		);
 	}
 }

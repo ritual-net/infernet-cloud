@@ -30,7 +30,7 @@ export async function clusterAction(client: Client, clusterId: string, action: T
 			filter_single: { id: clusterId },
 			set: {
 				tfstate: JSON.stringify(state),
-                router_ip: String(nodeInfo![0].router_id),
+                //router_ip: String(nodeInfo![0].router_ip),
 			},
 		}))
 		.run(client);
