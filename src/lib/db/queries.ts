@@ -86,7 +86,7 @@ export async function getClusterById(
 export async function getClusterByNodeId(
 	client: Client,
 	id: string,
-	creds = false,
+	creds = false
 ): Promise<ProviderCluster | null> {
 	const node = e.select(e.InfernetNode, () => ({
 		filter_single: { id },

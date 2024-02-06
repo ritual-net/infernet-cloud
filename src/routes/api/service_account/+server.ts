@@ -41,11 +41,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const client = locals.client;
 
 	// TODO: Validate format of credentials
-    try {
-        await (new ProviderClient[provider as ProviderTypeEnum]).auth(credentials);
-    } catch (err) {
-        return error(400, `Error validating credentials: ${(err as Error).message}`);
-    }
+	try {
+		await new ProviderClient[provider as ProviderTypeEnum]().auth(credentials);
+	} catch (err) {
+		return error(400, `Error validating credentials: ${(err as Error).message}`);
+	}
 
 	let query;
 	switch (provider) {

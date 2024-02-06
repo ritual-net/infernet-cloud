@@ -85,7 +85,7 @@ export function parseTerraformOutput(
 		nodesSection.indexOf('['),
 		nodesSection.lastIndexOf(']') + 1
 	);
-    console.log(output);
+	console.log(output);
 	// Replace Terraform syntax with JSON syntax
 	const jsonString = nodesSection
 		.replace(/=\s*"/g, ': "') // Replace '=' with ':' for string values

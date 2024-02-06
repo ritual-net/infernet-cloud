@@ -13,32 +13,35 @@ import type {
 
 /**
  * Returns cluster of set of nodes while asserting they belong to same cluster.
- * 
+ *
  * @param nodes - Array of InfernetNode objects
  * @returns ProviderCluster object
  * @throws Error if nodes do not belong to same cluster, no nodes provided, cluster could not be retrieved
  */
-export const getNodesClusterId = async (client: Client, nodes: InfernetNode[]): Promise<ProviderCluster> => {
-    if (nodes.length === 0) {
-        throw Error('No nodes provided.');
-    }
+export const getNodesClusterId = async (
+	client: Client,
+	nodes: InfernetNode[]
+): Promise<ProviderCluster> => {
+	if (nodes.length === 0) {
+		throw Error('No nodes provided.');
+	}
 
-    const firstNode = nodes[0];
-    const cluster = await getClusterByNodeId(client, firstNode.id);
+	const firstNode = nodes[0];
+	const cluster = await getClusterByNodeId(client, firstNode.id);
 
-    if (!cluster) {
-        throw Error('Cluster could not be retrieved.');
-    }
+	if (!cluster) {
+		throw Error('Cluster could not be retrieved.');
+	}
 
-    for (let node of nodes) {
-        const nodeCluster = await getClusterByNodeId(client, node.id, true);
-        if (nodeCluster!.id !== cluster.id) {
-            throw Error('Nodes do not belong to the same cluster.');
-        }
-    }
+	for (let node of nodes) {
+		const nodeCluster = await getClusterByNodeId(client, node.id, true);
+		if (nodeCluster!.id !== cluster.id) {
+			throw Error('Nodes do not belong to the same cluster.');
+		}
+	}
 
-    return cluster;
-}
+	return cluster;
+};
 
 /**
  * Applies the given action to a node and returns the result.
