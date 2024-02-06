@@ -1,9 +1,7 @@
-CREATE MIGRATION m12rinjngxumxu64raira73q4yjuwmwcf2cgsapklst5ryatoiqvza
-    ONTO m1kkgga4khjjqaduu7plbu6jevzokvuo5clzv2y6hn324hpgftvaqq
+CREATE MIGRATION m1sz7qho2gyzhii6y222ofovze46yclzwidal752u3lhxu66qogcea
+    ONTO m1ufhbhykhe55bewhkmn4ns6o6zrg4od3vckuf4wxcxwjjsfievbva
 {
   ALTER TYPE default::InfernetNode {
-      ALTER PROPERTY provider_id {
-          RESET default;
-      };
+      CREATE PROPERTY provider_id: std::str;
   };
 };
