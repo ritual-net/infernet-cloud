@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 		return error(400, `Service account ID is required.`);
 	}
 
-	const serviceAccount = await getServiceAccountById(locals.client, serviceAccountId);
+	const serviceAccount = await getServiceAccountById(locals.client, serviceAccountId, true);
 	if (!serviceAccount) {
 		return error(400, `Service account ID ${serviceAccountId} does not exist.`);
 	}
