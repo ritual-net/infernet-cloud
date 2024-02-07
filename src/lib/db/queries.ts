@@ -2,7 +2,7 @@ import type { Client } from 'edgedb';
 import { ClusterTypeByProvider, e, ServiceAccountTypeByProvider } from '$/lib/db';
 import { getClusterSelectParams } from './components';
 import type { InfernetNode } from '$schema/interfaces';
-import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider'; 
+import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
 
 /**
  * Get node data by node ids
@@ -41,10 +41,12 @@ export const getServiceAccountById = async (
 	id: string,
 	creds: boolean
 ): Promise<ProviderServiceAccount | null> => {
-	const generic = await e.select(e.ServiceAccount, () => ({
-		provider: true,
-		filter_single: { id },
-	})).run(client);
+	const generic = await e
+		.select(e.ServiceAccount, () => ({
+			provider: true,
+			filter_single: { id },
+		}))
+		.run(client);
 
 	if (!generic) {
 		return null;
@@ -78,12 +80,14 @@ export const getClusterById = async (
 	creds: boolean
 ): Promise<ProviderCluster | null> => {
 	// Get provider from generic cluster
-	const generic = await e.select(e.Cluster, () => ({
-		service_account: {
-			provider: true,
-		},
-		filter_single: { id },
-	})).run(client);
+	const generic = await e
+		.select(e.Cluster, () => ({
+			service_account: {
+				provider: true,
+			},
+			filter_single: { id },
+		}))
+		.run(client);
 
 	if (!generic) {
 		return null;
@@ -97,9 +101,9 @@ export const getClusterById = async (
 			filter_single: { id },
 		}))
 		.run(client);
-		
+
 	return result && (result as ProviderCluster);
-}
+};
 
 /**
  * Get cluster data by node id
@@ -112,19 +116,24 @@ export const getClusterById = async (
 export const getClusterByNodeId = async (
 	client: Client,
 	id: string,
-	creds = false,
+	creds = false
 ): Promise<ProviderCluster | null> => {
 	const node = e.select(e.InfernetNode, () => ({
 		filter_single: { id },
 	}));
 
 	// Get provider from generic cluster
-	const generic = await e.with([node], e.select(e.Cluster, (cluster) => ({
-		service_account: {
-			provider: true,
-		},
-		filter: e.op(node, 'in', cluster.nodes),
-	}))).run(client);
+	const generic = await e
+		.with(
+			[node],
+			e.select(e.Cluster, (cluster) => ({
+				service_account: {
+					provider: true,
+				},
+				filter: e.op(node, 'in', cluster.nodes),
+			}))
+		)
+		.run(client);
 
 	if (!generic || generic.length === 0) {
 		return null;
@@ -137,7 +146,7 @@ export const getClusterByNodeId = async (
 		.with(
 			[node],
 			e.select(ClusterTypeByProvider[provider], (cluster) => ({
-			...getClusterSelectParams(creds, provider),
+				...getClusterSelectParams(creds, provider),
 				filter_single: e.op(node, 'in', cluster.nodes),
 			}))
 		)
