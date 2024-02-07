@@ -121,38 +121,30 @@ export const getClusterByNodeId = async (
 	id: string,
 	creds = false
 ): Promise<ProviderCluster | null> => {
-	const node = e.select(e.InfernetNode, () => ({
-		filter_single: { id },
-	}));
-
 	// Get cloud provider from generic cluster
 	const generic = await e
-		.with(
-			[node],
-			e.select(e.Cluster, (cluster) => ({
-				service_account: {
-					provider: true,
-				},
-				filter: e.op(node, 'in', cluster.nodes),
-			}))
-		)
+		.select(e.Cluster, (cl) => ({
+			id: true,
+			service_account: {
+				provider: true,
+			},
+			filter_single: e.op(e.uuid(id), 'in', cl.nodes.id),
+		}))
 		.run(client);
 
-	if (!generic || generic.length === 0) {
+	if (!generic) {
 		return null;
 	}
 
-	const provider = generic[0].service_account.provider;
+	const clusterId = generic.id;
+	const provider = generic.service_account.provider;
 
 	// Get cluster with provider-specific data
 	const cluster = await e
-		.with(
-			[node],
-			e.select(ClusterTypeByProvider[provider], (cluster) => ({
-				...getClusterSelectParams(creds, provider),
-				filter_single: e.op(node, 'in', cluster.nodes),
-			}))
-		)
+		.select(ClusterTypeByProvider[provider], () => ({
+			...getClusterSelectParams(creds, provider),
+			filter_single: { id: clusterId },
+		}))
 		.run(client);
 	return cluster as ProviderCluster | null;
 };
