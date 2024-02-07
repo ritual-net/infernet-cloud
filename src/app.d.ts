@@ -1,4 +1,4 @@
-import { Client } from 'edgedb';
+import type { Client } from 'edgedb';
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces

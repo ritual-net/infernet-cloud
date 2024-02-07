@@ -1,3 +1,5 @@
+using extension auth;
+
 module default {
   global current_user := (
     assert_single((
@@ -193,5 +195,3 @@ module default {
     }
   }
 }
-
-using extension auth;
