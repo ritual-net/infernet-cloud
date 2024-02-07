@@ -16,7 +16,7 @@
 	import type { PageData } from './$types'
 
 	const {
-		form: formData,
+		formData,
 	} = $page.data as PageData
 
 

@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({
 	fetch,
 	locals,
 }) => {
-	const form = await superValidate(request, FormData)
+	const formData = await superValidate(request, FormData)
 		
 	const { userId } = locals.getSession()
 
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({
 		.then(response => response.json())
 
 	return {
-		form,
+		formData,
 		serviceAccounts,
 	}
 }
@@ -35,22 +35,22 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const form = await superValidate(request, FormData)
+		const formData = await superValidate(request, FormData)
 
-		if (!form.valid) {
-			return fail(400, { form })
+		if (!formData.valid) {
+			return fail(400, { formData })
 		}
 
 		const result = await fetch('/api/cluster', {
 			method: 'POST',
-			body: JSON.stringify(form.data),
+			body: JSON.stringify(formData.data),
 		})
 			.then(response => response.json())
 
 		console.log({result})
 
 		return {
-			form,
+			formData,
 			result,
 		}
 	},

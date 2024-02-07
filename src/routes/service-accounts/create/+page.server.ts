@@ -7,9 +7,9 @@ import { superValidate } from 'sveltekit-superforms/server'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
-	const form = await superValidate(FormData)
+	const formData = await superValidate(FormData)
 
-	return { form }
+	return { formData }
 }
 
 
@@ -22,10 +22,10 @@ export const actions: Actions = {
 		fetch,
 		locals,
 	}) => {
-		const form = await superValidate(request, FormData)
+		const formData = await superValidate(request, FormData)
 
-		if (!form.valid) {
-			return fail(400, { form })
+		if (!formData.valid) {
+			return fail(400, { formData })
 		}
 
 		const { userId } = locals.getSession()
@@ -34,13 +34,13 @@ export const actions: Actions = {
 			method: 'POST',
 			body: JSON.stringify({
 				user: userId,
-				...form.data,
+				...formData.data,
 			}),
 		})
 			.then(response => response.json())
 
 		return {
-			form,
+			formData,
 			result,
 		}
 	},

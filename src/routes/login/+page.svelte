@@ -7,7 +7,7 @@
 	import { page } from '$app/stores'
 	import { superForm } from 'sveltekit-superforms/client'
 
-	const { form, enhance, errors, constraints } = superForm(($page.data as PageData).form, {
+	const { form, enhance, errors, constraints } = superForm(($page.data as PageData).formData, {
 		dataType: 'json',
 	})
 
