@@ -9,8 +9,20 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param request - The request object containing 'user'.
  * @returns Array of ServiceAccount objects.
  */
-export const GET: RequestHandler = async ({ request }) => {
-	const url = new URL(request.url);
+const getServiceAccounts = async (user: string) => (
+	await e
+		.select(e.ServiceAccount, (sa) => ({
+			id: true,
+			name: true,
+			provider: true,
+			filter: e.op(sa.user.id, '=', e.uuid(user)),
+		}))
+		.run(client)
+)
+
+export type QueriedServiceAccount = Awaited<ReturnType<typeof getServiceAccounts>>[number]
+
+export const GET: RequestHandler = async ({ request, url }) => {
 	const user = url.searchParams.get('user');
 
 	if (!user) {
@@ -18,14 +30,7 @@ export const GET: RequestHandler = async ({ request }) => {
 	}
 	// TODO: Get user through auth
 
-	const result = await e
-		.select(e.ServiceAccount, (sa) => ({
-			id: true,
-			name: true,
-			provider: true,
-			filter: e.op(sa.user.id, '=', e.uuid(user)),
-		}))
-		.run(client);
+	const result = await getServiceAccounts(user);
 
 	return json(result);
 };
