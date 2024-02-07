@@ -15,9 +15,11 @@
 		<h2>Service Accounts</h2>
 
 		{#if serviceAccounts.length}
-			<button class="primary">
-				Connect Service Account
-			</button>
+			<a href="/service-accounts/create">
+				<button class="primary">
+					Connect Service Account
+				</button>
+			</a>
 		{/if}
 	</header>
 
