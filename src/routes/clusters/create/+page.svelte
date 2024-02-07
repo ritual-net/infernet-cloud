@@ -379,7 +379,7 @@
 								{/if}
 							</header>
 
-							<section class="row">
+							<section class="row wrap">
 								<div class="column inline">
 									<h3>
 										<label for="regchain_enabledion">
@@ -397,7 +397,7 @@
 							</section>
 
 							<fieldset disabled={!node.chain_enabled} class="card column">
-								<section class="row">
+								<section class="row wrap">
 									<div class="column inline">
 										<h3>
 											<label for="trail_head_blocks">
@@ -415,7 +415,7 @@
 									/>
 								</section>
 
-								<section class="row">
+								<section class="row wrap">
 									<div class="column inline">
 										<h3 class="row inline">
 											<label for="rpc_url">
@@ -433,7 +433,7 @@
 									/>
 								</section>
 
-								<section class="row">
+								<section class="row wrap">
 									<div class="column inline">
 										<h3 class="row inline">
 											<label for="coordinator_address">
@@ -451,7 +451,7 @@
 									/>
 								</section>
 
-								<section class="row">
+								<section class="row wrap">
 									<div class="column inline">
 										<h3>
 											<label for="max_gas_limit">
@@ -469,7 +469,7 @@
 									/>
 								</section>
 
-								<section class="row">
+								<section class="row wrap">
 									<div class="column inline">
 										<h3 class="row inline">
 											<label for="private_key">
@@ -487,7 +487,7 @@
 									/>
 								</section>
 
-								<section class="row">
+								<section class="row wrap">
 									<div class="column inline">
 										<h3 class="row inline">
 											<label for="private_key">
