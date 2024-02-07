@@ -1,8 +1,4 @@
 <script lang="ts">
-	// Types/constants
-	import { providers } from '$types/provider'
-
-
 	// Context
 	import { page } from '$app/stores'
 
@@ -10,7 +6,7 @@
 
 
 	// Components
-	import Table from '$components/Table.svelte'
+	import ServiceAccountsTable from './ServiceAccountsTable.svelte'
 </script>
 
 
@@ -26,18 +22,8 @@
 	</header>
 
 	{#if serviceAccounts.length}
-		<Table
-			data={serviceAccounts}
-			columns={[
-				{
-					header: 'Name',
-					accessor: serviceAccount => serviceAccount.name,
-				},
-				{
-					header: 'Cloud Provider',
-					accessor: serviceAccount => providers[serviceAccount.provider].name,
-				},
-			]}
+		<ServiceAccountsTable
+			{serviceAccounts}
 		/>
 	{:else}
 		<div class="card column">
