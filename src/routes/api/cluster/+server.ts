@@ -1,9 +1,10 @@
 import { error, json } from '@sveltejs/kit';
-import { QueryByProvider, client, e } from '$/lib/db';
-import { createNodeParams, getProviderByServiceAccountId } from '$/lib/db/common';
+import { ClusterTypeByProvider, client, e } from '$/lib/db';
+import { getServiceAccountById } from '$/lib/db/queries';
+import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
 import { clusterAction } from '$/lib/terraform/common';
-import type { Cluster } from '$schema/interfaces';
 import { TFAction } from '$/types/terraform';
+import type { Cluster } from '$schema/interfaces';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
@@ -56,8 +57,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	// TODO: Enforce correctness of config, nodes + containers?
 
 	// Get provider of service account
-	const provider = await getProviderByServiceAccountId(serviceAccountId);
-	if (!provider) {
+	const serviceAccount = await getServiceAccountById(serviceAccountId);
+	if (!serviceAccount) {
 		return error(400, 'Service account could not be retrieved');
 	}
 
@@ -69,35 +70,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			},
 			({ nodes }) =>
 				// Choose cluster type based on provider
-				QueryByProvider[provider].insertClusterQuery(
-					config,
-					serviceAccountId,
-					e.for(e.array_unpack(nodes), (node) =>
-						e.insert(e.InfernetNode, {
-							chain_enabled: node.config.chain_enabled,
-							trail_head_blocks: node.config.trail_head_blocks,
-							rpc_url: node.config.rpc_url,
-							coordinator_address: node.config.coordinator_address,
-							max_gas_limit: node.config.max_gas_limit,
-							private_key: node.config.private_key,
-							forward_stats: node.config.forward_stats,
-							containers: e.for(e.array_unpack(node.containers), (container) =>
-								e.insert(e.Container, {
-									image: container.image,
-									container_id: container.container_id,
-									description: container.description,
-									external: container.external,
-									allowed_addresses: container.allowed_addresses,
-									allowed_delegate_addresses: container.allowed_delegate_addresses,
-									allowed_ips: container.allowed_ips,
-									command: container.command,
-									env: container.env,
-									gpu: container.gpu,
-								})
-							),
-						})
-					)
-				)
+				e.insert(ClusterTypeByProvider[serviceAccount.provider], {
+					...config,
+					service_account: e.select(e.ServiceAccount, () => ({
+						filter_single: { id: serviceAccountId },
+					})),
+					nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
+				})
 		)
 		.run(client, { nodes })) as Cluster;
 
@@ -106,11 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	// Apply Terraform changes to create cluster
-	const { error: errorMessage, success } = await clusterAction(
-		cluster.id,
-		provider,
-		TFAction.Apply
-	);
+	const { error: errorMessage, success } = await clusterAction(cluster.id, TFAction.Apply);
 	return json({
 		id: cluster.id,
 		message: success ? 'Cluster created successfully' : errorMessage,

@@ -1,11 +1,10 @@
-import { error, json } from '@sveltejs/kit';
-import { executeNodeAction } from '$/lib/clients/node/common';
+import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { client, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
-import { NodeAction } from '$/types/provider';
+import { executeNodeAction } from '$/lib/clients/node/common';
+import { getClusterByNodeId } from '$/lib/db/queries';
+import { NodeAction, type NodeInfo } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
-import type { NodeInfo } from '$/types/provider';
-import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -42,54 +41,29 @@ export const DELETE: RequestHandler = async ({ params }) => {
 
 	// TODO: Make sure node belongs to user through auth
 
-	const node = e.select(e.InfernetNode, () => ({
-		filter_single: { id },
-	}));
-
 	// Get cluster id and service account
-	const clusters = await e
-		.with(
-			[node],
-			e.select(e.Cluster, (cluster) => ({
-				id: true,
-				service_account: {
-					id: true,
-					provider: true,
-				},
-				filter: e.op(node, 'in', cluster.nodes),
-			}))
-		)
-		.run(client);
+	const cluster = await getClusterByNodeId(id);
 
-	if (clusters.length !== 1) {
+	if (!cluster) {
 		return error(400, 'Cluster could not be retrieved');
 	}
 
-	const cluster = clusters[0];
-	const provider = cluster.service_account.provider;
-
 	// Delete node
-	const deleteNodeQuery = e.delete(e.InfernetNode, () => ({
-		filter_single: { id: e.uuid(id) },
-	}));
 	await e
-		.with(
-			[deleteNodeQuery],
-			e.update(e.Cluster, () => ({
-				filter_single: { id: cluster.id },
-				set: {
-					nodes: { '-=': deleteNodeQuery },
+		.update(e.Cluster, () => ({
+			filter_single: { id: cluster.id },
+			set: {
+				nodes: {
+					'-=': e.delete(e.InfernetNode, () => ({
+						filter_single: { id: e.uuid(id) },
+					})),
 				},
-			}))
-		)
+			},
+		}))
 		.run(client);
 
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(
-		cluster.id,
-		provider,
-		TFAction.Apply
-	);
+	const { error: errorMessage, success } = await clusterAction(cluster.id, TFAction.Apply);
 	return json({
 		message: success ? 'Node destroyed successfully.' : errorMessage,
 		success,

@@ -1,6 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { getProviderByServiceAccountId } from '$/lib/db/common';
-import { QueryByProvider } from '$/lib/db/index';
+import { getServiceAccountById } from '$/lib/db/queries';
 import { ProviderClient } from '$/lib/index';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -19,16 +18,13 @@ export const GET: RequestHandler = async ({ params }) => {
 	}
 
 	// TODO: Make sure service account belongs to user through auth
-	const providerType = await getProviderByServiceAccountId(serviceAccountId);
-	if (!providerType) {
-		return error(400, `Provider type is null for service account ID: ${serviceAccountId}`);
-	}
 
-	const serviceAccount =
-		await QueryByProvider[providerType].getServiceAccountById(serviceAccountId);
+	const serviceAccount = await getServiceAccountById(serviceAccountId);
 	if (!serviceAccount) {
 		return error(400, `Service account ID ${serviceAccountId} does not exist.`);
 	}
 
-	return json(await new ProviderClient[providerType]().getProviderInfo(serviceAccount.creds));
+	return json(
+		await new ProviderClient[serviceAccount.provider]().getProviderInfo(serviceAccount.creds)
+	);
 };

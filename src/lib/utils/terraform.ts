@@ -11,7 +11,7 @@ import type { InfernetNode } from '$schema/interfaces';
  * @param provider The cloud provider.
  * @returns The path to the temporary directory.
  */
-export async function createTempDir(provider: string): Promise<string> {
+export const createTempDir = async (provider: string): Promise<string> => {
 	const srcDir = `${process.cwd()}/src/lib/deploy`;
 
 	// Create a temporary directory
@@ -26,7 +26,7 @@ export async function createTempDir(provider: string): Promise<string> {
 	// Copy the deployment tarball
 	await fs.copyFile(`${srcDir}/compose.tar.gz`, `${tempDir}/deploy.tar.gz`);
 	return tempDir;
-}
+};
 
 /**
  * Creates a terraform.tfvars file from an object.
@@ -34,14 +34,14 @@ export async function createTempDir(provider: string): Promise<string> {
  * @param tempDir The path to the temporary directory.
  * @param tfVars The object to write to the file.
  */
-export async function createTerraformVarsFile(
+export const createTerraformVarsFile = async (
 	tempDir: string,
 	tfVars: Record<string, string[] | string | number | boolean | Record<string, string>>
-): Promise<void> {
+): Promise<void> => {
 	const varsFile = path.join(tempDir, 'terraform.tfvars');
 	const varsString = formatTfVars(tfVars);
 	await fs.writeFile(varsFile, varsString);
-}
+};
 
 /**
  * Creates node config files from an array of InfernetNode objects.
@@ -49,7 +49,10 @@ export async function createTerraformVarsFile(
  * @param tempDir The path to the temporary directory.
  * @param nodes The array of InfernetNode objects.
  */
-export async function createNodeConfigFiles(tempDir: string, nodes: InfernetNode[]): Promise<void> {
+export const createNodeConfigFiles = async (
+	tempDir: string,
+	nodes: InfernetNode[]
+): Promise<void> => {
 	// Create configs/ directory
 	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true });
 
@@ -61,7 +64,7 @@ export async function createNodeConfigFiles(tempDir: string, nodes: InfernetNode
 			JSON.stringify(jsonConfig, null, 2)
 		);
 	}
-}
+};
 
 /**
  * Parses the output of a Terraform command into an array of objects.
@@ -69,9 +72,9 @@ export async function createNodeConfigFiles(tempDir: string, nodes: InfernetNode
  * @param output The output of the Terraform command.
  * @returns An array of Record<string, string[] | string | number | boolean> objects.
  */
-export function parseTerraformOutput(
+export const parseTerraformOutput = (
 	output: string
-): Record<string, string[] | string | number | boolean>[] {
+): Record<string, string[] | string | number | boolean>[] => {
 	const nodesSectionMatch = output
 		// Isolate the "outputs" section
 		.slice(output.lastIndexOf('Outputs:'))
@@ -97,7 +100,7 @@ export function parseTerraformOutput(
 
 	// Parse JSON
 	return JSON.parse(jsonString);
-}
+};
 
 /**
  * Format an InfernetNode object into a JSON object that can be used as a
@@ -110,7 +113,7 @@ export function parseTerraformOutput(
  * @param node An InfernetNode object.
  * @returns The formatted JSON object to be used as a config.json file.
  */
-function formatNodeConfig(node: InfernetNode) {
+const formatNodeConfig = (node: InfernetNode) => {
 	// Auto-assign container ports in reverse order
 	let port = 4999;
 
@@ -149,7 +152,7 @@ function formatNodeConfig(node: InfernetNode) {
 			port: 6379,
 		},
 	};
-}
+};
 
 /**
  * Format an arbitrary, flat (non-nested) object into a string that can be
@@ -160,9 +163,9 @@ function formatNodeConfig(node: InfernetNode) {
  * @returns Terraform variables file as a formatted string.
  */
 
-function formatTfVars(
+const formatTfVars = (
 	config: Record<string, string[] | string | number | boolean | Record<string, unknown>>
-): string {
+): string => {
 	const formatValue = (value: unknown): string => {
 		if (Array.isArray(value)) {
 			// Format array, recursively format each element
@@ -186,4 +189,4 @@ function formatTfVars(
 		([key, value]) => `${key} = ${formatValue(value)}`
 	);
 	return vars.join('\n');
-}
+};

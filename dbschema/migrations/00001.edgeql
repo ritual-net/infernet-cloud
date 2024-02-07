@@ -1,4 +1,4 @@
-CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
+CREATE MIGRATION m1gw2jsvla65usenhocqyra65lmdbokatonge3447yeb7bh6a3xxqa
     ONTO initial
 {
   CREATE TYPE default::Container {
@@ -47,6 +47,7 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       CREATE PROPERTY private_key: std::str {
           SET default := '';
       };
+      CREATE PROPERTY provider_id: std::str;
       CREATE PROPERTY rpc_url: std::str {
           SET default := '';
       };
@@ -89,9 +90,6 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       };
   };
   CREATE TYPE default::AWSCluster EXTENDING default::Cluster {
-      CREATE REQUIRED PROPERTY ami: std::str {
-          SET readonly := true;
-      };
       CREATE REQUIRED PROPERTY machine_type: std::str {
           SET readonly := true;
       };
@@ -104,6 +102,7 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       ALTER PROPERTY provider {
           SET default := (default::CloudProvider.AWS);
           SET OWNED;
+          SET REQUIRED;
       };
   };
   CREATE TYPE default::GCPCluster EXTENDING default::Cluster {
@@ -122,6 +121,7 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       ALTER PROPERTY provider {
           SET default := (default::CloudProvider.GCP);
           SET OWNED;
+          SET REQUIRED;
       };
   };
 };

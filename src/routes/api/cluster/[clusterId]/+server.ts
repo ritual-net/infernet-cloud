@@ -1,6 +1,6 @@
 import { error, json } from '@sveltejs/kit';
-import { getProviderByClusterId } from '$/lib/db/common';
-import { QueryByProvider, client, e } from '$/lib/db';
+import { getClusterById } from '$/lib/db/queries';
+import { client, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
 import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -20,13 +20,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	// TODO: Make sure cluster belongs to user through auth
 
-	const provider = await getProviderByClusterId(id);
-	if (!provider) {
-		return error(400, 'Cluster could not be retrieved');
-	}
-
-	const cluster = await QueryByProvider[provider].getClusterById(id);
-	return json(cluster);
+	return json(await getClusterById(id, false));
 };
 
 /**
@@ -72,18 +66,8 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 		return error(500, 'Failed to update cluster');
 	}
 
-	// Get provider
-	const provider = await getProviderByClusterId(cluster.id);
-	if (!provider) {
-		return error(400, 'Cluster could not be retrieved');
-	}
-
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(
-		cluster.id,
-		provider,
-		TFAction.Apply
-	);
+	const { error: errorMessage, success } = await clusterAction(cluster.id, TFAction.Apply);
 	return json({
 		message: success ? 'Cluster updated successfully' : errorMessage,
 		success,
@@ -105,13 +89,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
 
 	// TODO: confirm cluster belongs to user through auth
 
-	const provider = await getProviderByClusterId(id);
-	if (!provider) {
-		return error(400, 'Cluster could not be retrieved');
-	}
-
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(id, provider, TFAction.Destroy);
+	const { error: errorMessage, success } = await clusterAction(id, TFAction.Destroy);
 
 	if (success) {
 		// Delete cluster, nodes and containers deleted through cascade
