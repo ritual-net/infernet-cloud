@@ -12,7 +12,7 @@ import type { ProviderServiceAccount } from '$/types/provider';
  * @param action The Terraform action
  * @returns An object with the success status and (optional) error message
  */
-export async function clusterAction(clusterId: string, action: TFAction) {
+export const clusterAction = async (clusterId: string, action: TFAction) => {
 	const cluster = await getClusterById(clusterId, true);
 	if (!cluster) {
 		return { error: 'Cluster not found', success: false };
@@ -33,4 +33,4 @@ export async function clusterAction(clusterId: string, action: TFAction) {
 		.run(client);
 
 	return { error, success };
-}
+};

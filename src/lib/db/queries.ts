@@ -29,7 +29,7 @@ export const getNodesByIds = async (nodeIds: string[]): Promise<InfernetNode[] |
  * @param id of ServiceAccount
  * @returns ProviderServiceAccount if found
  */
-export async function getServiceAccountById(id: string): Promise<ProviderServiceAccount | null> {
+export const getServiceAccountById = async (id: string): Promise<ProviderServiceAccount | null> => {
 	const result = await e
 		.select(e.ServiceAccount, () => ({
 			user: {
@@ -42,8 +42,8 @@ export async function getServiceAccountById(id: string): Promise<ProviderService
 		}))
 		.run(client);
 
-	return result && (result as ProviderServiceAccount);
-}
+	return result as ProviderServiceAccount | null;
+};
 
 /**
  * Get cluster data by id
@@ -52,14 +52,17 @@ export async function getServiceAccountById(id: string): Promise<ProviderService
  * @param creds whether to include sensitive Service Account credentials
  * @returns ProviderCluster if found
  */
-export async function getClusterById(id: string, creds: boolean): Promise<ProviderCluster | null> {
+export const getClusterById = async (
+	id: string,
+	creds: boolean
+): Promise<ProviderCluster | null> => {
 	return (await e
 		.select(e.Cluster, () => ({
 			...getClusterSelectParams(creds),
 			filter_single: { id },
 		}))
 		.run(client)) as ProviderCluster;
-}
+};
 
 /**
  * Get cluster data by node id
@@ -67,20 +70,20 @@ export async function getClusterById(id: string, creds: boolean): Promise<Provid
  * @param nodeId of node
  * @returns ProviderCluster if found
  */
-export async function getClusterByNodeId(id: string): Promise<ProviderCluster | null> {
+export const getClusterByNodeId = async (id: string): Promise<ProviderCluster | null> => {
 	const node = e.select(e.InfernetNode, () => ({
 		filter_single: { id },
 	}));
 
 	// Get cluster id and service account
-	const clusters = await e
+	const cluster = await e
 		.with(
 			[node],
 			e.select(e.Cluster, (cluster) => ({
 				...getClusterSelectParams(false),
-				filter: e.op(node, 'in', cluster.nodes),
+				filter_single: e.op(node, 'in', cluster.nodes),
 			}))
 		)
 		.run(client);
-	return clusters.length > 0 ? (clusters[0] as ProviderCluster) : null;
-}
+	return cluster as ProviderCluster | null;
+};

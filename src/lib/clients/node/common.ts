@@ -2,7 +2,11 @@
 import { getNodesByIds, getClusterByNodeId } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
-import type { NodeInfo, ProviderServiceAccount, ProviderServiceAccountCreds } from '$/types/provider';
+import type {
+	NodeInfo,
+	ProviderServiceAccount,
+	ProviderServiceAccountCreds,
+} from '$/types/provider';
 
 /**
  * Given an array of InfernetNode ids and an action, complete action via node client.
