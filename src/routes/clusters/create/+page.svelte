@@ -39,6 +39,7 @@
 	import Switch from '$components/Switch.svelte'
 	import Select from '$components/Select.svelte'
 	import Tabs from '$components/Tabs.svelte'
+	import NodeContainersTable from './NodeContainersTable.svelte'
 
 
 	// Transitions/animations
@@ -504,6 +505,22 @@
 									/>
 								</section>
 							</fieldset>
+
+							<section class="column">
+								<div class="row">
+									<div class="column inline">
+										<h3>
+											Containers
+										</h3>
+
+										<p>Assign new or existing container configurations to this node.</p>
+									</div>
+								</div>
+
+								<NodeContainersTable
+									containers={node.containers}
+								/>
+							</section>
 						</article>
 					{/each}
 
