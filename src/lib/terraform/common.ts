@@ -14,7 +14,7 @@ import type { TFState, TFAction } from '$/types/terraform';
  * @param action The Terraform action
  * @returns An object with the success status and (optional) error message
  */
-export async function clusterAction(client: Client, clusterId: string, action: TFAction) {
+export const clusterAction = async (client: Client, clusterId: string, action: TFAction) => {
 	const cluster = await getClusterById(client, clusterId, true);
 	if (!cluster) {
 		return { error: 'Cluster not found', success: false };
@@ -63,4 +63,4 @@ export async function clusterAction(client: Client, clusterId: string, action: T
 	}
 
 	return { error, success };
-}
+};
