@@ -83,8 +83,8 @@ export const Container = z
 			.default(''),
 
 		'env': z
-			.any()
-			.default({}),
+			.string()
+			.default(''),
 
 		'gpu': z
 			.boolean()
