@@ -40,6 +40,11 @@
 	import Select from '$components/Select.svelte'
 	import Tabs from '$components/Tabs.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
+	import ContainerCreateForm from './container/+page.svelte'
+
+
+	// Shallow Routes
+	import { preloadData, goto, pushState } from '$app/navigation'
 
 
 	// Transitions/animations
@@ -515,11 +520,47 @@
 
 										<p>Assign new or existing container configurations to this node.</p>
 									</div>
+
+									<a
+										href="/clusters/create/container"
+										on:click={async (e) => {
+											e.preventDefault()
+
+											const { href } = e.currentTarget
+
+											const result = await preloadData(href)
+
+											if (result.type === 'loaded' && result.status === 200) {
+												pushState(href, {
+													showContainerCreateForm: true,
+													shallowRouteData: result.data,
+												})
+											} else {
+												console.error(`Failed to preload shallow route: ${href}`)
+												goto(href)
+											}
+										}}
+									>
+										<button
+											type="button"
+											class="primary"
+										>Add Container</button>
+									</a>
 								</div>
 
 								<NodeContainersTable
 									containers={node.containers}
 								/>
+
+								{#if $page.state.showContainerCreateForm}
+									<ContainerCreateForm
+										data={$page.state.shallowRouteData}
+										onSubmit={({ container }) => {
+											node.containers.push(container)
+											node.containers = node.containers
+										}}
+									/>
+								{/if}
 							</section>
 						</article>
 					{/each}
