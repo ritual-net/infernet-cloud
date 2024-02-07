@@ -41,6 +41,7 @@ export const getServiceAccountById = async (
 	id: string,
 	creds: boolean
 ): Promise<ProviderServiceAccount | null> => {
+	// Get cloud provider from generic service account
 	const generic = await e
 		.select(e.ServiceAccount, () => ({
 			provider: true,
@@ -51,9 +52,11 @@ export const getServiceAccountById = async (
 	if (!generic) {
 		return null;
 	}
+	const provider = generic.provider;
 
+	// Get service account with provider-specific data
 	const result = await e
-		.select(ServiceAccountTypeByProvider[generic.provider], () => ({
+		.select(ServiceAccountTypeByProvider[provider], () => ({
 			creds,
 			user: {
 				...e.User['*'],
@@ -79,7 +82,7 @@ export const getClusterById = async (
 	id: string,
 	creds: boolean
 ): Promise<ProviderCluster | null> => {
-	// Get provider from generic cluster
+	// Get cloud provider from generic cluster
 	const generic = await e
 		.select(e.Cluster, () => ({
 			service_account: {
@@ -122,7 +125,7 @@ export const getClusterByNodeId = async (
 		filter_single: { id },
 	}));
 
-	// Get provider from generic cluster
+	// Get cloud provider from generic cluster
 	const generic = await e
 		.with(
 			[node],
