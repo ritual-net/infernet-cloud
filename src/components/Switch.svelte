@@ -27,14 +27,14 @@
 </script>
 
 
-{#if labelText}
+<!-- {#if labelText}
 	<label
 		for="{id}"
 		id="{id}-label"
 	>
 		{labelText}
 	</label>
-{/if}
+{/if} -->
 
 <button
 	use:melt={$root}
