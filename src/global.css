@@ -109,6 +109,10 @@ a {
 	&.wrap {
 		flex-wrap: wrap;
 	}
+
+	&.equal > * {
+		flex: 1;
+	}
 }
 
 .column {
