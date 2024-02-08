@@ -234,9 +234,9 @@
 				<p>Enter the start command for this container below.</p>
 			</div>
 
-			<input
-				type="text"
+			<textarea
 				bind:value={$form.container.command}
+				rows="1"
 				placeholder={`Enter start command here...`}
 				{...$constraints.container?.command}
 				class="code"
