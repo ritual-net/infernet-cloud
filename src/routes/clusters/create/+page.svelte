@@ -36,6 +36,7 @@
 
 	// Components
 	import Collapsible from '$components/Collapsible.svelte'
+	import Dialog from '$components/Dialog.svelte'
 	import Switch from '$components/Switch.svelte'
 	import Select from '$components/Select.svelte'
 	import Tabs from '$components/Tabs.svelte'
@@ -546,21 +547,28 @@
 											class="primary"
 										>Add Container</button>
 									</a>
+
+									<Dialog
+										title={`Customize container`}
+										subtitle={``}
+										open={$page.state.showContainerCreateForm}
+									>
+										<ContainerCreateForm
+											data={$page.state.shallowRouteData}
+											onSubmit={({ container }) => {
+												node.containers.push(container)
+												node.containers = node.containers
+
+												history.back()
+											}}
+											placement={'in-modal'}
+										/>
+									</Dialog>
 								</div>
 
 								<NodeContainersTable
 									containers={node.containers}
 								/>
-
-								{#if $page.state.showContainerCreateForm}
-									<ContainerCreateForm
-										data={$page.state.shallowRouteData}
-										onSubmit={({ container }) => {
-											node.containers.push(container)
-											node.containers = node.containers
-										}}
-									/>
-								{/if}
 							</section>
 						</article>
 					{/each}
