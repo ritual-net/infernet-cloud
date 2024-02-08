@@ -7,7 +7,7 @@
 
 
 	// Inputs
-	export let items: MenuItems<Value>
+	export let items: MenuItems<Value> | undefined
 	export let labelText: string | undefined
 
 	// (View options)
@@ -37,7 +37,7 @@
 </div>
 
 <div use:melt={$menu}>
-	{#each items as subitem}
+	{#each items ?? [] as subitem}
 		{#if 'items' in subitem}
 			{#each subitem.items as _subitem, i}
 				{#if i > 0}
