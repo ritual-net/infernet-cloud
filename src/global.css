@@ -109,6 +109,10 @@ a {
 	&.wrap {
 		flex-wrap: wrap;
 	}
+
+	&.equal > * {
+		flex: 1;
+	}
 }
 
 .column {
@@ -124,7 +128,7 @@ a {
 	}
 }
 
-input {
+input, textarea {
 	--input-paddingX: 1em;
 	--input-paddingY: 0.5em;
 	--input-backgroundColor: var(--input-default-backgroundColor);
@@ -145,6 +149,9 @@ input {
 	&.small {
 		font-size: 0.8em;
 	}
+}
+textarea {
+	width: 100%;
 }
 
 
@@ -206,11 +213,11 @@ button {
 		font-size: 0.888em;
 	}
 
-	&:has(> :is(header, section, footer)) {
+	&:has(:is(header, section, footer)) {
 		padding: 0;
 		row-gap: var(--card-borderWidth);
 
-		& > :is(header, section, footer) {
+		& :is(header, section, footer) {
 			padding: var(--card-paddingY) var(--card-paddingX);
 
 			box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);

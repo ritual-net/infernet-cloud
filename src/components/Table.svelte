@@ -23,6 +23,10 @@
 			columns.map(table.column)
 		)
 	)
+
+
+	// Transitions/animations
+	import { scale } from 'svelte/transition'
 </script>
 
 
@@ -47,7 +51,7 @@
 		<tbody {...$tableBodyAttrs}>
 			{#each $rows as row (row.id)}
 				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-					<tr {...rowAttrs}>
+					<tr {...rowAttrs} transition:scale={{ opacity: 0, start: 0.8 }}>
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
 								<td {...attrs}>

@@ -10,7 +10,10 @@
 </script>
 
 	
-<div use:melt={$root}>
+<div
+	use:melt={$root}
+	class="column"
+>
 	<button
 		type="button"
 		use:melt={$trigger}
@@ -19,7 +22,10 @@
 	</button>
 
 	{#if $open}
-		<div use:melt={$content} transition:slide>
+		<div
+			use:melt={$content}
+			transition:slide
+		>
 			<slot />
 		</div>
 	{/if}
@@ -27,8 +33,12 @@
 
 
 <style>
-	button {
-		padding: none;
+	[data-melt-collapsible] {
+		gap: 0;
+	}
+
+	[data-melt-collapsible-trigger] {
+		padding: 0;
 		box-shadow: none;
 	}
 </style>
