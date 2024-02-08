@@ -33,6 +33,8 @@
 
 	let allowIps: 'all' | 'restricted' = 'all'
 
+	let startingConfig: typeof form
+
 
 	// Events
 	import { goto } from '$app/navigation'
@@ -50,19 +52,50 @@
 
 
 <form
-	class="card column"
+	class="column"
 	on:submit|preventDefault={e => {
 		console.log({e, $form})
 		onSubmit?.($form)
 	}}
 >
-	{#if placement !== 'in-modal'}
+	{#if placement === 'standalone'}
 		<header>
-			Customize container
+			<h2>Customize container</h2>
 		</header>
 	{/if}
 
-	<fieldset class="column">
+	<fieldset class="card column">
+		<header>
+			Start from existing
+		</header>
+
+		<section class="row wrap">
+			<div class="column inline">
+				<h3>
+					<label for="startingConfig">
+						Starting configuration
+					</label>
+				</h3>
+
+				<p>Choose an existing container to pre-fill variables from.</p>
+			</div>
+
+			<Select
+				required
+				name="image"
+				labelText="Starting Configuration"
+				placeholder="No containers found"
+				bind:value={startingConfig}
+				items={[]}
+			/>
+		</section>
+	</fieldset>
+
+	<fieldset class="card column">
+		<header>
+			Customize container
+		</header>
+
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
