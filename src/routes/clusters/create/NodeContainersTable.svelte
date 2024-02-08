@@ -7,6 +7,10 @@
 	export let containers: typeof Container[]
 
 
+	// Events
+	export let onEdit: (_: typeof Container) => void
+
+
 	// Components
 	import Table from '$/components/Table.svelte'
 </script>
@@ -54,6 +58,22 @@
 		{
 			header: 'GPU?',
 			accessor: container => container.gpu,
+		},
+	]}
+	contextMenu={container => [
+		{
+			value: 'edit',
+			label: 'Edit Container',
+			onClick: () => {
+				onEdit?.(container)
+			},
+		},
+		{
+			value: 'delete',
+			label: 'Delete Container',
+			onClick: () => {
+				containers = containers.filter(_container => _container !== container)
+			},
 		},
 	]}
 >

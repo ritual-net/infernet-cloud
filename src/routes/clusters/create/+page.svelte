@@ -573,6 +573,27 @@
 
 								<NodeContainersTable
 									containers={node.containers}
+									onEdit={async container => {
+										const href = `/clusters/create/container`
+
+										const result = {
+											type: 'loaded',
+											status: 200,
+											data: {
+												container,
+											},
+										}
+
+										if (result.type === 'loaded' && result.status === 200) {
+											pushState(href, {
+												showContainerCreateForm: true,
+												shallowRouteData: result.data,
+											})
+										} else {
+											console.error(`Failed to preload shallow route: ${href}`)
+											goto(href)
+										}
+									}}
 								/>
 							</section>
 						</article>
