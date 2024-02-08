@@ -29,12 +29,15 @@
 </script>
 
 
-<div
+<!-- <div
 	use:melt={$trigger}
 	aria-label={labelText}
->
-	<slot />
-</div>
+> -->
+	<slot
+		trigger={$trigger}
+		aria-label={labelText}
+	/>
+<!-- </div> -->
 
 <div use:melt={$menu}>
 	{#each items ?? [] as subitem}
