@@ -17,6 +17,8 @@
 	// 	formData,
 	// } = $page.data as PageData
 
+	let configurations = []
+
 
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
@@ -84,9 +86,9 @@
 				required
 				name="image"
 				labelText="Starting Configuration"
-				placeholder="No containers found"
+				placeholder={configurations.length ? `Select container config...` : `No existing containers found`}
 				bind:value={startingConfig}
-				items={[]}
+				items={configurations}
 			/>
 		</section>
 	</fieldset>
