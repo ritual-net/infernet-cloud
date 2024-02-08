@@ -59,7 +59,7 @@
 <div>
 	{#if labelText}
 		<!-- svelte-ignore a11y-label-has-associated-control -->
-		<label use:melt={$label}>{labelText}</label>
+		<!-- <label use:melt={$label}>{labelText}</label> -->
 	{/if}
 
 	<button
