@@ -123,12 +123,12 @@ export const getClusterByNodeId = async (
 ): Promise<ProviderCluster | null> => {
 	// Get cloud provider from generic cluster
 	const generic = await e
-		.select(e.Cluster, (cl) => ({
+		.select(e.Cluster, (cluster) => ({
 			id: true,
 			service_account: {
 				provider: true,
 			},
-			filter_single: e.op(e.uuid(id), 'in', cl.nodes.id),
+			filter_single: e.op(e.uuid(id), 'in', cluster.nodes.id),
 		}))
 		.run(client);
 
