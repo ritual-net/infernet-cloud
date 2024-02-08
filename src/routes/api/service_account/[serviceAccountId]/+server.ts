@@ -1,4 +1,5 @@
 import { e } from '$/lib/db';
+import { getServiceAccountById } from '$/lib/db/queries';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -16,15 +17,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 		return error(400, 'Service account id is required');
 	}
 
-	const result = await e
-		.select(e.ServiceAccount, () => ({
-			id: true,
-			name: true,
-			provider: true,
-			filter_single: { id },
-		}))
-		.run(locals.client);
-
+	const result = await getServiceAccountById(locals.client, id, false);
 	return json(result);
 };
 

@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	// Get provider of service account
 	const client = locals.client;
-	const serviceAccount = await getServiceAccountById(client, serviceAccountId);
+	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
 	if (!serviceAccount) {
 		return error(400, 'Service account could not be retrieved');
 	}
