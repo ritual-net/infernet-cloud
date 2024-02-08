@@ -403,7 +403,7 @@
 								/>
 							</section>
 
-							<fieldset disabled={!node.chain_enabled} class="card column">
+							<fieldset disabled={!node.chain_enabled} class="column">
 								<section class="row wrap">
 									<div class="column inline">
 										<h3>

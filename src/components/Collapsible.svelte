@@ -25,6 +25,7 @@
 		<div
 			use:melt={$content}
 			transition:slide
+			class="column"
 		>
 			<slot />
 		</div>

@@ -62,7 +62,7 @@
 		</header>
 	{/if}
 
-	<fieldset class="card">
+	<fieldset class="column">
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
