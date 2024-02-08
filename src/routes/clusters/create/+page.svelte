@@ -563,6 +563,9 @@
 
 												history.back()
 											}}
+											onCancel={() => {
+												history.back()
+											}}
 											placement={'in-modal'}
 										/>
 									</Dialog>

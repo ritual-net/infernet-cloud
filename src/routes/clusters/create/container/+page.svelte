@@ -45,6 +45,10 @@
 		goto('/clusters/create/#/nodes')
 	}
 
+	export let onCancel: () => void = () => {
+		goto('/clusters/create/#/nodes')
+	}
+
 
 	// Components
 	import Switch from '$components/Switch.svelte'
@@ -304,7 +308,7 @@
 		<div class="row">
 			<button
 				type="button"
-				on:click={() => history.back()}
+				on:click={onCancel}
 			>
 				Cancel
 			</button>
