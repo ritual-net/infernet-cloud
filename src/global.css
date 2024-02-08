@@ -124,7 +124,7 @@ a {
 	}
 }
 
-input {
+input, textarea {
 	--input-paddingX: 1em;
 	--input-paddingY: 0.5em;
 	--input-backgroundColor: var(--input-default-backgroundColor);
@@ -145,6 +145,9 @@ input {
 	&.small {
 		font-size: 0.8em;
 	}
+}
+textarea {
+	width: 100%;
 }
 
 
