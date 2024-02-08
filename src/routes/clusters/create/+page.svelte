@@ -323,6 +323,7 @@
 											placeholder="Enter Docker access token..."
 											bind:value={$form.config.name}
 											{...$constraints.config?.name}
+											class="code"
 										/>
 									</div>
 								</div>
@@ -491,6 +492,7 @@
 										type="text"
 										bind:value={node.private_key}
 										{...$constraints.nodes?.private_key ?? {}}
+										class="code"
 									/>
 								</section>
 

@@ -239,6 +239,7 @@
 				bind:value={$form.container.command}
 				placeholder={`Enter start command here...`}
 				{...$constraints.container?.command}
+				class="code"
 			/>
 		</section>
 
@@ -259,6 +260,7 @@
 				placeholder={`Add environment variables here...`}
 				bind:value={$form.container.env}
 				{...$constraints.container?.env}
+				class="code"
 			/>
 		</section>
 	</fieldset>
