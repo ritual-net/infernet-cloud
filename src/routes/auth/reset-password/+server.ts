@@ -10,15 +10,15 @@ import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
  * @returns The response object.
  */
 export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
-	const body = await request.json();
-	const { reset_token, password } = body;
+	const { reset_token, password } = (await request.json()) as {
+		reset_token: string;
+		password: string;
+	};
 
 	if (!reset_token || !password) {
 		return error(
 			400,
-			`Request body malformed. Expected JSON body with 'reset_token' and 'password' keys, but got: ${JSON.stringify(
-				body
-			)}`
+			"Request body malformed. Expected JSON body with 'reset_token' and 'password' keys"
 		);
 	}
 

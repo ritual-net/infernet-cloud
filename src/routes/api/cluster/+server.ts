@@ -13,7 +13,7 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param locals - The locals object contains the client.
  * @returns Array of Cluster objects.
  */
-export const GET: RequestHandler = async ({ locals }) => {
+export const GET: RequestHandler = async ({ locals: { client } }) => {
 	// Get all clusters for user
 	const result = await e
 		.select(e.Cluster, (cluster) => ({
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 			name: true,
 			node_count: e.count(cluster.nodes),
 		}))
-		.run(locals.client);
+		.run(client);
 
 	return json(result);
 };
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ locals }) => {
  * @param request - The request object containing 'serviceAccountId', 'config', 'nodes'.
  * @returns Cluster ID, success boolean, and Terraform message.
  */
-export const POST: RequestHandler = async ({ locals, request }) => {
+export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	const { serviceAccountId, config, nodes } = await request.json();
 
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
@@ -48,7 +48,6 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	// TODO: Enforce correctness of config, nodes + containers?
 
 	// Get provider of service account
-	const client = locals.client;
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
 	if (!serviceAccount) {
 		return error(400, 'Service account could not be retrieved');

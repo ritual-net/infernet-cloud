@@ -12,14 +12,14 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param params - The parameters object, expected to contain 'clusterId'.
  * @returns Cluster object.
  */
-export const GET: RequestHandler = async ({ locals, params }) => {
+export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.clusterId;
 
 	if (!id) {
 		return error(400, 'Cluster id is required');
 	}
 
-	return json(await getClusterById(locals.client, id, false));
+	return json(await getClusterById(client, id, false));
 };
 
 /**
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
  * 					- ip_allow_https: string
  * @returns Success boolean and Terraform message.
  */
-export const PATCH: RequestHandler = async ({ locals, params, request }) => {
+export const PATCH: RequestHandler = async ({ locals: { client }, params, request }) => {
 	const id = params.clusterId;
 
 	if (!id) {
@@ -47,7 +47,6 @@ export const PATCH: RequestHandler = async ({ locals, params, request }) => {
 	}
 
 	// Update cluster
-	const client = locals.client;
 	const cluster = await e
 		.update(e.Cluster, (c) => ({
 			set: {
@@ -80,7 +79,7 @@ export const PATCH: RequestHandler = async ({ locals, params, request }) => {
  * @param params - The parameters object, expected to contain 'clusterId'.
  * @returns Success boolean and Terraform message.
  */
-export const DELETE: RequestHandler = async ({ locals, params }) => {
+export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.clusterId;
 
 	if (!id) {
@@ -88,7 +87,6 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 	}
 
 	// Apply Terraform changes to cluster
-	const client = locals.client;
 	const { error: errorMessage, success } = await clusterAction(client, id, TFAction.Destroy);
 
 	if (success) {

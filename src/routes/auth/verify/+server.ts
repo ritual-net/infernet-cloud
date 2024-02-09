@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		return error(400, `Error from the auth server: ${text}`);
 	}
 
-	const { code } = await verifyResponse.json();
+	const { code } = (await verifyResponse.json()) as { code: string };
 
 	const tokenUrl = new URL('token', EDGEDB_AUTH_BASE_URL);
 	tokenUrl.searchParams.set('code', code);
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		return error(400, `Error from the auth server: ${text}`);
 	}
 
-	const { auth_token } = await tokenResponse.json();
+	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
 	const headers = new Headers({
 		'Set-Cookie': `edgedb-auth-token=${auth_token}; HttpOnly; Path=/; Secure; SameSite=Strict`,
 	});

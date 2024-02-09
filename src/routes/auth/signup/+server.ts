@@ -12,17 +12,18 @@ import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
  * @returns The response object.
  */
 export const POST: RequestHandler = async ({ fetch, request }) => {
-	const body = await request.json();
-
 	const pkce = generatePKCE();
-	const { email, name, password, provider } = body;
+	const { email, name, password, provider } = (await request.json()) as {
+		email: string;
+		name: string;
+		password: string;
+		provider: string;
+	};
 
 	if (!email || !name || !password || !provider) {
 		return error(
 			400,
-			`Request body malformed. Expected JSON body with 'email', 'password', and 'provider' keys, but got: ${JSON.stringify(
-				body
-			)}`
+			"Request body malformed. Expected JSON body with 'email', 'password', and 'provider' keys"
 		);
 	}
 

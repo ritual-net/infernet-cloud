@@ -14,8 +14,8 @@ import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
 export const getNodesByIds = async (
 	client: Client,
 	nodeIds: string[]
-): Promise<InfernetNode[] | null> => {
-	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+): Promise<InfernetNode[]> => {
+	return await e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.InfernetNode, (node) => ({
 			...e.InfernetNode['*'],
 			containers: {
@@ -23,9 +23,7 @@ export const getNodesByIds = async (
 			},
 			filter: e.op(node.id, 'in', e.array_unpack(ids)),
 		}))
-	);
-	const nodes = await query.run(client, { ids: nodeIds });
-	return nodes.length > 0 ? nodes : null;
+	).run(client, { ids: nodeIds });
 };
 
 /**
@@ -98,14 +96,14 @@ export const getClusterById = async (
 	const provider = generic.service_account.provider;
 
 	// Get cluster with provider-specific data
-	const result = await e
+	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
 			...getClusterSelectParams(creds, provider),
 			filter_single: { id },
 		}))
 		.run(client);
 
-	return result && (result as ProviderCluster);
+	return cluster as ProviderCluster | null;
 };
 
 /**

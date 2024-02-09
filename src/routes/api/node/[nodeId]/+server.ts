@@ -14,14 +14,14 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns NodeInfo object.
  */
-export const GET: RequestHandler = async ({ locals, params }) => {
+export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.nodeId;
 
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
 	try {
-		const nodeInfo = ((await nodeAction(locals.client, [id], NodeAction.info)) as NodeInfo[])[0];
+		const nodeInfo = ((await nodeAction(client, [id], NodeAction.info)) as NodeInfo[])[0];
 		return json(nodeInfo);
 	} catch (e) {
 		return error(400, (e as Error).message);
@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns Success boolean and Terraform message.
  */
-export const DELETE: RequestHandler = async ({ locals, params }) => {
+export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.nodeId;
 
 	if (!id) {
@@ -43,7 +43,6 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 	}
 
 	// Get cluster id and service account
-	const client = locals.client;
 	const cluster = await getClusterByNodeId(client, id);
 
 	if (!cluster) {

@@ -10,14 +10,14 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param params - The parameters object, expected to contain 'serviceAccountId'.
  * @returns Service Account object.
  */
-export const GET: RequestHandler = async ({ locals, params }) => {
+export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.serviceAccountId;
 
 	if (!id) {
 		return error(400, 'Service account id is required');
 	}
 
-	const result = await getServiceAccountById(locals.client, id, false);
+	const result = await getServiceAccountById(client, id, false);
 	return json(result);
 };
 
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
  * @param request - The parameters object, expected to contain 'serviceAccountId'.
  * @returns ID of the deleted service account.
  */
-export const DELETE: RequestHandler = async ({ locals, params }) => {
+export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.serviceAccountId;
 
 	if (!id) {
@@ -42,7 +42,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 		.select(e.Cluster, (cluster) => ({
 			filter: e.op(cluster.service_account.id, '=', e.uuid(id)),
 		}))
-		.run(locals.client);
+		.run(client);
 
 	if (cluster_count.length > 0) {
 		return error(400, 'Service account is in use by one or more clusters');
@@ -53,7 +53,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 		.delete(e.ServiceAccount, () => ({
 			filter_single: { id },
 		}))
-		.run(locals.client);
+		.run(client);
 
 	return json(result);
 };

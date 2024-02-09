@@ -25,7 +25,7 @@ export const nodeAction = async (
 	action: NodeAction
 ): Promise<NodeInfo[] | undefined> => {
 	const nodes = await getNodesByIds(client, nodeIds);
-	if (!nodes) {
+	if (nodes.length === 0) {
 		throw Error('Nodes could not be retrieved.');
 	}
 

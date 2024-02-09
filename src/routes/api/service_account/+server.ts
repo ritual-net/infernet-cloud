@@ -9,9 +9,7 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param locals - The locals object contains the client.
  * @returns Array of ServiceAccount objects.
  */
-export const GET: RequestHandler = async ({ locals }) => {
-	const client = locals.client;
-
+export const GET: RequestHandler = async ({ locals: { client } }) => {
 	const result = await e
 		.select(e.ServiceAccount, () => ({
 			id: true,
@@ -30,14 +28,12 @@ export const GET: RequestHandler = async ({ locals }) => {
  * @param request - The request object containing 'name', 'provider' and 'credentials'.
  * @returns Newly created ServiceAccount object.
  */
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	const { name, provider, credentials } = await request.json();
 
 	if (!name || !provider || !credentials) {
 		return error(400, 'name, provider, and credentials are required');
 	}
-
-	const client = locals.client;
 
 	// TODO: Validate format of credentials
 	// TODO: Validate if credentials work or not, don't store them in db otherwise
