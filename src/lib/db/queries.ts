@@ -112,47 +112,51 @@ export const getClusterById = async (
  * Get cluster data by node id
  *
  * @param client The database client
- * @param id of node
+ * @param ids of node
  * @param creds whether to include sensitive Service Account credentials
  * @returns ProviderCluster if found
  */
-export const getClusterByNodeId = async (
+export const getClusterByNodeIds = async (
 	client: Client,
-	id: string,
+	ids: string[],
 	creds = false
 ): Promise<ProviderCluster | null> => {
-	const node = e.select(e.InfernetNode, () => ({
-		filter_single: { id },
-	}));
-
-	// Get cloud provider from generic cluster
-	const generic = await e
-		.with(
-			[node],
-			e.select(e.Cluster, (cluster) => ({
-				service_account: {
-					provider: true,
-				},
-				filter: e.op(node, 'in', cluster.nodes),
-			}))
-		)
-		.run(client);
-
-	if (!generic || generic.length === 0) {
-		return null;
+	const genericQuery = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.Cluster, (cluster) => ({
+			id: true,
+			service_account: {
+				provider: true,
+			},
+			filter: e.op(
+				e.select(e.InfernetNode, (node) => ({
+					id: true,
+					filter: e.op(node.id, 'in', e.array_unpack(ids)),
+				})),
+				'in',
+				cluster.nodes
+			),
+		}))
+	);
+	const generic = await genericQuery.run(client, { ids });
+	if (!generic || generic.length !== 1) {
+		throw Error('Unable to find exactly one cluster for nodes.');
 	}
-
 	const provider = generic[0].service_account.provider;
 
 	// Get cluster with provider-specific data
-	const cluster = await e
-		.with(
-			[node],
-			e.select(ClusterTypeByProvider[provider], (cluster) => ({
-				...getClusterSelectParams(creds, provider),
-				filter_single: e.op(node, 'in', cluster.nodes),
-			}))
-		)
-		.run(client);
-	return cluster as ProviderCluster | null;
+	const clusterQuery = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(ClusterTypeByProvider[provider], (cluster) => ({
+			...getClusterSelectParams(creds, provider),
+			filter: e.op(
+				e.select(e.InfernetNode, (node) => ({
+					id: true,
+					filter: e.op(node.id, 'in', e.array_unpack(ids)),
+				})),
+				'in',
+				cluster.nodes
+			),
+		}))
+	);
+	const cluster = await clusterQuery.run(client, { ids });
+	return cluster[0] as ProviderCluster | null;
 };

@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { getNodesByIds, getClusterByNodeId } from '$/lib/db/queries';
+import { getNodesByIds, getClusterByNodeIds } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
 import type { Client } from 'edgedb';
@@ -10,38 +10,6 @@ import type {
 	ProviderServiceAccount,
 	ProviderServiceAccountCreds,
 } from '$/types/provider';
-
-/**
- * Returns cluster of set of nodes while asserting they belong to same cluster.
- *
- * @param nodes - Array of InfernetNode objects
- * @returns ProviderCluster object
- * @throws Error if nodes do not belong to same cluster, no nodes provided, cluster could not be retrieved
- */
-export const getNodesClusterId = async (
-	client: Client,
-	nodes: InfernetNode[]
-): Promise<ProviderCluster> => {
-	if (nodes.length === 0) {
-		throw Error('No nodes provided.');
-	}
-
-	const firstNode = nodes[0];
-	const cluster = await getClusterByNodeId(client, firstNode.id);
-
-	if (!cluster) {
-		throw Error('Cluster could not be retrieved.');
-	}
-
-	for (let node of nodes) {
-		const nodeCluster = await getClusterByNodeId(client, node.id, true);
-		if (nodeCluster!.id !== cluster.id) {
-			throw Error('Nodes do not belong to the same cluster.');
-		}
-	}
-
-	return cluster;
-};
 
 /**
  * Applies the given action to a node and returns the result.
@@ -63,7 +31,10 @@ export const nodeAction = async (
 		throw Error('Nodes could not be retrieved.');
 	}
 
-	const cluster = await getNodesClusterId(client, nodes);
+	const cluster = await getClusterByNodeIds(client, nodeIds, true);
+	if (!cluster) {
+		throw Error('Cluster could not be retrieved.');
+	}
 
 	const service_account = cluster.service_account as ProviderServiceAccount;
 	const provider = service_account.provider;
