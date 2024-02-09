@@ -144,8 +144,8 @@ export const getClusterByNodeIds = async (
 	}
 	const provider = generic[0].service_account.provider;
 	const cluster_id = generic[0].id;
-	// Get cluster with provider-specific data
 
+	// Get cluster with provider-specific data
 	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
 			...getClusterSelectParams(creds, provider),
