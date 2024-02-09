@@ -110,38 +110,44 @@ export const getClusterById = async (
  * Get cluster data by node id
  *
  * @param client The database client
- * @param id of node
+ * @param ids of node
  * @param creds whether to include sensitive Service Account credentials
  * @returns ProviderCluster if found
+ * @throws Error if unable to find exactly one cluster for nodes
  */
-export const getClusterByNodeId = async (
+export const getClusterByNodeIds = async (
 	client: Client,
-	id: string,
+	ids: string[],
 	creds = false
 ): Promise<ProviderCluster | null> => {
-	// Get cloud provider from generic cluster
-	const generic = await e
-		.select(e.Cluster, (cluster) => ({
+	const genericQuery = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.Cluster, (cluster) => ({
 			id: true,
 			service_account: {
 				provider: true,
 			},
-			filter_single: e.op(e.uuid(id), 'in', cluster.nodes.id),
+			filter: e.op(
+				e.select(e.InfernetNode, (node) => ({
+					id: true,
+					filter: e.op(node.id, 'in', e.array_unpack(ids)),
+				})),
+				'in',
+				cluster.nodes
+			),
 		}))
-		.run(client);
-
-	if (!generic) {
-		return null;
+	);
+	const generic = await genericQuery.run(client, { ids });
+	if (!generic || generic.length !== 1) {
+		throw Error('Unable to find exactly one cluster for nodes.');
 	}
-
-	const clusterId = generic.id;
-	const provider = generic.service_account.provider;
+	const provider = generic[0].service_account.provider;
+	const cluster_id = generic[0].id;
 
 	// Get cluster with provider-specific data
 	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
 			...getClusterSelectParams(creds, provider),
-			filter_single: { id: clusterId },
+			filter_single: { id: cluster_id },
 		}))
 		.run(client);
 	return cluster as ProviderCluster | null;

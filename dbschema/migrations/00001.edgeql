@@ -1,4 +1,4 @@
-CREATE MIGRATION m1spe5lzfruraih3l2q6vngoqp5mkxxjlau352wf7il3jue5zxw2da
+CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -104,6 +104,7 @@ CREATE MIGRATION m1spe5lzfruraih3l2q6vngoqp5mkxxjlau352wf7il3jue5zxw2da
           SET default := (['0.0.0.0/0']);
       };
       CREATE REQUIRED PROPERTY name: std::str;
+      CREATE PROPERTY router_ip: std::str;
       CREATE REQUIRED PROPERTY tfstate: std::str {
           SET default := '';
       };

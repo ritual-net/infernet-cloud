@@ -1,4 +1,5 @@
 import { e } from '$/lib/db';
+import { ProviderClient } from '$/lib/index';
 import { ProviderTypeEnum } from '$/types/provider';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -36,11 +37,15 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	}
 
 	// TODO: Validate format of credentials
-	// TODO: Validate if credentials work or not, don't store them in db otherwise
 
 	let query;
 	switch (provider) {
 		case ProviderTypeEnum.GCP: {
+			try {
+				await new ProviderClient[ProviderTypeEnum.GCP]().auth(credentials);
+			} catch (err) {
+				return error(400, `Error validating credentials: ${(err as Error).message}`);
+			}
 			query = e.insert(e.GCPServiceAccount, {
 				user: e.global.current_user,
 				name,
@@ -61,6 +66,17 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			break;
 		}
 		case ProviderTypeEnum.AWS: {
+			try {
+				await new ProviderClient[ProviderTypeEnum.AWS]().auth({
+					user_name: credentials.UserName,
+					access_key_id: credentials.AccessKeyId,
+					status: credentials.Status,
+					secret_access_key: credentials.SecretAccessKey,
+					create_date: credentials.CreateDates,
+				});
+			} catch (err) {
+				return error(400, `Error validating credentials: ${(err as Error).message}`);
+			}
 			query = e.insert(e.AWSServiceAccount, {
 				user: e.global.current_user,
 				name,

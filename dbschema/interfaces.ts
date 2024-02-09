@@ -24,6 +24,7 @@ export interface Cluster extends std.$Object {
 	ip_allow_http: string[];
 	ip_allow_ssh: string[];
 	name: string;
+	router_ip?: string | null;
 	tfstate: string;
 }
 export interface AWSCluster extends Cluster {

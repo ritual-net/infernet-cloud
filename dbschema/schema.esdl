@@ -156,6 +156,7 @@ module default {
     required tfstate: str {
       default := "";
     }
+    router_ip: str;
 
     required service_account: ServiceAccount {
       readonly := true;
@@ -194,4 +195,5 @@ module default {
       readonly := true;
     }
   }
+
 }

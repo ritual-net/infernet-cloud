@@ -67,42 +67,6 @@ export const createNodeConfigFiles = async (
 };
 
 /**
- * Parses the output of a Terraform command into an array of objects.
- *
- * @param output The output of the Terraform command.
- * @returns An array of Record<string, string[] | string | number | boolean> objects.
- */
-export const parseTerraformOutput = (
-	output: string
-): Record<string, string[] | string | number | boolean>[] => {
-	const nodesSectionMatch = output
-		// Isolate the "outputs" section
-		.slice(output.lastIndexOf('Outputs:'))
-		// Extract the "nodes" array
-		.match(/nodes\s*=\s*\[[^\]]*?\]/);
-
-	if (!nodesSectionMatch) return []; // Return an empty array if no match is found
-
-	let nodesSection = nodesSectionMatch[0];
-	nodesSection = nodesSection.substring(
-		nodesSection.indexOf('['),
-		nodesSection.lastIndexOf(']') + 1
-	);
-
-	// Replace Terraform syntax with JSON syntax
-	const jsonString = nodesSection
-		.replace(/=\s*"/g, ': "') // Replace '=' with ':' for string values
-		.replace(/(\w+)\s*:/g, '"$1":') // Add quotes to keys
-		.replace(/"\n/g, '", ') // add comma after each line
-		.replace(/\s*([{}])\s*/g, '$1') // Remove whitespace around '{' and '}'
-		.replace(/,}/g, '}') // Remove trailing comma in objects
-		.replace(/},[^{]/g, '}'); // Remove trailing comma in arrays
-
-	// Parse JSON
-	return JSON.parse(jsonString);
-};
-
-/**
  * Format an InfernetNode object into a JSON object that can be used as a
  * config.json file for an Infernet Node deployment.
  *

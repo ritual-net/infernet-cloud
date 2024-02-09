@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { getNodesByIds, getClusterByNodeId } from '$/lib/db/queries';
+import { getNodesByIds, getClusterByNodeIds } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
 import type { Client } from 'edgedb';
@@ -29,9 +29,9 @@ export const nodeAction = async (
 		throw Error('Nodes could not be retrieved.');
 	}
 
-	const cluster = await getClusterByNodeId(client, nodeIds[0], true);
+	const cluster = await getClusterByNodeIds(client, nodeIds, true);
 	if (!cluster) {
-		throw Error('Cluster could not be retrieved for nodes.');
+		throw Error('Cluster could not be retrieved.');
 	}
 
 	const service_account = cluster.service_account as ProviderServiceAccount;

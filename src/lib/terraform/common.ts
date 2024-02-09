@@ -3,7 +3,7 @@ import { getClusterById } from '../db/queries';
 import { ProviderTerraform } from '$/lib';
 import type { Client } from 'edgedb';
 import type { ProviderServiceAccount } from '$/types/provider';
-import type { TFAction } from '$/types/terraform';
+import type { TFState, TFAction } from '$/types/terraform';
 
 /**
  * Applies the given action to a cluster, and persists the resulting Terraform state
@@ -20,9 +20,11 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		return { error: 'Cluster not found', success: false };
 	}
 
-	const { error, nodeInfo, state, success } = await ProviderTerraform[
+	const { error, state, success } = await ProviderTerraform[
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
+
+	const nodeInfo = (state as TFState).outputs?.nodes?.value ?? [];
 
 	// Store state in the database
 	await e
@@ -30,6 +32,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 			filter_single: { id: clusterId },
 			set: {
 				tfstate: JSON.stringify(state),
+				router_ip: String((state as TFState).outputs?.router_ip?.value ?? ''),
 			},
 		}))
 		.run(client);

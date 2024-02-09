@@ -44,10 +44,10 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"aws-sdk": "^2.1540.0",
+		"@aws-sdk/client-ec2": "^3.507.0",
+		"@google-cloud/compute": "^4.1.0",
 		"axios": "^1.6.5",
 		"edgedb": "^1.4.1",
-		"googleapis": "^131.0.0",
-		"@google-cloud/compute": "^4.1.0"
+		"googleapis": "^131.0.0"
 	}
 }

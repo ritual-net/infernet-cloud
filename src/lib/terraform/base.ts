@@ -76,17 +76,10 @@ export abstract class BaseTerraform {
 			return { success: false, error: 'Cluster could not be updated.', state: {} };
 		}
 
-		let error, nodeInfo;
+		let error;
 		try {
 			// Terraform action
-			const result = await SystemUtils.executeCommands(
-				tempDir,
-				`terraform ${action} -auto-approve`
-			);
-
-			if (action === TFAction.Apply) {
-				nodeInfo = TerraformUtils.parseTerraformOutput(result);
-			}
+			await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve`);
 		} catch (e) {
 			// We catch the error here so we can store the state file in the db.
 			// Even if the apply fails, the cluster may be partially created / updated,
@@ -102,6 +95,6 @@ export abstract class BaseTerraform {
 		// Remove temporary directory
 		SystemUtils.removeDir(tempDir);
 
-		return { success: error ? false : true, error, nodeInfo, state };
+		return { success: error ? false : true, error, state };
 	}
 }
