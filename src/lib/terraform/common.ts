@@ -20,10 +20,12 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		return { error: 'Cluster not found', success: false };
 	}
 
-	const { error, nodeInfo, state, success } = await ProviderTerraform[
+	const { error, state, success } = await ProviderTerraform[
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
 
+	const nodeInfo = (state as TFState).outputs?.nodes?.value ?? [];
+	console.log(nodeInfo);
 	// Store state in the database
 	await e
 		.update(e.Cluster, () => ({

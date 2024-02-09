@@ -9,6 +9,12 @@ export type TFState = {
 	serial: number;
 	lineage: string;
 	outputs: {
+		nodes?: {
+			value?: {
+				id?: string;
+				key?: string;
+			}[];
+		};
 		router_ip?: {
 			value: string;
 		};

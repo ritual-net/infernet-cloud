@@ -115,6 +115,7 @@ export const getClusterById = async (
  * @param ids of node
  * @param creds whether to include sensitive Service Account credentials
  * @returns ProviderCluster if found
+ * @throws Error if unable to find exactly one cluster for nodes
  */
 export const getClusterByNodeIds = async (
 	client: Client,

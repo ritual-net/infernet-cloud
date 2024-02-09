@@ -3,10 +3,8 @@ import { getNodesByIds, getClusterByNodeIds } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
 import type { Client } from 'edgedb';
-import type { InfernetNode } from '$schema/interfaces';
 import type {
 	NodeInfo,
-	ProviderCluster,
 	ProviderServiceAccount,
 	ProviderServiceAccountCreds,
 } from '$/types/provider';

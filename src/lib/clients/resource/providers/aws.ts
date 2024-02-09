@@ -38,9 +38,11 @@ export class AWSResourceClient extends BaseResourceClient {
 	 */
 	async auth(creds: AWSServiceAccount['creds']) {
 		try {
-			// sanity check to ensure db creds work, initial region does not matter
+			// initial region does not matter
 			this.creds = creds;
 			this.amazonCompute = await this.createInstance('us-east-1');
+			// sanity check to enusure creds are valid
+			await this.getRegions();
 		} catch (error) {
 			throw new Error(`Error during AWS authentication: ${(error as Error).message}`);
 		}
