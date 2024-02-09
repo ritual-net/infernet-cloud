@@ -21,7 +21,7 @@ export class GCPTerraform extends BaseTerraform {
 		serviceAccount: GCPServiceAccount
 	): Promise<void> {
 		const credentials = serviceAccount.creds;
-		credentials.private_key = credentials.private_key!.split(String.raw`\n`).join('\n');
+		credentials.private_key = credentials.private_key.split(String.raw`\n`).join('\n');
 
 		// Format nodes as a map of node id to node name
 		const nodes = Object.fromEntries(cluster.nodes.map((node) => [node.id, node.id]));

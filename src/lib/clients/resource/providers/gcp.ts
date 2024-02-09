@@ -19,7 +19,7 @@ export class GCPResourceClient extends BaseResourceClient {
 			const authObj = new google.auth.GoogleAuth({
 				credentials: {
 					client_email: creds.client_email,
-					private_key: creds.private_key!.split(String.raw`\n`).join('\n'),
+					private_key: creds.private_key.split(String.raw`\n`).join('\n'),
 					project_id: creds.project_id,
 				},
 				scopes: ['https://www.googleapis.com/auth/cloud-platform'],
