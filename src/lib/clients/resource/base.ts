@@ -1,5 +1,4 @@
 import type { Machine, ProviderInfo, ZoneInfo } from '$/types/provider';
-import { c } from 'tar';
 
 /**
  * Base abstract class for fetching data from cloud providers.

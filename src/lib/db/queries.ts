@@ -143,21 +143,14 @@ export const getClusterByNodeIds = async (
 		throw Error('Unable to find exactly one cluster for nodes.');
 	}
 	const provider = generic[0].service_account.provider;
-
+	const cluster_id = generic[0].id;
 	// Get cluster with provider-specific data
-	const clusterQuery = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
-		e.select(ClusterTypeByProvider[provider], (cluster) => ({
+
+	const cluster = await e
+		.select(ClusterTypeByProvider[provider], () => ({
 			...getClusterSelectParams(creds, provider),
-			filter: e.op(
-				e.select(e.InfernetNode, (node) => ({
-					id: true,
-					filter: e.op(node.id, 'in', e.array_unpack(ids)),
-				})),
-				'in',
-				cluster.nodes
-			),
+			filter_single: { id: cluster_id },
 		}))
-	);
-	const cluster = await clusterQuery.run(client, { ids });
-	return cluster[0] as ProviderCluster | null;
+		.run(client);
+	return cluster as ProviderCluster | null;
 };

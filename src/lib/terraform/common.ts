@@ -25,7 +25,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
 
 	const nodeInfo = (state as TFState).outputs?.nodes?.value ?? [];
-	console.log(nodeInfo);
+
 	// Store state in the database
 	await e
 		.update(e.Cluster, () => ({
