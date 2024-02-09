@@ -12,56 +12,10 @@ export namespace std {
 		export type Base64Alphabet = 'standard' | 'urlsafe';
 	}
 }
-export namespace cfg {
-	export interface ConfigObject extends std.BaseObject {}
-	export interface AbstractConfig extends ConfigObject {
-		extensions: ExtensionConfig[];
-		session_idle_timeout: edgedb.Duration;
-		session_idle_transaction_timeout: edgedb.Duration;
-		query_execution_timeout: edgedb.Duration;
-		listen_port: number;
-		listen_addresses: string[];
-		auth: Auth[];
-		allow_dml_in_functions?: boolean | null;
-		allow_bare_ddl?: AllowBareDDL | null;
-		apply_access_policies?: boolean | null;
-		allow_user_specified_id?: boolean | null;
-		shared_buffers?: edgedb.ConfigMemory | null;
-		query_work_mem?: edgedb.ConfigMemory | null;
-		maintenance_work_mem?: edgedb.ConfigMemory | null;
-		effective_cache_size?: edgedb.ConfigMemory | null;
-		effective_io_concurrency?: number | null;
-		default_statistics_target?: number | null;
-		force_database_error?: string | null;
-		_pg_prepared_statement_cache_size: number;
-	}
-	export type AllowBareDDL = 'AlwaysAllow' | 'NeverAllow';
-	export interface Auth extends ConfigObject {
-		priority: number;
-		user: string[];
-		method?: AuthMethod | null;
-		comment?: string | null;
-	}
-	export interface AuthMethod extends ConfigObject {
-		transports: ConnectionTransport[];
-	}
-	export interface Config extends AbstractConfig {}
-	export type ConnectionTransport = 'TCP' | 'TCP_PG' | 'HTTP' | 'SIMPLE_HTTP';
-	export interface DatabaseConfig extends AbstractConfig {}
-	export interface ExtensionConfig extends ConfigObject {
-		cfg: AbstractConfig;
-	}
-	export interface InstanceConfig extends AbstractConfig {}
-	export interface JWT extends AuthMethod {
-		transports: ConnectionTransport[];
-	}
-	export interface Password extends AuthMethod {
-		transports: ConnectionTransport[];
-	}
-	export interface SCRAM extends AuthMethod {
-		transports: ConnectionTransport[];
-	}
-	export interface Trust extends AuthMethod {}
+export interface User extends std.$Object {
+	identity: ext.auth.Identity;
+	name: string;
+	email: string;
 }
 export interface Cluster extends std.$Object {
 	nodes: InfernetNode[];
@@ -136,9 +90,152 @@ export interface InfernetNode extends std.$Object {
 	rpc_url?: string | null;
 	trail_head_blocks?: number | null;
 }
-export interface User extends std.$Object {
-	email: string;
-	name: string;
+export interface current_user extends User {}
+export namespace ext {
+	export namespace auth {
+		export interface ProviderConfig extends cfg.ConfigObject {
+			name: string;
+		}
+		export interface OAuthProviderConfig extends ProviderConfig {
+			name: string;
+			secret: string;
+			client_id: string;
+			display_name: string;
+			additional_scope?: string | null;
+		}
+		export interface AppleOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export interface Auditable extends std.$Object {
+			created_at: Date;
+			modified_at: Date;
+		}
+		export interface AuthConfig extends cfg.ExtensionConfig {
+			providers: ProviderConfig[];
+			ui?: UIConfig | null;
+			auth_signing_key?: string | null;
+			token_time_to_live?: edgedb.Duration | null;
+			allowed_redirect_urls: string[];
+		}
+		export interface AzureOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export interface Identity extends Auditable {
+			issuer: string;
+			subject: string;
+		}
+		export interface ClientTokenIdentity extends Identity {}
+		export interface Factor extends Auditable {
+			identity: LocalIdentity;
+		}
+		export interface EmailFactor extends Factor {
+			email: string;
+			verified_at?: Date | null;
+		}
+		export interface EmailPasswordFactor extends EmailFactor {
+			password_hash: string;
+		}
+		export interface EmailPasswordProviderConfig extends ProviderConfig {
+			name: string;
+			require_verification: boolean;
+		}
+		export type FlowType = 'PKCE' | 'Implicit';
+		export interface GitHubOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export interface GoogleOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export type JWTAlgo = 'RS256' | 'HS256';
+		export interface LocalIdentity extends Identity {
+			subject: string;
+		}
+		export interface PKCEChallenge extends Auditable {
+			challenge: string;
+			auth_token?: string | null;
+			refresh_token?: string | null;
+			identity?: Identity | null;
+		}
+		export interface SMTPConfig extends cfg.ExtensionConfig {
+			sender?: string | null;
+			host?: string | null;
+			port?: number | null;
+			username?: string | null;
+			password?: string | null;
+			security: SMTPSecurity;
+			validate_certs: boolean;
+			timeout_per_email: edgedb.Duration;
+			timeout_per_attempt: edgedb.Duration;
+		}
+		export type SMTPSecurity = 'PlainText' | 'TLS' | 'STARTTLS' | 'STARTTLSOrPlainText';
+		export interface UIConfig extends cfg.ConfigObject {
+			redirect_to: string;
+			redirect_to_on_signup?: string | null;
+			flow_type: FlowType;
+			app_name?: string | null;
+			logo_url?: string | null;
+			dark_logo_url?: string | null;
+			brand_color?: string | null;
+		}
+	}
+}
+export namespace __default {
+	export interface current_user extends User {}
+}
+export namespace cfg {
+	export interface ConfigObject extends std.BaseObject {}
+	export interface AbstractConfig extends ConfigObject {
+		extensions: ExtensionConfig[];
+		session_idle_timeout: edgedb.Duration;
+		session_idle_transaction_timeout: edgedb.Duration;
+		query_execution_timeout: edgedb.Duration;
+		listen_port: number;
+		listen_addresses: string[];
+		auth: Auth[];
+		allow_dml_in_functions?: boolean | null;
+		allow_bare_ddl?: AllowBareDDL | null;
+		apply_access_policies?: boolean | null;
+		allow_user_specified_id?: boolean | null;
+		shared_buffers?: edgedb.ConfigMemory | null;
+		query_work_mem?: edgedb.ConfigMemory | null;
+		maintenance_work_mem?: edgedb.ConfigMemory | null;
+		effective_cache_size?: edgedb.ConfigMemory | null;
+		effective_io_concurrency?: number | null;
+		default_statistics_target?: number | null;
+		force_database_error?: string | null;
+		_pg_prepared_statement_cache_size: number;
+	}
+	export type AllowBareDDL = 'AlwaysAllow' | 'NeverAllow';
+	export interface Auth extends ConfigObject {
+		priority: number;
+		user: string[];
+		method?: AuthMethod | null;
+		comment?: string | null;
+	}
+	export interface AuthMethod extends ConfigObject {
+		transports: ConnectionTransport[];
+	}
+	export interface Config extends AbstractConfig {}
+	export type ConnectionTransport = 'TCP' | 'TCP_PG' | 'HTTP' | 'SIMPLE_HTTP';
+	export interface DatabaseConfig extends AbstractConfig {}
+	export interface ExtensionConfig extends ConfigObject {
+		cfg: AbstractConfig;
+	}
+	export interface InstanceConfig extends AbstractConfig {}
+	export interface JWT extends AuthMethod {
+		transports: ConnectionTransport[];
+	}
+	export interface Password extends AuthMethod {
+		transports: ConnectionTransport[];
+	}
+	export interface SCRAM extends AuthMethod {
+		transports: ConnectionTransport[];
+	}
+	export interface Trust extends AuthMethod {}
 }
 export namespace fts {
 	export type ElasticLanguage =
@@ -512,6 +609,47 @@ export interface types {
 			Base64Alphabet: std.enc.Base64Alphabet;
 		};
 	};
+	default: {
+		User: User;
+		Cluster: Cluster;
+		AWSCluster: AWSCluster;
+		ServiceAccount: ServiceAccount;
+		AWSServiceAccount: AWSServiceAccount;
+		CloudProvider: CloudProvider;
+		Container: Container;
+		GCPCluster: GCPCluster;
+		GCPServiceAccount: GCPServiceAccount;
+		InfernetNode: InfernetNode;
+		current_user: current_user;
+	};
+	ext: {
+		auth: {
+			ProviderConfig: ext.auth.ProviderConfig;
+			OAuthProviderConfig: ext.auth.OAuthProviderConfig;
+			AppleOAuthProvider: ext.auth.AppleOAuthProvider;
+			Auditable: ext.auth.Auditable;
+			AuthConfig: ext.auth.AuthConfig;
+			AzureOAuthProvider: ext.auth.AzureOAuthProvider;
+			Identity: ext.auth.Identity;
+			ClientTokenIdentity: ext.auth.ClientTokenIdentity;
+			Factor: ext.auth.Factor;
+			EmailFactor: ext.auth.EmailFactor;
+			EmailPasswordFactor: ext.auth.EmailPasswordFactor;
+			EmailPasswordProviderConfig: ext.auth.EmailPasswordProviderConfig;
+			FlowType: ext.auth.FlowType;
+			GitHubOAuthProvider: ext.auth.GitHubOAuthProvider;
+			GoogleOAuthProvider: ext.auth.GoogleOAuthProvider;
+			JWTAlgo: ext.auth.JWTAlgo;
+			LocalIdentity: ext.auth.LocalIdentity;
+			PKCEChallenge: ext.auth.PKCEChallenge;
+			SMTPConfig: ext.auth.SMTPConfig;
+			SMTPSecurity: ext.auth.SMTPSecurity;
+			UIConfig: ext.auth.UIConfig;
+		};
+	};
+	__default: {
+		current_user: __default.current_user;
+	};
 	cfg: {
 		ConfigObject: cfg.ConfigObject;
 		AbstractConfig: cfg.AbstractConfig;
@@ -527,18 +665,6 @@ export interface types {
 		Password: cfg.Password;
 		SCRAM: cfg.SCRAM;
 		Trust: cfg.Trust;
-	};
-	default: {
-		Cluster: Cluster;
-		AWSCluster: AWSCluster;
-		ServiceAccount: ServiceAccount;
-		AWSServiceAccount: AWSServiceAccount;
-		CloudProvider: CloudProvider;
-		Container: Container;
-		GCPCluster: GCPCluster;
-		GCPServiceAccount: GCPServiceAccount;
-		InfernetNode: InfernetNode;
-		User: User;
 	};
 	fts: {
 		ElasticLanguage: fts.ElasticLanguage;

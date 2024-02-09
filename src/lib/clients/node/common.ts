@@ -2,6 +2,7 @@
 import { getNodesByIds, getClusterByNodeId } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
+import type { Client } from 'edgedb';
 import type {
 	NodeInfo,
 	ProviderServiceAccount,
@@ -9,23 +10,26 @@ import type {
 } from '$/types/provider';
 
 /**
- * Given an array of InfernetNode ids and an action, complete action via node client.
+ * Applies the given action to a node and returns the result.
  *
- * @param nodes - Array of InfernetNode ids to complete action on
- * @param action - Action to complete on nodes {start, stop, info}
+ * @param client - The database client
+ * @param nodes - Array of InfernetNode IDs
+ * @param action - The action to perform on the node
  * @returns error or success message
+ * @throws Error if nodes, cluster could not be retrieved, or action is not supported
  * @remarks nodes have to belong to same cluster
  */
-export const executeNodeAction = async (
+export const nodeAction = async (
+	client: Client,
 	nodeIds: string[],
-	action: string
-): Promise<NodeInfo[] | object> => {
-	const nodes = await getNodesByIds(nodeIds);
-	if (!nodes) {
+	action: NodeAction
+): Promise<NodeInfo[] | undefined> => {
+	const nodes = await getNodesByIds(client, nodeIds);
+	if (nodes.length === 0) {
 		throw Error('Nodes could not be retrieved.');
 	}
 
-	const cluster = await getClusterByNodeId(nodeIds[0]);
+	const cluster = await getClusterByNodeId(client, nodeIds[0], true);
 	if (!cluster) {
 		throw Error('Cluster could not be retrieved for nodes.');
 	}
@@ -44,11 +48,11 @@ export const executeNodeAction = async (
 	switch (action) {
 		case NodeAction.start:
 			await nodeClient.startNodes(providerIds, functionArgs);
-			return { success: true, message: 'Started nodes.' };
+			return;
 
 		case NodeAction.stop:
 			await nodeClient.stopNodes(providerIds, functionArgs);
-			return { success: true, message: 'Stopped nodes.' };
+			return;
 
 		case NodeAction.info:
 			const nodesInfo = await nodeClient.getNodesInfo(providerIds, functionArgs);

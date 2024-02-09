@@ -1,6 +1,7 @@
-import { e } from '.';
+import { ClusterSpreadParamsByProvider, ServiceAccountTypeByProvider, e } from '.';
 import type { $expr_ForVar } from '$schema/edgeql-js/for';
 import type { $expr_Param } from '$schema/edgeql-js/params';
+import type { CloudProvider } from '$schema/interfaces';
 
 /**
  * Generic params for inserting an InfernetNode
@@ -71,19 +72,17 @@ export const insertNodeQuery = (
  * @param creds Whether to include sensitive Service Account credentials
  * @returns The select params
  */
-export const getClusterSelectParams = (creds: boolean) => {
+export const getClusterSelectParams = (creds: boolean, provider: CloudProvider) => {
 	return {
 		service_account: {
 			user: {
+				identity: {
+					...e.ext.auth.Identity['*'],
+				},
 				...e.User['*'],
 			},
 			...e.ServiceAccount['*'],
-			...(creds
-				? {
-						...e.is(e.AWSCluster, { creds: true }),
-						...e.is(e.GCPServiceAccount, { creds: true }),
-					}
-				: {}),
+			...(creds ? { ...e.is(ServiceAccountTypeByProvider[provider], { creds }) } : {}),
 		},
 		nodes: {
 			...e.InfernetNode['*'],
@@ -92,7 +91,6 @@ export const getClusterSelectParams = (creds: boolean) => {
 			},
 		},
 		...e.Cluster['*'],
-		...e.is(e.AWSCluster, { region: true, machine_type: true }),
-		...e.is(e.GCPCluster, { region: true, zone: true, machine_type: true }),
+		...ClusterSpreadParamsByProvider[provider],
 	};
 };

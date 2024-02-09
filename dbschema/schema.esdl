@@ -1,9 +1,26 @@
+using extension auth;
+
 module default {
+  global current_user := (
+    assert_single((
+      select User { id, name }
+      filter .identity = global ext::auth::ClientTokenIdentity
+    ))
+  );
+
   scalar type CloudProvider extending enum<AWS, GCP>;
 
   type User {
     required name: str;
     required email: str;
+    required identity: ext::auth::Identity;
+
+    access policy only_owner
+      allow all
+      using (.id ?= global current_user.id);
+
+    access policy signup
+      allow insert
   }
 
   abstract type ServiceAccount {
@@ -12,6 +29,10 @@ module default {
       readonly := true;
     };
     required provider: CloudProvider;
+
+    access policy only_owner
+      allow all
+      using (.user ?= global current_user);
   }
 
   type GCPServiceAccount extending ServiceAccount {
@@ -74,6 +95,12 @@ module default {
       default := false;
     }
 
+    access policy only_owner
+      allow all
+      using (.<containers[is InfernetNode].<nodes[is Cluster].service_account.user ?= global current_user);
+
+    access policy insertion
+      allow insert
   }
 
   type InfernetNode {
@@ -106,6 +133,13 @@ module default {
       constraint exclusive;
       on source delete delete target;
     }
+
+    access policy only_owner
+      allow all
+      using (.<nodes[is Cluster].service_account.user ?= global current_user);
+  
+    access policy insertion
+      allow insert
   }
 
   abstract type Cluster {
@@ -130,6 +164,9 @@ module default {
       constraint exclusive;
       on source delete delete target;
     }
+    access policy only_owner
+      allow all
+      using (.service_account.user ?= global current_user);
   }
 
   type GCPCluster extending Cluster {
