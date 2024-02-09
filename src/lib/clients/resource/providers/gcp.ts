@@ -28,6 +28,8 @@ export class GCPResourceClient extends BaseResourceClient {
 			const authClient = (await authObj.getClient()) as OAuth2Client;
 			this.projectId = creds.project_id;
 			this.googleCompute = google.compute({ version: 'v1', auth: authClient });
+			// sanity check for creds
+			await this.getRegions();
 		} catch (error) {
 			throw new Error(`Error during GCP authentication: ${(error as Error).message}`);
 		}

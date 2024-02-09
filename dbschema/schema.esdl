@@ -196,5 +196,3 @@ module default {
     }
   }
 }
-
-using extension auth;

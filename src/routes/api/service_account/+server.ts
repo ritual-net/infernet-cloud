@@ -41,15 +41,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const client = locals.client;
 
 	// TODO: Validate format of credentials
-	try {
-		await new ProviderClient[provider as ProviderTypeEnum]().auth(credentials);
-	} catch (err) {
-		return error(400, `Error validating credentials: ${(err as Error).message}`);
-	}
 
 	let query;
 	switch (provider) {
 		case ProviderTypeEnum.GCP: {
+			try {
+				await new ProviderClient[ProviderTypeEnum.GCP]().auth(credentials);
+			} catch (err) {
+				return error(400, `Error validating credentials: ${(err as Error).message}`);
+			}
 			query = e.insert(e.GCPServiceAccount, {
 				user: e.global.current_user,
 				name,
@@ -70,6 +70,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			break;
 		}
 		case ProviderTypeEnum.AWS: {
+			try {
+				await new ProviderClient[ProviderTypeEnum.AWS]().auth({
+					user_name: credentials.UserName,
+					access_key_id: credentials.AccessKeyId,
+					status: credentials.Status,
+					secret_access_key: credentials.SecretAccessKey,
+					create_date: credentials.CreateDates,
+				});
+			} catch (err) {
+				return error(400, `Error validating credentials: ${(err as Error).message}`);
+			}
 			query = e.insert(e.AWSServiceAccount, {
 				user: e.global.current_user,
 				name,
