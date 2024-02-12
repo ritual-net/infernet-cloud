@@ -3,6 +3,11 @@ import path from 'path';
 import tar from 'tar';
 import type { InfernetNode } from '$schema/interfaces';
 
+const BASE_TEMP_DIR = `${process.cwd()}/tmp`;
+
+// Touch temporary directory to ensure it exists
+await fs.mkdir(BASE_TEMP_DIR, { recursive: true });
+
 /**
  * Creates a temporary directory for deployment files. Copies the deployment files
  * from the src/lib/deploy/ directory, and untars the provider-specific Terraform
@@ -15,7 +20,7 @@ export const createTempDir = async (provider: string): Promise<string> => {
 	const srcDir = `${process.cwd()}/src/lib/deploy`;
 
 	// Create a temporary directory
-	const tempDir = await fs.mkdtemp(path.join(`${process.cwd()}`, '/tmp/ic-'));
+	const tempDir = await fs.mkdtemp(BASE_TEMP_DIR);
 
 	// Untar the provider-specific Terraform files
 	await tar.x({

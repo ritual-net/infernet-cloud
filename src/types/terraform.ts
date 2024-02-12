@@ -12,6 +12,7 @@ export type TFState = {
 		nodes?: {
 			value?: {
 				id: string;
+				ip: string;
 				key: string;
 			}[];
 		};

@@ -61,6 +61,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 					nodeInfo: e.array(
 						e.tuple({
 							id: e.str,
+							ip: e.str,
 							key: e.uuid,
 						})
 					),
