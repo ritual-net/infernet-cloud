@@ -38,13 +38,13 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 	}
 
 	// Check if service account is in use by any clusters
-	const cluster_count = await e
+	const clusterCount = await e
 		.select(e.Cluster, (cluster) => ({
 			filter: e.op(cluster.service_account.id, '=', e.uuid(id)),
 		}))
 		.run(client);
 
-	if (cluster_count.length > 0) {
+	if (clusterCount.length > 0) {
 		return error(400, 'Service account is in use by one or more clusters');
 	}
 
