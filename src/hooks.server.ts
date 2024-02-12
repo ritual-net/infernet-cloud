@@ -12,8 +12,8 @@ import { error, type Handle } from '@sveltejs/kit';
  * @param event - The request event.
  * @param resolve - The resolve function.
  * @returns The event with the client attached,
- */ 
-export const handle: Handle = async ({ event, resolve }) =>{
+ */
+export const handle: Handle = async ({ event, resolve }) => {
 	// Allow requests to the auth server
 	if (event.url.pathname.startsWith('/auth')) {
 		return await resolve(event);
@@ -33,4 +33,4 @@ export const handle: Handle = async ({ event, resolve }) =>{
 		'ext::auth::client_token': token,
 	});
 	return await resolve(event);
-}
+};

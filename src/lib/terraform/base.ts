@@ -1,5 +1,5 @@
 import path from 'path';
-import { TFAction } from '$/types/terraform';
+import { TFAction, type TFState } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
 import * as TerraformUtils from '$/lib/utils/terraform';
 import type { CommandExecutionError } from '$/types/error';
@@ -73,7 +73,7 @@ export abstract class BaseTerraform {
 		// Initialize terraform
 		await SystemUtils.executeCommands(tempDir, 'terraform init');
 		if (!tempDir) {
-			return { success: false, error: 'Cluster could not be updated.', state: {} };
+			return { success: false, error: 'Cluster could not be updated.' };
 		}
 
 		let error;
@@ -90,7 +90,9 @@ export abstract class BaseTerraform {
 		}
 
 		// Store state file in db under cluster entry
-		const state = await SystemUtils.readJsonFromFile(path.join(tempDir, 'terraform.tfstate'));
+		const state = (await SystemUtils.readJsonFromFile(
+			path.join(tempDir, 'terraform.tfstate')
+		)) as TFState;
 
 		// Remove temporary directory
 		SystemUtils.removeDir(tempDir);

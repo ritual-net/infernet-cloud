@@ -103,6 +103,17 @@ module default {
       allow insert
   }
 
+  type ContainerTemplate extending Container {
+    required name: str;
+    required user: User {
+      readonly := true;
+    };
+
+    access policy only_template_owner
+      allow all
+      using (.user ?= global current_user);
+  }
+
   type InfernetNode {
     required chain_enabled: bool {
       default := false;
@@ -153,10 +164,15 @@ module default {
     required ip_allow_ssh: array<str> {
       default := ["0.0.0.0/0"];
     }
-    required tfstate: str {
-      default := "";
+    required healthy: bool {
+      default := true;
     }
+    required locked: bool {
+      default := false;
+    }
+    tfstate: str;
     router_ip: str;
+    error: str;
 
     required service_account: ServiceAccount {
       readonly := true;
@@ -195,5 +211,4 @@ module default {
       readonly := true;
     }
   }
-
 }

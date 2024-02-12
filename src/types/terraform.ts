@@ -11,8 +11,8 @@ export type TFState = {
 	outputs: {
 		nodes?: {
 			value?: {
-				id?: string;
-				key?: string;
+				id: string;
+				key: string;
 			}[];
 		};
 		router_ip?: {

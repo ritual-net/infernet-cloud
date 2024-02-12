@@ -21,11 +21,14 @@ export interface Cluster extends std.$Object {
 	nodes: InfernetNode[];
 	service_account: ServiceAccount;
 	deploy_router: boolean;
+	healthy: boolean;
 	ip_allow_http: string[];
 	ip_allow_ssh: string[];
+	locked: boolean;
 	name: string;
 	router_ip?: string | null;
-	tfstate: string;
+	tfstate?: string | null;
+	error?: string | null;
 }
 export interface AWSCluster extends Cluster {
 	machine_type: string;
@@ -58,6 +61,10 @@ export interface Container extends std.$Object {
 	external: boolean;
 	gpu: boolean;
 	image: string;
+}
+export interface ContainerTemplate extends Container {
+	user: User;
+	name: string;
 }
 export interface GCPCluster extends Cluster {
 	machine_type: string;
@@ -618,6 +625,7 @@ export interface types {
 		AWSServiceAccount: AWSServiceAccount;
 		CloudProvider: CloudProvider;
 		Container: Container;
+		ContainerTemplate: ContainerTemplate;
 		GCPCluster: GCPCluster;
 		GCPServiceAccount: GCPServiceAccount;
 		InfernetNode: InfernetNode;

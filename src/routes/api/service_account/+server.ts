@@ -36,8 +36,6 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'name, provider, and credentials are required');
 	}
 
-	// TODO: Validate format of credentials
-
 	let query;
 	switch (provider) {
 		case ProviderTypeEnum.GCP: {

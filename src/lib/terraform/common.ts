@@ -3,7 +3,7 @@ import { getClusterById } from '../db/queries';
 import { ProviderTerraform } from '$/lib';
 import type { Client } from 'edgedb';
 import type { ProviderServiceAccount } from '$/types/provider';
-import type { TFState, TFAction } from '$/types/terraform';
+import { TFAction } from '$/types/terraform';
 
 /**
  * Applies the given action to a cluster, and persists the resulting Terraform state
@@ -20,24 +20,40 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		return { error: 'Cluster not found', success: false };
 	}
 
+	if (cluster.locked) {
+		return { error: 'Cluster mutation is progress. Please wait.', success: false };
+	}
+
+	// Lock the cluster to prevent concurrent mutations
+	await e
+		.update(e.Cluster, () => ({
+			filter_single: { id: clusterId },
+			set: {
+				locked: true,
+			},
+		}))
+		.run(client);
+
 	const { error, state, success } = await ProviderTerraform[
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
-
-	const nodeInfo = (state as TFState).outputs?.nodes?.value ?? [];
 
 	// Store state in the database
 	await e
 		.update(e.Cluster, () => ({
 			filter_single: { id: clusterId },
 			set: {
+				error: error ?? null,
+				healthy: success,
+				locked: false,
+				router_ip: state?.outputs?.router_ip?.value ?? null,
 				tfstate: JSON.stringify(state),
-				router_ip: String((state as TFState).outputs?.router_ip?.value ?? ''),
 			},
 		}))
 		.run(client);
 
 	// Update node provider IDs
+	const nodeInfo = state?.outputs?.nodes?.value;
 	if (nodeInfo) {
 		await e
 			.params(
@@ -60,7 +76,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 					)
 			)
 			.run(client, {
-				nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
+				nodeInfo,
 			});
 	}
 

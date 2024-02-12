@@ -45,8 +45,6 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account and at least one node are required');
 	}
 
-	// TODO: Enforce correctness of config, nodes + containers?
-
 	// Get provider of service account
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
 	if (!serviceAccount) {

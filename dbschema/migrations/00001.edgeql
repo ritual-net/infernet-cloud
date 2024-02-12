@@ -1,4 +1,4 @@
-CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
+CREATE MIGRATION m16l2iewezebb6z7a6azcwawqcnvvgmryodjn2lhc4jgzxoxj2rbcq
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -97,17 +97,21 @@ CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
       CREATE REQUIRED PROPERTY deploy_router: std::bool {
           SET default := false;
       };
+      CREATE REQUIRED PROPERTY healthy: std::bool {
+          SET default := true;
+      };
       CREATE REQUIRED PROPERTY ip_allow_http: array<std::str> {
           SET default := (['0.0.0.0/0']);
       };
       CREATE REQUIRED PROPERTY ip_allow_ssh: array<std::str> {
           SET default := (['0.0.0.0/0']);
       };
+      CREATE REQUIRED PROPERTY locked: std::bool {
+          SET default := false;
+      };
       CREATE REQUIRED PROPERTY name: std::str;
       CREATE PROPERTY router_ip: std::str;
-      CREATE REQUIRED PROPERTY tfstate: std::str {
-          SET default := '';
-      };
+      CREATE PROPERTY tfstate: std::str;
       CREATE ACCESS POLICY only_owner
           ALLOW ALL USING ((.service_account.user ?= GLOBAL default::current_user));
   };
