@@ -78,7 +78,6 @@ export abstract class BaseTerraform {
 
 		let error;
 		try {
-			// Terraform action
 			await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve`);
 		} catch (e) {
 			// We catch the error here so we can store the state file in the db.
@@ -86,7 +85,6 @@ export abstract class BaseTerraform {
 			// so we want the state file to reflect that.
 			const commandError = e as CommandExecutionError;
 			error = commandError.stderr ?? commandError.error ?? commandError;
-			console.error(error);
 		}
 
 		// Store state file in db under cluster entry

@@ -30,6 +30,7 @@ module default {
     };
     required provider: CloudProvider;
 
+    constraint exclusive on ((.name, .user));
     access policy only_owner
       allow all
       using (.user ?= global current_user);
@@ -109,6 +110,7 @@ module default {
       readonly := true;
     };
 
+    constraint exclusive on ((.name, .user));
     access policy only_template_owner
       allow all
       using (.user ?= global current_user);
@@ -181,6 +183,8 @@ module default {
       constraint exclusive;
       on source delete delete target;
     }
+
+    constraint exclusive on ((.name, .service_account));
     access policy only_owner
       allow all
       using (.service_account.user ?= global current_user);

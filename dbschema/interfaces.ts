@@ -21,6 +21,7 @@ export interface Cluster extends std.$Object {
 	nodes: InfernetNode[];
 	service_account: ServiceAccount;
 	deploy_router: boolean;
+	error?: string | null;
 	healthy: boolean;
 	ip_allow_http: string[];
 	ip_allow_ssh: string[];
@@ -28,7 +29,6 @@ export interface Cluster extends std.$Object {
 	name: string;
 	router_ip?: string | null;
 	tfstate?: string | null;
-	error?: string | null;
 }
 export interface AWSCluster extends Cluster {
 	machine_type: string;
