@@ -404,115 +404,117 @@
 								/>
 							</section>
 
-							<fieldset disabled={!node.chain_enabled} class="column">
-								<section class="row wrap">
-									<div class="column inline">
-										<h3>
-											<label for="trail_head_blocks">
-												Trail Head Blocks
-											</label>
-										</h3>
+							<Collapsible open={node.chain_enabled}>
+								<fieldset disabled={!node.chain_enabled} class="column">
+									<section class="row wrap">
+										<div class="column inline">
+											<h3>
+												<label for="trail_head_blocks">
+													Trail Head Blocks
+												</label>
+											</h3>
 
-										<p>The number of blocks.</p>
-									</div>
+											<p>The number of blocks.</p>
+										</div>
 
-									<input
-										type="number"
-										bind:value={node.trail_head_blocks}
-										{...$constraints.nodes?.trail_head_blocks ?? {}}
-									/>
-								</section>
+										<input
+											type="number"
+											bind:value={node.trail_head_blocks}
+											{...$constraints.nodes?.trail_head_blocks ?? {}}
+										/>
+									</section>
 
-								<section class="row wrap">
-									<div class="column inline">
-										<h3 class="row inline">
-											<label for="rpc_url">
-												RPC URL
-											</label>
-										</h3>
+									<section class="row wrap">
+										<div class="column inline">
+											<h3 class="row inline">
+												<label for="rpc_url">
+													RPC URL
+												</label>
+											</h3>
 
-										<p>The Ethereum node RPC URL.</p>
-									</div>
+											<p>The Ethereum node RPC URL.</p>
+										</div>
 
-									<input
-										type="url"
-										bind:value={node.rpc_url}
-										{...$constraints.nodes?.rpc_url ?? {}}
-									/>
-								</section>
+										<input
+											type="url"
+											bind:value={node.rpc_url}
+											{...$constraints.nodes?.rpc_url ?? {}}
+										/>
+									</section>
 
-								<section class="row wrap">
-									<div class="column inline">
-										<h3 class="row inline">
-											<label for="coordinator_address">
-												Coordinator Address
-											</label>
-										</h3>
+									<section class="row wrap">
+										<div class="column inline">
+											<h3 class="row inline">
+												<label for="coordinator_address">
+													Coordinator Address
+												</label>
+											</h3>
 
-										<p>The address of the Coordinator smart contract.</p>
-									</div>
+											<p>The address of the Coordinator smart contract.</p>
+										</div>
 
-									<input
-										type="text"
-										bind:value={node.coordinator_address}
-										{...$constraints.nodes?.coordinator_address ?? {}}
-									/>
-								</section>
+										<input
+											type="text"
+											bind:value={node.coordinator_address}
+											{...$constraints.nodes?.coordinator_address ?? {}}
+										/>
+									</section>
 
-								<section class="row wrap">
-									<div class="column inline">
-										<h3>
-											<label for="max_gas_limit">
-												Max Gas Limit
-											</label>
-										</h3>
+									<section class="row wrap">
+										<div class="column inline">
+											<h3>
+												<label for="max_gas_limit">
+													Max Gas Limit
+												</label>
+											</h3>
 
-										<p>The threshold to trigger an Ethereum transaction in gwei.</p>
-									</div>
+											<p>The threshold to trigger an Ethereum transaction in gwei.</p>
+										</div>
 
-									<input
-										type="number"
-										bind:value={node.max_gas_limit}
-										{...$constraints.nodes?.max_gas_limit ?? {}}
-									/>
-								</section>
+										<input
+											type="number"
+											bind:value={node.max_gas_limit}
+											{...$constraints.nodes?.max_gas_limit ?? {}}
+										/>
+									</section>
 
-								<section class="row wrap">
-									<div class="column inline">
-										<h3 class="row inline">
-											<label for="private_key">
-												Private Key
-											</label>
-										</h3>
+									<section class="row wrap">
+										<div class="column inline">
+											<h3 class="row inline">
+												<label for="private_key">
+													Private Key
+												</label>
+											</h3>
 
-										<p>The private key of the node.</p>
-									</div>
+											<p>The private key of the node.</p>
+										</div>
 
-									<input
-										type="text"
-										bind:value={node.private_key}
-										{...$constraints.nodes?.private_key ?? {}}
-										class="code"
-									/>
-								</section>
+										<input
+											type="text"
+											bind:value={node.private_key}
+											{...$constraints.nodes?.private_key ?? {}}
+											class="code"
+										/>
+									</section>
 
-								<section class="row wrap">
-									<div class="column inline">
-										<h3 class="row inline">
-											<label for="private_key">
-												Forward Stats?
-											</label>
-										</h3>
+									<section class="row wrap">
+										<div class="column inline">
+											<h3 class="row inline">
+												<label for="private_key">
+													Forward Stats?
+												</label>
+											</h3>
 
-										<p>If checked, register this node to be shown publicly on the Infernet explorer.</p>
-									</div>
+											<p>If checked, register this node to be shown publicly on the Infernet explorer.</p>
+										</div>
 
-									<Switch
-										bind:checked={node.forward_stats}
-										labelText="Forward Stats?"
-									/>
-								</section>
-							</fieldset>
+										<Switch
+											bind:checked={node.forward_stats}
+											labelText="Forward Stats?"
+										/>
+									</section>
+								</fieldset>
+							</Collapsible>
 
 							<section class="column">
 								<div class="row">
