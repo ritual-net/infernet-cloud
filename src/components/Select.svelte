@@ -72,7 +72,11 @@
 			<img src={$selected.icon} />
 		{/if}
 
-		{$selectedLabel || placeholder}
+		{#if $selectedLabel}
+			<span>{$selectedLabel}</span>
+		{:else}
+			<span class="placeholder">{placeholder}</span>
+		{/if}
 	</button>
 
 	{#if $open}
@@ -250,5 +254,9 @@
 		width: 1.5em;
 		height: 1.5em;
 		object-fit: contain;
+	}
+
+	.placeholder {
+		opacity: 0.5;
 	}
 </style>

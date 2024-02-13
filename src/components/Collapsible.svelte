@@ -1,12 +1,24 @@
 <script lang="ts">
-	import { createCollapsible, melt } from '@melt-ui/svelte'
-	import { slide } from 'svelte/transition'
+	// Inputs
+	export let open: boolean
 
+
+	// Internal state
+	import { createCollapsible, createSync, melt } from '@melt-ui/svelte'
 
 	const {
 		elements: { root, content, trigger },
-		states: { open },
+		states,
 	} = createCollapsible()
+
+	$: createSync(states).open(
+		open,
+		_ => { open = _ },
+	)
+
+
+	// Transitions/animations
+	import { slide } from 'svelte/transition'
 </script>
 
 	
@@ -21,7 +33,7 @@
 		<slot name="trigger" />
 	</button>
 
-	{#if $open}
+	{#if open}
 		<div
 			use:melt={$content}
 			transition:slide
