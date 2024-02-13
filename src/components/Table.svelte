@@ -68,13 +68,25 @@
 
 
 <style>
+	div {
+		overflow-x: auto;
+	}
+
 	table {
 		border-spacing: var(--border-width);
 		width: 100%;
 	}
 
+	thead {
+		font-size: 0.85em;
+	}
+
 	tbody tr {
 		box-shadow: 0 var(--border-width) var(--border-color), 0 calc(-1 * var(--border-width)) var(--border-color);
+
+		&:nth-child(odd) {
+			background-color: rgba(0, 0, 0, 0.03);
+		}
 	}
 
 	th, td {
