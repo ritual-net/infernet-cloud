@@ -69,6 +69,17 @@
 			},
 		},
 		{
+			value: 'duplicate',
+			label: 'Duplicate Container',
+			onClick: () => {
+				containers = containers.toSpliced(
+					containers.indexOf(container) + 1,
+					0,
+					Object.assign({}, container, { container_id: crypto.randomUUID() }),
+				)
+			},
+		},
+		{
 			value: 'delete',
 			label: 'Delete Container',
 			onClick: () => {
