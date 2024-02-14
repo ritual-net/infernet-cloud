@@ -1,11 +1,9 @@
 import { AWSNodeClient } from './clients/node/providers/aws';
 import { AWSResourceClient } from './clients/resource/providers/aws';
 import { AWSTerraform } from './terraform/providers/aws';
-import { AWSQueries } from '$/lib/db/providers/aws';
 import { GCPNodeClient } from './clients/node/providers/gcp';
 import { GCPResourceClient } from './clients/resource/providers/gcp';
 import { GCPTerraform } from './terraform/providers/gcp';
-import { GCPQueries } from '$/lib/db/providers/gcp';
 import {
 	ProviderTypeEnum,
 	type ProviderCluster,
@@ -54,12 +52,4 @@ export const NodeClient = {
 			zone: (cluster as GCPCluster).zone,
 		}),
 	},
-};
-
-/**
- * DB query functions for each cloud provider. Does not have to be instantiated.
- */
-export const ProviderQueries = {
-	[ProviderTypeEnum.AWS]: AWSQueries,
-	[ProviderTypeEnum.GCP]: GCPQueries,
 };

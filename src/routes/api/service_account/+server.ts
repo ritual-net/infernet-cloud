@@ -1,36 +1,30 @@
-import { client, e } from '$/lib/db';
+import { e } from '$/lib/db';
+import type { Client } from 'edgedb'
+import { ProviderClient } from '$/lib/index';
 import { ProviderTypeEnum } from '$/types/provider';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
- * Retrieve all service accounts for a user.
+ * Retrieve all service accounts for the current user.
  *
- * @param request - The request object containing 'user'.
+ * @param locals - The locals object contains the client.
  * @returns Array of ServiceAccount objects.
  */
-const getServiceAccounts = async (user: string) => (
+const getServiceAccounts = async (client: Client) => (
 	await e
-		.select(e.ServiceAccount, (sa) => ({
+		.select(e.ServiceAccount, () => ({
 			id: true,
 			name: true,
 			provider: true,
-			filter: e.op(sa.user.id, '=', e.uuid(user)),
 		}))
 		.run(client)
 )
 
 export type QueriedServiceAccount = Awaited<ReturnType<typeof getServiceAccounts>>[number]
 
-export const GET: RequestHandler = async ({ request, url }) => {
-	const user = url.searchParams.get('user');
-
-	if (!user) {
-		return error(400, 'User id is required');
-	}
-	// TODO: Get user through auth
-
-	const result = await getServiceAccounts(user);
+export const GET: RequestHandler = async ({ locals: { client } }) => {
+	const result = await getServiceAccounts(client);
 
 	return json(result);
 };
@@ -38,27 +32,29 @@ export const GET: RequestHandler = async ({ request, url }) => {
 /**
  * Create a new service account.
  *
+ * @param locals - The locals object contains the client.
  * @param request - The request object containing 'name', 'provider' and 'credentials'.
  * @returns Newly created ServiceAccount object.
  */
-export const POST: RequestHandler = async ({ request }) => {
-	// TODO: get user through auth, not through body
-	const { user, name, provider, credentials } = await request.json();
+export const POST: RequestHandler = async ({ locals: { client }, request }) => {
+	const { name, provider, credentials } = await request.json();
 
-	if (!user || !name || !provider || !credentials) {
+	if (!name || !provider || !credentials) {
 		return error(400, 'name, provider, and credentials are required');
 	}
 
 	// TODO: Validate format of credentials
-	// TODO: Validate if credentials work or not, don't store them in db otherwise
 
 	let query;
 	switch (provider) {
 		case ProviderTypeEnum.GCP: {
+			try {
+				await new ProviderClient[ProviderTypeEnum.GCP]().auth(credentials);
+			} catch (err) {
+				return error(400, `Error validating credentials: ${(err as Error).message}`);
+			}
 			query = e.insert(e.GCPServiceAccount, {
-				user: e.select(e.User, () => ({
-					filter_single: { id: user },
-				})),
+				user: e.global.current_user,
 				name,
 				creds: e.tuple({
 					type: e.str(credentials.type),
@@ -77,10 +73,19 @@ export const POST: RequestHandler = async ({ request }) => {
 			break;
 		}
 		case ProviderTypeEnum.AWS: {
+			try {
+				await new ProviderClient[ProviderTypeEnum.AWS]().auth({
+					user_name: credentials.UserName,
+					access_key_id: credentials.AccessKeyId,
+					status: credentials.Status,
+					secret_access_key: credentials.SecretAccessKey,
+					create_date: credentials.CreateDates,
+				});
+			} catch (err) {
+				return error(400, `Error validating credentials: ${(err as Error).message}`);
+			}
 			query = e.insert(e.AWSServiceAccount, {
-				user: e.select(e.User, () => ({
-					filter_single: { id: user },
-				})),
+				user: e.global.current_user,
 				name,
 				creds: e.tuple({
 					// RHS casing to match AWS API

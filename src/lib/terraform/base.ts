@@ -1,10 +1,9 @@
 import path from 'path';
-import { client, e } from '$/lib/db';
+import { TFAction } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
 import * as TerraformUtils from '$/lib/utils/terraform';
 import type { CommandExecutionError } from '$/types/error';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
-import { TFAction } from '$/types/terraform';
 
 /**
  * Base class for Terraform deployments.
@@ -80,41 +79,7 @@ export abstract class BaseTerraform {
 		let error;
 		try {
 			// Terraform action
-			const result = await SystemUtils.executeCommands(
-				tempDir,
-				`terraform ${action} -auto-approve`
-			);
-
-			if (action === TFAction.Apply) {
-				const nodeInfo = TerraformUtils.parseTerraformOutput(result);
-				console.log(nodeInfo);
-				await e
-					.params(
-						{
-							nodeInfo: e.array(
-								e.tuple({
-									id: e.str,
-									key: e.uuid,
-								})
-							),
-						},
-						(params) => {
-							return e.for(e.array_unpack(params.nodeInfo), (obj) => {
-								return e.update(e.InfernetNode, () => ({
-									filter_single: { id: obj.key },
-									set: {
-										provider_id: obj.id,
-									},
-								}));
-							});
-						}
-					)
-					.run(client, {
-						nodeInfo: nodeInfo.map(({ id, key }) => ({ id: String(id), key: String(key) })),
-					});
-			}
-			// TODO: maybe use name postfix (i.e. db id) for finding nodes in the db
-			// TODO: Store nodeInfo in db, probably as a json (aws/gcp agnostic?)
+			await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve`);
 		} catch (e) {
 			// We catch the error here so we can store the state file in the db.
 			// Even if the apply fails, the cluster may be partially created / updated,

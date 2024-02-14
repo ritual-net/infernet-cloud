@@ -1,7 +1,26 @@
-CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
+CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
     ONTO initial
 {
+  CREATE EXTENSION pgcrypto VERSION '1.3';
+  CREATE EXTENSION auth VERSION '1.0';
+  CREATE TYPE default::User {
+      CREATE REQUIRED LINK identity: ext::auth::Identity;
+      CREATE REQUIRED PROPERTY name: std::str;
+      CREATE REQUIRED PROPERTY email: std::str;
+      CREATE ACCESS POLICY signup
+          ALLOW INSERT ;
+  };
+  CREATE GLOBAL default::current_user := (std::assert_single((SELECT
+      default::User {
+          id,
+          name
+      }
+  FILTER
+      (.identity = GLOBAL ext::auth::ClientTokenIdentity)
+  )));
   CREATE TYPE default::Container {
+      CREATE ACCESS POLICY insertion
+          ALLOW INSERT ;
       CREATE REQUIRED PROPERTY allowed_addresses: array<std::str> {
           SET default := (<array<std::str>>[]);
       };
@@ -32,6 +51,8 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
           ON SOURCE DELETE DELETE TARGET;
           CREATE CONSTRAINT std::exclusive;
       };
+      CREATE ACCESS POLICY insertion
+          ALLOW INSERT ;
       CREATE REQUIRED PROPERTY chain_enabled: std::bool {
           SET default := false;
       };
@@ -47,16 +68,13 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       CREATE PROPERTY private_key: std::str {
           SET default := '';
       };
+      CREATE PROPERTY provider_id: std::str;
       CREATE PROPERTY rpc_url: std::str {
           SET default := '';
       };
       CREATE PROPERTY trail_head_blocks: std::int16 {
           SET default := 0;
       };
-  };
-  CREATE TYPE default::User {
-      CREATE REQUIRED PROPERTY email: std::str;
-      CREATE REQUIRED PROPERTY name: std::str;
   };
   CREATE SCALAR TYPE default::CloudProvider EXTENDING enum<AWS, GCP>;
   CREATE ABSTRACT TYPE default::ServiceAccount {
@@ -65,6 +83,8 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       };
       CREATE REQUIRED PROPERTY name: std::str;
       CREATE REQUIRED PROPERTY provider: default::CloudProvider;
+      CREATE ACCESS POLICY only_owner
+          ALLOW ALL USING ((.user ?= GLOBAL default::current_user));
   };
   CREATE ABSTRACT TYPE default::Cluster {
       CREATE MULTI LINK nodes: default::InfernetNode {
@@ -84,14 +104,14 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
           SET default := (['0.0.0.0/0']);
       };
       CREATE REQUIRED PROPERTY name: std::str;
+      CREATE PROPERTY router_ip: std::str;
       CREATE REQUIRED PROPERTY tfstate: std::str {
           SET default := '';
       };
+      CREATE ACCESS POLICY only_owner
+          ALLOW ALL USING ((.service_account.user ?= GLOBAL default::current_user));
   };
   CREATE TYPE default::AWSCluster EXTENDING default::Cluster {
-      CREATE REQUIRED PROPERTY ami: std::str {
-          SET readonly := true;
-      };
       CREATE REQUIRED PROPERTY machine_type: std::str {
           SET readonly := true;
       };
@@ -104,7 +124,12 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       ALTER PROPERTY provider {
           SET default := (default::CloudProvider.AWS);
           SET OWNED;
+          SET REQUIRED;
       };
+  };
+  ALTER TYPE default::Container {
+      CREATE ACCESS POLICY only_owner
+          ALLOW ALL USING ((.<containers[IS default::InfernetNode].<nodes[IS default::Cluster].service_account.user ?= GLOBAL default::current_user));
   };
   CREATE TYPE default::GCPCluster EXTENDING default::Cluster {
       CREATE REQUIRED PROPERTY machine_type: std::str {
@@ -122,6 +147,15 @@ CREATE MIGRATION m1dzeupvwnbzkwo6zanrwvfj2dqn2lbx5g3a4nojei27c5h46jxcyq
       ALTER PROPERTY provider {
           SET default := (default::CloudProvider.GCP);
           SET OWNED;
+          SET REQUIRED;
       };
+  };
+  ALTER TYPE default::InfernetNode {
+      CREATE ACCESS POLICY only_owner
+          ALLOW ALL USING ((.<nodes[IS default::Cluster].service_account.user ?= GLOBAL default::current_user));
+  };
+  ALTER TYPE default::User {
+      CREATE ACCESS POLICY only_owner
+          ALLOW ALL USING ((.id ?= (GLOBAL default::current_user).id));
   };
 };

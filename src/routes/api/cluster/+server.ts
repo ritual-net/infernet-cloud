@@ -1,37 +1,30 @@
 import { error, json } from '@sveltejs/kit';
-import { QueryByProvider, client, e } from '$/lib/db';
-import { createNodeParams, getProviderByServiceAccountId } from '$/lib/db/common';
+import { ClusterTypeByProvider, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
-import type { Cluster } from '$schema/interfaces';
+import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
+import { getServiceAccountById } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
+import type { Cluster } from '$schema/interfaces';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Fetch all clusters for a user.
  *
- * @param request - The request object containing 'user'.
+ * @param locals - The locals object contains the client.
  * @returns Array of Cluster objects.
  */
-export const GET: RequestHandler = async ({ request }) => {
-	const url = new URL(request.url);
-	const user = url.searchParams.get('user');
-
-	if (!user) {
-		return error(400, 'User id is required');
-	}
-	// TODO: Get user id from auth
-
+export const GET: RequestHandler = async ({ locals: { client } }) => {
 	// Get all clusters for user
 	const result = await e
 		.select(e.Cluster, (cluster) => ({
 			service_account: {
+				id: true,
 				name: true,
 				provider: true,
 			},
 			id: true,
 			name: true,
 			node_count: e.count(cluster.nodes),
-			filter: e.op(cluster.service_account.user.id, '=', e.uuid(user)),
 		}))
 		.run(client);
 
@@ -41,23 +34,22 @@ export const GET: RequestHandler = async ({ request }) => {
 /**
  * Create a new cluster with a given service account and an array of node configs.
  *
+ * @param locals - The locals object contains the client.
  * @param request - The request object containing 'serviceAccountId', 'config', 'nodes'.
  * @returns Cluster ID, success boolean, and Terraform message.
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	const { serviceAccountId, config, nodes } = await request.json();
 
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
 	}
 
-	// TODO: Make sure service account belongs to user through auth
-
 	// TODO: Enforce correctness of config, nodes + containers?
 
 	// Get provider of service account
-	const provider = await getProviderByServiceAccountId(serviceAccountId);
-	if (!provider) {
+	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
+	if (!serviceAccount) {
 		return error(400, 'Service account could not be retrieved');
 	}
 
@@ -69,35 +61,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			},
 			({ nodes }) =>
 				// Choose cluster type based on provider
-				QueryByProvider[provider].insertClusterQuery(
-					config,
-					serviceAccountId,
-					e.for(e.array_unpack(nodes), (node) =>
-						e.insert(e.InfernetNode, {
-							chain_enabled: node.config.chain_enabled,
-							trail_head_blocks: node.config.trail_head_blocks,
-							rpc_url: node.config.rpc_url,
-							coordinator_address: node.config.coordinator_address,
-							max_gas_limit: node.config.max_gas_limit,
-							private_key: node.config.private_key,
-							forward_stats: node.config.forward_stats,
-							containers: e.for(e.array_unpack(node.containers), (container) =>
-								e.insert(e.Container, {
-									image: container.image,
-									container_id: container.container_id,
-									description: container.description,
-									external: container.external,
-									allowed_addresses: container.allowed_addresses,
-									allowed_delegate_addresses: container.allowed_delegate_addresses,
-									allowed_ips: container.allowed_ips,
-									command: container.command,
-									env: container.env,
-									gpu: container.gpu,
-								})
-							),
-						})
-					)
-				)
+				e.insert(ClusterTypeByProvider[serviceAccount.provider], {
+					...config,
+					service_account: e.select(e.ServiceAccount, () => ({
+						filter_single: { id: serviceAccountId },
+					})),
+					nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
+				})
 		)
 		.run(client, { nodes })) as Cluster;
 
@@ -106,11 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	// Apply Terraform changes to create cluster
-	const { error: errorMessage, success } = await clusterAction(
-		cluster.id,
-		provider,
-		TFAction.Apply
-	);
+	const { error: errorMessage, success } = await clusterAction(client, cluster.id, TFAction.Apply);
 	return json({
 		id: cluster.id,
 		message: success ? 'Cluster created successfully' : errorMessage,
