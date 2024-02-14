@@ -109,7 +109,7 @@
 	tbody tr {
 		box-shadow: 0 var(--border-width) var(--border-color), 0 calc(-1 * var(--border-width)) var(--border-color);
 
-		&:nth-child(odd) {
+		&:nth-of-type(odd) {
 			background-color: rgba(0, 0, 0, 0.03);
 		}
 	}
