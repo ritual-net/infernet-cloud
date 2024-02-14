@@ -9,6 +9,7 @@
 
 	// Imports
 	export let data: Datum[]
+	export let getId: (_: Datum) => any
 	export let columns: Parameters<Table<Datum>['column']>[0][]
 	export let contextMenu: ((_: Datum) => MenuItems<MenuItemValue>[]) | undefined
 
@@ -58,7 +59,7 @@
 		</thead>
 
 		<tbody {...$tableBodyAttrs}>
-			{#each $rows as row (row.dataId)}
+			{#each $rows as row (getId?.(data[row.dataId]) ?? row.dataId)}
 				{@const datum = data[row.dataId]}
 
 				<Subscribe
