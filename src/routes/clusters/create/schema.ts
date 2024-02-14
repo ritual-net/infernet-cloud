@@ -46,7 +46,9 @@ export const Container = z
 
 		'container_id': z
 			.string()
-			.default(''),
+			.default(
+				() => crypto.randomUUID()
+			),
 
 		'description': z
 			.string()

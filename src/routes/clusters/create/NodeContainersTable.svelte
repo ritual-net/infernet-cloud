@@ -18,6 +18,7 @@
 
 <Table
 	data={containers}
+	getId={container => container.container_id}
 	columns={[
 		{
 			header: 'Name',
