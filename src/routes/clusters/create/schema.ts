@@ -46,9 +46,9 @@ export const Container = z
 
 		'container_id': z
 			.string()
-			.default(
-				() => crypto.randomUUID()
-			),
+			.default(() => (
+				crypto.randomUUID()
+			)),
 
 		'description': z
 			.string()
@@ -97,9 +97,9 @@ export const Node = z.object({
 	'id': z
 		.string()
 		.uuid()
-		.default(
-			() => crypto.randomUUID()
-		),
+		.default(() => (
+			crypto.randomUUID()
+		)),
 
 	'chain_enabled': z
 		.boolean()
@@ -149,17 +149,17 @@ export const FormData = z
 			.uuid(),
 
 		'config': Config
-			.default(
+			.default(() => (
 				Config.parse({})
-			),
+			)),
 
 		'nodes': z
 			.array(
 				Node,
 			)
-			.default(
+			.default(() => (
 				[
 					Node.parse({}),
 				]
-			),
+			)),
 	})
