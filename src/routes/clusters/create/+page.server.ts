@@ -9,15 +9,10 @@ import type { PageServerLoad } from './$types'
 export const load: PageServerLoad = async ({
 	request,
 	fetch,
-	locals,
 }) => {
 	const formData = await superValidate(request, FormData)
-		
-	const { userId } = locals.getSession()
 
-	const serviceAccounts = await fetch(`/api/service_account?${new URLSearchParams({
-		user: userId,
-	})}`)
+	const serviceAccounts = await fetch(`/api/service_account`)
 		.then(response => response.json())
 
 	return {
