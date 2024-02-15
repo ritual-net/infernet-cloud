@@ -61,6 +61,9 @@
 	class="column"
 	on:submit|preventDefault={e => {
 		console.log({e, $form})
+
+		$form.container.container_id = crypto.randomUUID()
+
 		onSubmit?.($form)
 	}}
 >
