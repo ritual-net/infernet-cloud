@@ -14,9 +14,10 @@ edgedb project init
 npm run edgedb:migrate
 ```
 
-To access the EdgeDB UI:
+Then, follow the instructions for [setting up EdgeDB Auth](https://www.edgedb.com/docs/guides/auth/index) via the EdgeDB UI:
 
 ```bash
+# Launch EdgeDB UI app
 edgedb ui
 ```
 
@@ -36,7 +37,24 @@ If you make braking changes, or simply want to start with a fresh database, you 
 edgedb instance destroy -I "infernet_cloud" --force
 ```
 
-### Run source
+## Run from Source
+
+***Recommended for development, debugging, and testing***.
+
+First, follow the [local DB setup instructions](#setup-local-db).
+
+Then, create a local environment file. Assuming no changes are made to the default SvelteKit and EdgeDB settings, you should be able to use the `.env.local.example` file without modifications:
+
+```bash
+# Creates local environment file
+cp .env.local.example .env
+```
+
+Finally, run the app in one of the following modes:
+
+#### Development mode
+
+To run your app in development mode:
 
 ```bash
 # Install dependencies
@@ -46,22 +64,62 @@ npm install
 npm run dev
 ```
 
-### Before pushing
-
-Make sure to always lint and format your code before pushing:
-
-```bash
-npm run lint
-npm run format
-```
-
-## Building
+#### Production mode
 
 To create a production version of your app:
 
 ```bash
-# Run in production mode
+# Install dependencies
+npm install
+
+# Build from source
 npm run build
+
+# Run in production mode
+node build
 ```
 
-You can preview the production build with `npm run preview`.
+## Run with Docker
+
+***Recommended for production***.
+
+#### Setup
+
+First, setup your **environment file**:
+
+```bash
+cp .env.docker.example .env
+```
+
+You **should (only) modify** the following variables:
+- `EDGEDB_SERVER_PASSWORD`: The admin password for EdgeDB
+- `ORIGIN`: The origin (host) from which the server should expect requests (i.e. the origin of the client). If this does not match the `Origin` header in your HTTP requests, you will get a [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) error.
+- `SERVER_HOST`: The **external** url of your server (when running / testing locally, can set to `"http://localhost:3000"`).
+
+#### Configure Authentication
+
+The `auth.edgeql` performs the initial setup of the EdgeDB Auth server. You should configure it by modifying its values directly, following the guide's [instructions](https://www.edgedb.com/docs/guides/auth/index).
+
+Most importantly, you **must**:
+- Set a unique `auth_signing_key`.
+- Decide whether to require email verification (set `require_verification` to `true`).
+- Modify the SMTP Configuration to your preferred provider, for sending verification emails.
+
+#### Deploy
+
+You can then build and run the server and database images using `docker compose` as follows:
+
+```bash
+# Build images
+docker compose build
+
+# Run containers in the background
+docker compose up -d
+```
+
+You can stop and remove the containers with:
+
+```bash
+# Remove containers
+docker compose down
+```

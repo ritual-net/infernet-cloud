@@ -1,5 +1,5 @@
-import { createClient } from '$schema/edgeql-js';
 import { error, type Handle } from '@sveltejs/kit';
+import { createClient } from './lib/db';
 
 /**
  * Global middleware for the server.

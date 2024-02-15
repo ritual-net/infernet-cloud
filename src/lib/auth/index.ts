@@ -1,12 +1,12 @@
 import crypto from 'node:crypto';
-import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, SERVER_PORT } from '$env/static/private';
+import { EDGEDB_AUTH_BASE_URL, SERVER_HOST } from '$env/static/private';
 
 /**
  * You can get EDGEDB_AUTH_BASE_URL by running `edgedb instance credentials`.
  * Value should be:
  * `${protocol}://${host}:${port}/db/${database}/ext/auth/
  */
-export { EDGEDB_AUTH_BASE_URL, SERVER_HOST, SERVER_PORT };
+export { EDGEDB_AUTH_BASE_URL, SERVER_HOST };
 
 /**
  * Generate a random Base64 url-encoded string, and derive a "challenge"
