@@ -1,11 +1,9 @@
 import { AWSNodeClient } from './clients/node/providers/aws';
 import { AWSResourceClient } from './clients/resource/providers/aws';
 import { AWSTerraform } from './terraform/providers/aws';
-import { AWSQueries } from '$/lib/db/providers/aws';
 import { GCPNodeClient } from './clients/node/providers/gcp';
 import { GCPResourceClient } from './clients/resource/providers/gcp';
 import { GCPTerraform } from './terraform/providers/gcp';
-import { GCPQueries } from '$/lib/db/providers/gcp';
 import {
 	ProviderTypeEnum,
 	type ProviderCluster,
@@ -38,28 +36,20 @@ export const ProviderClient = {
 export const NodeClient = {
 	[ProviderTypeEnum.AWS]: {
 		class: AWSNodeClient,
-		classArgs: (cluster: ProviderCluster, service_account: ProviderServiceAccount) => [
-			service_account.creds,
+		classArgs: (cluster: ProviderCluster, serviceAccount: ProviderServiceAccount) => [
+			serviceAccount.creds,
 			cluster.region,
 		],
 		functionArgs: (_1: ProviderCluster, _2: ProviderServiceAccount) => ({}),
 	},
 	[ProviderTypeEnum.GCP]: {
 		class: GCPNodeClient,
-		classArgs: (_: ProviderCluster, service_account: ProviderServiceAccount) => [
-			service_account.creds,
+		classArgs: (_: ProviderCluster, serviceAccount: ProviderServiceAccount) => [
+			serviceAccount.creds,
 		],
-		functionArgs: (cluster: ProviderCluster, service_account: ProviderServiceAccount) => ({
-			project: (service_account as GCPServiceAccount).creds.project_id,
+		functionArgs: (cluster: ProviderCluster, serviceAccount: ProviderServiceAccount) => ({
+			project: (serviceAccount as GCPServiceAccount).creds.project_id,
 			zone: (cluster as GCPCluster).zone,
 		}),
 	},
-};
-
-/**
- * DB query functions for each cloud provider. Does not have to be instantiated.
- */
-export const ProviderQueries = {
-	[ProviderTypeEnum.AWS]: AWSQueries,
-	[ProviderTypeEnum.GCP]: GCPQueries,
 };

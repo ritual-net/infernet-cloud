@@ -1,37 +1,31 @@
 import { error, json } from '@sveltejs/kit';
-import { getProviderByClusterId } from '$/lib/db/common';
-import { QueryByProvider, client, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
+import { e } from '$/lib/db';
+import { getClusterById } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Retrieve a cluster by its ID.
  *
+ * @param locals - The locals object contains the client.
  * @param params - The parameters object, expected to contain 'clusterId'.
  * @returns Cluster object.
  */
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.clusterId;
 
 	if (!id) {
 		return error(400, 'Cluster id is required');
 	}
 
-	// TODO: Make sure cluster belongs to user through auth
-
-	const provider = await getProviderByClusterId(id);
-	if (!provider) {
-		return error(400, 'Cluster could not be retrieved');
-	}
-
-	const cluster = await QueryByProvider[provider].getClusterById(id);
-	return json(cluster);
+	return json(await getClusterById(client, id, false));
 };
 
 /**
  * Update a cluster by its ID.
  *
+ * @param locals - The locals object contains the client.
  * @param params - The parameters object, expected to contain 'clusterId'.
  * @param request - The request object can contain the following updateable fields:
  * 					- name: string
@@ -40,14 +34,12 @@ export const GET: RequestHandler = async ({ params }) => {
  * 					- ip_allow_https: string
  * @returns Success boolean and Terraform message.
  */
-export const PATCH: RequestHandler = async ({ params, request }) => {
+export const PATCH: RequestHandler = async ({ locals: { client }, params, request }) => {
 	const id = params.clusterId;
 
 	if (!id) {
 		return error(400, 'Cluster id is required');
 	}
-
-	// TODO: Make sure cluster belongs to user through auth
 
 	const data = await request.json();
 	if (!data || data.length === 0) {
@@ -72,18 +64,8 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 		return error(500, 'Failed to update cluster');
 	}
 
-	// Get provider
-	const provider = await getProviderByClusterId(cluster.id);
-	if (!provider) {
-		return error(400, 'Cluster could not be retrieved');
-	}
-
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(
-		cluster.id,
-		provider,
-		TFAction.Apply
-	);
+	const { error: errorMessage, success } = await clusterAction(client, cluster.id, TFAction.Apply);
 	return json({
 		message: success ? 'Cluster updated successfully' : errorMessage,
 		success,
@@ -93,25 +75,19 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 /**
  * Delete a cluster by its ID.
  *
+ * @param locals - The locals object contains the client.
  * @param params - The parameters object, expected to contain 'clusterId'.
  * @returns Success boolean and Terraform message.
  */
-export const DELETE: RequestHandler = async ({ params }) => {
+export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.clusterId;
 
 	if (!id) {
 		return error(400, 'Cluster id is required');
 	}
 
-	// TODO: confirm cluster belongs to user through auth
-
-	const provider = await getProviderByClusterId(id);
-	if (!provider) {
-		return error(400, 'Cluster could not be retrieved');
-	}
-
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(id, provider, TFAction.Destroy);
+	const { error: errorMessage, success } = await clusterAction(client, id, TFAction.Destroy);
 
 	if (success) {
 		// Delete cluster, nodes and containers deleted through cascade

@@ -6,9 +6,9 @@ import { promises as fs } from 'fs';
  *
  * @param directory The path to the directory.
  */
-export async function removeDir(directory: string): Promise<void> {
+export const removeDir = async (directory: string): Promise<void> => {
 	await fs.rm(directory, { recursive: true });
-}
+};
 
 /**
  * Reads a JSON file and returns as an object.
@@ -16,9 +16,9 @@ export async function removeDir(directory: string): Promise<void> {
  * @param filePath The path to the JSON file.
  * @returns The parsed JSON object.
  */
-export async function readJsonFromFile(filePath: string): Promise<object> {
+export const readJsonFromFile = async (filePath: string): Promise<object> => {
 	return JSON.parse(await fs.readFile(filePath, { encoding: 'utf8' }));
-}
+};
 
 /**
  * Writes a JSON object to a file.
@@ -26,9 +26,9 @@ export async function readJsonFromFile(filePath: string): Promise<object> {
  * @param filePath The path to the file.
  * @param data The JSON object to write.
  */
-export async function writeJsonToFile(filePath: string, data: object): Promise<void> {
+export const writeJsonToFile = async (filePath: string, data: object): Promise<void> => {
 	await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-}
+};
 
 /**
  * Executes a command in a given directory.
@@ -37,7 +37,7 @@ export async function writeJsonToFile(filePath: string, data: object): Promise<v
  * @param command The command to execute.
  * @returns The stdout of the command.
  */
-export async function executeCommands(directory: string, command: string): Promise<string> {
+export const executeCommands = async (directory: string, command: string): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		exec(command, { cwd: directory }, (error, stdout, stderr) => {
 			if (error) {
@@ -47,4 +47,4 @@ export async function executeCommands(directory: string, command: string): Promi
 			}
 		});
 	});
-}
+};

@@ -1,6 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { getProviderByServiceAccountId } from '$/lib/db/common';
-import { QueryByProvider } from '$/lib/db/index';
+import { getServiceAccountById } from '$/lib/db/queries';
 import { ProviderClient } from '$/lib/index';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -8,27 +7,23 @@ import type { RequestHandler } from '@sveltejs/kit';
  * Fetch nested provider info (regions, zones, machines) from cloud providers
  * (e.g., GCP, AWS) given a service account.
  *
+ * @param locals - The locals object contains the client.
  * @param params - parameters object expected to contain a service account
- * `serviceAccountId`.
+ *	 `serviceAccountId`.
  * @returns Flat array of ProviderInfo objects.
  */
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const serviceAccountId = params.serviceAccountId;
 	if (!serviceAccountId) {
 		return error(400, `Service account ID is required.`);
 	}
 
-	// TODO: Make sure service account belongs to user through auth
-	const providerType = await getProviderByServiceAccountId(serviceAccountId);
-	if (!providerType) {
-		return error(400, `Provider type is null for service account ID: ${serviceAccountId}`);
-	}
-
-	const serviceAccount =
-		await QueryByProvider[providerType].getServiceAccountById(serviceAccountId);
+	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
 	if (!serviceAccount) {
 		return error(400, `Service account ID ${serviceAccountId} does not exist.`);
 	}
 
-	return json(await new ProviderClient[providerType]().getProviderInfo(serviceAccount.creds));
+	return json(
+		await new ProviderClient[serviceAccount.provider]().getProviderInfo(serviceAccount.creds)
+	);
 };

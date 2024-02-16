@@ -19,7 +19,7 @@ export class GCPResourceClient extends BaseResourceClient {
 			const authObj = new google.auth.GoogleAuth({
 				credentials: {
 					client_email: creds.client_email,
-					private_key: creds.private_key!.split(String.raw`\n`).join('\n'),
+					private_key: creds.private_key.split(String.raw`\n`).join('\n'),
 					project_id: creds.project_id,
 				},
 				scopes: ['https://www.googleapis.com/auth/cloud-platform'],
@@ -28,6 +28,8 @@ export class GCPResourceClient extends BaseResourceClient {
 			const authClient = (await authObj.getClient()) as OAuth2Client;
 			this.projectId = creds.project_id;
 			this.googleCompute = google.compute({ version: 'v1', auth: authClient });
+			// sanity check for creds
+			await this.getRegions();
 		} catch (error) {
 			throw new Error(`Error during GCP authentication: ${(error as Error).message}`);
 		}

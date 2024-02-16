@@ -12,6 +12,188 @@ export namespace std {
 		export type Base64Alphabet = 'standard' | 'urlsafe';
 	}
 }
+export interface User extends std.$Object {
+	identity: ext.auth.Identity;
+	name: string;
+	email: string;
+}
+export interface Cluster extends std.$Object {
+	nodes: InfernetNode[];
+	service_account: ServiceAccount;
+	deploy_router: boolean;
+	error?: string | null;
+	healthy: boolean;
+	ip_allow_http: string[];
+	ip_allow_ssh: string[];
+	locked: boolean;
+	name: string;
+	router_ip?: string | null;
+	tfstate?: string | null;
+}
+export interface AWSCluster extends Cluster {
+	machine_type: string;
+	region: string;
+}
+export interface ServiceAccount extends std.$Object {
+	user: User;
+	name: string;
+	provider: CloudProvider;
+}
+export interface AWSServiceAccount extends ServiceAccount {
+	creds: {
+		user_name: string;
+		access_key_id: string;
+		status: string;
+		secret_access_key: string;
+		create_date: string;
+	};
+	provider: CloudProvider;
+}
+export type CloudProvider = 'AWS' | 'GCP';
+export interface Container extends std.$Object {
+	allowed_addresses: string[];
+	allowed_delegate_addresses: string[];
+	allowed_ips: string[];
+	command: string;
+	container_id: string;
+	description?: string | null;
+	env: unknown;
+	external: boolean;
+	gpu: boolean;
+	image: string;
+}
+export interface ContainerTemplate extends Container {
+	user: User;
+	name: string;
+}
+export interface GCPCluster extends Cluster {
+	machine_type: string;
+	region: string;
+	zone: string;
+}
+export interface GCPServiceAccount extends ServiceAccount {
+	creds: {
+		type: string;
+		project_id: string;
+		private_key_id: string;
+		private_key: string;
+		client_email: string;
+		client_id: string;
+		auth_uri: string;
+		token_uri: string;
+		auth_provider_x509_cert_url: string;
+		client_x509_cert_url: string;
+		universe_domain: string;
+	};
+	provider: CloudProvider;
+}
+export interface InfernetNode extends std.$Object {
+	containers: Container[];
+	chain_enabled: boolean;
+	coordinator_address?: string | null;
+	forward_stats: boolean;
+	max_gas_limit?: number | null;
+	private_key?: string | null;
+	provider_id?: string | null;
+	rpc_url?: string | null;
+	trail_head_blocks?: number | null;
+}
+export interface current_user extends User {}
+export namespace ext {
+	export namespace auth {
+		export interface ProviderConfig extends cfg.ConfigObject {
+			name: string;
+		}
+		export interface OAuthProviderConfig extends ProviderConfig {
+			name: string;
+			secret: string;
+			client_id: string;
+			display_name: string;
+			additional_scope?: string | null;
+		}
+		export interface AppleOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export interface Auditable extends std.$Object {
+			created_at: Date;
+			modified_at: Date;
+		}
+		export interface AuthConfig extends cfg.ExtensionConfig {
+			providers: ProviderConfig[];
+			ui?: UIConfig | null;
+			auth_signing_key?: string | null;
+			token_time_to_live?: edgedb.Duration | null;
+			allowed_redirect_urls: string[];
+		}
+		export interface AzureOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export interface Identity extends Auditable {
+			issuer: string;
+			subject: string;
+		}
+		export interface ClientTokenIdentity extends Identity {}
+		export interface Factor extends Auditable {
+			identity: LocalIdentity;
+		}
+		export interface EmailFactor extends Factor {
+			email: string;
+			verified_at?: Date | null;
+		}
+		export interface EmailPasswordFactor extends EmailFactor {
+			password_hash: string;
+		}
+		export interface EmailPasswordProviderConfig extends ProviderConfig {
+			name: string;
+			require_verification: boolean;
+		}
+		export type FlowType = 'PKCE' | 'Implicit';
+		export interface GitHubOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export interface GoogleOAuthProvider extends OAuthProviderConfig {
+			name: string;
+			display_name: string;
+		}
+		export type JWTAlgo = 'RS256' | 'HS256';
+		export interface LocalIdentity extends Identity {
+			subject: string;
+		}
+		export interface PKCEChallenge extends Auditable {
+			challenge: string;
+			auth_token?: string | null;
+			refresh_token?: string | null;
+			identity?: Identity | null;
+		}
+		export interface SMTPConfig extends cfg.ExtensionConfig {
+			sender?: string | null;
+			host?: string | null;
+			port?: number | null;
+			username?: string | null;
+			password?: string | null;
+			security: SMTPSecurity;
+			validate_certs: boolean;
+			timeout_per_email: edgedb.Duration;
+			timeout_per_attempt: edgedb.Duration;
+		}
+		export type SMTPSecurity = 'PlainText' | 'TLS' | 'STARTTLS' | 'STARTTLSOrPlainText';
+		export interface UIConfig extends cfg.ConfigObject {
+			redirect_to: string;
+			redirect_to_on_signup?: string | null;
+			flow_type: FlowType;
+			app_name?: string | null;
+			logo_url?: string | null;
+			dark_logo_url?: string | null;
+			brand_color?: string | null;
+		}
+	}
+}
+export namespace __default {
+	export interface current_user extends User {}
+}
 export namespace cfg {
 	export interface ConfigObject extends std.BaseObject {}
 	export interface AbstractConfig extends ConfigObject {
@@ -62,83 +244,6 @@ export namespace cfg {
 		transports: ConnectionTransport[];
 	}
 	export interface Trust extends AuthMethod {}
-}
-export interface Cluster extends std.$Object {
-	nodes: InfernetNode[];
-	service_account: ServiceAccount;
-	deploy_router: boolean;
-	ip_allow_http: string[];
-	ip_allow_ssh: string[];
-	name: string;
-	tfstate: string;
-}
-export interface AWSCluster extends Cluster {
-	machine_type: string;
-	region: string;
-}
-export interface ServiceAccount extends std.$Object {
-	user: User;
-	name: string;
-	provider: CloudProvider;
-}
-export interface AWSServiceAccount extends ServiceAccount {
-	creds: {
-		user_name: string;
-		access_key_id: string;
-		status: string;
-		secret_access_key: string;
-		create_date: string;
-	};
-	provider: CloudProvider;
-}
-export type CloudProvider = 'AWS' | 'GCP';
-export interface Container extends std.$Object {
-	allowed_addresses: string[];
-	allowed_delegate_addresses: string[];
-	allowed_ips: string[];
-	command: string;
-	container_id: string;
-	description?: string | null;
-	env: unknown;
-	external: boolean;
-	gpu: boolean;
-	image: string;
-}
-export interface GCPCluster extends Cluster {
-	machine_type: string;
-	region: string;
-	zone: string;
-}
-export interface GCPServiceAccount extends ServiceAccount {
-	creds: {
-		type: string;
-		project_id: string;
-		private_key_id: string;
-		private_key: string;
-		client_email: string;
-		client_id: string;
-		auth_uri: string;
-		token_uri: string;
-		auth_provider_x509_cert_url: string;
-		client_x509_cert_url: string;
-		universe_domain: string;
-	};
-	provider: CloudProvider;
-}
-export interface InfernetNode extends std.$Object {
-	containers: Container[];
-	chain_enabled: boolean;
-	coordinator_address?: string | null;
-	forward_stats: boolean;
-	max_gas_limit?: number | null;
-	private_key?: string | null;
-	rpc_url?: string | null;
-	trail_head_blocks?: number | null;
-	provider_id?: string | null;
-}
-export interface User extends std.$Object {
-	email: string;
-	name: string;
 }
 export namespace fts {
 	export type ElasticLanguage =
@@ -512,6 +617,48 @@ export interface types {
 			Base64Alphabet: std.enc.Base64Alphabet;
 		};
 	};
+	default: {
+		User: User;
+		Cluster: Cluster;
+		AWSCluster: AWSCluster;
+		ServiceAccount: ServiceAccount;
+		AWSServiceAccount: AWSServiceAccount;
+		CloudProvider: CloudProvider;
+		Container: Container;
+		ContainerTemplate: ContainerTemplate;
+		GCPCluster: GCPCluster;
+		GCPServiceAccount: GCPServiceAccount;
+		InfernetNode: InfernetNode;
+		current_user: current_user;
+	};
+	ext: {
+		auth: {
+			ProviderConfig: ext.auth.ProviderConfig;
+			OAuthProviderConfig: ext.auth.OAuthProviderConfig;
+			AppleOAuthProvider: ext.auth.AppleOAuthProvider;
+			Auditable: ext.auth.Auditable;
+			AuthConfig: ext.auth.AuthConfig;
+			AzureOAuthProvider: ext.auth.AzureOAuthProvider;
+			Identity: ext.auth.Identity;
+			ClientTokenIdentity: ext.auth.ClientTokenIdentity;
+			Factor: ext.auth.Factor;
+			EmailFactor: ext.auth.EmailFactor;
+			EmailPasswordFactor: ext.auth.EmailPasswordFactor;
+			EmailPasswordProviderConfig: ext.auth.EmailPasswordProviderConfig;
+			FlowType: ext.auth.FlowType;
+			GitHubOAuthProvider: ext.auth.GitHubOAuthProvider;
+			GoogleOAuthProvider: ext.auth.GoogleOAuthProvider;
+			JWTAlgo: ext.auth.JWTAlgo;
+			LocalIdentity: ext.auth.LocalIdentity;
+			PKCEChallenge: ext.auth.PKCEChallenge;
+			SMTPConfig: ext.auth.SMTPConfig;
+			SMTPSecurity: ext.auth.SMTPSecurity;
+			UIConfig: ext.auth.UIConfig;
+		};
+	};
+	__default: {
+		current_user: __default.current_user;
+	};
 	cfg: {
 		ConfigObject: cfg.ConfigObject;
 		AbstractConfig: cfg.AbstractConfig;
@@ -527,18 +674,6 @@ export interface types {
 		Password: cfg.Password;
 		SCRAM: cfg.SCRAM;
 		Trust: cfg.Trust;
-	};
-	default: {
-		Cluster: Cluster;
-		AWSCluster: AWSCluster;
-		ServiceAccount: ServiceAccount;
-		AWSServiceAccount: AWSServiceAccount;
-		CloudProvider: CloudProvider;
-		Container: Container;
-		GCPCluster: GCPCluster;
-		GCPServiceAccount: GCPServiceAccount;
-		InfernetNode: InfernetNode;
-		User: User;
 	};
 	fts: {
 		ElasticLanguage: fts.ElasticLanguage;
