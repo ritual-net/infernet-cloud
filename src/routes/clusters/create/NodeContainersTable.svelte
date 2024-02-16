@@ -21,10 +21,10 @@
 	data={containers}
 	getId={container => container.container_id}
 	columns={[
-		{
-			header: 'Name',
-			accessor: container => container.name,
-		},
+		// {
+		// 	header: 'Name',
+		// 	accessor: container => container.name,
+		// },
 		{
 			header: 'Image',
 			accessor: container => container.image,
@@ -53,10 +53,10 @@
 			header: 'Command',
 			accessor: container => container.command,
 		},
-		{
-			header: 'Env',
-			accessor: container => container.env,
-		},
+		// {
+		// 	header: 'Env',
+		// 	accessor: container => container.env,
+		// },
 		{
 			header: 'GPU?',
 			accessor: container => container.gpu,
