@@ -291,7 +291,7 @@
 								</header>
 							</svelte:fragment>
 
-							<section class="column wrap">
+							<!-- <section class="column wrap">
 								<div class="column inline">
 									<h3>
 										Docker Credentials
@@ -327,7 +327,7 @@
 										/>
 									</div>
 								</div>
-							</section>
+							</section> -->
 
 							<section class="row wrap">
 								<div class="column inline">
