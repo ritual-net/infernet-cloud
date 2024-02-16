@@ -33,6 +33,7 @@
 		errors: signUpErrors,
 		enhance: signUpEnhance,
 		constraints: signUpConstraints,
+		submitting: signUpSubmitting,
 	} = superForm(signUpFormData, {
 		dataType: 'json',
 		onResult: ({ result }) => {
@@ -50,6 +51,7 @@
 		errors: signInErrors,
 		enhance: signInEnhance,
 		constraints: signInConstraints,
+		submitting: signInSubmitting,
 	} = superForm(signInFormData, {
 		dataType: 'json',
 		onResult: ({ result }) => {
@@ -68,6 +70,7 @@
 		errors: resetPasswordErrors,
 		enhance: resetPasswordEnhance,
 		constraints: resetPasswordConstraints,
+		submitting: resetPasswordSubmitting,
 	} = superForm(resetPasswordFormData, {
 		dataType: 'json',
 		onResult: ({ result }) => {
@@ -157,6 +160,7 @@
 						<button
 							type="submit"
 							class="primary"
+							disabled={$signUpSubmitting}
 						>Sign Up</button>
 					</form>
 
@@ -200,6 +204,7 @@
 						<button
 							type="submit"
 							class="primary"
+							disabled={$signInSubmitting}
 						>Log in</button>
 					</form>
 
@@ -235,6 +240,7 @@
 						<button
 							type="submit"
 							class="primary"
+							disabled={$resetPasswordSubmitting}
 						>Send verification link</button>
 					</form>
 				{/if}

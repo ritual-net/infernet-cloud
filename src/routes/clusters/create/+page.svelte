@@ -25,7 +25,13 @@
 	import { page } from '$app/stores'
 	import { superForm } from 'sveltekit-superforms/client'
 
-	const { form, enhance, errors, constraints } = superForm(formData, {
+	const {
+		form,
+		enhance,
+		errors,
+		constraints,
+		submitting,
+	} = superForm(formData, {
 		dataType: 'json',
 
 		onResult: ({ result }) => {
@@ -624,6 +630,7 @@
 							<button
 								type="submit"
 								class="primary"
+								disabled={$submitting}
 							>
 								Submit
 							</button>
