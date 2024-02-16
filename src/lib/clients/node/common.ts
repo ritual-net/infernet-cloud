@@ -34,15 +34,15 @@ export const nodeAction = async (
 		throw Error('Cluster could not be retrieved.');
 	}
 
-	const service_account = cluster.service_account as ProviderServiceAccount;
-	const provider = service_account.provider;
+	const serviceAccount = cluster.service_account as ProviderServiceAccount;
+	const provider = serviceAccount.provider;
 
-	const classArgs = NodeClient[provider].classArgs(cluster, service_account) as [
+	const classArgs = NodeClient[provider].classArgs(cluster, serviceAccount) as [
 		ProviderServiceAccountCreds,
 		string,
 	];
 	const nodeClient = new NodeClient[provider].class(...classArgs);
-	const functionArgs = NodeClient[provider].functionArgs(cluster, service_account);
+	const functionArgs = NodeClient[provider].functionArgs(cluster, serviceAccount);
 	const providerIds = nodes.map((node) => node.provider_id!);
 
 	switch (action) {

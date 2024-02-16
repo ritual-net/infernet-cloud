@@ -24,25 +24,29 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, `Cluster ID ${clusterId} does not exist`);
 	}
 
-	// Create node and update cluster
-	await e
-		.params(
-			{
-				node: createNodeParams,
-			},
-			({ node }) =>
-				e.update(e.Cluster, () => ({
-					set: {
-						nodes: {
-							'+=': insertNodeQuery(node),
+	try {
+		// Create node and update cluster
+		await e
+			.params(
+				{
+					node: createNodeParams,
+				},
+				({ node }) =>
+					e.update(e.Cluster, () => ({
+						set: {
+							nodes: {
+								'+=': insertNodeQuery(node),
+							},
 						},
-					},
-					filter_single: { id: clusterId },
-				}))
-		)
-		.run(client, { node });
+						filter_single: { id: clusterId },
+					}))
+			)
+			.run(client, { node });
 
-	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(client, clusterId, TFAction.Apply);
-	return json({ message: success ? 'Node created successfully' : errorMessage, success });
+		// Apply Terraform changes to cluster
+		const { error: errorMessage, success } = await clusterAction(client, clusterId, TFAction.Apply);
+		return json({ message: success ? 'Node created successfully' : errorMessage, success });
+	} catch (e) {
+		return error(400, (e as Error).message);
+	}
 };

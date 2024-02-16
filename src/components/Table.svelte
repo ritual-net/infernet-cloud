@@ -30,6 +30,10 @@
 	)
 
 
+	// Events
+	export let onRowClick: ((_: Datum) => void) | undefined
+
+
 	// Components
 	import { melt } from '@melt-ui/svelte'
 	import ContextMenu from './ContextMenu.svelte'
@@ -75,7 +79,9 @@
 							transition:scale={{ opacity: 0, start: 0.8 }}
 							use:melt={trigger}
 							aria-label={labelText}
-							transition
+							tabIndex={onRowClick ? 0 : undefined}
+							on:click={() => onRowClick?.(datum)}
+							on:keydown={e => ['Enter', 'Space'].includes(e.code) && onRowClick?.(datum)}
 						>
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>

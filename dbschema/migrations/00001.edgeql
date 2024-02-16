@@ -1,4 +1,4 @@
-CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
+CREATE MIGRATION m1rvgtux6ib6mtlaka4rfcdvvilxoxvydvuyib5q2rdqse6u5nvvla
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -19,8 +19,6 @@ CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
       (.identity = GLOBAL ext::auth::ClientTokenIdentity)
   )));
   CREATE TYPE default::Container {
-      CREATE ACCESS POLICY insertion
-          ALLOW INSERT ;
       CREATE REQUIRED PROPERTY allowed_addresses: array<std::str> {
           SET default := (<array<std::str>>[]);
       };
@@ -45,6 +43,8 @@ CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
           SET default := false;
       };
       CREATE REQUIRED PROPERTY image: std::str;
+      CREATE ACCESS POLICY insertion
+          ALLOW INSERT ;
   };
   CREATE TYPE default::InfernetNode {
       CREATE MULTI LINK containers: default::Container {
@@ -85,6 +85,7 @@ CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
       CREATE REQUIRED PROPERTY provider: default::CloudProvider;
       CREATE ACCESS POLICY only_owner
           ALLOW ALL USING ((.user ?= GLOBAL default::current_user));
+      CREATE CONSTRAINT std::exclusive ON ((.name, .user));
   };
   CREATE ABSTRACT TYPE default::Cluster {
       CREATE MULTI LINK nodes: default::InfernetNode {
@@ -97,19 +98,25 @@ CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
       CREATE REQUIRED PROPERTY deploy_router: std::bool {
           SET default := false;
       };
+      CREATE PROPERTY error: std::str;
+      CREATE REQUIRED PROPERTY healthy: std::bool {
+          SET default := true;
+      };
       CREATE REQUIRED PROPERTY ip_allow_http: array<std::str> {
           SET default := (['0.0.0.0/0']);
       };
       CREATE REQUIRED PROPERTY ip_allow_ssh: array<std::str> {
           SET default := (['0.0.0.0/0']);
       };
+      CREATE REQUIRED PROPERTY locked: std::bool {
+          SET default := false;
+      };
       CREATE REQUIRED PROPERTY name: std::str;
       CREATE PROPERTY router_ip: std::str;
-      CREATE REQUIRED PROPERTY tfstate: std::str {
-          SET default := '';
-      };
+      CREATE PROPERTY tfstate: std::str;
       CREATE ACCESS POLICY only_owner
           ALLOW ALL USING ((.service_account.user ?= GLOBAL default::current_user));
+      CREATE CONSTRAINT std::exclusive ON ((.name, .service_account));
   };
   CREATE TYPE default::AWSCluster EXTENDING default::Cluster {
       CREATE REQUIRED PROPERTY machine_type: std::str {
@@ -130,6 +137,15 @@ CREATE MIGRATION m1bybnr4paioo673pwrlzjyxl734exryj7x7oi7owg2ou3366watwq
   ALTER TYPE default::Container {
       CREATE ACCESS POLICY only_owner
           ALLOW ALL USING ((.<containers[IS default::InfernetNode].<nodes[IS default::Cluster].service_account.user ?= GLOBAL default::current_user));
+  };
+  CREATE TYPE default::ContainerTemplate EXTENDING default::Container {
+      CREATE REQUIRED LINK user: default::User {
+          SET readonly := true;
+      };
+      CREATE ACCESS POLICY only_template_owner
+          ALLOW ALL USING ((.user ?= GLOBAL default::current_user));
+      CREATE REQUIRED PROPERTY name: std::str;
+      CREATE CONSTRAINT std::exclusive ON ((.name, .user));
   };
   CREATE TYPE default::GCPCluster EXTENDING default::Cluster {
       CREATE REQUIRED PROPERTY machine_type: std::str {

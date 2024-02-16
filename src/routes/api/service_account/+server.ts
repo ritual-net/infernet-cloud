@@ -43,8 +43,6 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'name, provider, and credentials are required');
 	}
 
-	// TODO: Validate format of credentials
-
 	let query;
 	switch (provider) {
 		case ProviderTypeEnum.GCP: {
@@ -102,6 +100,10 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			return error(400, 'Provider not supported.');
 	}
 
-	const newServiceAccount = await query.run(client);
-	return json(newServiceAccount);
+	try {
+		const newServiceAccount = await query.run(client);
+		return json(newServiceAccount);
+	} catch (e) {
+		return error(400, (e as Error).message);
+	}
 };
