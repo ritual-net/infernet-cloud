@@ -33,6 +33,11 @@ export const Config = z
 			.string()
 			.default(''),
 
+		'zone': z
+			.string()
+			.default('')
+			.optional(),
+
 		'machine_type': z
 			.string()
 			.default(''),

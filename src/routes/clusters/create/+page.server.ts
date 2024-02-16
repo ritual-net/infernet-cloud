@@ -4,6 +4,10 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
 
+// Types
+import type { QueriedServiceAccount } from '$/routes/api/service_account/+server'
+
+
 // Data
 import type { PageServerLoad } from './$types'
 
@@ -14,7 +18,7 @@ export const load: PageServerLoad = async ({
 	const formData = await superValidate(request, zod(FormData))
 
 	const serviceAccounts = await fetch(`/api/service_account`)
-		.then(response => response.json())
+		.then<QueriedServiceAccount[]>(response => response.json())
 
 	return {
 		formData,

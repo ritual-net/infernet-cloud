@@ -44,6 +44,8 @@
 
 	let allowIps: 'all' | 'restricted' = 'all'
 
+	$: serviceAccount = serviceAccounts.find(serviceAccount => serviceAccount.id === $form.serviceAccountId)
+
 
 	// Components
 	import Collapsible from '$components/Collapsible.svelte'
@@ -143,152 +145,184 @@
 							/>
 						</section>
 
-						<section class="column wrap">
-							<div class="row wrap">
-								<div class="column inline">
-									<h3 class="row inline">
-										<label for="coordinator_address">
-											Firewall
-										</label>
-									</h3>
+						<Collapsible open={serviceAccount?.provider}>
+							<fieldset disabled={!(serviceAccount?.provider)}>
+								<section class="column wrap">
+									<div class="row wrap">
+										<div class="column inline">
+											<h3 class="row inline">
+												<label for="coordinator_address">
+													Firewall
+												</label>
+											</h3>
 
-									<p>Determine which IP addresses will have permissions to this cluster.</p>
-								</div>
+											<p>Determine which IP addresses will have permissions to this cluster.</p>
+										</div>
 
-								<Select
-									required
-									name="firewall"
-									labelText="Firewall"
-									bind:value={allowIps}
-									items={[
-										{
-											value: 'all',
-											label: 'All IPs',
-										},
-										{
-											value: 'restricted',
-											label: 'Only allowed IPs',
-										}
-									]}
-								/>
-							</div>
+										<Select
+											required
+											name="firewall"
+											labelText="Firewall"
+											bind:value={allowIps}
+											items={[
+												{
+													value: 'all',
+													label: 'All IPs',
+												},
+												{
+													value: 'restricted',
+													label: 'Only allowed IPs',
+												}
+											]}
+										/>
+									</div>
 
-							{#if allowIps !== 'all'}
-								<Tabs
-									value={0}
-									items={[
-										{
-											id: 0,
-											label: 'HTTP',
-										},
-										{
-											id: 1,
-											label: 'SSH',
-										},
-									]}
-								>
-									<svelte:fragment slot="content"
-										let:item
-									>
-										{#if item.id === 0}
-											<textarea
-												name="credentials"
-												rows="2"
-												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-												bind:value={$form.config.ip_allow_http}
-												{...$constraints.config?.ip_allow_http}
-												disabled={allowIps === 'all'}
-											/>
+									{#if allowIps !== 'all'}
+										<Tabs
+											value={0}
+											items={[
+												{
+													id: 0,
+													label: 'HTTP',
+												},
+												{
+													id: 1,
+													label: 'SSH',
+												},
+											]}
+										>
+											<svelte:fragment slot="content"
+												let:item
+											>
+												{#if item.id === 0}
+													<textarea
+														name="credentials"
+														rows="2"
+														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+														bind:value={$form.config.ip_allow_http}
+														{...$constraints.config?.ip_allow_http}
+														disabled={allowIps === 'all'}
+													/>
 
-										{:else}
-											<textarea
-												name="credentials"
-												rows="2"
-												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-												bind:value={$form.config.ip_allow_ssh}
-												{...$constraints.config?.ip_allow_ssh}
-												disabled={allowIps === 'all'}
-											/>
-										{/if}
-									</svelte:fragment>
-								</Tabs>
-							{/if}
-						</section>
+												{:else}
+													<textarea
+														name="credentials"
+														rows="2"
+														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+														bind:value={$form.config.ip_allow_ssh}
+														{...$constraints.config?.ip_allow_ssh}
+														disabled={allowIps === 'all'}
+													/>
+												{/if}
+											</svelte:fragment>
+										</Tabs>
+									{/if}
+								</section>
 
-						<section class="row wrap">
-							<div class="column inline">
-								<h3>
-									<label for="region">
-										Region
-									</label>
-								</h3>
+								<section class="row wrap">
+									<div class="column inline">
+										<h3>
+											<label for="region">
+												Region
+											</label>
+										</h3>
 
-								<p>Select the region where your cluster should be deployed.</p>
-							</div>
+										<p>Select the region where your cluster should be deployed.</p>
+									</div>
 
-							<Select
-								required
-								name="region"
-								labelText="Region"
-								bind:value={$form.config.region}
-								items={[
-									{
-										value: 'US-north-1',
-										label: 'US-north-1',
-									},
-								]}
-							/>
-						</section>
+									<Select
+										required
+										name="region"
+										labelText="Region"
+										bind:value={$form.config.region}
+										items={[
+											{
+												value: 'US-north-1',
+												label: 'US-north-1',
+											},
+										]}
+									/>
+								</section>
 
-						<!-- <section class="row wrap">
-							<div class="column inline">
-								<h3>
-									<label for="zone">
-										Zone
-									</label>
-								</h3>
+								{#if serviceAccount?.provider === ProviderTypeEnum.GCP}
+									<section class="row wrap">
+										<div class="column inline">
+											<h3>
+												<label for="zone">
+													Zone
+												</label>
+											</h3>
 
-								<p>Select the zone where your cluster should be deployed.</p>
-							</div>
+											<p>Select the zone where your cluster should be deployed.</p>
+										</div>
 
-							<Select
-								required
-								name="zone"
-								labelText="Zone"
-								bind:value={$form.config.zone}
-								items={[
-									{
-										value: 'US-north-1',
-										label: 'US-north-1',
-									},
-								]}
-							/>
-						</section> -->
+										<Select
+											required
+											name="zone"
+											labelText="Zone"
+											bind:value={$form.config.zone}
+											items={[
+												{
+													value: 'US-north-1',
+													label: 'US-north-1',
+												},
+											]}
+										/>
+									</section>
 
-						<section class="row wrap">
-							<div class="column inline">
-								<h3>
-									<label for="machine_type">
-										Machine Type
-									</label>
-								</h3>
+									<section class="row wrap">
+										<div class="column inline">
+											<h3>
+												<label for="machine_type">
+													Machine Type
+												</label>
+											</h3>
 
-								<p>Select the type of machine you would like to deploy.</p>
-							</div>
+											<p>Select the type of machine you would like to deploy.</p>
+										</div>
 
-							<Select
-								required
-								name="machine_type"
-								labelText="Machine Type"
-								bind:value={$form.config.machine_type}
-								items={[
-									{
-										value: 'e2-standard-2',
-										label: 'e2-standard-2',
-									},
-								]}
-							/>
-						</section>
+										<Select
+											required
+											name="machine_type"
+											labelText="Machine Type"
+											bind:value={$form.config.machine_type}
+											items={[
+												{
+													value: 'e2-standard-2',
+													label: 'e2-standard-2',
+												},
+											]}
+										/>
+									</section>
+
+								{:else if serviceAccount?.provider === ProviderTypeEnum.AWS}
+									<section class="row wrap">
+										<div class="column inline">
+											<h3>
+												<label for="machine_type">
+													Machine Type
+												</label>
+											</h3>
+
+											<p>Select the type of machine you would like to deploy.</p>
+										</div>
+
+										<Select
+											required
+											name="machine_type"
+											labelText="Machine Type"
+											bind:value={$form.config.machine_type}
+											items={[
+												{
+													value: 'e2-standard-2',
+													label: 'e2-standard-2',
+												},
+											]}
+										/>
+									</section>
+								{/if}
+							</fieldset>
+						</Collapsible>
 					</div>
 
 					<div class="card column">
