@@ -1,47 +1,256 @@
 <script lang="ts">
-	// Types
-	import type { PageData } from './$types'
-
-
-	// Internal state
-	import { page } from '$app/stores'
-	import { superForm } from 'sveltekit-superforms/client'
-
-	const { form, enhance, errors, constraints } = superForm(($page.data as PageData).formData, {
-		dataType: 'json',
-	})
+	// Constants
+	enum FormAction {
+		SignUp = '?/signUp',
+		SignIn = '?/signIn',
+		ResetPassword = '?/resetPassword',
+		SignOut = '?/signOut',
+	}
 
 
 	// Context
-	import { getContext } from 'svelte'
+	import { page } from '$app/stores'
 
-	const isSignedIn = getContext<SvelteStore<boolean>>('isSignedIn')
+	import type { PageData } from './$types'
+
+	const {
+		signUpFormData,
+		signInFormData,
+		resetPasswordFormData,
+	} = $page.data as PageData
+
+
+	// Functions
+	import { goto } from '$app/navigation'
+
+
+	// Internal state
+	import { superForm } from 'sveltekit-superforms/client'
+	
+	const {
+		formId: signUpFormId,
+		form: signUpForm,
+		errors: signUpErrors,
+		enhance: signUpEnhance,
+		constraints: signUpConstraints,
+	} = superForm(signUpFormData, {
+		dataType: 'json',
+		onResult: ({ result }) => {
+			console.log('onResult', {result})
+
+			alert(result.data.result.message)
+
+			if(result)
+				goto('/clusters')
+		},
+	})
+
+	const {
+		formId: signInFormId,
+		form: signInForm,
+		errors: signInErrors,
+		enhance: signInEnhance,
+		constraints: signInConstraints,
+	} = superForm(signInFormData, {
+		dataType: 'json',
+		onResult: ({ result }) => {
+			alert(result.data.result.message)
+
+			if(result)
+				goto('/clusters')
+		},
+	})
+
+	const {
+		formId: resetPasswordFormId,
+		form: resetPasswordForm,
+		errors: resetPasswordErrors,
+		enhance: resetPasswordEnhance,
+		constraints: resetPasswordConstraints,
+	} = superForm(resetPasswordFormData, {
+		dataType: 'json',
+		onResult: ({ result }) => {
+			alert(result.data.result.message)
+		},
+	})
+
+	let currentForm = FormAction.SignUp
+
+
+	// Components
+	import Tabs from '$components/Tabs.svelte'
 </script>
 
 
-{#if !$isSignedIn}
-	<form
-		class="card column"
-		on:submit={() => $isSignedIn = true}
-	>
-		<h3>Create account</h3>
-		<p>Set up your Infernet Cloud account to get started.</p>
+<div class="container">
+	{#if !$page.data.isSignedIn}
+		<Tabs
+			bind:value={currentForm}
+			items={[
+				{
+					id: FormAction.SignUp,
+					label: 'Sign Up',
+				},
+				{
+					id: FormAction.SignIn,
+					label: 'Log In',
+				},
+				{
+					id: FormAction.ResetPassword,
+					label: 'Reset Password',
+				},
+			]}
+		>
+			<svelte:fragment slot="content"
+				let:item
+			>
+				{#if item.id === FormAction.SignUp}
+					<form
+						method="POST"
+						use:signUpEnhance
+						action={FormAction.SignUp}
+						class="card column"
+						on:submit={() => {
 
-		<input
-			type="email"
-			name="email"
-			placeholder="Enter email address"
-			bind:value={$form.email}
-			{...$constraints.email}
-		/>
+						}}
+					>
+						<input
+							type="hidden"
+							name="__superform_id"
+							bind:value={$signUpFormId}
+						/>
 
-		<button>Log in</button>
-	</form>
-{:else}
-	<form
-		class="card"
-		on:submit={() => $isSignedIn = false}
-	>
-		<button>Sign out</button>
-	</form>
-{/if}
+						<div class="column inline">
+							<h3>Create account</h3>
+							<p>Set up your Infernet Cloud account to get started.</p>
+						</div>
+
+						<input
+							type="text"
+							name="name"
+							placeholder="Name"
+							bind:value={$signUpForm.name}
+							{...$signUpConstraints.name}
+						/>
+
+						<input
+							type="email"
+							name="email"
+							placeholder="Email address"
+							bind:value={$signUpForm.email}
+							{...$signUpConstraints.email}
+						/>
+
+						<input
+							type="password"
+							name="password"
+							placeholder="Password"
+							bind:value={$signUpForm.password}
+							{...$signUpConstraints.password}
+						/>
+
+						<button
+							type="submit"
+							class="primary"
+						>Sign Up</button>
+					</form>
+
+				{:else if item.id === FormAction.SignIn}
+					<form
+						method="POST"
+						use:signInEnhance
+						action={FormAction.SignIn}
+						class="card column"
+						on:submit={() => {
+
+						}}
+					>
+						<input
+							type="hidden"
+							name="__superform_id"
+							bind:value={$signInFormId}
+						/>
+
+						<div class="column inline">
+							<h3>Log In</h3>
+							<p>Log into your Infernet Cloud account to manage your clusters.</p>
+						</div>
+
+						<input
+							type="email"
+							name="email"
+							placeholder="Email address"
+							bind:value={$signInForm.email}
+							{...$signInConstraints.email}
+						/>
+
+						<input
+							type="password"
+							name="password"
+							placeholder="Password"
+							bind:value={$signInForm.password}
+							{...$signInConstraints.password}
+						/>
+
+						<button
+							type="submit"
+							class="primary"
+						>Log in</button>
+					</form>
+
+				{:else if item.id === FormAction.ResetPassword}
+					<form
+						method="POST"
+						use:resetPasswordEnhance
+						action={FormAction.ResetPassword}
+						class="card column"
+						on:submit={() => {
+
+						}}
+					>
+						<input
+							type="hidden"
+							name="__superform_id"
+							bind:value={$resetPasswordFormId}
+						/>
+
+						<div class="column inline">
+							<h3>Reset Password</h3>
+							<p>Forgot your password? Confirm your email to reset it.</p>
+						</div>
+
+						<input
+							type="email"
+							name="email"
+							placeholder="Email address"
+							bind:value={$resetPasswordForm.email}
+							{...$resetPasswordConstraints.email}
+						/>
+
+						<button
+							type="submit"
+							class="primary"
+						>Send verification link</button>
+					</form>
+				{/if}
+			</svelte:fragment>
+		</Tabs>
+	{:else}
+		<!-- <form
+			class="card"
+			action={FormAction.SignOut}
+			use:signOutEnhance
+		> -->
+			<button>Sign out</button>
+		<!-- </form> -->
+	{/if}
+</div>
+
+
+<style>
+	.container {
+		display: grid;
+		grid-template-columns: minmax(0, 30rem);
+    	justify-content: center;
+	}
+</style>

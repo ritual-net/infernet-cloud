@@ -1,14 +1,4 @@
 <script lang="ts">
-	// Context
-	import { page } from '$app/stores'
-
-	import { setContext } from 'svelte'
-	import { writable } from 'svelte/store'
-
-	const isSignedIn = writable(false)
-	setContext('isSignedIn', isSignedIn)
-
-
 	// Global Styles
 	import '../fonts.css'
 	import '../global.css'

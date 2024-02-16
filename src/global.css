@@ -172,6 +172,7 @@ button {
 	border-radius: 0.33em;
 
 	color: var(--button-textColor);
+	text-align: center;
 
 	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 
