@@ -45,41 +45,43 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account and at least one node are required');
 	}
 
-	// TODO: Enforce correctness of config, nodes + containers?
-
 	// Get provider of service account
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
 	if (!serviceAccount) {
 		return error(400, 'Service account could not be retrieved');
 	}
 
-	// Create cluster
-	const cluster = (await e
-		.params(
-			{
-				nodes: e.array(createNodeParams),
-			},
-			({ nodes }) =>
-				// Choose cluster type based on provider
-				e.insert(ClusterTypeByProvider[serviceAccount.provider], {
-					...config,
-					service_account: e.select(e.ServiceAccount, () => ({
-						filter_single: { id: serviceAccountId },
-					})),
-					nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
-				})
-		)
-		.run(client, { nodes })) as Cluster;
+	try {
+		// Insert cluster
+		const cluster = (await e
+			.params(
+				{
+					nodes: e.array(createNodeParams),
+				},
+				({ nodes }) =>
+					// Choose cluster type based on provider
+					e.insert(ClusterTypeByProvider[serviceAccount.provider], {
+						...config,
+						service_account: e.select(e.ServiceAccount, () => ({
+							filter_single: { id: serviceAccountId },
+						})),
+						nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
+					})
+			)
+			.run(client, { nodes })) as Cluster;
 
-	if (!cluster) {
-		return error(500, 'Failed to create cluster');
+		// Apply Terraform changes to create cluster
+		const { error: errorMessage, success } = await clusterAction(
+			client,
+			cluster.id,
+			TFAction.Apply
+		);
+		return json({
+			id: cluster.id,
+			message: success ? 'Cluster created successfully' : errorMessage,
+			success,
+		});
+	} catch (e) {
+		return error(500, (e as Error).message);
 	}
-
-	// Apply Terraform changes to create cluster
-	const { error: errorMessage, success } = await clusterAction(client, cluster.id, TFAction.Apply);
-	return json({
-		id: cluster.id,
-		message: success ? 'Cluster created successfully' : errorMessage,
-		success,
-	});
 };

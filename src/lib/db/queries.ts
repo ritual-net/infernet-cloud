@@ -1,6 +1,6 @@
-import type { Client } from 'edgedb';
 import { ClusterTypeByProvider, e, ServiceAccountTypeByProvider } from '$/lib/db';
 import { getClusterSelectParams } from './components';
+import type { Client } from 'edgedb';
 import type { InfernetNode } from '$schema/interfaces';
 import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
 
@@ -11,19 +11,18 @@ import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
  * @param nodeIds of nodes
  * @returns InfernetNodes array
  */
-export const getNodesByIds = async (
-	client: Client,
-	nodeIds: string[]
-): Promise<InfernetNode[]> => {
-	return await e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
-		e.select(e.InfernetNode, (node) => ({
-			...e.InfernetNode['*'],
-			containers: {
-				...e.Container['*'],
-			},
-			filter: e.op(node.id, 'in', e.array_unpack(ids)),
-		}))
-	).run(client, { ids: nodeIds });
+export const getNodesByIds = async (client: Client, nodeIds: string[]): Promise<InfernetNode[]> => {
+	return await e
+		.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+			e.select(e.InfernetNode, (node) => ({
+				...e.InfernetNode['*'],
+				containers: {
+					...e.Container['*'],
+				},
+				filter: e.op(node.id, 'in', e.array_unpack(ids)),
+			}))
+		)
+		.run(client, { ids: nodeIds });
 };
 
 /**
@@ -141,13 +140,13 @@ export const getClusterByNodeIds = async (
 		throw Error('Unable to find exactly one cluster for nodes.');
 	}
 	const provider = generic[0].service_account.provider;
-	const cluster_id = generic[0].id;
+	const clusterId = generic[0].id;
 
 	// Get cluster with provider-specific data
 	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
 			...getClusterSelectParams(creds, provider),
-			filter_single: { id: cluster_id },
+			filter_single: { id: clusterId },
 		}))
 		.run(client);
 	return cluster as ProviderCluster | null;

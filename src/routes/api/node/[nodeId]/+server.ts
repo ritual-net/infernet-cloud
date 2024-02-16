@@ -2,7 +2,7 @@ import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
 import { e } from '$/lib/db';
 import { nodeAction } from '$/lib/clients/node/common';
-import { getClusterByNodeId } from '$/lib/db/queries';
+import { getClusterByNodeIds } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
 import { NodeAction, type NodeInfo } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -43,7 +43,7 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 	}
 
 	// Get cluster id and service account
-	const cluster = await getClusterByNodeId(client, id);
+	const cluster = await getClusterByNodeIds(client, [id]);
 
 	if (!cluster) {
 		return error(400, 'Cluster could not be retrieved');
