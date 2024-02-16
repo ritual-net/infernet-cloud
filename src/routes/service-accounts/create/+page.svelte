@@ -26,6 +26,11 @@
 
 	const { form, enhance, errors, constraints } = superForm(formData, {
 		dataType: 'json',
+
+		onResult: ({ result }) => {
+			if(result.type === 'failure')
+				alert(result.data?.result?.message)
+		},
 	})
 
 	let currentFieldset = Fieldset.ChooseCloudProvider

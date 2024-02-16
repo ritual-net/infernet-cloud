@@ -31,6 +31,11 @@
 		submitting,
 	} = superForm(formData, {
 		dataType: 'json',
+
+		onResult: ({ result }) => {
+			if(result.type === 'failure')
+				alert(result.data?.result?.message)
+		},
 	})
 
 	let allowIps: 'all' | 'restricted' = 'all'
