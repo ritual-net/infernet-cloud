@@ -93,6 +93,10 @@
 						</tr>
 					</ContextMenu>
 				</Subscribe>
+			{:else}
+				<div class="placeholder">
+					<slot />
+				</div>
 			{/each}
 		</tbody>
 	</table>
@@ -126,6 +130,11 @@
 	}
 
 	thead th {
+		opacity: 0.5;
+	}
+
+	.placeholder {
+		padding: 0.5rem 1rem;
 		opacity: 0.5;
 	}
 </style>
