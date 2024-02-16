@@ -7,6 +7,8 @@
 
 	// (View options)
 	export let placement: 'standalone' | 'in-modal' = 'standalone'
+	export let mode: 'create' | 'edit' = 'create'
+	export let submitLabel = 'Add Container'
 
 
 	// Context
@@ -36,6 +38,14 @@
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
 		},
+
+		// onSubmit: (e) => {
+		// 	console.log({e, $form})
+
+		// 	$form.container.container_id = crypto.randomUUID()
+
+		// 	onSubmit?.($form)
+		// },
 	})
 
 	let allowIps: 'all' | 'restricted' = 'all'
@@ -67,7 +77,8 @@
 	on:submit|preventDefault={e => {
 		console.log({e, $form})
 
-		$form.container.container_id = crypto.randomUUID()
+		if(mode === 'create')
+			$form.container.container_id = crypto.randomUUID()
 
 		onSubmit?.($form)
 	}}
@@ -78,32 +89,34 @@
 		</header>
 	{/if}
 
-	<fieldset class="card column">
-		<header>
-			Start from existing
-		</header>
+	{#if mode === 'create'}
+		<fieldset class="card column">
+			<header>
+				Start from existing
+			</header>
 
-		<section class="row wrap">
-			<div class="column inline">
-				<h3>
-					<label for="startingConfig">
-						Starting configuration
-					</label>
-				</h3>
+			<section class="row wrap">
+				<div class="column inline">
+					<h3>
+						<label for="startingConfig">
+							Starting configuration
+						</label>
+					</h3>
 
-				<p>Choose an existing container to pre-fill variables from.</p>
-			</div>
+					<p>Choose an existing container to pre-fill variables from.</p>
+				</div>
 
-			<Select
-				required
-				name="image"
-				labelText="Starting Configuration"
-				placeholder={configurations.length ? `Select container config...` : `No existing containers found`}
-				bind:value={startingConfig}
-				items={configurations}
-			/>
-		</section>
-	</fieldset>
+				<Select
+					required
+					name="image"
+					labelText="Starting Configuration"
+					placeholder={configurations.length ? `Select container config...` : `No existing containers found`}
+					bind:value={startingConfig}
+					items={configurations}
+				/>
+			</section>
+		</fieldset>
+	{/if}
 
 	<fieldset class="card column">
 		<header>
@@ -328,7 +341,7 @@
 				class="primary"
 				disabled={$submitting}
 			>
-				Add Container
+				{submitLabel}
 			</button>
 		</div>
 	</footer>

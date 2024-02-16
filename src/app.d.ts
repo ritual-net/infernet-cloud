@@ -1,5 +1,7 @@
 import type { Client } from 'edgedb'
 
+import type ContainerForm from '$/routes/clusters/create/container/+page.svelte'
+
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
@@ -12,7 +14,12 @@ declare global {
 		}
 
 		// interface PageData {}
-		// interface PageState {}
+
+		interface PageState {
+			showContainerForm?: 'create' | 'edit',
+			containerFormData?: ContainerForm['$$prop_def']['data'],
+		}
+
 		// interface Platform {}
 	}
 }

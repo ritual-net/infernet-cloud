@@ -52,7 +52,7 @@
 	import Select from '$components/Select.svelte'
 	import Tabs from '$components/Tabs.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
-	import ContainerCreateForm from './container/+page.svelte'
+	import ContainerForm from './container/+page.svelte'
 
 
 	// Shallow Routes
@@ -548,8 +548,8 @@
 
 											if (result.type === 'loaded' && result.status === 200) {
 												pushState(href, {
-													showContainerCreateForm: true,
-													shallowRouteData: result.data,
+													showContainerForm: 'create',
+													containerFormData: result.data,
 												})
 											} else {
 												console.error(`Failed to preload shallow route: ${href}`)
@@ -562,26 +562,6 @@
 											class="primary"
 										>Add Container</button>
 									</a>
-
-									<Dialog
-										title={`Customize container`}
-										subtitle={``}
-										open={$page.state.showContainerCreateForm}
-									>
-										<ContainerCreateForm
-											data={$page.state.shallowRouteData}
-											onSubmit={({ container }) => {
-												node.containers.push(container)
-												node.containers = node.containers
-
-												history.back()
-											}}
-											onCancel={() => {
-												history.back()
-											}}
-											placement={'in-modal'}
-										/>
-									</Dialog>
 								</div>
 
 								<NodeContainersTable
@@ -593,14 +573,17 @@
 											type: 'loaded',
 											status: 200,
 											data: {
-												container,
+												formData: {
+													container,
+												},
 											},
 										}
 
 										if (result.type === 'loaded' && result.status === 200) {
 											pushState(href, {
-												showContainerCreateForm: true,
-												shallowRouteData: result.data,
+												showContainerForm: 'edit',
+												containerId: container.container_id,
+												containerFormData: result.data,
 											})
 										} else {
 											console.error(`Failed to preload shallow route: ${href}`)
@@ -608,6 +591,48 @@
 										}
 									}}
 								/>
+
+								<Dialog
+									title={`Customize container`}
+									open={Boolean($page.state.showContainerForm)}
+								>
+									<ContainerForm
+										data={$page.state.containerFormData}
+										mode={$page.state.showContainerForm}
+										{...(
+											$page.state.showContainerForm === 'create' ?
+												{
+													submitLabel: 'Add Container',
+
+													onSubmit: ({ container }) => {
+														node.containers.push(container)
+														node.containers = node.containers
+
+														history.back()
+													},
+												}
+											: $page.state.showContainerForm === 'edit' ?
+												{
+													submitLabel: 'Save Changes',
+
+													onSubmit: ({ container }) => {
+														node.containers[
+															node.containers.findIndex(container => container.container_id === $page.state.containerId)
+														] = container
+
+														node.containers = node.containers
+														history.back()
+													},
+												}
+											:
+												{}
+										)}
+										onCancel={() => {
+											history.back()
+										}}
+										placement={'in-modal'}
+									/>
+								</Dialog>
 							</section>
 						</article>
 					{/each}
