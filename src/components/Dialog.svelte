@@ -1,13 +1,11 @@
 <script lang="ts">
 	// Types
-	import type { MenuItems } from '$lib/menus'
-
 	type Value = $$Generic<any>
 
 
 	// Inputs
 	export let open: boolean
-	export let title: MenuItems<Value>
+	export let title: string
 	export let description: string | undefined
 	export let showTrigger = false
 	export let closeOnOutsideClick = false
