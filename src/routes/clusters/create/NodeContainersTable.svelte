@@ -62,6 +62,9 @@
 			accessor: container => container.gpu,
 		},
 	]}
+	onRowClick={container => {
+		onEdit?.(container)
+	}}
 	contextMenu={container => [
 		{
 			value: 'edit',
