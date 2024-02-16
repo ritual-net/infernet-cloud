@@ -123,6 +123,10 @@
 		&:nth-of-type(odd) {
 			background-color: rgba(0, 0, 0, 0.03);
 		}
+
+		&[tabIndex="0"] {
+			cursor: pointer;
+		}
 	}
 
 	th, td {
