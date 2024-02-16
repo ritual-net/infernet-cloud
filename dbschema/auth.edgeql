@@ -11,16 +11,16 @@ ext::auth::AuthConfig::allowed_redirect_urls := {
 
 CONFIGURE CURRENT DATABASE
 INSERT ext::auth::EmailPasswordProviderConfig {
-    require_verification := false,
+    require_verification := true,
 };
 
 # SMTP Configuration
 CONFIGURE CURRENT DATABASE SET
-ext::auth::SMTPConfig::sender := 'hello@example.com';
+ext::auth::SMTPConfig::sender := 'infernet-cloud@ritual.net';
 CONFIGURE CURRENT DATABASE SET
-ext::auth::SMTPConfig::host := 'localhost';
+ext::auth::SMTPConfig::host := 'smtp';
 CONFIGURE CURRENT DATABASE SET
-ext::auth::SMTPConfig::port := <int32>1025;
+ext::auth::SMTPConfig::port := <int32>25;
 CONFIGURE CURRENT DATABASE SET
 ext::auth::SMTPConfig::security := 'STARTTLSOrPlainText';
 CONFIGURE CURRENT DATABASE SET

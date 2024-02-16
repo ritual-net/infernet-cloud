@@ -36,6 +36,19 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+    depends_on:
+      - smtp
+
+  smtp:
+    image: ixdotai/smtp:latest
+    environment:
+      SMARTHOST_ADDRESS: smtp.sendgrid.net
+      SMARTHOST_PORT: 587
+      SMARTHOST_USER: apikey
+      SMARTHOST_PASSWORD: ${SENDGRID_KEY}
+      SMARTHOST_ALIASES: "*.sendgrid.net"
+    expose:
+      - "25"
 
 volumes:
   edgedb-data:

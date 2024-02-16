@@ -94,6 +94,7 @@ cp .env.docker.example .env
 You **should (only) modify** the following variables:
 - `EDGEDB_SERVER_PASSWORD`: The admin password for EdgeDB
 - `ORIGIN`: The origin (host) from which the server should expect requests (i.e. the origin of the client). If this does not match the `Origin` header in your HTTP requests, you will get a [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) error.
+- `SENDGRID_KEY`: Your SendGrid API Key, used to authenticate the SendGrid relay.
 - `SERVER_HOST`: The **external** url of your server (when running / testing locally, can set to `"http://localhost:3000"`).
 
 #### Configure Authentication
