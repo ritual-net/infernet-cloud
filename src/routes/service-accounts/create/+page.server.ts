@@ -28,17 +28,19 @@ export const actions: Actions = {
 			return fail(400, { formData })
 		}
 
-		const result = await fetch('/api/service_account', {
+		const response = await fetch('/api/service_account', {
 			method: 'POST',
-			body: JSON.stringify({
-				...formData.data,
-			}),
+			body: JSON.stringify(formData.data),
 		})
-			.then(response => response.json())
 
-		return {
-			formData,
-			result,
-		}
+		return response.ok
+			? {
+				formData,
+				result: await response.json(),
+			}
+			: fail(response.status, {
+				formData,
+				result: await response.json(),
+			})
 	},
 }

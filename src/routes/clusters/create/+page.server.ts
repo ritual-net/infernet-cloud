@@ -37,17 +37,19 @@ export const actions: Actions = {
 			return fail(400, { formData })
 		}
 
-		const result = await fetch('/api/cluster', {
+		const response = await fetch('/api/cluster', {
 			method: 'POST',
 			body: JSON.stringify(formData.data),
 		})
-			.then(response => response.json())
 
-		console.log({result})
-
-		return {
-			formData,
-			result,
-		}
+		return response.ok
+			? {
+				formData,
+				result: await response.json(),
+			}
+			: fail(response.status, {
+				formData,
+				result: await response.json(),
+			})
 	},
 }
