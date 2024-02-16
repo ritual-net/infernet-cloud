@@ -15,12 +15,12 @@
 
 	$: navItems = [
 		{
-			href: '/clusters',
-			label: 'Clusters',
+			href: '/service-accounts',
+			label: 'Accounts',
 		},
 		{
-			href: '/nodes',
-			label: 'Nodes',
+			href: '/clusters',
+			label: 'Clusters',
 		},
 		$isSignedIn ? {
 			href: '/login',
