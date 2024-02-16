@@ -26,7 +26,7 @@
 
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
-	
+
 	const {
 		formId: signUpFormId,
 		form: signUpForm,
@@ -75,6 +75,9 @@
 	})
 
 	let currentForm = FormAction.SignUp
+	
+	let email = ''
+	$: $signUpForm.email = $signInForm.email = $resetPasswordForm.email = email
 
 
 	// Components
@@ -137,7 +140,7 @@
 							type="email"
 							name="email"
 							placeholder="Email address"
-							bind:value={$signUpForm.email}
+							bind:value={email}
 							{...$signUpConstraints.email}
 						/>
 
@@ -180,7 +183,7 @@
 							type="email"
 							name="email"
 							placeholder="Email address"
-							bind:value={$signInForm.email}
+							bind:value={email}
 							{...$signInConstraints.email}
 						/>
 
@@ -223,7 +226,7 @@
 							type="email"
 							name="email"
 							placeholder="Email address"
-							bind:value={$resetPasswordForm.email}
+							bind:value={email}
 							{...$resetPasswordConstraints.email}
 						/>
 
