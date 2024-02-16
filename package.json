@@ -45,6 +45,7 @@
 		"vitest": "^1.0.0"
 	},
 	"dependencies": {
+		"@aws-sdk/client-ec2": "^3.507.0",
 		"@fontsource/barlow": "^5.0.8",
 		"@google-cloud/compute": "^4.1.0",
 		"aws-sdk": "^2.1540.0",

@@ -1,45 +1,85 @@
+import { e } from '$/lib/db';
+import { getClusterById } from '../db/queries';
 import { ProviderTerraform } from '$/lib';
-import { QueryByProvider, client, e } from '$/lib/db';
-import type { CloudProvider } from '$schema/interfaces';
-import type { TFAction } from '$/types/terraform';
+import type { Client } from 'edgedb';
+import type { ProviderServiceAccount } from '$/types/provider';
+import { TFAction } from '$/types/terraform';
 
 /**
  * Applies the given action to a cluster, and persists the resulting Terraform state
  * in the database.
  *
+ * @param client The database client
  * @param clusterId The id of the Cluster
- * @param provider The cloud provider
  * @param action The Terraform action
  * @returns An object with the success status and (optional) error message
  */
-export async function clusterAction(clusterId: string, provider: CloudProvider, action: TFAction) {
-	const cluster = await QueryByProvider[provider].getClusterById(clusterId);
+export const clusterAction = async (client: Client, clusterId: string, action: TFAction) => {
+	const cluster = await getClusterById(client, clusterId, true);
 	if (!cluster) {
 		return { error: 'Cluster not found', success: false };
 	}
 
-	const serviceAccount = await QueryByProvider[provider].getServiceAccountById(
-		cluster.service_account.id
-	);
-	if (!serviceAccount) {
-		return { error: 'Service Account not found', success: false };
+	if (cluster.locked) {
+		return { error: 'Cluster mutation is progress. Please wait.', success: false };
 	}
 
-	const { error, state, success } = await ProviderTerraform[provider].action(
-		cluster,
-		serviceAccount,
-		action
-	);
+	// Lock the cluster to prevent concurrent mutations
+	await e
+		.update(e.Cluster, () => ({
+			filter_single: { id: clusterId },
+			set: {
+				locked: true,
+			},
+		}))
+		.run(client);
+
+	const { error, state, success } = await ProviderTerraform[
+		cluster.service_account.provider
+	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
 
 	// Store state in the database
 	await e
 		.update(e.Cluster, () => ({
 			filter_single: { id: clusterId },
 			set: {
+				error: error ?? null,
+				healthy: success,
+				locked: false,
+				router_ip: state?.outputs?.router_ip?.value ?? null,
 				tfstate: JSON.stringify(state),
 			},
 		}))
 		.run(client);
 
+	// Update node provider IDs
+	const nodeInfo = state?.outputs?.nodes?.value;
+	if (nodeInfo) {
+		await e
+			.params(
+				{
+					nodeInfo: e.array(
+						e.tuple({
+							id: e.str,
+							ip: e.str,
+							key: e.uuid,
+						})
+					),
+				},
+				(params) =>
+					e.for(e.array_unpack(params.nodeInfo), (obj) =>
+						e.update(e.InfernetNode, () => ({
+							filter_single: { id: obj.key },
+							set: {
+								provider_id: obj.id,
+							},
+						}))
+					)
+			)
+			.run(client, {
+				nodeInfo,
+			});
+	}
+
 	return { error, success };
-}
+};

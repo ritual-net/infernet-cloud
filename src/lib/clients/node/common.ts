@@ -1,57 +1,58 @@
-import { getProviderByNodeId, getNodesByIds } from '$/lib/db/common';
-import { NodeClient, ProviderQueries } from '$/lib/index';
-import { NodeAction, type NodeInfo, type ProviderServiceAccountCreds } from '$/types/provider';
+/* eslint-disable no-case-declarations */
+import { getNodesByIds, getClusterByNodeIds } from '$/lib/db/queries';
+import { NodeClient } from '$/lib/index';
+import { NodeAction } from '$/types/provider';
+import type { Client } from 'edgedb';
+import type {
+	NodeInfo,
+	ProviderServiceAccount,
+	ProviderServiceAccountCreds,
+} from '$/types/provider';
 
 /**
- * Given an array of InfernetNode ids and an action, complete action via node client.
+ * Applies the given action to a node and returns the result.
  *
- * @param nodes - Array of InfernetNode ids to complete action on
- * @param action - Action to complete on nodes {start, stop, info}
+ * @param client - The database client
+ * @param nodes - Array of InfernetNode IDs
+ * @param action - The action to perform on the node
  * @returns error or success message
+ * @throws Error if nodes, cluster could not be retrieved, or action is not supported
  * @remarks nodes have to belong to same cluster
  */
-export const executeNodeAction = async (
+export const nodeAction = async (
+	client: Client,
 	nodeIds: string[],
-	action: string
-): Promise<NodeInfo[] | object> => {
-	const nodes = await getNodesByIds(nodeIds);
-	if (!nodes) {
+	action: NodeAction
+): Promise<NodeInfo[] | undefined> => {
+	const nodes = await getNodesByIds(client, nodeIds);
+	if (nodes.length === 0) {
 		throw Error('Nodes could not be retrieved.');
 	}
 
-	const provider = await getProviderByNodeId(nodeIds[0]);
-	if (!provider) {
-		throw Error('Provider could not be retrieved for nodes.');
-	}
-
-	const cluster = await ProviderQueries[provider].getClusterByNodeId(nodeIds[0]);
+	const cluster = await getClusterByNodeIds(client, nodeIds, true);
 	if (!cluster) {
-		throw Error('Cluster could not be retrieved for nodes.');
+		throw Error('Cluster could not be retrieved.');
 	}
 
-	const service_account = await ProviderQueries[provider].getServiceAccountById(
-		cluster.service_account.id
-	);
-	if (!service_account) {
-		throw Error('Service account could not be retrieved for cluster.');
-	}
+	const serviceAccount = cluster.service_account as ProviderServiceAccount;
+	const provider = serviceAccount.provider;
 
-	const classArgs = NodeClient[provider].classArgs(cluster, service_account) as [
+	const classArgs = NodeClient[provider].classArgs(cluster, serviceAccount) as [
 		ProviderServiceAccountCreds,
 		string,
 	];
 	const nodeClient = new NodeClient[provider].class(...classArgs);
-	const functionArgs = NodeClient[provider].functionArgs(cluster, service_account);
+	const functionArgs = NodeClient[provider].functionArgs(cluster, serviceAccount);
 	const providerIds = nodes.map((node) => node.provider_id!);
 
 	switch (action) {
 		case NodeAction.start:
 			await nodeClient.startNodes(providerIds, functionArgs);
-			return { success: true, message: 'Started nodes.' };
+			return;
 
 		case NodeAction.stop:
 			await nodeClient.stopNodes(providerIds, functionArgs);
-			return { success: true, message: 'Stopped nodes.' };
+			return;
 
 		case NodeAction.info:
 			const nodesInfo = await nodeClient.getNodesInfo(providerIds, functionArgs);
