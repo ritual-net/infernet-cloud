@@ -1,14 +1,15 @@
 <script lang="ts">
 	// Types/constants
+	import type { z } from 'zod'
 	import type { Container } from './schema'
 
 
 	// Inputs
-	export let containers: typeof Container[]
+	export let containers: z.infer<typeof Container>[]
 
 
 	// Events
-	export let onEdit: (_: typeof Container) => void
+	export let onEdit: (_: z.infer<typeof Container>) => void
 
 
 	// Components
