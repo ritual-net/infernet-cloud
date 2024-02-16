@@ -37,16 +37,20 @@ export const actions: Actions = {
 			return fail(400, { signUpFormData })
 		}
 
-		const result = await fetch('/auth/signup', {
+		const response = await fetch('/auth/signup', {
 			method: 'POST',
 			body: JSON.stringify(signUpFormData.data),
 		})
-			.then(response => response.json())
 
-		return {
-			signUpFormData,
-			result,
-		}
+		return response.ok
+			? {
+				signUpFormData,
+				result: await response.json(),
+			}
+			: fail(response.status, {
+				signUpFormData,
+				result: await response.json(),
+			})
 	},
 
 	signIn: async ({
@@ -59,16 +63,20 @@ export const actions: Actions = {
 			return fail(400, { signInFormData })
 		}
 
-		const result = await fetch('/auth/signin', {
+		const response = await fetch('/auth/signin', {
 			method: 'POST',
 			body: JSON.stringify(signInFormData.data),
 		})
-			.then(response => response.json())
 
-		return {
-			signInFormData,
-			result,
-		}
+		return response.ok
+			? {
+				signInFormData,
+				result: await response.json(),
+			}
+			: fail(response.status, {
+				signInFormData,
+				result: await response.json(),
+			})
 	},
 
 
@@ -82,15 +90,19 @@ export const actions: Actions = {
 			return fail(400, { resetPasswordFormData })
 		}
 
-		const result = await fetch('/auth/send-reset-password-email', {
+		const response = await fetch('/auth/send-reset-password-email', {
 			method: 'POST',
 			body: JSON.stringify(resetPasswordFormData.data),
 		})
-			.then(response => response.json())
 
-		return {
-			resetPasswordFormData,
-			result,
-		}
+		return response.ok
+			? {
+				resetPasswordFormData,
+				result: await response.json(),
+			}
+			: fail(response.status, {
+				resetPasswordFormData,
+				result: await response.json(),
+			})
 	},
 }

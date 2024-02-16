@@ -36,9 +36,8 @@
 	} = superForm(signUpFormData, {
 		dataType: 'json',
 		onResult: ({ result }) => {
-			console.log('onResult', {result})
-
-			alert(result.data.result.message)
+			if(result.type === 'failure')
+				alert(result.data?.result?.message)
 
 			if(result)
 				goto('/clusters')
@@ -54,7 +53,9 @@
 	} = superForm(signInFormData, {
 		dataType: 'json',
 		onResult: ({ result }) => {
-			alert(result.data.result.message)
+			console.log({result})
+			if(result.type === 'failure')
+				alert(result.data?.result?.message)
 
 			if(result)
 				goto('/clusters')
@@ -70,7 +71,8 @@
 	} = superForm(resetPasswordFormData, {
 		dataType: 'json',
 		onResult: ({ result }) => {
-			alert(result.data.result.message)
+			if(result.type === 'failure')
+				alert(result.data?.result?.message)
 		},
 	})
 
