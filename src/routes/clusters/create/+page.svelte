@@ -595,6 +595,9 @@
 								<Dialog
 									title={`Customize container`}
 									open={Boolean($page.state.showContainerForm)}
+									onClose={() => {
+										history.back()
+									}}
 								>
 									<ContainerForm
 										data={$page.state.containerFormData}

@@ -36,6 +36,10 @@
 	)
 
 
+	// Events
+	export let onClose: () => void
+
+
 	// Transitions/animations
 	// import { scale } from 'svelte/transition'
 </script>
@@ -82,6 +86,7 @@
 				<button
 					use:melt={$close}
 					aria-label="close"
+					on:m-click={onClose}
 				>
 					✕
 				</button>
