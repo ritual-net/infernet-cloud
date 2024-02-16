@@ -25,6 +25,15 @@
 	)
 
 
+	// Events
+	export let onRowClick: ((_: Datum) => void) | undefined
+
+
+	// Components
+	import { melt } from '@melt-ui/svelte'
+	import ContextMenu from './ContextMenu.svelte'
+
+
 	// Transitions/animations
 	import { scale } from 'svelte/transition'
 </script>
@@ -49,17 +58,35 @@
 		</thead>
 
 		<tbody {...$tableBodyAttrs}>
-			{#each $rows as row (row.id)}
-				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-					<tr {...rowAttrs} transition:scale={{ opacity: 0, start: 0.8 }}>
-						{#each row.cells as cell (cell.id)}
-							<Subscribe attrs={cell.attrs()} let:attrs>
-								<td {...attrs}>
-									<Render of={cell.render()} />
-								</td>
-							</Subscribe>
-						{/each}
-					</tr>
+			{#each $rows as row (getId?.(data[row.dataId]) ?? row.dataId)}
+				{@const datum = data[row.dataId]}
+
+				<Subscribe
+					rowAttrs={row.attrs()} let:rowAttrs
+				>
+					<ContextMenu
+						items={contextMenu?.(datum)}
+						let:trigger
+						let:labelText
+					>
+						<tr
+							{...rowAttrs}
+							transition:scale={{ opacity: 0, start: 0.8 }}
+							use:melt={trigger}
+							aria-label={labelText}
+							tabIndex={onRowClick ? 0 : undefined}
+							on:click={() => onRowClick?.(datum)}
+							on:keydown={e => ['Enter', 'Space'].includes(e.code) && onRowClick?.(datum)}
+						>
+							{#each row.cells as cell (cell.id)}
+								<Subscribe attrs={cell.attrs()} let:attrs>
+									<td {...attrs}>
+										<Render of={cell.render()} />
+									</td>
+								</Subscribe>
+							{/each}
+						</tr>
+					</ContextMenu>
 				</Subscribe>
 			{/each}
 		</tbody>
