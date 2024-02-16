@@ -1,14 +1,18 @@
-import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
+// Schema
 import { superValidate } from 'sveltekit-superforms/server'
+import { zod } from 'sveltekit-superforms/adapters'
+import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 
+
+// Data
 import type { ServerLoad } from '@sveltejs/kit'
 
 export const load: ServerLoad = async ({
 	locals,
 }) => {
-	const signUpFormData = await superValidate(SignUpFormData)
-	const signInFormData = await superValidate(SignInFormData)
-	const resetPasswordFormData = await superValidate(ResetPasswordFormData)
+	const signUpFormData = await superValidate(zod(SignUpFormData))
+	const signInFormData = await superValidate(zod(SignInFormData))
+	const resetPasswordFormData = await superValidate(zod(ResetPasswordFormData))
 
 	return {
 		signUpFormData,
@@ -27,7 +31,7 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const signUpFormData = await superValidate(request, SignUpFormData)
+		const signUpFormData = await superValidate(request, zod(SignUpFormData))
 
 		if (!signUpFormData.valid) {
 			return fail(400, { signUpFormData })
@@ -49,7 +53,7 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const signInFormData = await superValidate(request, SignInFormData)
+		const signInFormData = await superValidate(request, zod(SignInFormData))
 
 		if (!signInFormData.valid) {
 			return fail(400, { signInFormData })
@@ -72,7 +76,7 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const resetPasswordFormData = await superValidate(request, ResetPasswordFormData)
+		const resetPasswordFormData = await superValidate(request, zod(ResetPasswordFormData))
 
 		if (!resetPasswordFormData.valid) {
 			return fail(400, { resetPasswordFormData })

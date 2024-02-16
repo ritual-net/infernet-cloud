@@ -1,13 +1,14 @@
 // Schema
-import { FormData } from './schema'
 import { superValidate } from 'sveltekit-superforms/server'
+import { zod } from 'sveltekit-superforms/adapters'
+import { FormData } from './schema'
 
 
 // Data
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
-	const formData = await superValidate(FormData)
+	const formData = await superValidate(zod(FormData))
 
 	return { formData }
 }
@@ -22,7 +23,7 @@ export const actions: Actions = {
 		fetch,
 		locals,
 	}) => {
-		const formData = await superValidate(request, FormData)
+		const formData = await superValidate(request, zod(FormData))
 
 		if (!formData.valid) {
 			return fail(400, { formData })

@@ -1,6 +1,7 @@
 // Schema
-import { FormData } from './schema'
 import { superValidate } from 'sveltekit-superforms/server'
+import { zod } from 'sveltekit-superforms/adapters'
+import { FormData } from './schema'
 
 
 // Data
@@ -10,7 +11,7 @@ export const load: PageServerLoad = async ({
 	request,
 	fetch,
 }) => {
-	const formData = await superValidate(request, FormData)
+	const formData = await superValidate(request, zod(FormData))
 
 	const serviceAccounts = await fetch(`/api/service_account`)
 		.then(response => response.json())
@@ -30,7 +31,7 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const formData = await superValidate(request, FormData)
+		const formData = await superValidate(request, zod(FormData))
 
 		if (!formData.valid) {
 			return fail(400, { formData })
