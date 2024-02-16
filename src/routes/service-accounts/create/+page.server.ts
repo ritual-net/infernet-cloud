@@ -21,7 +21,6 @@ export const actions: Actions = {
 	default: async ({
 		request,
 		fetch,
-		locals,
 	}) => {
 		const formData = await superValidate(request, zod(FormData))
 
@@ -29,12 +28,9 @@ export const actions: Actions = {
 			return fail(400, { formData })
 		}
 
-		const { userId } = locals.getSession()
-
 		const result = await fetch('/api/service_account', {
 			method: 'POST',
 			body: JSON.stringify({
-				user: userId,
 				...formData.data,
 			}),
 		})
