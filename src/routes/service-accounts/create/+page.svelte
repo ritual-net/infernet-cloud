@@ -163,12 +163,12 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Install the <a href="https://aws.amazon.com/cli/" target="_blank"><code>aws</code> CLI</a>.
+												Install the <a href="https://aws.amazon.com/cli" target="_blank"><code>aws</code> CLI</a>.
 											</span>
 
 											<a
 												class="button small"
-												href="https://cloud.google.com/sdk/gcloud/"
+												href="https://aws.amazon.com/cli"
 												target="_blank"
 											>
 												Install CLI
