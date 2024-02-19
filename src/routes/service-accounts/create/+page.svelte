@@ -152,6 +152,119 @@
 
 				{:else if item.id === Fieldset.CloudProviderConfig}
 					<div class="card column">
+						<section class="column">
+							<h3>
+								Instructions
+							</h3>
+
+							{#if $form.provider === 'AWS'}
+								<ol class="column">
+									<li>
+										<p class="row wrap">
+											<span>
+												Install the <a href="https://aws.amazon.com/cli/" target="_blank"><code>aws</code> CLI</a>.
+											</span>
+
+											<a
+												href="https://cloud.google.com/sdk/gcloud/"
+												target="_blank"
+											>
+												<button
+													type="button"
+													class="small"
+												>Install CLI</button>
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p class="row wrap">
+											<span>
+												Download and run the following script in a terminal to create an IAM user:
+											</span>
+
+											<a
+												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/aws/create_service_account.sh"
+												target="_blank"
+												download
+											>
+												<button
+													type="button"
+													class="primary small"
+												>Download Script</button>
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p>Paste the JSON output below (everything after "Service account details:").</p>
+									</li>
+								</ol>
+
+							{:else if $form.provider === 'GCP'}
+								<ol class="column">
+									<li>
+										<p class="row wrap">
+											<span>
+												Install the <a href="https://cloud.google.com/sdk/docs/install" target="_blank"><code>gcloud</code> CLI</a>.
+											</span>
+
+											<a
+												href="https://cloud.google.com/sdk/docs/install"
+												target="_blank"
+											>
+												<button
+													type="button"
+													class="small"
+												>Install CLI</button>
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p class="row wrap">
+											<span>
+												Create a Project and <a href="https://support.google.com/googleapi/answer/7014113" target="_blank">copy its Project ID</a>.
+											</span>
+
+											<a
+												href="https://support.google.com/googleapi/answer/7014113"
+												target="_blank"
+											>
+												<button
+													type="button"
+													class="small"
+												>Locate Project ID</button>
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p class="row wrap">
+											<span>
+												Download and run the following script in a terminal to create a Service Account:
+											</span>
+
+											<a
+												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/gcp/create_service_account.sh"
+												target="_blank"
+												download
+											>
+												<button
+													type="button"
+													class="primary small"
+												>Download Script</button>
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p>Paste the JSON output below (everything after "Service account details:").</p>
+									</li>
+								</ol>
+							{/if}
+						</section>
+
 						<section class="column wrap">
 							<div class="column inline">
 								<h3>
@@ -163,13 +276,13 @@
 								<p></p>
 							</div>
 
-							<Tabs
-								value={0}
+							<!-- <Tabs
+								value={1}
 								items={[
-									{
-										id: 0,
-										label: 'Enter Manually',
-									},
+									// {
+									// 	id: 0,
+									// 	label: 'Enter Manually',
+									// },
 									{
 										id: 1,
 										label: 'Use JSON',
@@ -179,7 +292,7 @@
 								<svelte:fragment slot="content"
 									let:item
 								>
-									{#if item.id === 0}
+									{#if item.id === 0} -->
 										<!-- {#if 'project_id' in $form.credentials}
 											<fieldset>
 												<section class="row wrap">
@@ -205,7 +318,7 @@
 
 										{/if} -->
 
-									{:else}
+									<!-- {:else} -->
 										<div class="stack">
 											<textarea
 												name="credentials"
@@ -221,10 +334,10 @@
 														'\t'
 													)
 												}
-												value={JSON.stringify($form.credentials)}
-												on:input={() => {
+												value={Object.entries($form.credentials).length ? JSON.stringify($form.credentials) : ''}
+												on:input={(e) => {
 													try {
-														$form.credentials = JSON.parse($form.credentials)
+														$form.credentials = JSON.parse(e.target.value)
 													}catch(e){
 
 													}
@@ -248,9 +361,9 @@
 												}}
 											>Paste from clipboard</button>
 										</div>
-									{/if}
+									<!-- {/if}
 								</svelte:fragment>
-							</Tabs>
+							</Tabs> -->
 						</section>
 					</div>
 

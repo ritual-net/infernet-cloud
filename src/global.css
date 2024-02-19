@@ -3,6 +3,7 @@
 	--fontFamily-display: 'Izoard', sans-serif;
 
 	--color-ritualBlack: #000;
+	--color-ritualGreen: #40FFAF;
 	
 	--textColor: var(--color-ritualBlack);
 
@@ -78,8 +79,20 @@ p {
 a {
 	transition: 0.2s color;
 
-	&:hover {
+	/* &:hover {
 		color: #000;
+	} */
+
+	p & {
+		text-decoration: underline;
+	}
+}
+
+ol, ul {
+	padding-inline-start: 1.5em;
+
+	& > li {
+		padding-inline-start: 0.25em;
 	}
 }
 
