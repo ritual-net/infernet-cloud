@@ -15,11 +15,10 @@
 		<h2>Service Accounts</h2>
 
 		{#if serviceAccounts.length}
-			<a href="/service-accounts/create">
-				<button class="primary">
-					Connect Service Account
-				</button>
-			</a>
+			<a
+				class="button primary"
+				href="/service-accounts/create"
+			>Connect Service Account</a>
 		{/if}
 	</header>
 
@@ -31,10 +30,11 @@
 		<div class="card column">
 			<p>You have not connected any service accounts.</p>
 
-			<a href="/service-accounts/create">
-				<button class="primary">
-					Connect
-				</button>
+			<a
+				class="button primary"
+				href="/service-accounts/create"
+			>
+				Connect
 			</a>
 		</div>
 	{/if}

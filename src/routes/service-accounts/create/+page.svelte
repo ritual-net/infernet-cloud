@@ -133,10 +133,11 @@
 					</div>
 
 					<footer class="row">
-						<a href=".">
-							<button type="button">
-								Cancel
-							</button>
+						<a
+							class="button"
+							href="."
+						>
+							Cancel
 						</a>
 				
 						<div class="row">
@@ -166,13 +167,11 @@
 											</span>
 
 											<a
+												class="button small"
 												href="https://cloud.google.com/sdk/gcloud/"
 												target="_blank"
 											>
-												<button
-													type="button"
-													class="small"
-												>Install CLI</button>
+												Install CLI
 											</a>
 										</p>
 									</li>
@@ -184,14 +183,12 @@
 											</span>
 
 											<a
+												class="button small"
 												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/aws/create_service_account.sh"
 												target="_blank"
 												download
 											>
-												<button
-													type="button"
-													class="primary small"
-												>Download Script</button>
+												Download Script
 											</a>
 										</p>
 									</li>
@@ -210,13 +207,11 @@
 											</span>
 
 											<a
+												class="button small"
 												href="https://cloud.google.com/sdk/docs/install"
 												target="_blank"
 											>
-												<button
-													type="button"
-													class="small"
-												>Install CLI</button>
+												Install CLI
 											</a>
 										</p>
 									</li>
@@ -228,13 +223,12 @@
 											</span>
 
 											<a
+												class="button small"
 												href="https://support.google.com/googleapi/answer/7014113"
 												target="_blank"
+												download
 											>
-												<button
-													type="button"
-													class="small"
-												>Locate Project ID</button>
+												Locate Project ID
 											</a>
 										</p>
 									</li>
@@ -246,14 +240,12 @@
 											</span>
 
 											<a
+												class="button small"
 												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/gcp/create_service_account.sh"
 												target="_blank"
 												download
 											>
-												<button
-													type="button"
-													class="primary small"
-												>Download Script</button>
+												Download Script
 											</a>
 										</p>
 									</li>

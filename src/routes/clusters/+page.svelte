@@ -44,10 +44,11 @@
 		<div class="card column">
 			<p>You have not created any clusters.</p>
 
-			<a href="/clusters/create">
-				<button class="primary">
-					Create Cluster
-				</button>
+			<a
+				class="button primary"
+				href="/clusters/create"
+			>
+				Create Cluster
 			</a>
 		</div>
 	{/if}

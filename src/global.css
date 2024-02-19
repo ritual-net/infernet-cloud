@@ -83,7 +83,7 @@ a {
 		color: #000;
 	} */
 
-	p & {
+	p &:not(.button) {
 		text-decoration: underline;
 	}
 }
@@ -168,7 +168,7 @@ textarea {
 }
 
 
-button {
+button, .button {
 	--button-paddingX: 1em;
 	--button-paddingY: 0.5em;
 	--button-backgroundColor: var(--button-default-backgroundColor);

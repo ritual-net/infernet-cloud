@@ -394,10 +394,11 @@
 					</div>
 
 					<footer class="row">
-						<a href="/clusters">
-							<button type="button">
-								Cancel
-							</button>
+						<a
+							class="button"
+							href="/clusters"
+						>
+							Cancel
 						</a>
 
 						<button
