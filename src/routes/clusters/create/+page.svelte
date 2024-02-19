@@ -542,25 +542,25 @@
 											class="code"
 										/>
 									</section>
-
-									<section class="row wrap">
-										<div class="column inline">
-											<h3 class="row inline">
-												<label for="private_key">
-													Forward Stats?
-												</label>
-											</h3>
-
-											<p>If checked, register this node to be shown publicly on the Infernet explorer.</p>
-										</div>
-
-										<Switch
-											bind:checked={node.forward_stats}
-											labelText="Forward Stats?"
-										/>
-									</section>
 								</fieldset>
 							</Collapsible>
+
+							<section class="row wrap">
+								<div class="column inline">
+									<h3 class="row inline">
+										<label for="private_key">
+											Forward Stats?
+										</label>
+									</h3>
+
+									<p>If checked, register this node to be shown publicly on the Infernet explorer.</p>
+								</div>
+
+								<Switch
+									bind:checked={node.forward_stats}
+									labelText="Forward Stats?"
+								/>
+							</section>
 
 							<section class="column">
 								<div class="row">
