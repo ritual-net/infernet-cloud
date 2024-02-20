@@ -203,7 +203,39 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Install the <a href="https://cloud.google.com/sdk/docs/install" target="_blank"><code>gcloud</code> CLI</a>.
+												Sign into <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a> and <a href="https://support.google.com/googleapi/answer/6251787?ref_topic=7014522&sjid=9306585338551455963-NC#zippy=%2Ccreate-a-project" target="_blank">create a new Project</a>.
+											</span>
+
+											<a
+												class="button small"
+												href="https://console.cloud.google.com"
+												target="_blank"
+											>
+												Go to Google Cloud Console
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p class="row wrap">
+											<span>
+												Enable the <a href="https://console.cloud.google.com/apis/library/compute.googleapis.com" target="_blank">Compute Engine API</a> for your Project.
+											</span>
+
+											<a
+												class="button small"
+												href="https://console.cloud.google.com/apis/library/compute.googleapis.com"
+												target="_blank"
+											>
+												Enable Compute Engine API
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p class="row wrap">
+											<span>
+												Install the <a href="https://cloud.google.com/sdk/docs/install" target="_blank"><code>gcloud</code> CLI</a> on your local machine.
 											</span>
 
 											<a
@@ -219,7 +251,7 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Create a Project and <a href="https://support.google.com/googleapi/answer/7014113" target="_blank">copy its Project ID</a>.
+												Locate your Project's <a href="https://support.google.com/googleapi/answer/7014113" target="_blank">Project ID</a> for the next step.
 											</span>
 
 											<a
@@ -236,7 +268,7 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Download and run the following script in a terminal to create a Service Account:
+												Download and run the following script in a terminal to create a Service Account User:
 											</span>
 
 											<a
@@ -251,7 +283,7 @@
 									</li>
 
 									<li>
-										<p>Paste the JSON output below (everything after "Service account details:").</p>
+										<p>A key file will be generated for the Service Account User. Paste its contents below (JSON object under "Service account details")</p>
 									</li>
 								</ol>
 							{/if}
@@ -261,7 +293,11 @@
 							<div class="column inline">
 								<h3>
 									<label for="credentials">
-										Credentials
+										{#if $form.provider === 'GCP'}
+											Key File
+										{:else if $form.provider === 'AWS'}
+											Credentials
+										{/if}
 									</label>
 								</h3>
 
