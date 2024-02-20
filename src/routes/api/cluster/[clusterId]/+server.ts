@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
  *
  * @param locals - The locals object contains the client.
  * @param params - The parameters object, expected to contain 'clusterId'.
- * @param request - The request object can contain the following updateable fields:
+ * @param request - The request body can contain the following updateable fields:
  * 					- name: string
  * 					- deploy_router: boolean
  * 					- ip_allow_http: string
@@ -36,14 +36,13 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
  */
 export const PATCH: RequestHandler = async ({ locals: { client }, params, request }) => {
 	const id = params.clusterId;
-
 	if (!id) {
 		return error(400, 'Cluster id is required');
 	}
 
-	const data = await request.json();
-	if (!data || data.length === 0) {
-		return error(400, 'At least one field is required');
+	const body = await request.json();
+	if (!body) {
+		return error(400, 'Body is required');
 	}
 
 	// Update cluster
@@ -51,10 +50,10 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 		.update(e.Cluster, (c) => ({
 			set: {
 				// Updateable fields, default to current value if not provided
-				name: e.op(data.name, '??', c.name),
-				deploy_router: e.op(data.deploy_router, '??', c.deploy_router),
-				...(data?.ip_allow_http && { ip_allow_http: data.ip_allow_http }),
-				...(data?.ip_allow_https && { ip_allow_https: data.ip_allow_https }),
+				name: e.op(body.name, '??', c.name),
+				deploy_router: e.op(body.deploy_router, '??', c.deploy_router),
+				...(body?.ip_allow_http && { ip_allow_http: body.ip_allow_http }),
+				...(body?.ip_allow_https && { ip_allow_https: body.ip_allow_https }),
 			},
 			filter_single: { id },
 		}))
