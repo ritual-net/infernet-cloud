@@ -1,4 +1,6 @@
 import e, { createClient as createEdgedbClient } from '$schema/edgeql-js';
+import { env } from '$env/dynamic/private';
+
 export { e };
 
 export const ClusterTypeByProvider = {
@@ -19,16 +21,22 @@ export const ServiceAccountTypeByProvider = {
 /**
  * Create an Edgedb client. If the environment is production, use the
  * production settings. Otherwise, use the local project settings.
- * 
+ *
  * @returns The Edgedb client
  */
 export const createClient = () => {
-	if (process.env.NODE_ENV === 'production') {
+	if (env.NODE_ENV === 'production') {
 		return createEdgedbClient({
-			dsn: process.env.EDGEDB_DSN,
+			dsn: env.EDGEDB_DSN,
+			/**
+			 * The `tlsSecurity` option is set to 'insecure' because the
+			 * production Edgedb server uses a self-signed certificate. This is
+			 * acceptable because the db server is only accessible from the
+			 * internal network, and not exposed to the public internet.
+			 */
 			tlsSecurity: 'insecure',
 		});
 	} else {
 		return createEdgedbClient();
 	}
-}
+};

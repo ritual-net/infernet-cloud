@@ -1,8 +1,8 @@
-version: "3"
+version: '3'
 
 services:
-  infernet-cloud:
-    container_name: infernet-cloud
+  server:
+    container_name: server
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,12 +27,12 @@ services:
       EDGEDB_SERVER_BINARY_ENDPOINT_SECURITY: optional # For auth server TLS
       EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
     volumes:
-      - "./dbschema:/dbschema"
-      - "edgedb-data:/var/lib/edgedb/data"
+      - './dbschema:/dbschema'
+      - 'edgedb-data:/var/lib/edgedb/data'
     expose:
-      - "5656"
+      - '5656'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://edgedb:5656/server/status/ready"]
+      test: ['CMD', 'curl', '-f', 'http://edgedb:5656/server/status/ready']
       interval: 10s
       timeout: 10s
       retries: 5
@@ -46,9 +46,9 @@ services:
       SMARTHOST_PORT: 587
       SMARTHOST_USER: apikey
       SMARTHOST_PASSWORD: ${SENDGRID_KEY}
-      SMARTHOST_ALIASES: "*.sendgrid.net"
+      SMARTHOST_ALIASES: '*.sendgrid.net'
     expose:
-      - "25"
+      - '25'
 
 volumes:
   edgedb-data:

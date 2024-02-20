@@ -39,7 +39,7 @@ edgedb instance destroy -I "infernet_cloud" --force
 
 ## Run from Source
 
-***Recommended for development, debugging, and testing***.
+**_Recommended for development, debugging, and testing_**.
 
 First, follow the [local DB setup instructions](#setup-local-db).
 
@@ -81,7 +81,7 @@ node build
 
 ## Run with Docker
 
-***Recommended for production***.
+**_Recommended for production_**.
 
 #### Setup
 
@@ -92,6 +92,7 @@ cp .env.docker.example .env
 ```
 
 You **should (only) modify** the following variables:
+
 - `EDGEDB_SERVER_PASSWORD`: The admin password for EdgeDB
 - `ORIGIN`: The origin (host) from which the server should expect requests (i.e. the origin of the client). If this does not match the `Origin` header in your HTTP requests, you will get a [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) error.
 - `SENDGRID_KEY`: Your SendGrid API Key, used to authenticate the SendGrid relay.
@@ -102,6 +103,7 @@ You **should (only) modify** the following variables:
 The `auth.edgeql` performs the initial setup of the EdgeDB Auth server. You should configure it by modifying its values directly, following the guide's [instructions](https://www.edgedb.com/docs/guides/auth/index).
 
 Most importantly, you **must**:
+
 - Set a unique `auth_signing_key`.
 - Decide whether to require email verification (set `require_verification` to `true`).
 - Modify the SMTP Configuration to your preferred provider, for sending verification emails.
