@@ -584,6 +584,7 @@
 											if (result.type === 'loaded' && result.status === 200) {
 												pushState(href, {
 													showContainerForm: 'create',
+													nodeId: node.id,
 													containerFormData: result.data,
 												})
 											} else {
@@ -600,7 +601,7 @@
 								</div>
 
 								<NodeContainersTable
-									containers={node.containers}
+									bind:containers={node.containers}
 									onEdit={async container => {
 										const href = `/clusters/create/container`
 
@@ -617,6 +618,7 @@
 										if (result.type === 'loaded' && result.status === 200) {
 											pushState(href, {
 												showContainerForm: 'edit',
+												nodeId: node.id,
 												containerId: container.container_id,
 												containerFormData: result.data,
 											})
@@ -629,7 +631,7 @@
 
 								<Dialog
 									title={`Customize container`}
-									open={Boolean($page.state.showContainerForm)}
+									open={Boolean($page.state.showContainerForm) && $page.state.nodeId === node.id}
 									onClose={() => {
 										history.back()
 									}}
@@ -657,8 +659,8 @@
 														node.containers[
 															node.containers.findIndex(container => container.container_id === $page.state.containerId)
 														] = container
-
 														node.containers = node.containers
+
 														history.back()
 													},
 												}

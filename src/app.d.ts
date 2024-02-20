@@ -17,6 +17,8 @@ declare global {
 
 		interface PageState {
 			showContainerForm?: 'create' | 'edit',
+			nodeId: string,
+			containerId: string,
 			containerFormData?: ContainerForm['$$prop_def']['data'],
 		}
 
