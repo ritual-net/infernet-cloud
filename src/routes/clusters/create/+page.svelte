@@ -8,22 +8,25 @@
 	}
 
 
-	// Data
-	import { Node } from './schema'
+	// Schema
+	import { Node, FormData } from './schema'
 
 
 	// Context
 	import type { PageData } from './$types'
+	import { page } from '$app/stores'
 
 	const {
 		formData,
 		serviceAccounts,
+		images,
 	} = $page.data as PageData
 
 
 	// Internal state
-	import { page } from '$app/stores'
+
 	import { superForm } from 'sveltekit-superforms/client'
+	import { zodClient } from 'sveltekit-superforms/adapters'
 
 	const {
 		form,
@@ -33,6 +36,7 @@
 		submitting,
 	} = superForm(formData, {
 		dataType: 'json',
+		validators: zodClient(FormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')

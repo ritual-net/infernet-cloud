@@ -23,8 +23,13 @@
 	let configurations = []
 
 
+	// Schema
+	import { FormData } from './schema'
+
+
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
+	import { zodClient } from 'sveltekit-superforms/adapters'
 
 	const {
 		form,
@@ -34,19 +39,21 @@
 		submitting,
 	} = superForm(formData, {
 		dataType: 'json',
+		validators: zodClient(FormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
 		},
 
-		// onSubmit: (e) => {
-		// 	console.log({e, $form})
+		onSubmit: (e) => {
+			console.log({e, $form})
 
-		// 	$form.container.container_id = crypto.randomUUID()
+			if(mode === 'create')
+				$form.container.container_id = crypto.randomUUID()
 
-		// 	onSubmit?.($form)
-		// },
+			onSubmit?.($form)
+		},
 	})
 
 	let allowIps: 'all' | 'restricted' = 'all'
@@ -75,14 +82,8 @@
 
 <form
 	class="column"
-	on:submit|preventDefault={e => {
-		console.log({e, $form})
-
-		if(mode === 'create')
-			$form.container.container_id = crypto.randomUUID()
-
-		onSubmit?.($form)
-	}}
+	method="POST"
+	use:enhance
 >
 	{#if placement === 'standalone'}
 		<header>

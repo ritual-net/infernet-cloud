@@ -24,8 +24,13 @@
 	import { goto } from '$app/navigation'
 
 
+	// Schema
+	import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
+
+
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
+	import { zodClient } from 'sveltekit-superforms/adapters'
 
 	const {
 		formId: signUpFormId,
@@ -36,6 +41,8 @@
 		submitting: signUpSubmitting,
 	} = superForm(signUpFormData, {
 		dataType: 'json',
+		validators: zodClient(SignUpFormData),
+
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
@@ -54,8 +61,9 @@
 		submitting: signInSubmitting,
 	} = superForm(signInFormData, {
 		dataType: 'json',
+		validators: zodClient(SignInFormData),
+
 		onResult: ({ result }) => {
-			console.log({result})
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
 
@@ -73,6 +81,8 @@
 		submitting: resetPasswordSubmitting,
 	} = superForm(resetPasswordFormData, {
 		dataType: 'json',
+		validators: zodClient(ResetPasswordFormData),
+
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
