@@ -1,11 +1,10 @@
-import type { Load } from '@sveltejs/kit'
-import { resolveRoute } from '$app/paths'
+import type { PageServerLoad } from './$types'
 
-export const load: Load = async ({
+export const load: PageServerLoad = async ({
 	fetch,
 }) => ({
 	clusters: (
-		await fetch(resolveRoute(`/api/cluster`, {}))
+		await fetch(`/api/cluster`)
 			.then(r => r.json())
 	),
 })
