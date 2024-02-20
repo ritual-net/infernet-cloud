@@ -3,7 +3,7 @@ import path from 'path';
 import tar from 'tar';
 import type { InfernetNode } from '$schema/interfaces';
 
-const BASE_TEMP_DIR = `${process.cwd()}/tmp`;
+const BASE_TEMP_DIR = `${process.cwd()}/tmp/`;
 
 // Touch temporary directory to ensure it exists
 await fs.mkdir(BASE_TEMP_DIR, { recursive: true });

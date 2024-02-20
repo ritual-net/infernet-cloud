@@ -1,6 +1,5 @@
-import { createClient } from 'edgedb';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { e } from '$/lib/db';
+import { createClient, e } from '$/lib/db';
 import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
 
 /**
