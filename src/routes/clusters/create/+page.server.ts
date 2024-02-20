@@ -12,17 +12,21 @@ import type { QueriedServiceAccount } from '$/routes/api/service_account/+server
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({
+	parent,
 	request,
 	fetch,
 }) => {
-	const formData = await superValidate(request, zod(FormData))
+	const data = await parent()
 
 	const serviceAccounts = await fetch(`/api/service_account`)
 		.then<QueriedServiceAccount[]>(response => response.json())
 
+	const formData = await superValidate(request, zod(FormData))
+
 	return {
-		formData,
+		images: data.images,
 		serviceAccounts,
+		formData,
 	}
 }
 

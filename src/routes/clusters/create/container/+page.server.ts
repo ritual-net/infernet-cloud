@@ -8,11 +8,15 @@ import { FormData } from './schema'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({
+	parent,
 	request,
 }) => {
+	const data = await parent()
+
 	const formData = await superValidate(request, zod(FormData))
 		
 	return {
+		images: data.images,
 		formData,
 	}
 }

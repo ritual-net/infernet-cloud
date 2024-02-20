@@ -612,6 +612,7 @@
 												formData: {
 													container,
 												},
+												images,
 											},
 										}
 

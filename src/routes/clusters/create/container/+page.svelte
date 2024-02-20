@@ -3,6 +3,7 @@
 	export let data
 	const {
 		formData,
+		images,
 	} = data
 
 	// (View options)
@@ -139,12 +140,10 @@
 				name="image"
 				labelText="Service Account"
 				bind:value={$form.container.image}
-				items={[
-					{
-						value: 'ritualnet/llm-inference:0.0.1',
-						label: 'ritualnet/llm-inference:0.0.1',
-					}
-				]}
+				items={images.map(image => ({
+					value: image,
+					label: image,
+				}))}
 			/>
 		</section>
 
