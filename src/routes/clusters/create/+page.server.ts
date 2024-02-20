@@ -13,7 +13,6 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({
 	parent,
-	request,
 	fetch,
 }) => {
 	const data = await parent()
@@ -21,7 +20,7 @@ export const load: PageServerLoad = async ({
 	const serviceAccounts = await fetch(`/api/service_account`)
 		.then<QueriedServiceAccount[]>(response => response.json())
 
-	const formData = await superValidate(request, zod(FormData))
+	const formData = await superValidate(zod(FormData))
 
 	return {
 		images: data.images,

@@ -9,11 +9,10 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({
 	parent,
-	request,
 }) => {
 	const data = await parent()
 
-	const formData = await superValidate(request, zod(FormData))
+	const formData = await superValidate(zod(FormData))
 		
 	return {
 		images: data.images,
