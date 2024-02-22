@@ -51,7 +51,7 @@ export const actions: Actions = {
 			})
 
 		if(response.status === 204)
-			return redirect(301, '/clusters')
+			return redirect(301, '/accounts')
 
 		return {
 			signUpFormData,
