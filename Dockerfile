@@ -2,20 +2,21 @@ FROM node:18-alpine AS base
 
 FROM base AS deps
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Clean install all modules
-RUN npm ci
+RUN npm install -g pnpm
+RUN pnpm i
 
 FROM deps AS builder
 COPY . .
 COPY .env.docker.example .env
 
 # Build SvelteKit app
-RUN npm run build
+RUN pnpm build
 
 # Remove dev dependencies
-RUN npm prune --production
+RUN pnpm prune
 
 FROM base AS runtime
 WORKDIR /app
