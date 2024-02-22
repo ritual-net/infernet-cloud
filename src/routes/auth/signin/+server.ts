@@ -8,7 +8,11 @@ import { EDGEDB_AUTH_BASE_URL, generatePKCE } from '$/lib/auth';
  * @param request - The request object containing 'email', 'password', and 'provider'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ fetch, request }) => {
+export const POST: RequestHandler = async ({
+	fetch,
+	request,
+	cookies,
+}) => {
 	const pkce = generatePKCE();
 	const { email, password, provider } = (await request.json()) as {
 		email: string;
@@ -66,10 +70,20 @@ export const POST: RequestHandler = async ({ fetch, request }) => {
 		}
 	}
 
-	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
-	const headers = new Headers({
-		'Set-Cookie': `edgedb-auth-token=${auth_token}; HttpOnly; Path=/; Secure; SameSite=Strict`,
-	});
+	const result = await tokenResponse.text();
 
-	return new Response(null, { status: 204, headers });
+	try {
+		const { auth_token } = JSON.parse(result) as { auth_token: string };
+
+		cookies.set('edgedb-auth-token', auth_token, {
+			httpOnly: true,
+			path: '/',
+			secure: true,
+			sameSite: 'strict'
+		});
+
+		return new Response(null, { status: 204 });
+	}catch(e){
+		return error(500, `Error from the auth server: ${result}`);
+	}
 };

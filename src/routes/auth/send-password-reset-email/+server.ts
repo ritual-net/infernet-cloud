@@ -8,7 +8,11 @@ import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
  * @param request - The request object containing 'email'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ fetch, request }) => {
+export const POST: RequestHandler = async ({
+	fetch,
+	request,
+	cookies,
+}) => {
 	const { email } = (await request.json()) as { email: string };
 
 	// TODO: Needs to change
@@ -42,12 +46,12 @@ export const POST: RequestHandler = async ({ fetch, request }) => {
 
 	const { email_sent } = await sendResetResponse.json();
 
-	// Set cookies and other headers as needed
-	const headers = new Headers();
-	headers.append(
-		'Set-Cookie',
-		`edgedb-pkce-verifier=${pkce.verifier}; HttpOnly; Path=/; Secure; SameSite=Strict`
-	);
+	cookies.set('edgedb-pkce-verifier', pkce.verifier, {
+		httpOnly: true,
+		path: '/',
+		secure: true,
+		sameSite: 'strict'
+	});
 
-	return new Response(`Reset email sent to '${email_sent}'`, { headers });
+	return new Response(`Reset email sent to '${email_sent}'`);
 };
