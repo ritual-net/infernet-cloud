@@ -31,7 +31,9 @@ export const load: PageServerLoad = async ({
 
 
 // Actions
-import { type Actions, fail } from '@sveltejs/kit'
+import { type Actions, fail, redirect } from '@sveltejs/kit'
+import { invalidate } from '$app/navigation'
+import { resolveRoute } from '$app/paths'
 
 export const actions: Actions = {
 	default: async ({
@@ -49,14 +51,20 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		return response.ok
-			? {
-				formData,
-				result: await response.json(),
-			}
-			: fail(response.status, {
+		if(!response.ok)
+			fail(response.status, {
 				formData,
 				result: await response.json(),
 			})
+
+		invalidate('/clusters')
+
+		const result = await response.json()
+
+		// return {
+		// 	formData,
+		// 	result: await response.json(),
+		// }
+		return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }))
 	},
 }
