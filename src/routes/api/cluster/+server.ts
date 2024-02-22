@@ -2,7 +2,7 @@ import { error, json } from '@sveltejs/kit';
 import { ClusterTypeByProvider, e } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
 import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
-import { getServiceAccountById } from '$/lib/db/queries';
+import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
 import type { Cluster } from '$schema/interfaces';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -15,18 +15,7 @@ import type { RequestHandler } from '@sveltejs/kit';
  */
 export const GET: RequestHandler = async ({ locals: { client } }) => {
 	// Get all clusters for user
-	const result = await e
-		.select(e.Cluster, (cluster) => ({
-			service_account: {
-				id: true,
-				name: true,
-				provider: true,
-			},
-			id: true,
-			name: true,
-			node_count: e.count(cluster.nodes),
-		}))
-		.run(client);
+	const result = await getClustersForUser(client)
 
 	return json(result);
 };

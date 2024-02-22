@@ -151,3 +151,25 @@ export const getClusterByNodeIds = async (
 		.run(client);
 	return cluster as ProviderCluster | null;
 };
+
+/**
+ * Get clusters owned by user
+ *
+ * @returns Cluster array
+ */
+export const getClustersForUser = async (
+	client: Client
+) => (
+	await e
+		.select(e.Cluster, (cluster) => ({
+			service_account: {
+				id: true,
+				name: true,
+				provider: true,
+			},
+			id: true,
+			name: true,
+			node_count: e.count(cluster.nodes),
+		}))
+		.run(client)
+);
