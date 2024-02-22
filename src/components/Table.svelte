@@ -7,6 +7,8 @@
 	// Imports
 	export let data: Datum[]
 	export let columns: Parameters<Table<Datum>['column']>[0][]
+	export let contextMenu: ((_: Datum) => MenuItems<MenuItemValue>[]) | undefined
+	export let getRowLink: ((_: Datum) => string | undefined) | undefined
 
 
 	// Internal state
@@ -26,7 +28,14 @@
 
 
 	// Events
+	import { goto } from '$app/navigation'
+
 	export let onRowClick: ((_: Datum) => void) | undefined
+		= datum => {
+			const link = getRowLink?.(datum)
+			if(link)
+				goto(link)
+		}
 
 
 	// Components
@@ -60,6 +69,7 @@
 		<tbody {...$tableBodyAttrs}>
 			{#each $rows as row (getId?.(data[row.dataId]) ?? row.dataId)}
 				{@const datum = data[row.dataId]}
+				{@const link = getRowLink?.(data[row.dataId])}
 
 				<Subscribe
 					rowAttrs={row.attrs()} let:rowAttrs
@@ -74,14 +84,20 @@
 							transition:scale={{ opacity: 0, start: 0.8 }}
 							use:melt={trigger}
 							aria-label={labelText}
-							tabIndex={onRowClick ? 0 : undefined}
+							tabIndex={onRowClick || link ? 0 : undefined}
 							on:click={() => onRowClick?.(datum)}
 							on:keydown={e => ['Enter', 'Space'].includes(e.code) && onRowClick?.(datum)}
 						>
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<td {...attrs}>
-										<Render of={cell.render()} />
+										{#if link}
+											<a href={link}>
+												<Render of={cell.render()} />
+											</a>
+										{:else}
+											<Render of={cell.render()} />
+										{/if}
 									</td>
 								</Subscribe>
 							{/each}
