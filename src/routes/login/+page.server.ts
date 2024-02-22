@@ -26,7 +26,7 @@ export const load: ServerLoad = async ({
 
 
 // Actions
-import { type Actions, fail } from '@sveltejs/kit'
+import { type Actions, fail, redirect } from '@sveltejs/kit'
 
 export const actions: Actions = {
 	signUp: async ({
@@ -44,15 +44,18 @@ export const actions: Actions = {
 			body: JSON.stringify(signUpFormData.data),
 		})
 
-		return response.ok
-			? {
-				signUpFormData,
-				result: await response.json(),
-			}
-			: fail(response.status, {
+		if(!response.ok)
+			return fail(response.status, {
 				signUpFormData,
 				result: await response.json(),
 			})
+
+		if(response.status === 204)
+			return redirect(301, '/clusters')
+
+		return {
+			signUpFormData,
+		}
 	},
 
 	signIn: async ({
@@ -70,17 +73,19 @@ export const actions: Actions = {
 			body: JSON.stringify(signInFormData.data),
 		})
 
-		return response.ok
-			? {
-				signInFormData,
-				result: await response.json(),
-			}
-			: fail(response.status, {
+		if(!response.ok)
+			return fail(response.status, {
 				signInFormData,
 				result: await response.json(),
 			})
-	},
 
+		if(response.status === 204)
+			return redirect(301, '/clusters')
+
+		return {
+			signInFormData,
+		}
+	},
 
 	resetPassword: async ({
 		request,
@@ -97,14 +102,17 @@ export const actions: Actions = {
 			body: JSON.stringify(resetPasswordFormData.data),
 		})
 
-		return response.ok
-			? {
-				resetPasswordFormData,
-				result: await response.json(),
-			}
-			: fail(response.status, {
+		if(!response.ok)
+			return fail(response.status, {
 				resetPasswordFormData,
 				result: await response.json(),
 			})
+
+		if(response.status === 204)
+			return redirect(301, '/clusters')
+
+		return {
+			resetPasswordFormData,
+		}
 	},
 }
