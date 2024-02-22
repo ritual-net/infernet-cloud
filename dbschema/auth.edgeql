@@ -11,7 +11,7 @@ ext::auth::AuthConfig::allowed_redirect_urls := {
 
 CONFIGURE CURRENT DATABASE
 INSERT ext::auth::EmailPasswordProviderConfig {
-    require_verification := true,
+    require_verification := false,
 };
 
 # SMTP Configuration
