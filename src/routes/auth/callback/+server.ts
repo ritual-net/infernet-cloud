@@ -36,9 +36,14 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		method: 'GET',
 	});
 
-	if (!codeExchangeResponse.ok) {
-		const text = await codeExchangeResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!codeExchangeResponse.ok){
+		const result = await codeExchangeResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	const { auth_token } = await codeExchangeResponse.json();

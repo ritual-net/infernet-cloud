@@ -41,9 +41,14 @@ export const POST: RequestHandler = async ({ fetch, request }) => {
 		}),
 	});
 
-	if (!registerResponse.ok) {
-		const text = await registerResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!registerResponse.ok){
+		const result = await registerResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	// Get the identity from the auth server

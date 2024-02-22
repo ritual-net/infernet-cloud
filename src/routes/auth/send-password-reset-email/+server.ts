@@ -30,9 +30,14 @@ export const POST: RequestHandler = async ({ fetch, request }) => {
 		}),
 	});
 
-	if (!sendResetResponse.ok) {
-		const text = await sendResetResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!sendResetResponse.ok){
+		const result = await sendResetResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	const { email_sent } = await sendResetResponse.json();

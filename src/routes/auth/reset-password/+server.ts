@@ -44,9 +44,14 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		}),
 	});
 
-	if (!resetResponse.ok) {
-		const text = await resetResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!resetResponse.ok){
+		const result = await resetResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	const { code } = await resetResponse.json();
@@ -57,9 +62,14 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		method: 'get',
 	});
 
-	if (!tokenResponse.ok) {
-		const text = await tokenResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!tokenResponse.ok){
+		const result = await tokenResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	const { auth_token } = await tokenResponse.json();
