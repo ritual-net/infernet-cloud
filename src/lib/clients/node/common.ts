@@ -63,6 +63,10 @@ export const nodeAction = async (
 			});
 			return nodesInfo;
 
+		case NodeAction.restart:
+			await nodeClient.restartNodes(providerIds, functionArgs);
+			return;
+
 		default:
 			throw Error(`Action ${action} not supported`);
 	}

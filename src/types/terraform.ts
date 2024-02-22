@@ -19,6 +19,9 @@ export type TFState = {
 		router_ip?: {
 			value: string;
 		};
+		router_id?: {
+			value: string;
+		};
 	};
 	resources: object[];
 	check_results: boolean | null;

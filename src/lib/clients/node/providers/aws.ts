@@ -54,6 +54,16 @@ export class AWSNodeClient implements BaseNodeClient {
 	}
 
 	/**
+	 * Restart set of AWS infernet nodes.
+	 *
+	 * @param ids - List of node ids to restart
+	 */
+	async restartNodes(ids: string[]): Promise<void> {
+		await this.stopNodes(ids);
+		await this.startNodes(ids);
+	}
+
+	/**
 	 * Get status and ip of set of AWS infernet nodes.
 	 *
 	 * @param ids - List of node ids to get status and ip of
