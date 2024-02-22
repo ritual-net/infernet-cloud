@@ -173,7 +173,7 @@ module default {
       default := false;
     }
     tfstate: str;
-    router_ip: str;
+    router: tuple<id: str, ip: str>;
     error: str;
 
     required service_account: ServiceAccount {
