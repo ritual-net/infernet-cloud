@@ -24,9 +24,12 @@ const getServiceAccounts = async (client: Client) => (
 export type QueriedServiceAccount = Awaited<ReturnType<typeof getServiceAccounts>>[number]
 
 export const GET: RequestHandler = async ({ locals: { client } }) => {
-	const result = await getServiceAccounts(client);
-
-	return json(result);
+	try {
+		const serviceAccounts = await getServiceAccounts(client);
+		return json(serviceAccounts);
+	} catch (err) {
+		return error(400, `Error getting service accounts: ${(err as Error).message}`);
+	}
 };
 
 /**
