@@ -102,11 +102,21 @@ export const actions: Actions = {
 			body: JSON.stringify(resetPasswordFormData.data),
 		})
 
-		if(!response.ok)
-			return fail(response.status, {
-				resetPasswordFormData,
-				result: await response.json(),
-			})
+		if(!response.ok){
+			const result = await response.text()
+			
+			try {
+				return fail(response.status, {
+					resetPasswordFormData,
+					result: JSON.parse(result),
+				})
+			}catch(e){
+				return fail(response.status, {
+					resetPasswordFormData,
+					result: result,
+				})
+			}
+		}
 
 		if(response.status === 204)
 			return redirect(301, '/clusters')
