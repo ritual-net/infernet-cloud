@@ -8,8 +8,11 @@ import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 import type { ServerLoad } from '@sveltejs/kit'
 
 export const load: ServerLoad = async ({
-	locals,
+	locals: { user },
 }) => {
+	if(user)
+		redirect(303, '/clusters')
+
 	const signUpFormData = await superValidate(zod(SignUpFormData))
 	const signInFormData = await superValidate(zod(SignInFormData))
 	const resetPasswordFormData = await superValidate(zod(ResetPasswordFormData))
@@ -18,7 +21,6 @@ export const load: ServerLoad = async ({
 		signUpFormData,
 		signInFormData,
 		resetPasswordFormData,
-		isSignedIn: locals.isSignedIn,
 	}
 }
 

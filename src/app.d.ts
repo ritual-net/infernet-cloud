@@ -1,5 +1,6 @@
 import type { Client } from 'edgedb'
 
+import type { User } from '$schema/interfaces'
 import type ContainerForm from '$/routes/clusters/create/container/+page.svelte'
 
 // See https://kit.svelte.dev/docs/types#app
@@ -10,7 +11,7 @@ declare global {
 
 		interface Locals {
 			client: Client;
-			isSignedIn: boolean;
+			user: User;
 		}
 
 		// interface PageData {}

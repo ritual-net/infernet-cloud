@@ -2,10 +2,6 @@
 	// Context
 	import { page } from '$app/stores'
 
-	import { getContext } from 'svelte'
-
-	const isSignedIn = getContext<SvelteStore<boolean>>('isSignedIn')
-
 
 	// Internal state
 	let navItems: {
@@ -22,9 +18,9 @@
 			href: '/clusters',
 			label: 'Clusters',
 		},
-		$isSignedIn ? {
-			href: '/login',
-			label: 'Sign out',
+		$page.data.user ? {
+			href: '/account',
+			label: $page.data.user.name || $page.data.user.email,
 		} : {
 			href: '/login',
 			label: 'Login',

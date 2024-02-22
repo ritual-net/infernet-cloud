@@ -21,7 +21,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	// Extract token from cookie
 	const token = event.cookies.get('edgedb-auth-token')
-	event.locals.isSignedIn = Boolean(token)
+
 	// if (!token) {
 	// 	return error(
 	// 		400,

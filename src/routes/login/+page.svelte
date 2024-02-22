@@ -4,7 +4,6 @@
 		SignUp = '?/signUp',
 		SignIn = '?/signIn',
 		ResetPassword = '?/resetPassword',
-		SignOut = '?/signOut',
 	}
 
 
@@ -47,7 +46,7 @@
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
 
-			if(result)
+			else if(result)
 				goto('/clusters')
 		},
 	})
@@ -67,7 +66,7 @@
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
 
-			if(result)
+			else if(result)
 				goto('/clusters')
 		},
 	})
@@ -101,170 +100,154 @@
 
 
 <div class="container">
-	{#if !$page.data.isSignedIn}
-		<Tabs
-			bind:value={currentForm}
-			items={[
-				{
-					id: FormAction.SignUp,
-					label: 'Sign Up',
-				},
-				{
-					id: FormAction.SignIn,
-					label: 'Log In',
-				},
-				{
-					id: FormAction.ResetPassword,
-					label: 'Reset Password',
-				},
-			]}
+	<Tabs
+		bind:value={currentForm}
+		items={[
+			{
+				id: FormAction.SignUp,
+				label: 'Sign Up',
+			},
+			{
+				id: FormAction.SignIn,
+				label: 'Log In',
+			},
+			{
+				id: FormAction.ResetPassword,
+				label: 'Reset Password',
+			},
+		]}
+	>
+		<svelte:fragment slot="content"
+			let:item
 		>
-			<svelte:fragment slot="content"
-				let:item
-			>
-				{#if item.id === FormAction.SignUp}
-					<form
-						method="POST"
-						use:signUpEnhance
-						action={FormAction.SignUp}
-						class="card column"
-						on:submit={() => {
+			{#if item.id === FormAction.SignUp}
+				<form
+					method="POST"
+					use:signUpEnhance
+					action={FormAction.SignUp}
+					class="card column"
+				>
+					<input
+						type="hidden"
+						name="__superform_id"
+						bind:value={$signUpFormId}
+					/>
 
-						}}
-					>
-						<input
-							type="hidden"
-							name="__superform_id"
-							bind:value={$signUpFormId}
-						/>
+					<div class="column inline">
+						<h3>Create account</h3>
+						<p>Set up your Infernet Cloud account to get started.</p>
+					</div>
 
-						<div class="column inline">
-							<h3>Create account</h3>
-							<p>Set up your Infernet Cloud account to get started.</p>
-						</div>
+					<input
+						type="text"
+						name="name"
+						placeholder="Name"
+						bind:value={$signUpForm.name}
+						{...$signUpConstraints.name}
+					/>
 
-						<input
-							type="text"
-							name="name"
-							placeholder="Name"
-							bind:value={$signUpForm.name}
-							{...$signUpConstraints.name}
-						/>
+					<input
+						type="email"
+						name="email"
+						placeholder="Email address"
+						bind:value={email}
+						{...$signUpConstraints.email}
+					/>
 
-						<input
-							type="email"
-							name="email"
-							placeholder="Email address"
-							bind:value={email}
-							{...$signUpConstraints.email}
-						/>
+					<input
+						type="password"
+						name="password"
+						placeholder="Password"
+						bind:value={$signUpForm.password}
+						{...$signUpConstraints.password}
+					/>
 
-						<input
-							type="password"
-							name="password"
-							placeholder="Password"
-							bind:value={$signUpForm.password}
-							{...$signUpConstraints.password}
-						/>
+					<button
+						type="submit"
+						class="primary"
+						disabled={$signUpSubmitting}
+					>Sign Up</button>
+				</form>
 
-						<button
-							type="submit"
-							class="primary"
-							disabled={$signUpSubmitting}
-						>Sign Up</button>
-					</form>
+			{:else if item.id === FormAction.SignIn}
+				<form
+					method="POST"
+					use:signInEnhance
+					action={FormAction.SignIn}
+					class="card column"
+				>
+					<input
+						type="hidden"
+						name="__superform_id"
+						bind:value={$signInFormId}
+					/>
 
-				{:else if item.id === FormAction.SignIn}
-					<form
-						method="POST"
-						use:signInEnhance
-						action={FormAction.SignIn}
-						class="card column"
-						on:submit={() => {
+					<div class="column inline">
+						<h3>Log In</h3>
+						<p>Log into your Infernet Cloud account to manage your clusters.</p>
+					</div>
 
-						}}
-					>
-						<input
-							type="hidden"
-							name="__superform_id"
-							bind:value={$signInFormId}
-						/>
+					<input
+						type="email"
+						name="email"
+						placeholder="Email address"
+						bind:value={email}
+						{...$signInConstraints.email}
+					/>
 
-						<div class="column inline">
-							<h3>Log In</h3>
-							<p>Log into your Infernet Cloud account to manage your clusters.</p>
-						</div>
+					<input
+						type="password"
+						name="password"
+						placeholder="Password"
+						bind:value={$signInForm.password}
+						{...$signInConstraints.password}
+					/>
 
-						<input
-							type="email"
-							name="email"
-							placeholder="Email address"
-							bind:value={email}
-							{...$signInConstraints.email}
-						/>
+					<button
+						type="submit"
+						class="primary"
+						disabled={$signInSubmitting}
+					>Log in</button>
+				</form>
 
-						<input
-							type="password"
-							name="password"
-							placeholder="Password"
-							bind:value={$signInForm.password}
-							{...$signInConstraints.password}
-						/>
+			{:else if item.id === FormAction.ResetPassword}
+				<form
+					method="POST"
+					use:resetPasswordEnhance
+					action={FormAction.ResetPassword}
+					class="card column"
+					on:submit={() => {
 
-						<button
-							type="submit"
-							class="primary"
-							disabled={$signInSubmitting}
-						>Log in</button>
-					</form>
+					}}
+				>
+					<input
+						type="hidden"
+						name="__superform_id"
+						bind:value={$resetPasswordFormId}
+					/>
 
-				{:else if item.id === FormAction.ResetPassword}
-					<form
-						method="POST"
-						use:resetPasswordEnhance
-						action={FormAction.ResetPassword}
-						class="card column"
-						on:submit={() => {
+					<div class="column inline">
+						<h3>Reset Password</h3>
+						<p>Forgot your password? Confirm your email to reset it.</p>
+					</div>
 
-						}}
-					>
-						<input
-							type="hidden"
-							name="__superform_id"
-							bind:value={$resetPasswordFormId}
-						/>
+					<input
+						type="email"
+						name="email"
+						placeholder="Email address"
+						bind:value={email}
+						{...$resetPasswordConstraints.email}
+					/>
 
-						<div class="column inline">
-							<h3>Reset Password</h3>
-							<p>Forgot your password? Confirm your email to reset it.</p>
-						</div>
-
-						<input
-							type="email"
-							name="email"
-							placeholder="Email address"
-							bind:value={email}
-							{...$resetPasswordConstraints.email}
-						/>
-
-						<button
-							type="submit"
-							class="primary"
-							disabled={$resetPasswordSubmitting}
-						>Send verification link</button>
-					</form>
-				{/if}
-			</svelte:fragment>
-		</Tabs>
-	{:else}
-		<!-- <form
-			class="card"
-			action={FormAction.SignOut}
-			use:signOutEnhance
-		> -->
-			<button>Sign out</button>
-		<!-- </form> -->
-	{/if}
+					<button
+						type="submit"
+						class="primary"
+						disabled={$resetPasswordSubmitting}
+					>Send verification link</button>
+				</form>
+			{/if}
+		</svelte:fragment>
+	</Tabs>
 </div>
 
 
