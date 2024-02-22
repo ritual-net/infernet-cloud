@@ -28,6 +28,10 @@
 
 
 <style>
+	.row {
+		justify-content: start;
+	}
+
 	img {
 		width: 1.5em;
 		height: 1.5em;
