@@ -45,9 +45,6 @@
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
-
-			else if(result)
-				goto('/clusters')
 		},
 	})
 
@@ -65,9 +62,6 @@
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
-
-			else if(result)
-				goto('/clusters')
 		},
 	})
 
