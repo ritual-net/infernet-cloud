@@ -1,6 +1,6 @@
-import type { ServerLoad } from '@sveltejs/kit'
+import type { LayoutLoad } from './$types'
 
-export const load: ServerLoad = async ({
+export const load: LayoutLoad = async ({
 	locals: { isSignedIn },
 	fetch,
 }) => {

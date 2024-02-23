@@ -2,10 +2,10 @@
 import type { getClustersForUser } from '$/lib/db/queries'
 
 
-// Datz
-import type { PageServerLoad } from './$types'
+// Data
+import type { PageLoad } from './$types'
 
-export const load: PageServerLoad = async ({
+export const load: PageLoad = async ({
 	fetch,
 }) => {
 	const clusters = (
