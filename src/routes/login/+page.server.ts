@@ -27,7 +27,6 @@ export const load: ServerLoad = async ({
 
 // Actions
 import { type Actions, fail, redirect } from '@sveltejs/kit'
-import { invalidate } from '$app/navigation'
 
 export const actions: Actions = {
 	signUp: async ({
@@ -51,10 +50,8 @@ export const actions: Actions = {
 				result: await response.json(),
 			})
 
-		invalidate('/')
-
 		if(response.status === 204)
-			return redirect(301, '/accounts')
+			return redirect(301, '/service-accounts')
 
 		return {
 			signUpFormData,
@@ -81,8 +78,6 @@ export const actions: Actions = {
 				signInFormData,
 				result: await response.json(),
 			})
-
-		invalidate('/')
 
 		if(response.status === 204)
 			return redirect(301, '/clusters')

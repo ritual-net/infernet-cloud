@@ -57,8 +57,6 @@ export const actions: Actions = {
 				result: await response.json(),
 			})
 
-		invalidate('/clusters')
-
 		const result = await response.json()
 
 		// return {
