@@ -24,6 +24,7 @@
 		"@melt-ui/svelte": "^0.70.0",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-node": "^4.0.1",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "8.56.0",
@@ -50,6 +51,7 @@
 		"@google-cloud/compute": "^4.1.0",
 		"aws-sdk": "^2.1540.0",
 		"axios": "^1.6.5",
+		"dotenv": "^16.4.3",
 		"edgedb": "^1.4.1",
 		"googleapis": "^131.0.0",
 		"svelte-headless-table": "^0.18.1"

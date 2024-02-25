@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      edgedb:
+        condition: service_healthy
+
+  edgedb:
+    container_name: edgedb
+    build:
+      context: .
+      dockerfile: edgedb.Dockerfile
+    environment:
+      EDGEDB_SERVER_SECURITY: strict
+      EDGEDB_SERVER_TLS_CERT_MODE: generate_self_signed
+      EDGEDB_SERVER_PASSWORD: ${EDGEDB_SERVER_PASSWORD:?error}
+      EDGEDB_SERVER_BINARY_ENDPOINT_SECURITY: optional # For auth server TLS
+      EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
+    volumes:
+      - './dbschema:/dbschema'
+      - 'edgedb-data:/var/lib/edgedb/data'
+    expose:
+      - '5656'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://edgedb:5656/server/status/ready']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      - smtp
+
+  smtp:
+    image: ixdotai/smtp:latest
+    environment:
+      SMARTHOST_ADDRESS: smtp.sendgrid.net
+      SMARTHOST_PORT: 587
+      SMARTHOST_USER: apikey
+      SMARTHOST_PASSWORD: ${SENDGRID_KEY}
+      SMARTHOST_ALIASES: '*.sendgrid.net'
+    expose:
+      - '25'
+
+volumes:
+  edgedb-data:
