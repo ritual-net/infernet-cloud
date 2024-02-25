@@ -3,12 +3,12 @@ import type { getClusterById } from '$/lib/db/queries'
 
 
 // Data
-import type { LayoutServerLoad } from './$types'
+import type { LayoutLoad } from './$types'
 
 import { resolveRoute } from '$app/paths'
 import { error } from '@sveltejs/kit'
 
-export const load: LayoutServerLoad = async ({
+export const load: LayoutLoad = async ({
 	params: { clusterId },
 	fetch,
 }) => {
