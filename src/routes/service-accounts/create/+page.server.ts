@@ -15,7 +15,7 @@ export const load: PageServerLoad = async () => {
 
 
 // Actions
-import { type Actions, fail } from '@sveltejs/kit'
+import { type Actions, fail, redirect } from '@sveltejs/kit'
 
 export const actions: Actions = {
 	default: async ({
@@ -33,14 +33,12 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		return response.ok
-			? {
-				formData,
-				result: await response.json(),
-			}
-			: fail(response.status, {
+		if(!response.ok)
+			return fail(response.status, {
 				formData,
 				result: await response.json(),
 			})
+
+		return redirect(301, '/service-accounts')
 	},
 }
