@@ -46,6 +46,10 @@ export const actions: Actions = {
 			return fail(400, { formData })
 		}
 
+		for(const node of formData.data.nodes){
+			delete node.id
+		}
+
 		const response = await fetch('/api/cluster', {
 			method: 'POST',
 			body: JSON.stringify(formData.data),
