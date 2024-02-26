@@ -1,0 +1,183 @@
+<script lang="ts">
+	// Types/constants
+	import { providers, ProviderTypeEnum } from '$types/provider'
+
+
+	// Schema
+	import { FormData } from './schema'
+
+
+	// Context
+	import type { PageData } from './$types'
+	import { page } from '$app/stores'
+
+	const {
+		formData,
+	} = $page.data as PageData
+
+
+	// Internal state
+
+	import { superForm } from 'sveltekit-superforms/client'
+	import { zodClient } from 'sveltekit-superforms/adapters'
+
+	const {
+		form,
+		enhance,
+		errors,
+		constraints,
+		submitting,
+	} = superForm(formData, {
+		dataType: 'json',
+		validators: zodClient(FormData),
+
+		onResult: ({ result }) => {
+			if(result.type === 'failure')
+				alert(result.data?.result?.message)
+		},
+	})
+
+	let allowIps: 'all' | 'restricted' = 'all'
+
+
+	// Components
+	import Tabs from '$components/Tabs.svelte'
+	import Select from '$components/Select.svelte'
+</script>
+
+
+<form
+	method="POST"
+	use:enhance
+	class="column"
+>
+	<header class="row">
+		<legend>
+			<h2>Edit Cluster</h2>
+		</legend>
+	</header>
+
+	<div class="card column">
+		<section class="row wrap">
+			<div class="column inline">
+				<h3>
+					<label for="serviceAccount">
+						Service Account
+					</label>
+				</h3>
+
+				<p></p>
+			</div>
+
+			<!-- {cluster.service_account} -->
+		</section>
+
+		<section class="row wrap">
+			<div class="column inline">
+				<h3 class="row inline">
+					<label for="cluster_name">
+						Cluster name
+					</label>
+				</h3>
+
+				<p>Give your cluster a human-readable name.</p>
+			</div>
+
+			<input
+				type="text"
+				name="cluster_name"
+				placeholder="my-cluster-1"
+				bind:value={$form.config.name}
+				{...$constraints.config?.name}
+			/>
+		</section>
+
+		<section class="column wrap">
+			<div class="row wrap">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="coordinator_address">
+							Firewall
+						</label>
+					</h3>
+
+					<p>Determine which IP addresses will have permissions to this cluster.</p>
+				</div>
+
+				<Select
+					required
+					name="firewall"
+					labelText="Firewall"
+					bind:value={allowIps}
+					items={[
+						{
+							value: 'all',
+							label: 'All IPs',
+						},
+						{
+							value: 'restricted',
+							label: 'Only allowed IPs',
+						}
+					]}
+				/>
+			</div>
+
+			{#if allowIps !== 'all'}
+				<Tabs
+					value={0}
+					items={[
+						{
+							id: 0,
+							label: 'HTTP',
+						},
+						{
+							id: 1,
+							label: 'SSH',
+						},
+					]}
+				>
+					<svelte:fragment slot="content"
+						let:item
+					>
+						{#if item.id === 0}
+							<textarea
+								name="credentials"
+								rows="2"
+								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+								bind:value={$form.config.ip_allow_http}
+								{...$constraints.config?.ip_allow_http}
+								disabled={allowIps === 'all'}
+							/>
+
+						{:else}
+							<textarea
+								name="credentials"
+								rows="2"
+								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+								bind:value={$form.config.ip_allow_ssh}
+								{...$constraints.config?.ip_allow_ssh}
+								disabled={allowIps === 'all'}
+							/>
+						{/if}
+					</svelte:fragment>
+				</Tabs>
+			{/if}
+		</section>
+	</div>
+
+	<footer class="row">
+		<a
+			class="button"
+			href="/clusters"
+		>
+			Cancel
+		</a>
+
+		<button
+			type="submit"
+			class="primary"
+		>
+			Save Changes
+		</button>
+	</footer>
+</form>
