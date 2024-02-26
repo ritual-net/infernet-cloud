@@ -449,13 +449,13 @@
 								</div>
 
 								<Switch
-									bind:checked={node.chain_enabled}
+									bind:checked={node.config.chain_enabled}
 									labelText="Onchain"
 								/>
 							</section>
 
-							<Collapsible open={node.chain_enabled}>
-								<fieldset disabled={!node.chain_enabled} class="column">
+							<Collapsible open={node.config.chain_enabled}>
+								<fieldset disabled={!node.config.chain_enabled} class="column">
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
@@ -469,8 +469,8 @@
 
 										<input
 											type="number"
-											bind:value={node.trail_head_blocks}
-											{...$constraints.nodes?.trail_head_blocks ?? {}}
+											bind:value={node.config.trail_head_blocks}
+											{...$constraints.nodes?.config?.trail_head_blocks ?? {}}
 										/>
 									</section>
 
@@ -487,8 +487,8 @@
 
 										<input
 											type="url"
-											bind:value={node.rpc_url}
-											{...$constraints.nodes?.rpc_url ?? {}}
+											bind:value={node.config.rpc_url}
+											{...$constraints.nodes?.config?.rpc_url ?? {}}
 										/>
 									</section>
 
@@ -505,8 +505,8 @@
 
 										<input
 											type="text"
-											bind:value={node.coordinator_address}
-											{...$constraints.nodes?.coordinator_address ?? {}}
+											bind:value={node.config.coordinator_address}
+											{...$constraints.nodes?.config?.coordinator_address ?? {}}
 										/>
 									</section>
 
@@ -523,8 +523,8 @@
 
 										<input
 											type="number"
-											bind:value={node.max_gas_limit}
-											{...$constraints.nodes?.max_gas_limit ?? {}}
+											bind:value={node.config.max_gas_limit}
+											{...$constraints.nodes?.config?.max_gas_limit ?? {}}
 										/>
 									</section>
 
@@ -541,8 +541,8 @@
 
 										<input
 											type="text"
-											bind:value={node.private_key}
-											{...$constraints.nodes?.private_key ?? {}}
+											bind:value={node.config.private_key}
+											{...$constraints.nodes?.config?.private_key ?? {}}
 											class="code"
 										/>
 									</section>
@@ -561,7 +561,7 @@
 								</div>
 
 								<Switch
-									bind:checked={node.forward_stats}
+									bind:checked={node.config.forward_stats}
 									labelText="Forward Stats?"
 								/>
 							</section>

@@ -98,6 +98,41 @@ export const Container = z
 			.default(false),
 	})
 
+export const NodeConfig = z
+	.object({
+		'chain_enabled': z
+			.boolean()
+			.default(false),
+
+		'trail_head_blocks': z
+			.number()
+			.default(5),
+
+		'rpc_url': z
+			.string()
+			.url()
+			.or(z.literal(''))
+			.default(''),
+
+		'coordinator_address': z
+			.string()
+			.default(''),
+
+		'max_gas_limit': z
+			.number()
+			.int()
+			.positive()
+			.default(5000000),
+
+		'private_key': z
+			.string()
+			.default(''),
+
+		'forward_stats': z
+			.boolean()
+			.default(true),
+	})
+
 export const Node = z.object({
 	'id': z
 		.string()
@@ -106,37 +141,10 @@ export const Node = z.object({
 			crypto.randomUUID()
 		)),
 
-	'chain_enabled': z
-		.boolean()
-		.default(false),
-
-	'trail_head_blocks': z
-		.number()
-		.default(5),
-
-	'rpc_url': z
-		.string()
-		.url()
-		.or(z.literal(''))
-		.default(''),
-
-	'coordinator_address': z
-		.string()
-		.default(''),
-
-	'max_gas_limit': z
-		.number()
-		.int()
-		.positive()
-		.default(5000000),
-
-	'private_key': z
-		.string()
-		.default(''),
-
-	'forward_stats': z
-		.boolean()
-		.default(true),
+	'config': NodeConfig
+		.default(() => (
+			NodeConfig.parse({})
+		)),
 
 	'containers': z
 		.array(
