@@ -9,7 +9,7 @@
 
 
 	// Components
-	import Table from '$components/Table.svelte'
+	import ClustersTable from './ClustersTable.svelte'
 </script>
 
 
@@ -26,18 +26,8 @@
 
 	{#if clusters.length}
 		<section class="card">
-			<Table
-				data={clusters}
-				columns={[
-					{
-						header: 'Id',
-						accessor: d => d.id,
-					},
-					{
-						header: 'Name',
-						accessor: d => d.name,
-					},
-				]}
+			<ClustersTable
+				{clusters}
 			/>
 		</section>
 	{:else}
