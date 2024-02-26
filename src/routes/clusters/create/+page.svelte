@@ -426,6 +426,7 @@
 
 								{#if $form.nodes.length > 1}
 									<button
+										type="button"
 										class="small"
 										on:click={() => {
 											$form.nodes = $form.nodes.toSpliced(i, 1)
