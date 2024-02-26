@@ -108,9 +108,11 @@
 		inset: 0;
 		pointer-events: none;
 
+		overflow-y: auto;
+
 		display: grid;
 		grid:
-			'.'
+			'.' calc(100dvh - 1.5rem * 2)
 			/ min(50rem, 100%)
 		;
 		place-content: center;
