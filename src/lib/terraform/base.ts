@@ -83,6 +83,7 @@ export abstract class BaseTerraform {
 			// We catch the error here so we can store the state file in the db.
 			// Even if the apply fails, the cluster may be partially created / updated,
 			// so we want the state file to reflect that.
+            console.log(e);
 			const commandError = e as CommandExecutionError;
 			error = commandError.stderr ?? commandError.error ?? commandError;
 		}

@@ -47,8 +47,8 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				healthy: success,
 				locked: false,
 				router: {
-					ip: state?.outputs?.router_ip?.value ?? null,
-					id: state?.outputs?.router_id?.value ?? null,
+					ip: state?.outputs?.router_ip?.value ?? "",
+					id: state?.outputs?.router_id?.value ?? "",
 				},
 				tfstate: JSON.stringify(state),
 			},
