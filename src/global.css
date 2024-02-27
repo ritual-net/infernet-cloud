@@ -96,6 +96,10 @@ ol, ul {
 	}
 }
 
+dt {
+	opacity: 0.5;
+}
+
 .stack {
 	display: grid;
 	grid: 'stack';
