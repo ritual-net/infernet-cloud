@@ -29,12 +29,21 @@ $: console.log({cluster})
 			<!-- <p>Created {cluster.created}</p> -->
 		</div>
 
+		<div class="row">
+			<dl class="card inline">
+				<div class="row">
+					<dt>Status</dt>
+					<dd>{cluster.healthy ? 'Healthy' : 'Unhealthy'}</dd>
+				</div>
+			</dl>
+
 		<a
 			href={resolveRoute(`/clusters/[clusterId]/edit`, {
 				clusterId: $page.params.clusterId,
 			})}
 			class="button primary"
 		>Edit Cluster</a>
+		</div>
 	</header>
 
 	<section class="column">
@@ -70,7 +79,7 @@ $: console.log({cluster})
 						{/each}
 					</dd>
 				{:else}
-					All
+					<dd>All</dd>
 				{/if}
 			</section>
 
