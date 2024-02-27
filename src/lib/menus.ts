@@ -3,7 +3,9 @@ export type MenuItem<Value> = {
 	label: string,
 	disabled?: boolean,
 	icon?: string,
-	onClick?: (item: MenuItem<Value>) => void
+	onClick?: (item: MenuItem<Value>) => void,
+	formAction?: string,
+	formSubmit?: SubmitFunction,
 }
 
 export type MenuItemGroup<Value> = {
