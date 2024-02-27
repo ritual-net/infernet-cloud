@@ -7,6 +7,16 @@
 	export let nodes: InfernetNode[]
 
 
+	// Functions
+	import { formatNumberCompact } from '$/lib/format'
+	import { resolveRoute } from '$app/paths'
+
+
+	// Actions
+	import { applyAction } from '$app/forms'
+	import { invalidate } from '$app/navigation'
+
+
 	// Components
 	import { createRender } from 'svelte-headless-table'
 	import Table from '$/components/Table.svelte'
@@ -56,4 +66,46 @@
 			),
 		},
 	]}
+	contextMenu={node => {
+		const nodeRoute = resolveRoute(`/nodes/[nodeId]`, {
+			nodeId: node.id,
+		})
+
+		return [
+			{
+				value: 'start',
+				label: 'Start Node',
+				formAction: `${nodeRoute}?/start`,
+				formSubmit: async () => {
+					return async ({ result }) => {
+						if(result.type === 'failure')
+							alert(result.data?.result?.message)
+
+						else {
+							await applyAction(result)
+
+							await invalidate('.')
+						}
+					}
+				},
+			},
+			{
+				value: 'stop',
+				label: 'Stop Node',
+				formAction: `${nodeRoute}?/stop`,
+				formSubmit: async () => {
+					return async ({ result }) => {
+						if(result.type === 'failure')
+							alert(result.data?.result?.message)
+
+						else {
+							await applyAction(result)
+
+							await invalidate('.')
+						}
+					}
+				},
+			},
+		]
+	}}
 />
