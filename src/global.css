@@ -99,6 +99,11 @@ ol, ul {
 dt {
 	opacity: 0.5;
 }
+dd {
+	.row > & {
+		text-align: end;
+	}
+}
 
 .stack {
 	display: grid;
