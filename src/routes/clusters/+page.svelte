@@ -18,9 +18,12 @@
 		<h2>Clusters</h2>
 
 		{#if clusters.length}
-			<button class="primary">
+			<a
+				class="button primary"
+				href="/clusters/create"
+			>
 				Create Cluster
-			</button>
+			</a>
 		{/if}
 	</header>
 
