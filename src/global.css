@@ -227,7 +227,6 @@ button, .button {
 	overflow: hidden;
 	
 	padding: var(--card-paddingY) var(--card-paddingX);
-
 	background-color: var(--card-backgroundColor);
 	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
 	border-radius: var(--card-cornerRadius);

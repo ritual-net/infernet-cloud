@@ -50,25 +50,59 @@
 				{#if 'items' in _subitem}
 					<!-- TODO: make recursive with Svelte 5 snippets -->
 				{:else}
-					<div
-						use:melt={$item}
-						on:m-click={e => _subitem.onClick?.(_subitem)}
-					>
-						<div class="row">
-							{_subitem.label}
+					{#if _subitem.formAction}
+						<form
+							method="POST"
+							action={_subitem.formAction}
+							use:enhance={_subitem?.formSubmit}
+						>
+							<button
+								type="submit"
+								use:melt={$item}
+							>
+								<div class="row">
+									{_subitem.label}
+								</div>
+							</button>
+						</form>
+					{:else}
+						<div
+							use:melt={$item}
+							on:m-click={e => _subitem.onClick?.(_subitem)}
+						>
+							<div class="row">
+								{_subitem.label}
+							</div>
 						</div>
-					</div>
+					{/if}
 				{/if}
 			{/each}
 		{:else}
-			<div
-				use:melt={$item}
-				on:m-click={e => subitem.onClick?.(subitem)}
-			>
-				<div class="row">
-					{subitem.label}
+			{#if subitem.formAction}
+				<form
+					method="POST"
+					action={subitem.formAction}
+					use:enhance={subitem?.formSubmit}
+				>
+					<button
+						type="submit"
+						use:melt={$item}
+					>
+						<div class="row">
+							{subitem.label}
+						</div>
+					</button>
+				</form>
+			{:else}
+				<div
+					use:melt={$item}
+					on:m-click={e => subitem.onClick?.(subitem)}
+				>
+					<div class="row">
+						{subitem.label}
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/if}
 	{/each}
 </div>
@@ -148,5 +182,13 @@
 		margin-inline: var(--contextMenu-paddingX);
 
 		background-color: var(--contextMenu-borderColor);
+	}
+
+	form {
+		display: contents;
+
+		& button {
+			all: unset;
+		}
 	}
 </style>
