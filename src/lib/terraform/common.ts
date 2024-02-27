@@ -1,9 +1,12 @@
 import { e } from '$/lib/db';
 import { getClusterById } from '../db/queries';
+import { nodeAction } from '$/lib/clients/node/common';
 import { ProviderTerraform } from '$/lib';
 import type { Client } from 'edgedb';
 import type { ProviderServiceAccount } from '$/types/provider';
+import { NodeAction } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
+import { c } from 'tar';
 
 /**
  * Applies the given action to a cluster, and persists the resulting Terraform state
@@ -37,7 +40,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 	const { error, state, success } = await ProviderTerraform[
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
-
+    console.log("new", state)
 	// Store state in the database
 	await e
 		.update(e.Cluster, () => ({
@@ -47,14 +50,20 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				healthy: success,
 				locked: false,
 				router: {
-					ip: state?.outputs?.router_ip?.value ?? "",
-					id: state?.outputs?.router_id?.value ?? "",
+                    id: state?.outputs?.router?.value?.id ?? "",
+					ip: state?.outputs?.router?.value?.ip ?? "",
 				},
 				tfstate: JSON.stringify(state),
 			},
 		}))
 		.run(client);
 
+    // If successful, then restart router
+    if (success && cluster.deploy_router) {
+        const router_id = cluster.router!.id;
+        //await nodeAction(client, [router_id], NodeAction.restart);
+        console.log(`Router ${router_id} restarted`);
+    }
 	// Update node provider IDs
 	const nodeInfo = state?.outputs?.nodes?.value;
 	if (nodeInfo) {
@@ -83,6 +92,5 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				nodeInfo,
 			});
 	}
-
 	return { error, success };
 };

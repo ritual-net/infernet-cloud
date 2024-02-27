@@ -3,8 +3,6 @@ import { clusterAction } from '$/lib/terraform/common';
 import { getClusterById } from '$/lib/db/queries';
 import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
 import { e } from '$/lib/db';
-import { nodeAction } from '$/lib/clients/node/common';
-import { NodeAction } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -47,11 +45,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 
 		// Apply Terraform changes to cluster
 		const { error: errorMessage, success } = await clusterAction(client, clusterId, TFAction.Apply);
-		// If successful, then restart router
-		if (success) {
-			const router_id = cluster.router.id;
-			await nodeAction(client, [router_id], NodeAction.restart);
-		}
+
 		return json({ message: success ? 'Node created successfully' : errorMessage, success });
 	} catch (e) {
 		return error(400, (e as Error).message);
