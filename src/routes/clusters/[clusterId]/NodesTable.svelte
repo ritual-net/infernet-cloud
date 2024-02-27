@@ -37,7 +37,9 @@
 		},
 		{
 			header: 'Gas Limit',
-			accessor: node => node.max_gas_limit,
+			accessor: node => (
+				typeof node.max_gas_limit === 'number' && formatNumberCompact(node.max_gas_limit)
+			),
 		},
 		{
 			header: 'Containers',
