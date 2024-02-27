@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Types/constants
+	import { providers } from '$types/provider'
+
+
 	// Context
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
@@ -18,9 +22,9 @@ $: console.log({cluster})
 <div class="container column">
 	<header class="row wrap">
 		<div class="column">
-			<h3>
+			<h2>
 				{cluster.name || cluster.id}
-			</h3>
+			</h2>
 
 			<!-- <p>Created {cluster.created}</p> -->
 		</div>
@@ -29,8 +33,8 @@ $: console.log({cluster})
 			href={resolveRoute(`/clusters/[clusterId]/edit`, {
 				clusterId: $page.params.clusterId,
 			})}
-			class="button"
-		>Edit</a>
+			class="button primary"
+		>Edit Cluster</a>
 	</header>
 
 	<section class="column">
@@ -45,7 +49,12 @@ $: console.log({cluster})
 						href={resolveRoute(`/service-accounts/[serviceAccountId]`, {
 							serviceAccountId: cluster.service_account.id,
 						})}
+						class="row"
 					>
+						<img
+							class="icon"
+							src={providers[cluster.service_account.provider].icon}
+						/>
 						{cluster.service_account.name}
 					</a>
 				</dd>
@@ -66,7 +75,7 @@ $: console.log({cluster})
 			</section>
 
 			<section class="row">
-				<dt>Deploy Router</dt>
+				<dt>Has Deployed Router?</dt>
 
 				<dd>
 					{cluster.deploy_router ? 'Yes' : 'No'}
@@ -114,5 +123,10 @@ $: console.log({cluster})
 <style>
 	.container {
 		gap: 2rem;
+	}
+
+	.icon {
+		width: 1.5em;
+		height: 1.5em;
 	}
 </style>
