@@ -1,9 +1,13 @@
+import type { SubmitFunction } from '@sveltejs/kit'
+
 export type MenuItem<Value> = {
 	value: Value,
 	label: string,
 	disabled?: boolean,
 	icon?: string,
-	onClick?: (item: MenuItem<Value>) => void
+	onClick?: (item: MenuItem<Value>) => void,
+	formAction?: string,
+	formSubmit?: SubmitFunction,
 }
 
 export type MenuItemGroup<Value> = {
