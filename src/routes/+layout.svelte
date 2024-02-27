@@ -76,6 +76,8 @@
 	main {
 		grid-area: main;
 		align-content: start;
+
+		gap: 2rem 1rem;
 	}
 
 	footer {
