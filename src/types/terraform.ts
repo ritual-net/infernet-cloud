@@ -16,12 +16,12 @@ export type TFState = {
 				key: string;
 			}[];
 		};
-		router_ip?: {
-			value: string;
-		};
-		router_id?: {
-			value: string;
-		};
+		router?: {
+            value?: {
+                id: string;
+                ip: string;
+            };
+        }
 	};
 	resources: object[];
 	check_results: boolean | null;
