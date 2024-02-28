@@ -10,7 +10,10 @@
 	$: ({
 		cluster
 	} = $page.data as PageData)
-$: console.log({cluster})
+
+
+	// Functions
+	import { resolveRoute } from '$app/paths'
 
 
 	// Components
