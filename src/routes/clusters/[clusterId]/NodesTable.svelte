@@ -66,6 +66,11 @@
 			),
 		},
 	]}
+	getRowLink={node => (
+		resolveRoute(`/nodes/[nodeId]`, {
+			nodeId: node.id,
+		})
+	)}
 	contextMenu={node => {
 		const nodeRoute = resolveRoute(`/nodes/[nodeId]`, {
 			nodeId: node.id,
