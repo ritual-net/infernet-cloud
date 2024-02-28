@@ -29,17 +29,19 @@ export const actions: Actions = {
 		)
 
 		if(!response.ok)
-			fail(response.status, {
+			return fail(response.status, {
 				formData,
 				result: await response.json(),
 			})
 
 		const result = await response.json()
 
-		// return {
-		// 	formData,
-		// 	result: await response.json(),
-		// }
+		if(!result.success)
+			return fail(500, {
+				formData,
+				result,
+			})
+
 		return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId }))
 	},
 }
