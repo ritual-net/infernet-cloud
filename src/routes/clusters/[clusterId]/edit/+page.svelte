@@ -12,6 +12,7 @@
 	import { page } from '$app/stores'
 
 	const {
+		cluster,
 		formData,
 	} = $page.data as PageData
 
@@ -62,17 +63,16 @@
 
 	<div class="card column">
 		<section class="row wrap">
-			<div class="column inline">
-				<h3>
-					<label for="serviceAccount">
-						Service Account
-					</label>
-				</h3>
+			<h3>
+				<label for="serviceAccount">
+					Service Account
+				</label>
+			</h3>
 
-				<p></p>
+			<div class="row">
+				<img class="icon" src={providers[cluster.service_account.provider].icon} />
+				{cluster.service_account.name}
 			</div>
-
-			<!-- {cluster.service_account} -->
 		</section>
 
 		<section class="row wrap">
@@ -186,3 +186,11 @@
 		</button>
 	</footer>
 </form>
+
+
+<style>
+	.icon {
+		width: 1.5em;
+		height: 1.5em;
+	}
+</style>
