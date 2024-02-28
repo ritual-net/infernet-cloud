@@ -18,18 +18,26 @@
 
 	// Components
 	import NodesTable from './NodesTable.svelte'
-	import { resolveRoute } from '$app/paths';
+	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
 
 
 <div class="container column">
 	<header class="row wrap">
-		<div class="column">
-			<h2>
-				{cluster.name || cluster.id}
-			</h2>
+		<div class="row">
+			<div
+				class="icon"
+			>
+				<RitualLogo />
+			</div>
 
-			<!-- <p>Created {cluster.created}</p> -->
+			<div class="column">
+				<h2>
+					{cluster.name || cluster.id}
+				</h2>
+
+				<!-- <p>Created {cluster.created}</p> -->
+			</div>
 		</div>
 
 		<div class="row">
@@ -140,5 +148,15 @@
 	.icon {
 		width: 1.5em;
 		height: 1.5em;
+	}
+
+	header .icon {
+		width: 4em;
+		height: 4em;
+		border-radius: 0.25em;
+		padding: 0.5em;
+
+		background-color: var(--color-ritualBlack);
+		color: #fff;
 	}
 </style>
