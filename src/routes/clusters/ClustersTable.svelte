@@ -51,4 +51,35 @@
 	getRowLink={cluster => (
 		resolveRoute(`/clusters/[clusterId]`, { clusterId: cluster.id })
 	)}
+	contextMenu={cluster => {
+		const clusterRoute = resolveRoute(`/clusters/[clusterId]`, {
+			clusterId: cluster.id,
+		})
+
+		return [
+			{
+				value: 'edit',
+				label: 'Edit Cluster',
+				onClick: () => {
+					goto(`${clusterRoute}/edit`)
+				},
+			},
+			{
+				value: 'delete',
+				label: 'Delete Cluster',
+				formAction: `${clusterRoute}?/delete`,
+				formSubmit: () => {
+					return async ({ result }) => {
+						if(result.type === 'failure')
+							alert(result.data?.result?.message)
+
+						else {
+							await invalidate('.')
+							alert(result.data?.result?.message)
+						}
+					}
+				},
+			},
+		]
+	}}
 />
