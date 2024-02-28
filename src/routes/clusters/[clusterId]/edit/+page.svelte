@@ -17,7 +17,6 @@
 
 
 	// Internal state
-
 	import { superForm } from 'sveltekit-superforms/client'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 
@@ -38,6 +37,10 @@
 	})
 
 	let allowIps: 'all' | 'restricted' = 'all'
+
+
+	// Functions
+	import { resolveRoute } from '$app/paths'
 
 
 	// Components
@@ -168,7 +171,9 @@
 	<footer class="row">
 		<a
 			class="button"
-			href="/clusters"
+			href={resolveRoute(`/clusters/[clusterId]`, {
+				clusterId: $page.params.clusterId,
+			})}
 		>
 			Cancel
 		</a>
