@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { getNodesByIds, getClusterByNodeIds } from '$/lib/db/queries';
+import { getNodesByIds, getClusterByNodeIds, getClusterByRouterId } from '$/lib/db/queries';
 import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
 import type { Client } from 'edgedb';
@@ -70,4 +70,42 @@ export const nodeAction = async (
 		default:
 			throw Error(`Action ${action} not supported`);
 	}
+};
+
+/**
+ * Applies the given action to a router and returns the result.
+ * 
+ * @param client - The database client
+ * @param id - id of the router
+ * @param action - The action to perform on the router
+ * @returns error or success message
+ * @throws Error if router could not be retrieved, or action is not supported
+ */
+export const routerAction = async (
+    client: Client,
+    id: string,
+    action: NodeAction
+): Promise<undefined> => {
+    const cluster = await getClusterByRouterId(client, id, true);
+    if (!cluster) {
+        throw Error('Cluster could not be retrieved.');
+    };
+
+    const serviceAccount = cluster.service_account as ProviderServiceAccount;
+	const provider = serviceAccount.provider;
+
+	const classArgs = NodeClient[provider].classArgs(cluster, serviceAccount) as [
+		ProviderServiceAccountCreds,
+		string,
+	];
+	const nodeClient = new NodeClient[provider].class(...classArgs);
+	const functionArgs = NodeClient[provider].functionArgs(cluster, serviceAccount);
+
+    switch (action) {
+        case NodeAction.restart:
+            await nodeClient.restartNodes([id], functionArgs);
+            return;
+        default:
+            throw Error(`Action ${action} not supported`);
+    }
 };

@@ -151,3 +151,45 @@ export const getClusterByNodeIds = async (
 		.run(client);
 	return cluster as ProviderCluster | null;
 };
+
+/**
+ * Get cluster data by router id
+ * 
+ * @param client The database client
+ * @param id of router
+ * @param creds whether to include sensitive Service Account credentials
+ * @returns ProviderCluster if found
+ * @throws Error if unable to find exactly one cluster for router
+ */
+export const getClusterByRouterId = async (
+    client: Client,
+    id: string,
+    creds = false
+): Promise<ProviderCluster | null> => {
+    const generic = await e
+		.select(e.Cluster, (cluster) => ({
+            id: true,
+			service_account: {
+				provider: true,
+			},
+			filter_single: e.op(cluster.router.id, '=', id),
+		}))
+		.run(client);
+    
+    if (!generic) {
+        return null;
+    }
+    const clusterId = generic.id;
+    const provider = generic.service_account.provider;
+    
+    // Get cluster with provider-specific data
+	const cluster = await e
+        .select(ClusterTypeByProvider[provider], () => ({
+            ...getClusterSelectParams(creds, provider),
+            filter_single: { id: clusterId},
+        }))
+        .run(client);
+
+    return cluster as ProviderCluster | null;
+
+}
