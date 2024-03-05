@@ -61,7 +61,6 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
     // If successful, then restart router
     if (success && cluster.deploy_router && action == TFAction.Apply) {
         await routerAction(client, state!.outputs!.router!.value!.id, NodeAction.restart);
-        console.log("restarted")
     };
 	// Update node provider IDs
 	const nodeInfo = state?.outputs?.nodes?.value;
