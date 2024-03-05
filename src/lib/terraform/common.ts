@@ -50,18 +50,18 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				healthy: success,
 				locked: false,
 				router: {
-                    id: state?.outputs?.router?.value?.id ?? "",
-                    ip: state?.outputs?.router?.value?.ip ?? "",
-                },
+					id: state?.outputs?.router?.value?.id ?? '',
+					ip: state?.outputs?.router?.value?.ip ?? '',
+				},
 				tfstate: JSON.stringify(state),
 			},
 		}))
 		.run(client);
-    
-    // If successful, then restart router
-    if (success && cluster.deploy_router && action == TFAction.Apply) {
-        await routerAction(client, state!.outputs!.router!.value!.id, NodeAction.restart);
-    };
+
+	// If successful, then restart router
+	if (success && cluster.deploy_router && action == TFAction.Apply) {
+		await routerAction(client, state!.outputs!.router!.value!.id, NodeAction.restart);
+	}
 	// Update node provider IDs
 	const nodeInfo = state?.outputs?.nodes?.value;
 	if (nodeInfo) {

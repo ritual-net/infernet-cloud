@@ -74,7 +74,7 @@ export const nodeAction = async (
 
 /**
  * Applies the given action to a router and returns the result.
- * 
+ *
  * @param client - The database client
  * @param id - id of the router
  * @param action - The action to perform on the router
@@ -82,16 +82,16 @@ export const nodeAction = async (
  * @throws Error if router could not be retrieved, or action is not supported
  */
 export const routerAction = async (
-    client: Client,
-    id: string,
-    action: NodeAction
+	client: Client,
+	id: string,
+	action: NodeAction
 ): Promise<undefined> => {
-    const cluster = await getClusterByRouterId(client, id, true);
-    if (!cluster) {
-        throw Error('Cluster could not be retrieved.');
-    };
+	const cluster = await getClusterByRouterId(client, id, true);
+	if (!cluster) {
+		throw Error('Cluster could not be retrieved.');
+	}
 
-    const serviceAccount = cluster.service_account as ProviderServiceAccount;
+	const serviceAccount = cluster.service_account as ProviderServiceAccount;
 	const provider = serviceAccount.provider;
 
 	const classArgs = NodeClient[provider].classArgs(cluster, serviceAccount) as [
@@ -101,11 +101,11 @@ export const routerAction = async (
 	const nodeClient = new NodeClient[provider].class(...classArgs);
 	const functionArgs = NodeClient[provider].functionArgs(cluster, serviceAccount);
 
-    switch (action) {
-        case NodeAction.restart:
-            await nodeClient.restartNodes([id], functionArgs);
-            return;
-        default:
-            throw Error(`Action ${action} not supported`);
-    }
+	switch (action) {
+		case NodeAction.restart:
+			await nodeClient.restartNodes([id], functionArgs);
+			return;
+		default:
+			throw Error(`Action ${action} not supported`);
+	}
 };
