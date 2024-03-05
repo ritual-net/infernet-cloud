@@ -17,11 +17,11 @@ export type TFState = {
 			}[];
 		};
 		router?: {
-            value?: {
-                id: string;
-                ip: string;
-            };
-        }
+			value?: {
+				id: string;
+				ip: string;
+			};
+		};
 	};
 	resources: object[];
 	check_results: boolean | null;

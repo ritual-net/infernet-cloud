@@ -1,7 +1,7 @@
 import {
 	DescribeInstancesCommand,
 	EC2Client,
-    RebootInstancesCommand,
+	RebootInstancesCommand,
 	StartInstancesCommand,
 	StopInstancesCommand,
 } from '@aws-sdk/client-ec2';
@@ -61,7 +61,7 @@ export class AWSNodeClient implements BaseNodeClient {
 	 */
 	async restartNodes(ids: string[]): Promise<void> {
 		const command = new RebootInstancesCommand({ InstanceIds: ids });
-        await this.client.send(command);
+		await this.client.send(command);
 	}
 
 	/**
