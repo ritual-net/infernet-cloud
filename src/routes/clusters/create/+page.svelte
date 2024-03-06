@@ -108,7 +108,7 @@
 						<section class="row wrap">
 							<div class="column inline">
 								<h3>
-									<label for="serviceAccount">
+									<label for="serviceAccountId">
 										Service Account
 									</label>
 								</h3>
@@ -118,7 +118,8 @@
 
 							<Select
 								required
-								name="serviceAccount"
+								id="serviceAccountId"
+								name="serviceAccountId"
 								labelText="Service Account"
 								bind:value={$form.serviceAccountId}
 								items={serviceAccounts.map(serviceAccount => ({
@@ -132,7 +133,7 @@
 						<section class="row wrap">
 							<div class="column inline">
 								<h3 class="row inline">
-									<label for="cluster_name">
+									<label for="config.name">
 										Cluster name
 									</label>
 								</h3>
@@ -142,7 +143,8 @@
 
 							<input
 								type="text"
-								name="cluster_name"
+								id="config.name"
+								name="config.name"
 								placeholder="my-cluster-1"
 								bind:value={$form.config.name}
 								{...$constraints.config?.name}
@@ -155,7 +157,7 @@
 									<div class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="coordinator_address">
+												<label for="allowIps">
 													Firewall
 												</label>
 											</h3>
@@ -165,7 +167,8 @@
 
 										<Select
 											required
-											name="firewall"
+											id="allowIps"
+											name="allowIps"
 											labelText="Firewall"
 											bind:value={allowIps}
 											items={[
@@ -200,7 +203,8 @@
 											>
 												{#if item.id === 0}
 													<textarea
-														name="credentials"
+														id="config.ip_allow_http"
+														name="config.ip_allow_http"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 														bind:value={$form.config.ip_allow_http}
@@ -210,7 +214,8 @@
 
 												{:else}
 													<textarea
-														name="credentials"
+														id="config.ip_allow_ssh"
+														name="config.ip_allow_ssh"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 														bind:value={$form.config.ip_allow_ssh}
@@ -226,7 +231,7 @@
 								<section class="row wrap">
 									<div class="column inline">
 										<h3>
-											<label for="region">
+											<label for="config.region">
 												Region
 											</label>
 										</h3>
@@ -236,7 +241,8 @@
 
 									<Select
 										required
-										name="region"
+										id="config.region"
+										name="config.region"
 										labelText="Region"
 										bind:value={$form.config.region}
 										items={[
@@ -252,7 +258,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
-												<label for="zone">
+												<label for="config.zone">
 													Zone
 												</label>
 											</h3>
@@ -262,7 +268,8 @@
 
 										<Select
 											required
-											name="zone"
+											id="config.zone"
+											name="config.zone"
 											labelText="Zone"
 											bind:value={$form.config.zone}
 											items={[
@@ -277,7 +284,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
-												<label for="machine_type">
+												<label for="config.machine_type">
 													Machine Type
 												</label>
 											</h3>
@@ -287,7 +294,8 @@
 
 										<Select
 											required
-											name="machine_type"
+											id="config.machine_type"
+											name="config.machine_type"
 											labelText="Machine Type"
 											bind:value={$form.config.machine_type}
 											items={[
@@ -303,7 +311,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
-												<label for="machine_type">
+												<label for="config.machine_type">
 													Machine Type
 												</label>
 											</h3>
@@ -313,7 +321,8 @@
 
 										<Select
 											required
-											name="machine_type"
+											id="config.machine_type"
+											name="config.machine_type"
 											labelText="Machine Type"
 											bind:value={$form.config.machine_type}
 											items={[
@@ -352,26 +361,27 @@
 
 								<div class="row equal">
 									<div class="column">
-										<label for="username">Username</label>
+										<label for="docker.username">Username</label>
 
 										<input
 											type="text"
-											name="username"
+											id="config.name"
+											name="config.name"
 											placeholder="Enter Docker username..."
-											bind:value={$form.config.name}
-											{...$constraints.config?.name}
+											bind:value={$form.docker.username}
+											{...$constraints.docker?.username}
 										/>
 									</div>
 
 									<div class="column">
-										<label for="access_token">Private Access Token</label>
+										<label for="docker.access_token">Private Access Token</label>
 
 										<input
 											type="text"
-											name="access_token"
+											name="docker.access_token"
 											placeholder="Enter Docker access token..."
-											bind:value={$form.config.name}
-											{...$constraints.config?.name}
+											bind:value={$form.docker.access_token}
+											{...$constraints.docker?.access_token}
 											class="code"
 										/>
 									</div>
@@ -381,7 +391,7 @@
 							<section class="row wrap">
 								<div class="column inline">
 									<h3>
-										<label for="deploy_router">
+										<label for="config.deploy_router">
 											Deploy Router?
 										</label>
 									</h3>
@@ -390,6 +400,8 @@
 								</div>
 
 								<Switch
+									id="config.deploy_router"
+									name="config.deploy_router"
 									bind:checked={$form.config.deploy_router}
 									labelText="Deploy Router?"
 								/>
@@ -441,7 +453,7 @@
 							<section class="row wrap">
 								<div class="column inline">
 									<h3>
-										<label for="regchain_enabledion">
+										<label for="nodes.{i}.config.chain_enabled">
 											Onchain?
 										</label>
 									</h3>
@@ -450,8 +462,10 @@
 								</div>
 
 								<Switch
+									id="nodes.{i}.config.chain_enabled"
+									name="nodes.{i}.config.chain_enabled"
 									bind:checked={node.config.chain_enabled}
-									labelText="Onchain"
+									labelText="Onchain?"
 								/>
 							</section>
 
@@ -460,7 +474,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
-												<label for="trail_head_blocks">
+												<label for="nodes.{i}.config.trail_head_blocks">
 													Trail Head Blocks
 												</label>
 											</h3>
@@ -470,6 +484,8 @@
 
 										<input
 											type="number"
+											id="nodes.{i}.config.trail_head_blocks"
+											name="nodes.{i}.config.trail_head_blocks"
 											bind:value={node.config.trail_head_blocks}
 											{...$constraints.nodes?.config?.trail_head_blocks ?? {}}
 										/>
@@ -478,7 +494,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="rpc_url">
+												<label for="nodes.{i}.config.rpc_url">
 													RPC URL
 												</label>
 											</h3>
@@ -488,6 +504,8 @@
 
 										<input
 											type="url"
+											id="nodes.{i}.config.rpc_url"
+											name="nodes.{i}.config.rpc_url"
 											bind:value={node.config.rpc_url}
 											{...$constraints.nodes?.config?.rpc_url ?? {}}
 										/>
@@ -496,7 +514,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="coordinator_address">
+												<label for="nodes.{i}.config.coordinator_address">
 													Coordinator Address
 												</label>
 											</h3>
@@ -506,6 +524,8 @@
 
 										<input
 											type="text"
+											id="nodes.{i}.config.coordinator_address"
+											name="nodes.{i}.config.coordinator_address"
 											bind:value={node.config.coordinator_address}
 											{...$constraints.nodes?.config?.coordinator_address ?? {}}
 										/>
@@ -514,7 +534,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
-												<label for="max_gas_limit">
+												<label for="nodes.{i}.config.max_gas_limit">
 													Max Gas Limit
 												</label>
 											</h3>
@@ -524,6 +544,8 @@
 
 										<input
 											type="number"
+											id="nodes.{i}.config.max_gas_limit"
+											name="nodes.{i}.config.max_gas_limit"
 											bind:value={node.config.max_gas_limit}
 											{...$constraints.nodes?.config?.max_gas_limit ?? {}}
 										/>
@@ -532,7 +554,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="private_key">
+												<label for="nodes.{i}.config.private_key">
 													Private Key
 												</label>
 											</h3>
@@ -542,6 +564,8 @@
 
 										<input
 											type="text"
+											id="nodes.{i}.config.private_key"
+											name="nodes.{i}.config.private_key"
 											bind:value={node.config.private_key}
 											{...$constraints.nodes?.config?.private_key ?? {}}
 											class="code"
@@ -553,7 +577,7 @@
 							<section class="row wrap">
 								<div class="column inline">
 									<h3 class="row inline">
-										<label for="private_key">
+										<label for="nodes.{i}.config.forward_stats">
 											Forward Stats?
 										</label>
 									</h3>
@@ -562,6 +586,8 @@
 								</div>
 
 								<Switch
+									id="nodes.{i}.config.forward_stats"
+									name="nodes.{i}.config.forward_stats"
 									bind:checked={node.config.forward_stats}
 									labelText="Forward Stats?"
 								/>

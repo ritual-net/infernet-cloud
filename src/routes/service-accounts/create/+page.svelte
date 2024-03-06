@@ -100,6 +100,7 @@
 
 							<Select
 								required
+								id="provider"
 								name="provider"
 								bind:value={$form.provider}
 								placeholder="Select provider..."
@@ -124,6 +125,7 @@
 
 							<input
 								type="text"
+								id="name"
 								name="name"
 								placeholder="My First Infernet Cluster"
 								bind:value={$form.name}

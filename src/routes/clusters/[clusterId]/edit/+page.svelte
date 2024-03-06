@@ -64,9 +64,7 @@
 	<div class="card column">
 		<section class="row wrap">
 			<h3>
-				<label for="serviceAccount">
-					Service Account
-				</label>
+				Service Account
 			</h3>
 
 			<div class="row">
@@ -78,7 +76,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="cluster_name">
+					<label for="config.name">
 						Cluster name
 					</label>
 				</h3>
@@ -88,7 +86,8 @@
 
 			<input
 				type="text"
-				name="cluster_name"
+				id="config.name"
+				name="config.name"
 				placeholder="my-cluster-1"
 				bind:value={$form.config.name}
 				{...$constraints.config?.name}
@@ -99,7 +98,7 @@
 			<div class="row wrap">
 				<div class="column inline">
 					<h3 class="row inline">
-						<label for="coordinator_address">
+						<label for="allowIps">
 							Firewall
 						</label>
 					</h3>
@@ -109,7 +108,8 @@
 
 				<Select
 					required
-					name="firewall"
+					id="allowIps"
+					name="allowIps"
 					labelText="Firewall"
 					bind:value={allowIps}
 					items={[
@@ -144,7 +144,8 @@
 					>
 						{#if item.id === 0}
 							<textarea
-								name="credentials"
+								id="config.ip_allow_http"
+								name="config.ip_allow_http"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								bind:value={$form.config.ip_allow_http}
@@ -154,7 +155,8 @@
 
 						{:else}
 							<textarea
-								name="credentials"
+								id="config.ip_allow_ssh"
+								name="config.ip_allow_ssh"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								bind:value={$form.config.ip_allow_ssh}

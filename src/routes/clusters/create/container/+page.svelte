@@ -110,7 +110,8 @@
 
 				<Select
 					required
-					name="image"
+					id="startingConfig"
+					name="startingConfig"
 					labelText="Starting Configuration"
 					placeholder={configurations.length ? `Select container config...` : `No existing containers found`}
 					bind:value={startingConfig}
@@ -128,7 +129,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="serviceAccount">
+					<label for="container.image">
 						Image
 					</label>
 				</h3>
@@ -138,7 +139,8 @@
 
 			<Select
 				required
-				name="image"
+				id="container.image"
+				name="container.image"
 				labelText="Service Account"
 				bind:value={$form.container.image}
 				items={images.map(image => ({
@@ -151,7 +153,7 @@
 		<!-- <section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="image_id">
+					<label for="container.container_id">
 						Image ID
 					</label>
 				</h3>
@@ -161,6 +163,8 @@
 
 			<input
 				type="text"
+				id="container.container_id"
+				name="container.container_id"
 				bind:value={$form.container.container_id}
 				placeholder={`ritualnet/llm-inference`}
 				{...$constraints.container.container_id ?? {}}
@@ -170,7 +174,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="description">
+					<label for="container.description">
 						Description
 					</label>
 				</h3>
@@ -180,6 +184,8 @@
 
 			<input
 				type="text"
+				id="container.description"
+				name="container.description"
 				bind:value={$form.container.description}
 				placeholder={`Enter a description here...`}
 				{...$constraints.container?.description ?? {}}
@@ -189,7 +195,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="serviceAccount">
+					<label for="container.external">
 						Visibility
 					</label>
 				</h3>
@@ -199,7 +205,8 @@
 
 			<Select
 				required
-				name="image"
+				id="container.external"
+				name="container.external"
 				labelText="Visibility"
 				bind:value={$form.container.external}
 				items={[
@@ -218,7 +225,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="gpu">
+					<label for="container.gpu">
 						Has GPU?
 					</label>
 				</h3>
@@ -227,6 +234,8 @@
 			</div>
 
 			<Switch
+				id="container.gpu"
+				name="container.gpu"
 				bind:checked={$form.container.gpu}
 				labelText="Has GPU?"
 			/>
@@ -251,7 +260,8 @@
 				>
 					{#if item.id === 0}
 						<textarea
-							name="allowed_addresses"
+							id="container.allowed_addresses"
+							name="container.allowed_addresses"
 							rows="2"
 							placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
 							bind:value={$form.container.allowed_addresses}
@@ -261,7 +271,8 @@
 
 					{:else if item.id === 1}
 						<textarea
-							name="allowed_delegate_addresses"
+							id="container.allowed_delegate_addresses"
+							name="container.allowed_delegate_addresses"
 							rows="2"
 							placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
 							bind:value={$form.container.allowed_delegate_addresses}
@@ -271,7 +282,8 @@
 
 					{:else if item.id === 2}
 						<textarea
-							name="allowed_ips"
+							id="container.allowed_ips"
+							name="container.allowed_ips"
 							rows="2"
 							placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 							bind:value={$form.container.allowed_ips}
@@ -286,7 +298,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="command">
+					<label for="container.command">
 						Start Command
 					</label>
 				</h3>
@@ -295,6 +307,8 @@
 			</div>
 
 			<textarea
+				id="container.command"
+				name="container.command"
 				bind:value={$form.container.command}
 				rows="1"
 				placeholder={`Enter start command here...`}
@@ -306,7 +320,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="command">
+					<label for="container.env">
 						Environment Variables
 					</label>
 				</h3>
@@ -315,7 +329,8 @@
 			</div>
 
 			<textarea
-				name="allowed_addresses"
+				id="container.env"
+				name="container.env"
 				rows="2"
 				placeholder={`Add environment variables here...`}
 				bind:value={$form.container.env}
