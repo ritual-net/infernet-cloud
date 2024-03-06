@@ -56,7 +56,7 @@ export const actions: Actions = {
 		})
 
 		if(!response.ok)
-			fail(response.status, {
+			return fail(response.status, {
 				formData,
 				result: await response.json(),
 			})
