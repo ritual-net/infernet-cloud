@@ -213,6 +213,11 @@ button, .button {
 	&.small {
 		font-size: 0.8em;
 	}
+
+	&:disabled,
+	&[aria-disabled="true"] {
+		opacity: 0.5;
+	}
 }
 
 .card {
