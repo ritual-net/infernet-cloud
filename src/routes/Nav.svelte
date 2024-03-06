@@ -26,6 +26,10 @@
 			label: 'Login',
 		},
 	]
+
+
+	// Components
+	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
 
 
@@ -35,11 +39,7 @@
 		aria-current={$page.url.pathname === '/' ? 'page' : undefined}
 		class="home row"
 	>
-		<img
-			class="logo"
-			src="/ritual.svg"
-			alt="Ritual Logo"
-		/>
+		<RitualLogo />
 
 		<h1>
 			Infernet Cloud
@@ -84,7 +84,7 @@
 			gap: 0.33em;
 			font-family: var(--fontFamily-display);
 
-			& img {
+			& svg {
 				height: 1.25em;
 			}
 		}
