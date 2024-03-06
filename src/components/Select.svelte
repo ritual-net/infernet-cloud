@@ -13,6 +13,7 @@
 	export let labelText: string | undefined
 	export let placeholder: string = 'Select...'
 
+	export let id: string | undefined
 	export let name: string | undefined
 	export let required: boolean = false
 	export let disabled: boolean = false
@@ -27,7 +28,7 @@
 	import { melt, createSelect, createSync } from '@melt-ui/svelte'
 
 	const {
-		elements: { trigger, menu, option, group, groupLabel, label },
+		elements: { trigger, menu, option, group, groupLabel, label, hiddenInput },
 		states,
 		helpers: { isSelected },
 	} = createSelect<Value>({
@@ -53,10 +54,19 @@
 		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
 		selected => { value = selected.value as Value },
 	)
+
+	let triggerElement: Element
 </script>
 
 
-<div>
+<div class="stack">
+	<input
+		type="text"
+		use:melt={$hiddenInput}
+		{id}
+		on:focus={() => triggerElement.click()}
+	/>
+
 	{#if labelText}
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<label use:melt={$label}>{labelText}</label>
@@ -67,6 +77,7 @@
 		use:melt={$trigger}
 		aria-label={labelText}
 		class="row"
+		bind:this={triggerElement}
 	>
 		{#if $selected?.icon}
 			<img src={$selected.icon} />
@@ -248,6 +259,14 @@
 			margin-right: -0.25em;
 			text-align: center;
 		}
+	}
+
+	[data-melt-select-hidden-input]	{
+		display: block;
+		position: static !important;
+		transform: none !important;
+		min-width: 100%;
+		width: 0;
 	}
 
 	img {
