@@ -13,6 +13,7 @@
 	export let labelText: string | undefined
 	export let placeholder: string = 'Select...'
 
+	export let id: string | undefined
 	export let name: string | undefined
 	export let required: boolean = false
 	export let disabled: boolean = false
@@ -56,7 +57,7 @@
 </script>
 
 
-<div>
+<div {id}>
 	{#if labelText}
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<!-- <label use:melt={$label}>{labelText}</label> -->
