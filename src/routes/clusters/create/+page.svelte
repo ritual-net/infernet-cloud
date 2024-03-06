@@ -52,11 +52,11 @@
 
 
 	// Components
-	import Collapsible from '$components/Collapsible.svelte'
-	import Dialog from '$components/Dialog.svelte'
-	import Switch from '$components/Switch.svelte'
-	import Select from '$components/Select.svelte'
-	import Tabs from '$components/Tabs.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
+	import Dialog from '$/components/Dialog.svelte'
+	import Switch from '$/components/Switch.svelte'
+	import Select from '$/components/Select.svelte'
+	import Tabs from '$/components/Tabs.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import ContainerForm from './container/+page.svelte'
 

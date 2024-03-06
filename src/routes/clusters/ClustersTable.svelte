@@ -12,7 +12,7 @@
 
 
 	// Components
-	import Table from '$components/Table.svelte'
+	import Table from '$/components/Table.svelte'
 	import ClustersTableCell, { CellType } from './ClustersTableCell.svelte'
 	import { createRender } from 'svelte-headless-table'
 </script>

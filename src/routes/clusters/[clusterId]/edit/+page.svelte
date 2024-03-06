@@ -45,8 +45,8 @@
 
 
 	// Components
-	import Tabs from '$components/Tabs.svelte'
-	import Select from '$components/Select.svelte'
+	import Tabs from '$/components/Tabs.svelte'
+	import Select from '$/components/Select.svelte'
 </script>
 
 

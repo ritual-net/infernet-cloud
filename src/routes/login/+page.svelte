@@ -89,7 +89,7 @@
 
 
 	// Components
-	import Tabs from '$components/Tabs.svelte'
+	import Tabs from '$/components/Tabs.svelte'
 </script>
 
 

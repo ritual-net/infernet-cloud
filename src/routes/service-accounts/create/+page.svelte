@@ -43,8 +43,8 @@
 
 
 	// Components
-	import Select from '$components/Select.svelte'
-	import Tabs from '$components/Tabs.svelte'
+	import Select from '$/components/Select.svelte'
+	import Tabs from '$/components/Tabs.svelte'
 
 
 	// Transitions/animations
