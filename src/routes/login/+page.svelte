@@ -40,6 +40,7 @@
 		submitting: signUpSubmitting,
 	} = superForm(signUpFormData, {
 		dataType: 'json',
+		customValidity: true,
 		validators: zodClient(SignUpFormData),
 
 		onResult: ({ result }) => {
@@ -57,6 +58,7 @@
 		submitting: signInSubmitting,
 	} = superForm(signInFormData, {
 		dataType: 'json',
+		customValidity: true,
 		validators: zodClient(SignInFormData),
 
 		onResult: ({ result }) => {
@@ -74,6 +76,7 @@
 		submitting: resetPasswordSubmitting,
 	} = superForm(resetPasswordFormData, {
 		dataType: 'json',
+		customValidity: true,
 		validators: zodClient(ResetPasswordFormData),
 
 		onResult: ({ result }) => {

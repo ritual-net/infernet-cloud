@@ -21,6 +21,7 @@
 		submitting: signOutSubmitting,
 	} = superForm({}, {
 		dataType: 'json',
+		customValidity: true,
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')

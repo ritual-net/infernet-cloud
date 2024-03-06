@@ -39,6 +39,7 @@
 		submitting,
 	} = superForm(formData, {
 		dataType: 'json',
+		customValidity: true,
 		validators: zodClient(FormData),
 
 		onResult: ({ result }) => {
