@@ -175,6 +175,9 @@ input, textarea {
 textarea {
 	width: 100%;
 }
+:user-invalid {
+	outline-color: red;
+}
 
 
 button, .button {
