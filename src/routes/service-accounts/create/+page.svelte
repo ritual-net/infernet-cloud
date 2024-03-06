@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Constants
-	import { ProviderTypeEnum, providers } from '$types/provider'
+	import { ProviderTypeEnum, providers } from '$/types/provider'
 
 	enum Fieldset {
 		ChooseCloudProvider,

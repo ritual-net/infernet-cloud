@@ -1,5 +1,5 @@
 // Types
-import type { NodeInfo } from '$types/provider'
+import type { NodeInfo } from '$/types/provider'
 
 
 // Data

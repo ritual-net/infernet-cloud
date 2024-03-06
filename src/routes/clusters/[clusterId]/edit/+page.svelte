@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import { providers, ProviderTypeEnum } from '$types/provider'
+	import { providers, ProviderTypeEnum } from '$/types/provider'
 
 
 	// Schema

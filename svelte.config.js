@@ -18,7 +18,6 @@ export default {
 		adapter: adapter(),
 		alias: {
 			'$schema': './dbschema',
-			'$types': './src/types',
 			'$': './src',
 		},
 	},

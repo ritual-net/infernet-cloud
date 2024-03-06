@@ -7,7 +7,7 @@
 
 <script lang="ts">
 	// Types/constants
-	import { providers } from '$types/provider'
+	import { providers } from '$/types/provider'
 	import type { getClustersForUser } from '$/lib/db/queries'
 
 

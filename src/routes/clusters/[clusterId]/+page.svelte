@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import { providers } from '$types/provider'
+	import { providers } from '$/types/provider'
 
 
 	// Context
