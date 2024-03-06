@@ -1,17 +1,18 @@
-import { z } from 'zod'
+import * as z from 'yup'
+
+export const Ip = z
+	.string<`${number}.${number}.${number}.${number}/${number}`>()
+	.matches(/^\d+\.\d+\.\d+\.\d+\$/g)
 
 export const IpWithAddressMask = z
-	// .string()
-	// .ip()
-	.custom<`${number}.${number}.${number}.${number}/${number}`>(
-		(value) => /^\d+\.\d+\.\d+\.\d+\/\d+$/g.test(value as string)
-	)
+	.string<`${number}.${number}.${number}.${number}/${number}`>()
+	.matches(/^\d+\.\d+\.\d+\.\d+\/\d+$/g)
 
 export const Config = z
 	.object({
 		'name': z
 			.string()
-			.default(''),
+			.required(),
 
 		'deploy_router': z
 			.boolean()
@@ -31,37 +32,36 @@ export const Config = z
 
 		'region': z
 			.string()
-			.default(''),
+			.required(),
 
 		'zone': z
 			.string()
-			.default('')
 			.optional(),
 
 		'machine_type': z
 			.string()
-			.default(''),
+			.required(),
 	})
 
 export const Container = z
 	.object({
 		'image': z
 			.string()
-			.default(''),
+			.required(),
 
 		'container_id': z
 			.string()
+			.required()
 			.default(() => (
 				crypto.randomUUID()
 			)),
 
 		'description': z
 			.string()
-			.default(''),
+			.required(),
 
 		'external': z
-			.boolean()
-			.default(true),
+			.boolean(),
 
 		'allowed_addresses': z
 			.array(
@@ -79,19 +79,17 @@ export const Container = z
 
 		'allowed_ips': z
 			.array(
-				z
-					.string()
-					.ip()
+				Ip
 			)
 			.default([]),
 
 		'command': z
 			.string()
-			.default(''),
+			.required(),
 
 		'env': z
 			.string()
-			.default(''),
+			.required(),
 
 		'gpu': z
 			.boolean()
@@ -106,54 +104,91 @@ export const NodeConfig = z
 
 		'trail_head_blocks': z
 			.number()
-			.default(5),
+			.default(5)
+			.when(
+				'chain_enabled',
+				([chain_enabled], _) => (
+					chain_enabled
+						? _.required()
+						: _.notRequired()
+				),
+			),
 
 		'rpc_url': z
 			.string()
 			.url()
-			.or(z.literal(''))
-			.default(''),
+			.default('')
+			.when(
+				'chain_enabled',
+				([chain_enabled]: boolean[], _) => (
+					chain_enabled
+						? _.required()
+						: _.notRequired()
+				),
+			),
 
 		'coordinator_address': z
 			.string()
-			.default(''),
+			.default('')
+			.when(
+				'chain_enabled',
+				([chain_enabled], _) => (
+					chain_enabled
+						? _.required()
+						: _.notRequired()
+				),
+			),
 
 		'max_gas_limit': z
 			.number()
-			.int()
+			.integer()
 			.positive()
-			.default(5000000),
+			.default(5000000)
+			.when(
+				'chain_enabled',
+				([chain_enabled], _) => (
+					chain_enabled
+						? _.required()
+						: _.notRequired()
+				),
+			),
 
 		'private_key': z
 			.string()
-			.default(''),
+			.default('')
+			.when(
+				'chain_enabled',
+				([chain_enabled], _) => (
+					chain_enabled
+						? _.required()
+						: _.notRequired()
+				),
+			),
 
 		'forward_stats': z
 			.boolean()
-			.default(true),
+			.default(false),
 	})
 
-export const Node = z.object({
-	'id': z
-		.string()
-		.uuid()
-		.default(() => (
-			crypto.randomUUID()
-		)),
+export const Node = z
+	.object({
+		'id': z
+			.string()
+			.uuid()
+			.default(() => (
+				crypto.randomUUID()
+			)),
 
-	'config': NodeConfig
-		.default(() => (
-			NodeConfig.parse({})
-		)),
+		'config': NodeConfig,
 
-	'containers': z
-		.array(
-			Container
-		)
-		.default(
-			[]
-		),
-})
+		'containers': z
+			.array(
+				Container
+			)
+			.default(
+				[]
+			),
+	})
 
 export const FormData = z
 	.object({
@@ -161,10 +196,7 @@ export const FormData = z
 			.string()
 			.uuid(),
 
-		'config': Config
-			.default(() => (
-				Config.parse({})
-			)),
+		'config': Config,
 
 		'nodes': z
 			.array(
@@ -172,7 +204,7 @@ export const FormData = z
 			)
 			.default(() => (
 				[
-					Node.parse({}),
+					Node.getDefault(),
 				]
 			)),
 	})

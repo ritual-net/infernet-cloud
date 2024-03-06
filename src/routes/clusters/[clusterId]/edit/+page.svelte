@@ -19,7 +19,7 @@
 
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
-	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { yupClient } from 'sveltekit-superforms/adapters'
 
 	const {
 		form,
@@ -30,7 +30,7 @@
 	} = superForm(formData, {
 		dataType: 'json',
 		customValidity: true,
-		validators: zodClient(FormData),
+		validators: yupClient(FormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')

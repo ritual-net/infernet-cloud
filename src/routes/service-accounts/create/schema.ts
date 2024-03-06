@@ -1,80 +1,97 @@
-import { z } from 'zod'
+import * as z from 'yup'
 
 export const Provider = z
-	.enum([
+	.string()
+	.oneOf([
 		'GCP',
 		'AWS',
-	])
+	] as const)
 	.default('GCP')
 
 export const GcpCredentials = z
 	.object({
-		'type': z.
-			string()
-			.default(''),
+		'type': z
+			.string()
+			.default('')
+			.required(),
 
-		'project_id': z.
-			string()
-			.default(''),
+		'project_id': z
+			.string()
+			.default('')
+			.required(),
 
-		'private_key_id': z.
-			string()
-			.default(''),
+		'private_key_id': z
+			.string()
+			.default('')
+			.required(),
 
-		'private_key': z.
-			string()
-			.default(''),
+		'private_key': z
+			.string()
+			.default('')
+			.required(),
 
-		'client_email': z.
-			string()
-			.default(''),
+		'client_email': z
+			.string()
+			.default('')
+			.required(),
 
-		'client_id': z.
-			string()
-			.default(''),
+		'client_id': z
+			.string()
+			.default('')
+			.required(),
 
-		'auth_uri': z.
-			string()
-			.default(''),
+		'auth_uri': z
+			.string()
+			.default('')
+			.required(),
 
-		'token_uri': z.
-			string()
-			.default(''),
+		'token_uri': z
+			.string()
+			.default('')
+			.required(),
 
-		'auth_provider_x509_cert_url': z.
-			string()
-			.default(''),
+		'auth_provider_x509_cert_url': z
+			.string()
+			.default('')
+			.required(),
 
-		'client_x509_cert_url': z.
-			string()
-			.default(''),
+		'client_x509_cert_url': z
+			.string()
+			.default('')
+			.required(),
 
-		'universe_domain': z.
-			string()
-			.default(''),
+		'universe_domain': z
+			.string()
+			.default('')
+			.required(),
 	})
 
 export const AwsCredentials = z
 	.object({
 		'user_name': z
 			.string()
-			.default(''),
+			.default('')
+			.required(),
 			
 		'access_key_id': z
 			.string()
-			.default(''),
+			.default('')
+			.required(),
 			
 		'status': z
 			.string()
-			.default(''),
+			.default('')
+			.required(),
 			
 		'secret_access_key': z
 			.string()
-			.default(''),
+			.default('')
+			.required(),
 			
 		'create_date': z
 			.string()
-			.default(''),
+			.default('')
+			.required(),
 	})
 	  
 
@@ -82,13 +99,21 @@ export const FormData = z
 	.object({
 		'name': z
 			.string()
-			.default(''),
+			.required(),
 
 		'provider':
 			Provider
-			.default('AWS'),
+			.default('AWS')
+			.required(),
 
-		'credentials':
-			GcpCredentials
-			.or(AwsCredentials),
+		'credentials': z
+			.mixed()
+			.when(
+				'provider',
+				([provider], schema) => (({
+					'AWS': AwsCredentials,
+					'GCP': GcpCredentials,
+				} as const)[provider as z.InferType<typeof Provider>]),
+			)
+			.required(),
 	})

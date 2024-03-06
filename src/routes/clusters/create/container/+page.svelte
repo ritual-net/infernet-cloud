@@ -29,7 +29,7 @@
 
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
-	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { yupClient } from 'sveltekit-superforms/adapters'
 
 	const {
 		form,
@@ -40,20 +40,20 @@
 	} = superForm(formData, {
 		dataType: 'json',
 		customValidity: true,
-		validators: zodClient(FormData),
+		validators: yupClient(FormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
 		},
 
-		onSubmit: (e) => {
-			console.log({e, $form})
-
+		onSubmit: ({ cancel }) => {
 			if(mode === 'create')
 				$form.container.container_id = crypto.randomUUID()
 
 			onSubmit?.($form)
+
+			cancel()
 		},
 	})
 
@@ -110,7 +110,6 @@
 				</div>
 
 				<Select
-					required
 					id="startingConfig"
 					name="startingConfig"
 					labelText="Starting Configuration"

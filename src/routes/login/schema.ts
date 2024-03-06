@@ -1,24 +1,25 @@
-import { z } from 'zod'
+import * as z from 'yup'
 
 export const SignUpFormData = z
 	.object({
 		'name': z
 			.string()
-			.default(''),
+			.required(),
 
 		'email': z
 			.string()
 			.email()
-			.default(''),
+			.required(),
 
 		'password': z
 			.string()
 			.min(16)
-			.default(''),
+			.required(),
 
 		'provider': z
 			.string()
-			.default('builtin::local_emailpassword'),
+			.default('builtin::local_emailpassword')
+			.required(),
 	})
 
 
@@ -27,16 +28,17 @@ export const SignInFormData = z
 		'email': z
 			.string()
 			.email()
-			.default(''),
+			.required(),
 
 		'password': z
 			.string()
 			.min(16)
-			.default(''),
+			.required(),
 
 		'provider': z
 			.string()
-			.default('builtin::local_emailpassword'),
+			.default('builtin::local_emailpassword')
+			.required(),
 	})
 
 
@@ -45,5 +47,5 @@ export const ResetPasswordFormData = z
 		'email': z
 			.string()
 			.email()
-			.default(''),
+			.required(),
 	})

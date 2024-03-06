@@ -1,6 +1,6 @@
 // Schema
 import { superValidate } from 'sveltekit-superforms/server'
-import { zod } from 'sveltekit-superforms/adapters'
+import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
 
@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({
 }) => {
 	const data = await parent()
 
-	const formData = await superValidate(zod(FormData))
+	const formData = await superValidate(yup(FormData))
 		
 	return {
 		images: data.images,

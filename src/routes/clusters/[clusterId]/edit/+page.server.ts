@@ -1,6 +1,6 @@
 // Schema
 import { superValidate } from 'sveltekit-superforms/server'
-import { zod } from 'sveltekit-superforms/adapters'
+import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
 
@@ -14,7 +14,7 @@ export const actions: Actions = {
 		fetch,
 		params: { clusterId },
 	}) => {
-		const formData = await superValidate(request, zod(FormData))
+		const formData = await superValidate(request, yup(FormData))
 
 		if (!formData.valid) {
 			return fail(400, { formData })

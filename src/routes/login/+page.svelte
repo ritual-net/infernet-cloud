@@ -29,7 +29,7 @@
 
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
-	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { yupClient } from 'sveltekit-superforms/adapters'
 
 	const {
 		formId: signUpFormId,
@@ -41,7 +41,7 @@
 	} = superForm(signUpFormData, {
 		dataType: 'json',
 		customValidity: true,
-		validators: zodClient(SignUpFormData),
+		validators: yupClient(SignUpFormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
@@ -59,7 +59,7 @@
 	} = superForm(signInFormData, {
 		dataType: 'json',
 		customValidity: true,
-		validators: zodClient(SignInFormData),
+		validators: yupClient(SignInFormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
@@ -77,7 +77,7 @@
 	} = superForm(resetPasswordFormData, {
 		dataType: 'json',
 		customValidity: true,
-		validators: zodClient(ResetPasswordFormData),
+		validators: yupClient(ResetPasswordFormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')

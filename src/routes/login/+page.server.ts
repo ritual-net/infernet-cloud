@@ -1,6 +1,6 @@
 // Schema
 import { superValidate } from 'sveltekit-superforms/server'
-import { zod } from 'sveltekit-superforms/adapters'
+import { yup } from 'sveltekit-superforms/adapters'
 import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 
 
@@ -13,9 +13,9 @@ export const load: ServerLoad = async ({
 	if(user)
 		redirect(303, '/clusters')
 
-	const signUpFormData = await superValidate(zod(SignUpFormData))
-	const signInFormData = await superValidate(zod(SignInFormData))
-	const resetPasswordFormData = await superValidate(zod(ResetPasswordFormData))
+	const signUpFormData = await superValidate(yup(SignUpFormData))
+	const signInFormData = await superValidate(yup(SignInFormData))
+	const resetPasswordFormData = await superValidate(yup(ResetPasswordFormData))
 
 	return {
 		signUpFormData,
@@ -33,7 +33,7 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const signUpFormData = await superValidate(request, zod(SignUpFormData))
+		const signUpFormData = await superValidate(request, yup(SignUpFormData))
 
 		if (!signUpFormData.valid) {
 			return fail(400, { signUpFormData })
@@ -62,7 +62,7 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const signInFormData = await superValidate(request, zod(SignInFormData))
+		const signInFormData = await superValidate(request, yup(SignInFormData))
 
 		if (!signInFormData.valid) {
 			return fail(400, { signInFormData })
@@ -91,7 +91,7 @@ export const actions: Actions = {
 		request,
 		fetch,
 	}) => {
-		const resetPasswordFormData = await superValidate(request, zod(ResetPasswordFormData))
+		const resetPasswordFormData = await superValidate(request, yup(ResetPasswordFormData))
 
 		if (!resetPasswordFormData.valid) {
 			return fail(400, { resetPasswordFormData })

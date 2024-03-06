@@ -1,6 +1,6 @@
 // Schema
 import { superValidate } from 'sveltekit-superforms/server'
-import { zod } from 'sveltekit-superforms/adapters'
+import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
 
@@ -19,7 +19,7 @@ export const load: PageLoad = async ({
 			ip_allow_http: cluster.ip_allow_http,
 			ip_allow_ssh: cluster.ip_allow_ssh,
 		},	
-	}, zod(FormData))
+	}, yup(FormData))
 
 	return {
 		cluster,

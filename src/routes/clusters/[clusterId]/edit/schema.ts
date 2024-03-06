@@ -1,21 +1,20 @@
-import { z } from 'zod'
+import * as z from 'yup'
 
 export const IpWithAddressMask = z
-	// .string()
-	// .ip()
-	.custom<`${number}.${number}.${number}.${number}/${number}`>(
-		(value) => /^\d+\.\d+\.\d+\.\d+\/\d+$/g.test(value as string)
-	)
+	.string<`${number}.${number}.${number}.${number}/${number}`>()
+	.matches(/^\d+\.\d+\.\d+\.\d+\/\d+$/g)
 
 export const Config = z
 	.object({
 		'name': z
 			.string()
-			.default(''),
+			.default('')
+			.required(),
 
 		'deploy_router': z
 			.boolean()
-			.default(false),
+			.default(false)
+			.required(),
 
 		'ip_allow_http': z
 			.array(
@@ -32,8 +31,5 @@ export const Config = z
 
 export const FormData = z
 	.object({
-		'config': Config
-			.default(() => (
-				Config.parse({})
-			)),
+		'config': Config,
 	})

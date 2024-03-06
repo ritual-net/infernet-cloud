@@ -23,7 +23,7 @@
 
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
-	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { yupClient } from 'sveltekit-superforms/adapters'
 
 	const {
 		form,
@@ -34,7 +34,7 @@
 	} = superForm(formData, {
 		dataType: 'json',
 		customValidity: true,
-		validators: zodClient(FormData),
+		validators: yupClient(FormData),
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
@@ -359,15 +359,14 @@
 												placeholder={
 													JSON.stringify(
 														{
-															['GCP']: GcpCredentials,
-															['AWS']: AwsCredentials,
-														}[$form.provider]
-														.parse({}),
+															['GCP']: GcpCredentials.getDefault(),
+															['AWS']: AwsCredentials.getDefault(),
+														}[$form.provider],
 														null,
 														'\t'
 													)
 												}
-												value={Object.entries($form.credentials).length ? JSON.stringify($form.credentials) : ''}
+												value={$form.credentials && Object.entries($form.credentials).length ? JSON.stringify($form.credentials) : ''}
 												on:input={(e) => {
 													try {
 														$form.credentials = JSON.parse(e.target.value)
