@@ -1,3 +1,5 @@
+import type { SubmitFunction } from '@sveltejs/kit'
+
 export type MenuItem<Value> = {
 	value: Value,
 	label: string,

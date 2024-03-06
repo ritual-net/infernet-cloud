@@ -112,11 +112,12 @@
 
 		display: grid;
 		grid:
-			'.' calc(100dvh - 1.5rem * 2)
+			'.' 100dvh
 			/ min(50rem, 100%)
 		;
-		place-content: center;
-		padding: 1.5rem;
+		justify-content: center;
+		align-items: start;
+		align-items: safe center;
 
 		transition: 0.3s var(--transition-easeOutExpo);
 
@@ -139,5 +140,20 @@
 
 	[data-melt-dialog-content] {
 		pointer-events: all;
+
+		grid:
+			'.' auto
+			'.' auto
+		;
+
+		height: min-content;
+		padding: 1.5rem;
 	}
+
+	/* header {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		backdrop-filter: blur(8px);
+	} */
 </style>

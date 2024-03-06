@@ -26,6 +26,10 @@
 			fitViewport: true,
 		},
 	})
+
+
+	// Actions
+	import { enhance } from '$app/forms'
 </script>
 
 
