@@ -60,7 +60,7 @@
 	<section class="column">
 		<h3>Details</h3>
 
-		<dl class="card">
+		<dl class="card column">
 			<section class="row">
 				<dt>Service Account</dt>
 
