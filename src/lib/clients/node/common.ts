@@ -78,7 +78,6 @@ export const nodeAction = async (
  * @param client - The database client
  * @param id - id of the router
  * @param action - The action to perform on the router
- * @returns error or success message
  * @throws Error if router could not be retrieved, or action is not supported
  */
 export const routerAction = async (
@@ -105,6 +104,7 @@ export const routerAction = async (
 		case NodeAction.restart:
 			await nodeClient.restartNodes([id], functionArgs);
 			return;
+
 		default:
 			throw Error(`Action ${action} not supported`);
 	}

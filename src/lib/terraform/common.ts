@@ -6,7 +6,6 @@ import type { Client } from 'edgedb';
 import type { ProviderServiceAccount } from '$/types/provider';
 import { NodeAction } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
-import { c } from 'tar';
 
 /**
  * Applies the given action to a cluster, and persists the resulting Terraform state
@@ -58,10 +57,11 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		}))
 		.run(client);
 
-	// If successful, then restart router
+	// Restart router to apply any changes to IP address list
 	if (success && cluster.deploy_router && action == TFAction.Apply) {
 		await routerAction(client, state!.outputs!.router!.value!.id, NodeAction.restart);
 	}
+
 	// Update node provider IDs
 	const nodeInfo = state?.outputs?.nodes?.value;
 	if (nodeInfo) {

@@ -63,12 +63,7 @@ export class GCPNodeClient implements BaseNodeClient {
 	 * @param args - Additional arguments needed to restart nodes (project id, zone)
 	 */
 	async restartNodes(ids: string[], args: object): Promise<void> {
-		for (const id of ids) {
-			await this.client.reset({
-				...args,
-				instance: id,
-			});
-		}
+		await Promise.all(ids.map((id) => this.client.reset({ ...args, instance: id })));
 	}
 
 	/**
