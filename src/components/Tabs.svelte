@@ -204,10 +204,12 @@
 			gap: 0.66em;
 			padding-block: 0.75em;
 
-			& > * > [data-melt-tabs-trigger] {
+			/* & > * > [data-melt-tabs-trigger] { */
+			:global(& > * > [data-melt-tabs-trigger]) {
 				--button-paddingX: 5px;
 				--button-paddingY: 5px;
-				--button-backgroundColor: hsl(from var(--textColor) h s l / 0.16);
+				/* --button-backgroundColor: hsl(from var(--textColor) h s l / 0.16); */
+				--button-backgroundColor: rgba(0, 0, 0, 0.16);
 				--button-borderWidth: 0;
 				--button-cornerRadius: 100%;
 

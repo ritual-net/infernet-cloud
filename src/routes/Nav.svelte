@@ -84,7 +84,7 @@
 			gap: 0.33em;
 			font-family: var(--fontFamily-display);
 
-			& svg {
+			& :global(svg) {
 				height: 1.25em;
 			}
 		}
