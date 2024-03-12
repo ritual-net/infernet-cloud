@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		httpOnly: true,
 		path: '/',
 		secure: true,
-		sameSite: 'strict'
+		sameSite: 'strict',
 	});
 
 	return new Response(null, { status: 204 });

@@ -8,11 +8,7 @@ import { EDGEDB_AUTH_BASE_URL, generatePKCE } from '$/lib/auth';
  * @param request - The request object containing 'email', 'password', and 'provider'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({
-	fetch,
-	request,
-	cookies,
-}) => {
+export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	const pkce = generatePKCE();
 	const { email, password, provider } = (await request.json()) as {
 		email: string;
@@ -41,12 +37,12 @@ export const POST: RequestHandler = async ({
 		}),
 	});
 
-	if(!authenticateResponse.ok){
+	if (!authenticateResponse.ok) {
 		const result = await authenticateResponse.text();
 
 		try {
 			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		}catch(e){
+		} catch (e) {
 			return error(500, `Error from the auth server: ${result}`);
 		}
 	}
@@ -60,12 +56,12 @@ export const POST: RequestHandler = async ({
 		method: 'get',
 	});
 
-	if(!tokenResponse.ok){
+	if (!tokenResponse.ok) {
 		const result = await tokenResponse.text();
 
 		try {
 			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		}catch(e){
+		} catch (e) {
 			return error(500, `Error from the auth server: ${result}`);
 		}
 	}
@@ -79,11 +75,11 @@ export const POST: RequestHandler = async ({
 			httpOnly: true,
 			path: '/',
 			secure: true,
-			sameSite: 'strict'
+			sameSite: 'strict',
 		});
 
 		return new Response(null, { status: 204 });
-	}catch(e){
+	} catch (e) {
 		return error(500, `Error from the auth server: ${result}`);
 	}
 };
