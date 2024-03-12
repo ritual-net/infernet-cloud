@@ -9,7 +9,11 @@ import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
  * @param request - The request object containing 'reset_token' and 'password'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
+export const POST: RequestHandler = async ({
+	cookies,
+	fetch,
+	request,
+}) => {
 	const { reset_token, password } = (await request.json()) as {
 		reset_token: string;
 		password: string;
@@ -44,9 +48,14 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		}),
 	});
 
-	if (!resetResponse.ok) {
-		const text = await resetResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!resetResponse.ok){
+		const result = await resetResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	const { code } = await resetResponse.json();
@@ -57,15 +66,23 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		method: 'get',
 	});
 
-	if (!tokenResponse.ok) {
-		const text = await tokenResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!tokenResponse.ok){
+		const result = await tokenResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	const { auth_token } = await tokenResponse.json();
-	const headers = new Headers({
-		'Set-Cookie': `edgedb-auth-token=${auth_token}; HttpOnly; Path=/; Secure; SameSite=Strict`,
+
+	cookies.set('edgedb-auth-token', auth_token, {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'strict'
 	});
 
-	return new Response(null, { status: 204, headers });
+	return new Response(null, { status: 204 });
 };
