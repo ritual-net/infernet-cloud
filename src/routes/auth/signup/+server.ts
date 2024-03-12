@@ -10,7 +10,11 @@ import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
  *   'provider'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ fetch, request }) => {
+export const POST: RequestHandler = async ({
+	cookies,
+	fetch,
+	request,
+}) => {
 	const pkce = generatePKCE();
 	const { email, name, password, provider } = (await request.json()) as {
 		email: string;
@@ -41,9 +45,14 @@ export const POST: RequestHandler = async ({ fetch, request }) => {
 		}),
 	});
 
-	if (!registerResponse.ok) {
-		const text = await registerResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!registerResponse.ok){
+		const result = await registerResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	// Get the identity from the auth server
@@ -71,12 +80,12 @@ export const POST: RequestHandler = async ({ fetch, request }) => {
 		})
 		.run(client);
 
-	// Set cookies and other headers as needed
-	const headers = new Headers();
-	headers.append(
-		'Set-Cookie',
-		`edgedb-pkce-verifier=${pkce.verifier}; HttpOnly; Path=/; Secure; SameSite=Strict`
-	);
+	cookies.set('edgedb-pkce-verifier', pkce.verifier, {
+		httpOnly: true,
+		path: '/',
+		secure: true,
+		sameSite: 'strict'
+	});
 
-	return new Response(null, { status: 204, headers });
+	return new Response(null, { status: 204 });
 };

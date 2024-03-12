@@ -9,7 +9,11 @@ import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
  * @param fetch - The fetch function.
  * @param request - The request object containing 'code'.
  */
-export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
+export const GET: RequestHandler = async ({
+	cookies,
+	fetch,
+	request,
+}) => {
 	const url = new URL(request.url);
 
 	const code = url.searchParams.get('code');
@@ -36,15 +40,22 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		method: 'GET',
 	});
 
-	if (!codeExchangeResponse.ok) {
-		const text = await codeExchangeResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+	if(!codeExchangeResponse.ok){
+		const result = await codeExchangeResponse.text();
+
+		try {
+			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
+		}catch(e){
+			return error(500, `Error from the auth server: ${result}`);
+		}
 	}
 
 	const { auth_token } = await codeExchangeResponse.json();
-	const headers = new Headers({
-		'Set-Cookie': `edgedb-auth-token=${auth_token}; Path=/; HttpOnly`,
-	});
 
-	return new Response(null, { status: 204, headers });
+	cookies.set('edgedb-auth-token', auth_token, {
+		path: '/',
+		httpOnly: true,
+	})
+
+	return new Response(null, { status: 204 });
 };
