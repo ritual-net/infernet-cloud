@@ -189,7 +189,7 @@
 				transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 
 				& td.sticky {
-					transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+					transition: var(--active-transitionOutDuration) var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 				}
 
 				&:hover {
@@ -205,8 +205,9 @@
 
 					& td.sticky {
 						backdrop-filter: none;
+						transition: all var(--active-transitionInDuration), backdrop-filter none;
 						opacity: 0;
-						scale: 0.5;
+						scale: 0.9;
 					}
 				}
 			}
