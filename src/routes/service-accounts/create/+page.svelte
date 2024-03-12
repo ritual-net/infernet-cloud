@@ -28,7 +28,8 @@
 	const {
 		form,
 		enhance,
-		errors,
+		errors,	
+		allErrors,
 		constraints,
 		submitting,
 	} = superForm(formData, {
@@ -393,6 +394,10 @@
 												}}
 											>Paste from clipboard</button>
 										</div>
+
+										{#each Object.values($errors.credentials ?? []).filter(Boolean) as error}
+											<p>{error}</p>
+										{/each}
 									<!-- {/if}
 								</svelte:fragment>
 							</Tabs> -->
