@@ -103,8 +103,8 @@
 							use:melt={trigger}
 							aria-label={labelText}
 							tabIndex={onRowClick || link ? 0 : undefined}
-							on:click={() => onRowClick?.(datum)}
-							on:keydown={e => ['Enter', 'Space'].includes(e.code) && onRowClick?.(datum)}
+							on:click|self={() => onRowClick?.(datum)}
+							on:keydown|self={e => ['Enter', 'Space'].includes(e.code) && onRowClick?.(datum)}
 						>
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
