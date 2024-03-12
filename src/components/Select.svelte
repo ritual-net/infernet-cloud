@@ -52,12 +52,19 @@
 
 	$: createSync(states).selected(
 		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
-		selected => { value = selected.value as Value },
+		selected => { value = selected?.value as Value },
 	)
 </script>
 
 
-<div {id}>
+<div class="stack">
+	<input
+		type="text"
+		{id}
+		use:melt={$hiddenInput}
+		on:focus={() => triggerElement.click()}
+	/>
+
 	{#if labelText}
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<!-- <label use:melt={$label}>{labelText}</label> -->
