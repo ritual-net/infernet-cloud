@@ -9,6 +9,7 @@
 	export let columns: Parameters<Table<Datum>['column']>[0][]
 	export let contextMenu: ((_: Datum) => MenuItems<MenuItemValue>[]) | undefined
 	export let getRowLink: ((_: Datum) => string | undefined) | undefined
+	export let showMenuColumn = Boolean(contextMenu)
 
 
 	// Internal state
@@ -41,6 +42,7 @@
 	// Components
 	import { melt } from '@melt-ui/svelte'
 	import ContextMenu from './ContextMenu.svelte'
+	import DropdownMenu from './DropdownMenu.svelte'
 
 
 	// Transitions/animations
@@ -56,11 +58,23 @@
 					<tr {...rowAttrs}>
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
-								<th {...attrs}>
+								<th
+									data-align="start"
+									{...attrs}
+								>
 									<Render of={cell.render()} />
 								</th>
 							</Subscribe>
 						{/each}
+
+						{#if showMenuColumn}
+							<th
+								class="sticky"
+								data-align="end"
+							>
+								Actions
+							</th>
+						{/if}
 					</tr>
 				</Subscribe>
 			{/each}
@@ -90,7 +104,10 @@
 						>
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
-									<td {...attrs}>
+									<td
+										{...attrs}
+										data-align="start"
+									>
 										{#if link}
 											<a href={link}>
 												<Render of={cell.render()} />
@@ -101,6 +118,19 @@
 									</td>
 								</Subscribe>
 							{/each}
+
+							{#if contextMenu && showMenuColumn}
+								<td
+									class="sticky"
+									data-align="end"
+								>
+									<DropdownMenu
+										items={contextMenu(datum)}
+									>
+										• • •
+									</DropdownMenu>
+								</td>
+							{/if}
 						</tr>
 					</ContextMenu>
 				</Subscribe>
@@ -113,30 +143,94 @@
 <style>
 	div {
 		overflow-x: auto;
+		scroll-padding: var(--borderWidth);
 	}
 
 	table {
-		border-spacing: var(--border-width);
 		width: 100%;
+		margin-inline: calc(-1 * var(--borderWidth));
+
+		border-collapse: separate;
+		border-spacing: var(--borderWidth);
 	}
 
 	thead {
 		font-size: 0.85em;
+
+		& th {
+			opacity: 0.5;
+		}
+
+		& tr {
+			box-shadow: 0 var(--borderWidth) var(--borderColor);
+		}
 	}
 
-	tbody tr {
-		box-shadow: 0 var(--border-width) var(--border-color), 0 calc(-1 * var(--border-width)) var(--border-color);
+	tbody {
+		& tr {
+			--table-row-backgroundColor: rgba(0, 0, 0, 0.03);
 
-		&:nth-child(odd) {
-			background-color: rgba(0, 0, 0, 0.03);
+			box-shadow: 0 var(--borderWidth) var(--borderColor), 0 calc(-1 * var(--borderWidth)) var(--borderColor);
+
+			&:nth-of-type(odd) {
+				background-color: var(--table-row-backgroundColor);
+
+				> td {
+					box-shadow: var(--borderWidth) 0 var(--table-row-backgroundColor);
+				}
+			}
+
+			&[tabIndex="0"] {
+				cursor: pointer;
+
+				transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+
+				& td.sticky {
+					transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+				}
+
+				&:hover {
+					--table-row-backgroundColor: rgba(0, 0, 0, 0.05);
+				}
+
+				&:active:not(:has([tabindex="0"]:active)) {
+					transition-duration: var(--active-transitionInDuration);
+					opacity: var(--active-opacity);
+					scale: var(--active-scale);
+
+					box-shadow: none;
+
+					& td.sticky {
+						backdrop-filter: none;
+						opacity: 0;
+						scale: 0.5;
+					}
+				}
+			}
 		}
 	}
 
 	th, td {
 		padding: 1em;
-	}
 
-	thead th {
-		opacity: 0.5;
+		&.sticky {
+			position: sticky;
+			backdrop-filter: blur(20px);
+
+			&:last-child {
+				inset-inline-end: 0;
+			}
+		}
+
+		&[data-align="start"] {
+			text-align: start;
+			align-items: start;
+			transform-origin: left;
+		}
+		&[data-align="end"] {
+			text-align: end;
+			align-items: end;
+			transform-origin: right;
+		}
 	}
 </style>

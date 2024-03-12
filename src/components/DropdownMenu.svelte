@@ -18,8 +18,9 @@
 	import { melt, createDropdownMenu } from '@melt-ui/svelte'
 
 	const {
-		elements: { trigger, menu, item, separator },
+		elements: { trigger, menu, item, separator, arrow },
 		builders: { createSubmenu, createMenuRadioGroup, createCheckboxItem },
+		states: { open },
 	} = createDropdownMenu({
 		positioning: {
 			placement,
@@ -36,6 +37,8 @@
 <div
 	use:melt={$trigger}
 	aria-label={labelText}
+	on:click|stopPropagation
+	on:contextmenu={e => { if($open) e.stopPropagation() }}
 >
 	<slot />
 </div>
