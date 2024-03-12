@@ -3,6 +3,9 @@
 	import type { Table } from 'svelte-headless-table'
 	type Datum = $$Generic<any>
 
+	import type { MenuItems } from '$/lib/menus'
+	type MenuItemValue = $$Generic<any>
+
 
 	// Imports
 	export let data: Datum[]
