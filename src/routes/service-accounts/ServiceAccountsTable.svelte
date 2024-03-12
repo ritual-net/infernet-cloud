@@ -7,6 +7,10 @@
 	export let serviceAccounts: QueriedServiceAccount[]
 
 
+	// Functions
+	import { resolveRoute } from '$app/paths'
+
+
 	// Components
 	import { createRender } from 'svelte-headless-table'
 	import Table from '$/components/Table.svelte'
@@ -32,4 +36,9 @@
 			),
 		},
 	]}
+	getRowLink={serviceAccount => (
+		resolveRoute(`/service-accounts/[serviceAccountId]`, {
+			serviceAccountId: serviceAccount.id,
+		})
+	)}
 />
