@@ -55,16 +55,6 @@
 			header: 'Containers',
 			accessor: node => node.containers.length,
 		},
-		{
-			header: 'Actions',
-			accessor: node => node,
-			cell: ({ value: node }) => (
-				createRender(NodesTableCell, {
-					cellType: CellType.Actions,
-					node,
-				})
-			),
-		},
 	]}
 	getRowLink={node => (
 		resolveRoute(`/nodes/[nodeId]`, {

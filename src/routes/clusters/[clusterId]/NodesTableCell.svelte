@@ -1,7 +1,6 @@
 <script context="module" lang="ts">
 	export enum CellType {
 		Status,
-		Actions,
 	}
 </script>
 
