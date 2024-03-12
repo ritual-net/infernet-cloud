@@ -115,6 +115,7 @@
 										{#if link}
 											<a href={link}>
 												<Render of={cell.render()} />
+											</a>
 										{:else}
 											<Render of={cell.render()} />
 										{/if}

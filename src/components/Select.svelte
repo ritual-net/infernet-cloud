@@ -28,7 +28,7 @@
 	import { melt, createSelect, createSync } from '@melt-ui/svelte'
 
 	const {
-		elements: { trigger, menu, option, group, groupLabel, label },
+		elements: { trigger, menu, option, group, groupLabel, label, hiddenInput },
 		states,
 		helpers: { isSelected },
 	} = createSelect<Value>({
@@ -54,6 +54,8 @@
 		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
 		selected => { value = selected?.value as Value },
 	)
+
+	let triggerElement: Element
 </script>
 
 
@@ -75,6 +77,7 @@
 		use:melt={$trigger}
 		aria-label={labelText}
 		class="row"
+		bind:this={triggerElement}
 	>
 		{#if $selected?.icon}
 			<img src={$selected.icon} />
@@ -256,6 +259,14 @@
 			margin-right: -0.25em;
 			text-align: center;
 		}
+	}
+
+	[data-melt-select-hidden-input]	{
+		display: block;
+		position: static !important;
+		transform: none !important;
+		min-width: 100%;
+		width: 0;
 	}
 
 	img {
