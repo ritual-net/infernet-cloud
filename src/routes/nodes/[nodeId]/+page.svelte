@@ -23,11 +23,12 @@
 				<RitualLogo />
 			</div>
 
-			<div class="column">
+			<div class="column inline">
 				<h2>
 					{node.id}
 				</h2>
 
+				<p>Infernet Node</p>
 				<!-- <p>Created {node.created}</p> -->
 			</div>
 		</div>

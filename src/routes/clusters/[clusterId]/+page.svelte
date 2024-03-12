@@ -31,11 +31,12 @@
 				<RitualLogo />
 			</div>
 
-			<div class="column">
+			<div class="column inline">
 				<h2>
 					{cluster.name || cluster.id}
 				</h2>
 
+				<p>Infernet Cluster</p>
 				<!-- <p>Created {cluster.created}</p> -->
 			</div>
 		</div>

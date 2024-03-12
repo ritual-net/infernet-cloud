@@ -31,10 +31,12 @@
 				<RitualLogo />
 			</div>
 
-			<div class="column">
+			<div class="column inline">
 				<h2>
 					{serviceAccount.name || serviceAccount.id}
 				</h2>
+
+				<p>Service Account</p>
 			</div>
 		</div>
 
