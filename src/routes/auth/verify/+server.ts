@@ -60,9 +60,13 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 	}
 
 	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
-	const headers = new Headers({
-		'Set-Cookie': `edgedb-auth-token=${auth_token}; HttpOnly; Path=/; Secure; SameSite=Strict`,
+
+	cookies.set('edgedb-auth-token', auth_token, {
+		httpOnly: true,
+		path: '/',
+		secure: true,
+		sameSite: 'strict',
 	});
 
-	return new Response(null, { status: 204, headers });
+	return new Response(null, { status: 204 });
 };
