@@ -15,6 +15,9 @@
 	export let getRowLink: ((_: Datum) => string | undefined) | undefined
 	export let showMenuColumn = Boolean(contextMenu)
 
+	// (View options)
+	export let layout: 'default' | 'card' = 'default'
+
 
 	// Internal state
 	import { writable } from 'svelte/store'
@@ -54,7 +57,7 @@
 </script>
 
 
-<div>
+<div data-layout={layout}>
 	<table {...$tableAttrs}>
 		{#if !$rows.length}
 			<caption class="placeholder">
@@ -155,9 +158,31 @@
 
 
 <style>
+	:root {
+		--table-layoutDefault-backgroundColor: transparent;
+		--table-layoutDefault-outerBorderColor: transparent;
+
+		--table-layoutCard-backgroundColor: #fff;
+		--table-layoutCard-outerBorderColor: var(--borderColor);
+	}
+
 	div {
+		--table-backgroundColor: var(--table-layoutDefault-backgroundColor);
+		--table-outerBorderColor: var(--table-layoutDefault-backgroundColor);
+		--table-borderWidth: var(--borderWidth);
+		--table-cornerRadius: 0.33em;
+
+		&[data-layout="card"] {
+			--table-backgroundColor: var(--table-layoutCard-backgroundColor);
+			--table-outerBorderColor: var(--table-layoutCard-backgroundColor);
+		}
+
 		overflow-x: auto;
 		scroll-padding: var(--borderWidth);
+
+		background-color: var(--table-backgroundColor);
+		box-shadow: 0 0 0 var(--table-borderWidth) var(--table-outerBorderColor) inset;
+		border-radius: var(--table-cornerRadius);
 	}
 
 	table {
