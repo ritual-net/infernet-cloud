@@ -153,7 +153,10 @@
 						</section>
 
 						<Collapsible open={serviceAccount?.provider}>
-							<fieldset disabled={!(serviceAccount?.provider)}>
+							<fieldset
+								class="column"
+								disabled={!(serviceAccount?.provider)}
+							>
 								<section class="column wrap">
 									<div class="row wrap">
 										<div class="column inline">
@@ -471,7 +474,10 @@
 							</section>
 
 							<Collapsible open={node.config.chain_enabled}>
-								<fieldset disabled={!node.config.chain_enabled} class="column">
+								<fieldset
+									class="column"
+									disabled={!node.config.chain_enabled}
+								>
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
