@@ -55,6 +55,12 @@
 
 <div>
 	<table {...$tableAttrs}>
+		{#if !$rows.length}
+			<caption class="placeholder">
+				<slot />
+			</caption>
+		{/if}
+
 		<thead>
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe rowAttrs={headerRow.attrs()} let:rowAttrs>
@@ -252,5 +258,12 @@
 			padding: 1em;
 			height: 100%;
 		}
+	}
+
+	caption.placeholder {
+		caption-side: bottom;
+		padding: 1.5rem 1rem;
+
+		text-align: center;
 	}
 </style>
