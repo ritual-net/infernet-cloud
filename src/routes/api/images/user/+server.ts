@@ -4,8 +4,7 @@ import { DockerHubClient } from '$/lib/docker/docker';
 import type { DockerHubCreds } from '$/types/docker';
 
 /**
- * Fetch all images (public or private) owned by user, an organization the user is in,
- * or ritualnetwork.
+ * Fetch all images (public or private) owned by user or an organization the user is in.
  *
  * @param request object containing DockerHub `user` (username) and `pat` (Personal
  * Access Token) headers

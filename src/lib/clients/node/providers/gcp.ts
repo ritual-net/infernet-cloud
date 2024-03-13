@@ -57,6 +57,16 @@ export class GCPNodeClient implements BaseNodeClient {
 	}
 
 	/**
+	 * Restart set of GCP infernet nodes.
+	 *
+	 * @param ids - List of node ids to restart
+	 * @param args - Additional arguments needed to restart nodes (project id, zone)
+	 */
+	async restartNodes(ids: string[], args: object): Promise<void> {
+		await Promise.all(ids.map((id) => this.client.reset({ ...args, instance: id })));
+	}
+
+	/**
 	 * Get status and ip of set of GCP infernet nodes.
 	 *
 	 * @param ids - List of node ids to get status and ip of
