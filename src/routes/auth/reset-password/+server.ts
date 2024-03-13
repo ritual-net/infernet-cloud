@@ -48,12 +48,12 @@ export const POST: RequestHandler = async ({
 		}),
 	});
 
-	if(!resetResponse.ok){
+	if (!resetResponse.ok) {
 		const result = await resetResponse.text();
 
 		try {
 			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		}catch(e){
+		} catch (e) {
 			return error(500, `Error from the auth server: ${result}`);
 		}
 	}
@@ -66,12 +66,12 @@ export const POST: RequestHandler = async ({
 		method: 'get',
 	});
 
-	if(!tokenResponse.ok){
+	if (!tokenResponse.ok) {
 		const result = await tokenResponse.text();
 
 		try {
 			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		}catch(e){
+		} catch (e) {
 			return error(500, `Error from the auth server: ${result}`);
 		}
 	}
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({
 	cookies.set('edgedb-auth-token', auth_token, {
 		path: '/',
 		httpOnly: true,
-		sameSite: 'strict'
+		sameSite: 'strict',
 	});
 
 	return new Response(null, { status: 204 });

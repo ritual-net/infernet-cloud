@@ -45,6 +45,7 @@ export enum NodeAction {
 	start = 'start',
 	stop = 'stop',
 	info = 'info',
+	restart = 'restart',
 }
 
 
