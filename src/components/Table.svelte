@@ -7,8 +7,9 @@
 	type MenuItemValue = $$Generic<any>
 
 
-	// Imports
+	// Inputs
 	export let data: Datum[]
+	export let getId: (_: Datum) => any
 	export let columns: Parameters<Table<Datum>['column']>[0][]
 	export let contextMenu: ((_: Datum) => MenuItems<MenuItemValue>[]) | undefined
 	export let getRowLink: ((_: Datum) => string | undefined) | undefined
