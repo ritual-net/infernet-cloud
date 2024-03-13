@@ -22,20 +22,7 @@
 		{/if}
 	</header>
 
-	{#if serviceAccounts.length}
-		<ServiceAccountsTable
-			{serviceAccounts}
-		/>
-	{:else}
-		<div class="card column">
-			<p>You have not connected any service accounts.</p>
-
-			<a
-				class="button primary"
-				href="/service-accounts/create"
-			>
-				Connect
-			</a>
-		</div>
-	{/if}
+	<ServiceAccountsTable
+		{serviceAccounts}
+	/>
 </section>

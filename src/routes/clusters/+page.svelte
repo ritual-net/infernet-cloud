@@ -2,10 +2,7 @@
 	// Context
 	import { page } from '$app/stores'
 
-	$: clusters = $page.data.clusters ?? [
-		{ id: '1', name: 'Cluster A' },
-		{ id: '2', name: 'Cluster B' },
-	]
+	$: clusters = $page.data.clusters
 
 
 	// Components
@@ -27,22 +24,9 @@
 		{/if}
 	</header>
 
-	{#if clusters.length}
-		<section class="card">
-			<ClustersTable
-				{clusters}
-			/>
-		</section>
-	{:else}
-		<div class="card column">
-			<p>You have not created any clusters.</p>
-
-			<a
-				class="button primary"
-				href="/clusters/create"
-			>
-				Create Cluster
-			</a>
-		</div>
-	{/if}
+	<section>
+		<ClustersTable
+			{clusters}
+		/>
+	</section>
 </div>
