@@ -5,6 +5,7 @@
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
+	import { goto } from '$app/navigation'
 
 
 	// Inputs
