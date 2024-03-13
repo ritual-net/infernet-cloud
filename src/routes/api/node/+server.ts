@@ -45,6 +45,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 
 		// Apply Terraform changes to cluster
 		const { error: errorMessage, success } = await clusterAction(client, clusterId, TFAction.Apply);
+
 		return json({ message: success ? 'Node created successfully' : errorMessage, success });
 	} catch (e) {
 		return error(400, (e as Error).message);

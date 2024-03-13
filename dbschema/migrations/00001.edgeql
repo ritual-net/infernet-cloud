@@ -1,4 +1,4 @@
-CREATE MIGRATION m1rvgtux6ib6mtlaka4rfcdvvilxoxvydvuyib5q2rdqse6u5nvvla
+CREATE MIGRATION m12owc2vfsgrgv3r74clpzr2gkjzihtyex4tpft5tnhhgghkd24rda
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -112,7 +112,7 @@ CREATE MIGRATION m1rvgtux6ib6mtlaka4rfcdvvilxoxvydvuyib5q2rdqse6u5nvvla
           SET default := false;
       };
       CREATE REQUIRED PROPERTY name: std::str;
-      CREATE PROPERTY router_ip: std::str;
+      CREATE PROPERTY router: tuple<id: std::str, ip: std::str>;
       CREATE PROPERTY tfstate: std::str;
       CREATE ACCESS POLICY only_owner
           ALLOW ALL USING ((.service_account.user ?= GLOBAL default::current_user));
