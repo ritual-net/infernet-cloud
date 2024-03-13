@@ -8,11 +8,7 @@ import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
  * @param request - The request object containing 'email'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({
-	fetch,
-	request,
-	cookies,
-}) => {
+export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	const { email } = (await request.json()) as { email: string };
 
 	// TODO: Needs to change
@@ -34,12 +30,12 @@ export const POST: RequestHandler = async ({
 		}),
 	});
 
-	if(!sendResetResponse.ok){
+	if (!sendResetResponse.ok) {
 		const result = await sendResetResponse.text();
 
 		try {
 			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		}catch(e){
+		} catch (e) {
 			return error(500, `Error from the auth server: ${result}`);
 		}
 	}
@@ -50,7 +46,7 @@ export const POST: RequestHandler = async ({
 		httpOnly: true,
 		path: '/',
 		secure: true,
-		sameSite: 'strict'
+		sameSite: 'strict',
 	});
 
 	return new Response(`Reset email sent to '${email_sent}'`);

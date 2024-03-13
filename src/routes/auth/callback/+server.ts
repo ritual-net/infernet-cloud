@@ -40,12 +40,12 @@ export const GET: RequestHandler = async ({
 		method: 'GET',
 	});
 
-	if(!codeExchangeResponse.ok){
+	if (!codeExchangeResponse.ok) {
 		const result = await codeExchangeResponse.text();
 
 		try {
 			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		}catch(e){
+		} catch (e) {
 			return error(500, `Error from the auth server: ${result}`);
 		}
 	}
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({
 	cookies.set('edgedb-auth-token', auth_token, {
 		path: '/',
 		httpOnly: true,
-	})
+	});
 
 	return new Response(null, { status: 204 });
 };
