@@ -92,6 +92,7 @@
 			},
 		},
 	]}
+	layout="card"
 >
-	No containers found
+	<p>No containers configured.</p>
 </Table>

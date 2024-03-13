@@ -103,4 +103,6 @@
 			},
 		]
 	}}
-/>
+>
+	<p>No nodes configured.</p>
+</Table>
