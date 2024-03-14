@@ -42,5 +42,5 @@
 		})
 	)}
 >
-	No service accounts configured.
+	<p>No service accounts configured.</p>
 </Table>
