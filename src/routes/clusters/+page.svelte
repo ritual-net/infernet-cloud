@@ -14,14 +14,12 @@
 	<header class="row">
 		<h2>Clusters</h2>
 
-		{#if clusters.length}
-			<a
-				class="button primary"
-				href="/clusters/create"
-			>
-				Create Cluster
-			</a>
-		{/if}
+		<a
+			class="button primary"
+			href="/clusters/create"
+		>
+			Create Cluster
+		</a>
 	</header>
 
 	<section>
