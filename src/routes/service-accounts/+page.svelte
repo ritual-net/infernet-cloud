@@ -14,12 +14,10 @@
 	<header class="row">
 		<h2>Service Accounts</h2>
 
-		{#if serviceAccounts.length}
-			<a
-				class="button primary"
-				href="/service-accounts/create"
-			>Connect Service Account</a>
-		{/if}
+		<a
+			class="button primary"
+			href="/service-accounts/create"
+		>Connect Service Account</a>
 	</header>
 
 	<ServiceAccountsTable
