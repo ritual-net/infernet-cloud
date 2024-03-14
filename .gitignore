@@ -11,7 +11,3 @@ vite.config.ts.timestamp-*
 tmp
 tests
 
-# EdgeDB
-**/dbschema/edgeql-js
-
-dbschema/edgeql-js
