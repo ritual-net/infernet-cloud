@@ -28,7 +28,7 @@ services:
       EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
     volumes:
       - './dbschema:/dbschema'
-      - 'edgedb-data:/var/lib/edgedb/data'
+      - './edgedb-data:/var/lib/edgedb/data'
     expose:
       - '5656'
     healthcheck:
