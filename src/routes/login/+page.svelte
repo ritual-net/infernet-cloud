@@ -27,6 +27,10 @@
 	import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 
 
+	// Actions
+	import { addToast } from '$/components/Toaster.svelte'
+
+
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
 	import { yupClient } from 'sveltekit-superforms/adapters'
@@ -45,7 +49,13 @@
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
-				alert(result.data?.result?.message)
+				addToast({
+					data: {
+						type: 'error',
+						title: `Couldn't sign up.`,
+						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
+					},
+				})
 		},
 	})
 
@@ -63,7 +73,13 @@
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
-				alert(result.data?.result?.message)
+				addToast({
+					data: {
+						type: 'error',
+						title: `Couldn't log in.`,
+						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
+					},
+				})
 		},
 	})
 
@@ -81,7 +97,13 @@
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
-				alert(result.data?.result?.message)
+				addToast({
+					data: {
+						type: 'error',
+						title: `Couldn't reset password.`,
+						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
+					},
+				})
 		},
 	})
 
