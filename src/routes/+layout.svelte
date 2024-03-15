@@ -14,8 +14,13 @@
 	import '../global.css'
 
 
+	// Context
+	import { page } from '$app/stores'
+
+
 	// Components
 	import Nav from './Nav.svelte'
+	import Toaster from '$/components/Toaster.svelte'
 </script>
 
 
@@ -29,9 +34,9 @@
 	</main>
 </div>
 
-<footer>
+<!-- <footer></footer> -->
 
-</footer>
+<Toaster />
 
 
 <style>
