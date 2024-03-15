@@ -8,6 +8,20 @@
 	import { page } from '$app/stores'
 
 
+	// Actions
+	import { addToast } from '$/components/Toaster.svelte'
+
+	$: if($page.form && 'toast' in $page.form){
+		addToast({
+			data: {
+				type: $page.status ? 'success' : 'error',
+				title: 'Form submitted',
+				description: JSON.stringify($page.form),
+			},
+		})
+	}
+
+
 	// Components
 	import Nav from './Nav.svelte'
 	import Toaster from '$/components/Toaster.svelte'

@@ -23,8 +23,11 @@
 	} = $page.data as PageData
 
 
-	// Internal state
+	// Actions
+	import { addToast } from '$/components/Toaster.svelte'
 
+
+	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
 	import { yupClient } from 'sveltekit-superforms/adapters'
 
@@ -41,7 +44,13 @@
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
-				alert(result.data?.result?.message)
+				addToast({
+					data: {
+						type: 'error',
+						title: `Couldn't create cluster.`,
+						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
+					},
+				})
 		},
 	})
 
