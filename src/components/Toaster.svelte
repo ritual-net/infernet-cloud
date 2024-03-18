@@ -78,14 +78,13 @@
 	[data-portal] {
 		isolation: isolate;
 
+		overflow: hidden auto;
+
 		position: fixed;
-		right: 1em;
-		bottom: 1em;
+		right: 0;
+		bottom: 0;
 		max-height: 100dvh;
-
-		overflow-y: auto;
-
-		padding: var(--borderWidth);
+		padding: 1em;
 
 		> div {
 			align-content: end;
