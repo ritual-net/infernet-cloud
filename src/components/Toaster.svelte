@@ -67,6 +67,14 @@
 
 
 <style>
+	:root {
+		--toast-typeSuccess-backgroundColor: rgb(246, 255, 246);
+		--toast-typeSuccess-borderColor: rgba(0, 255, 0, 0.2);
+
+		--toast-typeError-backgroundColor: rgb(255, 246, 246);
+		--toast-typeError-borderColor: rgba(255, 0, 0, 0.2);
+	}
+
 	[data-portal] {
 		isolation: isolate;
 
@@ -83,9 +91,24 @@
 			align-content: end;
 
 			& [data-melt-toast-content] {
+				--toast-backgroundColor: #fff;
+				--toast-borderColor: #fff;
+
+				&[data-type="success"] {
+					--toast-backgroundColor: var(--toast-typeSuccess-backgroundColor);
+					--toast-borderColor: var(--toast-typeSuccess-borderColor);
+				}
+
+				&[data-type="error"] {
+					--toast-backgroundColor: var(--toast-typeError-backgroundColor);
+					--toast-borderColor: var(--toast-typeError-borderColor);
+				}
+
 				position: relative;
 
 				& .card {
+					--card-backgroundColor: var(--toast-backgroundColor);
+					--card-borderColor: var(--toast-borderColor);
 					--card-paddingY: 0.75em;
 					--card-paddingX: 1em;
 
