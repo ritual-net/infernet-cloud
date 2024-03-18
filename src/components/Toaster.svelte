@@ -112,7 +112,7 @@
 					--card-paddingY: 0.75em;
 					--card-paddingX: 1em;
 
-					width: min(35ch, 100%);
+					width: min(35ch, 100vw - 2rem);
 					row-gap: 0.25em;
 
 					transition: 0.3s;
