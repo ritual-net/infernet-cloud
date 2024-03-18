@@ -56,7 +56,7 @@
 
 					{#if data.description}
 						<div use:melt={$description(id)}>
-							<p>{@html data.description.replaceAll(/\{.+\}/g, m => `<code>${m.replace(/</g, '&lt;')}</code>`)}</p>
+							<p>{@html data.description.replace(/</g, '&lt;').replaceAll(/\{.+\}/g, m => `<code>${m}</code>`)}</p>
 						</div>
 					{/if}
 				</div>
