@@ -7,6 +7,7 @@
 	let navItems: {
 		href: string,
 		label: string,
+		type?: 'link' | 'button',
 	}[]
 
 	$: navItems = [
@@ -21,9 +22,11 @@
 		$page.data.user ? {
 			href: '/account',
 			label: $page.data.user.name || $page.data.user.email,
+			type: 'button',
 		} : {
 			href: '/login',
-			label: 'Login',
+			label: 'Log In',
+			type: 'button',
 		},
 	]
 
@@ -53,6 +56,7 @@
 				<a	
 					href={item.href}
 					aria-current={$page.url.pathname === item.href ? 'page' : undefined}
+					class:button={item.type === 'button'}
 				>
 					{item.label}
 				</a>
