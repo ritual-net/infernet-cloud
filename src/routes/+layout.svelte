@@ -12,11 +12,19 @@
 	import { addToast } from '$/components/Toaster.svelte'
 
 	$: if($page.form && 'toast' in $page.form){
+		const {
+			title = 'Success',
+			description,
+		} = $page.form.toast as {
+			title?: string,
+			description?: string,
+		}
+
 		addToast({
 			data: {
 				type: $page.status ? 'success' : 'error',
-				title: 'Form submitted',
-				description: JSON.stringify($page.form),
+				title,
+				description,
 			},
 		})
 	}
