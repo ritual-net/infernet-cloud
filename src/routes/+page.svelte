@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Context
+	import { page } from '$app/stores'
+
+
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
@@ -52,19 +56,35 @@
 </div>
 
 <div class="row equal">
-	<a
-		class="button"
-		href="/service-accounts"
-	>
-		Connect Service Account
-	</a>
+	{#if !$page.data.user}
+		<a
+			class="button"
+			href="/login#signUp"
+		>
+			Sign Up
+		</a>
 
-	<a
-		class="button primary"
-		href="/clusters"
-	>
-		Manage Clusters
-	</a>
+		<a
+			class="button primary"
+			href="/login#logIn"
+		>
+			Log In
+		</a>
+	{:else}
+		<a
+			class="button"
+			href="/service-accounts"
+		>
+			Connect Service Account
+		</a>
+
+		<a
+			class="button primary"
+			href="/clusters"
+		>
+			Manage Clusters
+		</a>
+	{/if}
 </div>
 
 
