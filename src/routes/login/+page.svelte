@@ -84,6 +84,10 @@
 						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
 					},
 				})
+			
+			else {
+				goto('/')
+			}
 		},
 	})
 
