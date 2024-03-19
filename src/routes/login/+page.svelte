@@ -48,18 +48,8 @@
 		validators: yupClient(SignUpFormData),
 
 		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: `Couldn't sign up.`,
-						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
-			
-			else {
+			if(result.type === 'success')
 				currentForm = FormAction.SignIn
-			}
 		},
 	})
 
@@ -76,18 +66,8 @@
 		validators: yupClient(SignInFormData),
 
 		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: `Couldn't log in.`,
-						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
-			
-			else {
+			if(result.type === 'success')
 				goto('/')
-			}
 		},
 	})
 
@@ -104,14 +84,8 @@
 		validators: yupClient(ResetPasswordFormData),
 
 		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: `Couldn't reset password.`,
-						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
+			if(result.type === 'success')
+				currentForm = FormAction.SignIn
 		},
 	})
 
