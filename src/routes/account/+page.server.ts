@@ -2,8 +2,10 @@
 import type { ServerLoad } from '@sveltejs/kit'
 
 export const load: ServerLoad = async ({
-	locals: { user },
+	parent,
 }) => {
+	const { user } = await parent()
+
 	if(!user)
 		redirect(303, '/login')
 }
