@@ -1,4 +1,4 @@
-import { error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { createClient, e } from '$/lib/db';
 import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
 
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 				try {
 					const json = JSON.parse(text)
 					console.error(json)
-					return JSON.parse(text).error.message as unknown as string
+					return JSON.parse(text).error.message as string
 				}catch(e){
 					console.error(text)
 					return text
