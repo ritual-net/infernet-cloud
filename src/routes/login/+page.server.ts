@@ -44,11 +44,17 @@ export const actions: Actions = {
 			body: JSON.stringify(signUpFormData.data),
 		})
 
-		if(!response.ok)
+		if(!response.ok){
+			const result = await response.json()
+
 			return fail(response.status, {
 				signUpFormData,
-				result: await response.json(),
+				toast: {
+					title: `Couldn't sign up.`,
+					description: result.message,
+				},
 			})
+		}
 
 		// const newUser = response.json()
 
@@ -76,17 +82,26 @@ export const actions: Actions = {
 			body: JSON.stringify(signInFormData.data),
 		})
 
-		if(!response.ok)
+		if(!response.ok){
+			const result = await response.json()
+
 			return fail(response.status, {
 				signInFormData,
-				result: await response.json(),
+				toast: {
+					title: `Couldn't sign in.`,
+					description: result.message,
+				},
 			})
+		}
 
-		if(response.status === 204)
-			return redirect(301, '/clusters')
+		// if(response.status === 204)
+		// 	return redirect(301, '/clusters')
 
 		return {
 			signInFormData,
+			toast: {
+				title: `Signed in as ${signInFormData.data.email}.`,
+			},
 		}
 	},
 
