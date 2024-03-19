@@ -1,5 +1,5 @@
 // Schema
-import { superValidate } from 'sveltekit-superforms/server'
+import { superValidate, message } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
 import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 
@@ -47,24 +47,27 @@ export const actions: Actions = {
 		if(!response.ok){
 			const result = await response.json()
 
-			return fail(response.status, {
+			return message(
 				signUpFormData,
-				toast: {
+				{
 					title: `Couldn't sign up.`,
 					description: result.message,
 				},
-			})
+				{
+					status: response.status,
+				},
+			)
 		}
 
 		// const newUser = response.json()
 
-		return {
+		return message(
 			signUpFormData,
-			toast: {
+			{
 				title: `Welcome, ${signUpFormData.data.name}!`,
 				description: `Check your email ${signUpFormData.data.email} for a confirmation link.`
 			},
-		}
+		)
 	},
 
 	signIn: async ({
@@ -85,24 +88,27 @@ export const actions: Actions = {
 		if(!response.ok){
 			const result = await response.json()
 
-			return fail(response.status, {
+			return message(
 				signInFormData,
-				toast: {
+				{
 					title: `Couldn't sign in.`,
 					description: result.message,
 				},
-			})
+				{
+					status: response.status,
+				},
+			)
 		}
 
 		// if(response.status === 204)
 		// 	return redirect(301, '/clusters')
 
-		return {
+		return message(
 			signInFormData,
-			toast: {
+			{
 				title: `Signed in as ${signInFormData.data.email}.`,
 			},
-		}
+		)
 	},
 
 	resetPassword: async ({
@@ -123,21 +129,24 @@ export const actions: Actions = {
 		if(!response.ok){
 			const result = await response.text()
 
-			return fail(response.status, {
+			return message(
 				resetPasswordFormData,
-				toast: {
+				{
 					title: `Couldn't reset password.`,
 					description: result,
 				},
-			})
+				{
+					status: response.status,
+				},
+			)
 		}
 
-		return {
+		return message(
 			resetPasswordFormData,
-			toast: {
+			{
 				title: `Password reset request sent.`,
 				description: `Check your email ${resetPasswordFormData.data.email} for a password reset link.`,
 			},
-		}
+		)
 	},
 }
