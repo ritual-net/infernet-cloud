@@ -122,25 +122,22 @@ export const actions: Actions = {
 
 		if(!response.ok){
 			const result = await response.text()
-			
-			try {
-				return fail(response.status, {
-					resetPasswordFormData,
-					result: JSON.parse(result),
-				})
-			}catch(e){
-				return fail(response.status, {
-					resetPasswordFormData,
-					result: result,
-				})
-			}
-		}
 
-		if(response.status === 204)
-			return redirect(301, '/clusters')
+			return fail(response.status, {
+				resetPasswordFormData,
+				toast: {
+					title: `Couldn't reset password.`,
+					description: result,
+				},
+			})
+		}
 
 		return {
 			resetPasswordFormData,
+			toast: {
+				title: `Password reset request sent.`,
+				description: `Check your email ${resetPasswordFormData.data.email} for a password reset link.`,
+			},
 		}
 	},
 }
