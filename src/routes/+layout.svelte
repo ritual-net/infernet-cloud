@@ -22,7 +22,7 @@
 
 		addToast({
 			data: {
-				type: $page.status ? 'success' : 'error',
+				type: $page.status < 400 ? 'success' : 'error',
 				title,
 				description,
 			},
