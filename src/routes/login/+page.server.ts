@@ -8,10 +8,12 @@ import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 import type { ServerLoad } from '@sveltejs/kit'
 
 export const load: ServerLoad = async ({
-	locals: { user },
+	parent,
 }) => {
+	const { user } = await parent()
+
 	if(user)
-		redirect(303, '/clusters')
+		redirect(303, '/')
 
 	const signUpFormData = await superValidate(yup(SignUpFormData))
 	const signInFormData = await superValidate(yup(SignInFormData))
