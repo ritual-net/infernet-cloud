@@ -115,7 +115,7 @@ export const actions: Actions = {
 			return fail(400, { resetPasswordFormData })
 		}
 
-		const response = await fetch('/auth/send-reset-password-email', {
+		const response = await fetch('/auth/send-password-reset-email', {
 			method: 'POST',
 			body: JSON.stringify(resetPasswordFormData.data),
 		})
