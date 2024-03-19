@@ -50,11 +50,14 @@ export const actions: Actions = {
 				result: await response.json(),
 			})
 
-		if(response.status === 204)
-			return redirect(301, '/service-accounts')
+		// const newUser = response.json()
 
 		return {
 			signUpFormData,
+			toast: {
+				title: `Welcome, ${signUpFormData.data.name}!`,
+				description: `Check your email ${signUpFormData.data.email} for a confirmation link.`
+			},
 		}
 	},
 
