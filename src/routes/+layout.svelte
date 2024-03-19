@@ -11,11 +11,11 @@
 	// Actions
 	import { addToast } from '$/components/Toaster.svelte'
 
-	$: if($page.form && 'toast' in $page.form){
+	$: if($page.form?.form?.message){
 		const {
 			title = 'Success',
 			description,
-		} = $page.form.toast as {
+		} = $page.form.form.message as {
 			title?: string,
 			description?: string,
 		}
