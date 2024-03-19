@@ -2,7 +2,7 @@
 	// Constants
 	enum FormAction {
 		SignUp = '?/signUp',
-		SignIn = '?/signIn',
+		LogIn = '?/logIn',
 		ResetPassword = '?/resetPassword',
 	}
 
@@ -45,7 +45,7 @@
 
 		onResult: ({ result }) => {
 			if(result.type === 'success')
-				currentForm = FormAction.SignIn
+				currentForm = FormAction.LogIn
 		},
 	})
 
@@ -62,8 +62,14 @@
 		validators: yupClient(SignInFormData),
 
 		onResult: ({ result }) => {
-			if(result.type === 'success')
+			if(result.type === 'success'){
+				console.log({result})
 				goto('/')
+			}
+
+
+		// if(response.status === 204)
+		// 	return redirect(301, '/clusters')
 		},
 	})
 
@@ -81,11 +87,12 @@
 
 		onResult: ({ result }) => {
 			if(result.type === 'success')
-				currentForm = FormAction.SignIn
+				currentForm = FormAction.LogIn
 		},
 	})
 
 	let currentForm = FormAction.SignUp
+	$: currentForm = globalThis.location?.hash.replace(/^#/, '?/')
 	
 	let email = ''
 	$: $signUpForm.email = $signInForm.email = $resetPasswordForm.email = email
@@ -105,7 +112,7 @@
 				label: 'Sign Up',
 			},
 			{
-				id: FormAction.SignIn,
+				id: FormAction.LogIn,
 				label: 'Log In',
 			},
 			{
@@ -166,11 +173,11 @@
 					>Sign Up</button>
 				</form>
 
-			{:else if item.id === FormAction.SignIn}
+			{:else if item.id === FormAction.LogIn}
 				<form
 					method="POST"
 					use:signInEnhance
-					action={FormAction.SignIn}
+					action={FormAction.LogIn}
 					class="card column"
 				>
 					<input
