@@ -42,14 +42,22 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	});
 
 	if (!registerResponse.ok) {
-		const result = await registerResponse.text();
+		const result = await registerResponse
+			.text()
+			.then((text): string => {
+				try {
+					const json = JSON.parse(text)
+					console.error(json)
+					return JSON.parse(text).error.message as unknown as string
+				}catch(e){
+					console.error(text)
+					return text
+				}
+			})
 
-		try {
-			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		} catch (e) {
-			return error(500, `Error from the auth server: ${result}`);
-		}
+		return error(400, result);
 	}
+
 
 	// Get the identity from the auth server
 	const client = createClient();
@@ -61,12 +69,9 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 			filter: e.op(emailPassword.email, '=', email),
 		}))
 		.run(client);
-	if (!emailFactor) {
-		return error(400, `Email already registered`);
-	}
 
 	// Create a new user in the database
-	await e
+	const user = await e
 		.insert(e.User, {
 			email,
 			name,
@@ -83,5 +88,5 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		sameSite: 'strict',
 	});
 
-	return new Response(null, { status: 204 });
+	return json(user)
 };
