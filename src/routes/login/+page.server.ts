@@ -72,7 +72,7 @@ export const actions: Actions = {
 		)
 	},
 
-	signIn: async ({
+	logIn: async ({
 		request,
 		fetch,
 	}) => {
