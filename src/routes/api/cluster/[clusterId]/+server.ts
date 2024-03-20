@@ -63,12 +63,29 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 		return error(500, 'Failed to update cluster');
 	}
 
-	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(client, cluster.id, TFAction.Apply);
+	let result: Awaited<ReturnType<typeof clusterAction>>
+	
+	try {
+		// Apply Terraform changes to create cluster
+		result = await clusterAction(
+			client,
+			cluster.id,
+			TFAction.Apply
+		);
+	} catch (e) {
+		console.error(e)
+
+		return error(500, JSON.stringify(e))
+	}
+
+	const { success, error: errorMessage } = result
+
+	if(!success)
+		return error(500, errorMessage)
+
 	return json({
-		message: success ? 'Cluster updated successfully' : errorMessage,
-		success,
-	});
+		cluster,
+	})
 };
 
 /**
@@ -85,20 +102,35 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		return error(400, 'Cluster id is required');
 	}
 
-	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(client, id, TFAction.Destroy);
+	let result: Awaited<ReturnType<typeof clusterAction>>
+	
+	try {
+		// Apply Terraform changes to cluster
+		result = await clusterAction(
+			client,
+			id,
+			TFAction.Destroy
+		);
+	} catch (e) {
+		console.error(e)
 
-	if (success) {
-		// Delete cluster, nodes and containers deleted through cascade
-		await e
-			.delete(e.Cluster, (cluster) => ({
-				filter_single: e.op(cluster.id, '=', e.uuid(id)),
-			}))
-			.run(client);
+		return error(500, JSON.stringify(e))
 	}
 
-	return json({
-		message: success ? 'Cluster destroyed successfully' : errorMessage,
-		success,
-	});
+	const { success, error: errorMessage } = result
+
+	if(!success)
+		return error(500, errorMessage)
+
+	// Delete cluster, nodes and containers deleted through cascade
+	const deleted = await e
+		.delete(e.Cluster, (cluster) => ({
+			filter_single: e.op(cluster.id, '=', e.uuid(id)),
+		}))
+		.run(client);
+
+	if(!deleted)
+		return error(500, 'No cluster to delete.')
+
+	return json(deleted)
 };
