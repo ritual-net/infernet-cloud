@@ -74,20 +74,10 @@
 				formAction: `${nodeRoute}?/start`,
 				formSubmit: async () => {
 					return async ({ result }) => {
-						if(result.type === 'failure')
-							addToast({
-								data: {
-									type: 'error',
-									title: `Couldn't start node.`,
-									description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-								},
-							})
+						await applyAction(result)
 
-						else {
-							await applyAction(result)
-
+						if(result.type === 'success')
 							await invalidate('.')
-						}
 					}
 				},
 			},
@@ -97,20 +87,10 @@
 				formAction: `${nodeRoute}?/stop`,
 				formSubmit: async () => {
 					return async ({ result }) => {
-						if(result.type === 'failure')
-							addToast({
-								data: {
-									type: 'error',
-									title: `Couldn't stop node.`,
-									description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-								},
-							})
+						await applyAction(result)
 
-						else {
-							await applyAction(result)
-
+						if(result.type === 'success')
 							await invalidate('.')
-						}
 					}
 				},
 			},
