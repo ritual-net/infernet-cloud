@@ -1,5 +1,5 @@
 // Schema
-import { superValidate } from 'sveltekit-superforms/server'
+import { superValidate, message } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
@@ -33,12 +33,28 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		if(!response.ok)
-			return fail(response.status, {
-				formData,
-				result: await response.json(),
-			})
+		if(!response.ok){
+			const result = await response.json()
 
-		return redirect(301, '/service-accounts')
+			return message(
+				formData,
+				{
+					title: `Couldn't connect service account.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				},
+			)
+		}
+
+		return message(
+			formData,
+			{
+				title: `Connected service account.`,
+				description: `${formData.data.name} is set up to deploy clusters.`,
+			},
+		)
+		// return redirect (301, '/service-accounts')
 	},
 }
