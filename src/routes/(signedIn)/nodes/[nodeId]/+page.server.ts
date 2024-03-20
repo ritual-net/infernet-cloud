@@ -1,6 +1,7 @@
 // Actions
 import { type Actions, fail, json } from '@sveltejs/kit'
 import { resolveRoute } from '$app/paths'
+import { message } from 'sveltekit-superforms/server'
 
 export const actions: Actions = {
 	start: async ({
@@ -14,14 +15,30 @@ export const actions: Actions = {
 			},
 		)
 
-		if(!response.ok)
-			fail(response.status, {
-				result: await response.json(),
-			})
+		if(!response.ok){
+			const result = await response.json()
 
-		const result = await response.json()
+			return message(
+				{},
+				{
+					title: `Couldn't start node.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				},
+			)
+		}
 
-		return json(result)
+		const result = await response.text()
+
+		return message(
+			formData,
+			{
+				title: `Starting node.`,
+				description: result,
+			},
+		)
 	},
 
 	stop: async ({
@@ -35,13 +52,29 @@ export const actions: Actions = {
 			},
 		)
 
-		if(!response.ok)
-			fail(response.status, {
-				result: await response.json(),
-			})
+		if(!response.ok){
+			const result = await response.json()
 
-		const result = await response.json()
+			return message(
+				{},
+				{
+					title: `Couldn't stop node.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				},
+			)
+		}
 
-		return json(result)
+		const result = await response.text()
+
+		return message(
+			formData,
+			{
+				title: `Stopping node.`,
+				description: result,
+			},
+		)
 	},
 }
