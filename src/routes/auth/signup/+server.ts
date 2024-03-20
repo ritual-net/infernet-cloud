@@ -8,7 +8,7 @@ import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
  * @param fetch - The fetch function.
  * @param request - The request object containing 'email', 'name', 'password', and
  *   'provider'.
- * @returns The response object.
+ * @returns The created user ID.
  */
 export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	const pkce = generatePKCE();
@@ -88,5 +88,7 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		sameSite: 'strict',
 	});
 
-	return json(user)
+	return json({
+		user
+	})
 };
