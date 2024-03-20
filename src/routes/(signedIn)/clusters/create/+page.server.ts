@@ -1,5 +1,5 @@
 // Schema
-import { superValidate } from 'sveltekit-superforms/server'
+import { message, superValidate } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
@@ -55,18 +55,31 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		if(!response.ok)
-			return fail(response.status, {
+		if(!response.ok){
+			const result = await response.json()
+
+			return message(
 				formData,
-				result: await response.json(),
-			})
+				{
+					title: `Couldn't create cluster.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				},
+			)
+		}
 
 		const result = await response.json()
 
-		// return {
-		// 	formData,
-		// 	result: await response.json(),
-		// }
-		return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }))
+		return message(
+			formData,
+			{
+				title: `Created cluster ${formData.data.config.name}.`,
+				description: result.message,
+			},
+		)
+
+		// return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }))
 	},
 }
