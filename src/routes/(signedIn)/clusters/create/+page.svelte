@@ -24,7 +24,7 @@
 
 
 	// Actions
-	import { addToast } from '$/components/Toaster.svelte'
+	import { resolveRoute } from '$app/paths'
 
 
 	// Internal state
@@ -43,14 +43,11 @@
 		validators: yupClient(FormData),
 
 		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: `Couldn't create cluster.`,
-						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
+			if(result.type === 'success'){
+				goto(resolveRoute('/clusters/[clusterId]', {
+					clusterId: result.data.clusterId,
+				}))
+			}
 		},
 	})
 
