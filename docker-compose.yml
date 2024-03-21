@@ -33,9 +33,9 @@ services:
       - '5656'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://edgedb:5656/server/status/ready']
-      interval: 5s
-      timeout: 5s
-      retries: 100
+      interval: 10s
+      timeout: 10s
+      retries: 5
     depends_on:
       - smtp
 
