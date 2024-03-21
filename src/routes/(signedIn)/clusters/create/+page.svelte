@@ -25,6 +25,7 @@
 
 	// Actions
 	import { resolveRoute } from '$app/paths'
+	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
 
 
 	// Internal state
@@ -37,6 +38,7 @@
 		errors,
 		constraints,
 		submitting,
+		delayed,
 	} = superForm(formData, {
 		dataType: 'json',
 		customValidity: true,
@@ -50,6 +52,20 @@
 			}
 		},
 	})
+
+	let delayedToast: Toast
+	$: if(delayed){
+		delayedToast = addToast({
+			data: {
+				type: 'default',
+				title: `Creating cluster...`,
+				description: `This may take a few minutes.`,
+			},
+		})
+	}else{
+		if(delayedToast)
+			removeToast(delayedToast.id)
+	}
 
 	let currentFieldset = Fieldset.CreateCluster
 
