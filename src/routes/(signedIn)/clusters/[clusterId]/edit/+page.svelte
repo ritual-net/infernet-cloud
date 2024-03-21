@@ -18,7 +18,7 @@
 
 
 	// Actions
-	import { addToast } from '$/components/Toaster.svelte'
+	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
 
 
 	// Internal state
@@ -31,6 +31,7 @@
 		errors,
 		constraints,
 		submitting,
+		delayed,
 	} = superForm(formData, {
 		dataType: 'json',
 		customValidity: true,
@@ -47,6 +48,19 @@
 				})
 		},
 	})
+
+	let delayedToast: Toast
+	$: if(delayed){
+		delayedToast = addToast({
+			data: {
+				type: 'default',
+				title: `Saving cluster...`,
+			},
+		})
+	}else{
+		if(delayedToast)
+			removeToast(delayedToast.id)
+	}
 
 	let allowIps: 'all' | 'restricted' = 'all'
 

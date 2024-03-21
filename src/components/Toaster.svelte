@@ -6,6 +6,8 @@
 		description?: string,
 	}
 
+	export { type Toast } from '@melt-ui/svelte'
+
 
 	// Internal state
 	const {
@@ -21,6 +23,7 @@
 
 	// Actions
 	export const addToast = helpers.addToast
+	export const removeToast = helpers.removeToast
 
 
 	// Transitions/animations
