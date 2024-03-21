@@ -16,6 +16,7 @@ export const load: PageServerLoad = async () => {
 
 // Actions
 import { type Actions, fail, redirect } from '@sveltejs/kit'
+import { providers } from '$/types/provider'
 
 export const actions: Actions = {
 	default: async ({
@@ -52,7 +53,7 @@ export const actions: Actions = {
 			formData,
 			{
 				title: `Connected service account.`,
-				description: `${formData.data.name} is set up to deploy clusters.`,
+				description: `"${formData.data.name}" is set up to deploy clusters on ${providers[formData.data.provider].name}.`,
 			},
 		)
 		// return redirect (301, '/service-accounts')
