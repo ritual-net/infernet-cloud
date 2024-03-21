@@ -65,7 +65,7 @@
 	export const snapshot = { capture, restore }
 
 	let delayedToast: Toast
-	$: if(delayed){
+	$: if($delayed){
 		delayedToast = addToast({
 			data: {
 				type: 'default',
