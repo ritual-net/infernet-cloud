@@ -94,7 +94,7 @@
 
 			& [data-melt-toast-content] {
 				--toast-backgroundColor: #fff;
-				--toast-borderColor: #fff;
+				--toast-borderColor: var(--borderColor);
 
 				&[data-type="success"] {
 					--toast-backgroundColor: var(--toast-typeSuccess-backgroundColor);
