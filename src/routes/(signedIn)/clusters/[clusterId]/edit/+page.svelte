@@ -30,6 +30,10 @@
 		enhance,
 		errors,
 		constraints,
+
+		capture,
+		restore,
+
 		submitting,
 		delayed,
 	} = superForm(formData, {
@@ -48,6 +52,8 @@
 				})
 		},
 	})
+
+	export const snapshot = { capture, restore }
 
 	let delayedToast: Toast
 	$: if(delayed){

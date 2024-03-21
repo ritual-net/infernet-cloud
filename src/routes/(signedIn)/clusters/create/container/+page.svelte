@@ -40,6 +40,10 @@
 		enhance,
 		errors,
 		constraints,
+
+		capture,
+		restore,
+
 		submitting,
 	} = superForm(formData, {
 		dataType: 'json',
@@ -66,6 +70,8 @@
 			cancel()
 		},
 	})
+
+	export const snapshot = { capture, restore }
 
 	let allowIps: 'all' | 'restricted' = 'all'
 
