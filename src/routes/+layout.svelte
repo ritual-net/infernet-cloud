@@ -6,6 +6,19 @@
 
 	// Context
 	import { page } from '$app/stores'
+	import { browser } from '$app/environment'
+
+
+	// Global state
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				enabled: browser,
+			},
+		},
+	})
 
 
 	// Actions
@@ -36,19 +49,21 @@
 </script>
 
 
-<header>
-	<Nav />
-</header>
+<QueryClientProvider client={queryClient}>
+	<header>
+		<Nav />
+	</header>
 
-<div class="main-wrapper">
-	<main>
-		<slot />
-	</main>
-</div>
+	<div class="main-wrapper">
+		<main>
+			<slot />
+		</main>
+	</div>
 
-<!-- <footer></footer> -->
+	<!-- <footer></footer> -->
 
-<Toaster />
+	<Toaster />
+</QueryClientProvider>
 
 
 <style>
