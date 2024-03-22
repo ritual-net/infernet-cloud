@@ -43,6 +43,8 @@
 		customValidity: true,
 		validators: yupClient(SignUpFormData),
 
+		invalidateAll: false,
+
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
 				alert(result.data?.result?.message)
@@ -78,6 +80,8 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(ResetPasswordFormData),
+
+		invalidateAll: false,
 
 		onResult: ({ result }) => {
 			if(result.type === 'failure')
