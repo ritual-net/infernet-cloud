@@ -53,6 +53,7 @@
 		"@aws-sdk/client-ec2": "^3.507.0",
 		"@fontsource/barlow": "^5.0.8",
 		"@google-cloud/compute": "^4.1.0",
+		"@tanstack/svelte-query": "^5.28.6",
 		"aws-sdk": "^2.1540.0",
 		"axios": "^1.6.5",
 		"dotenv": "^16.4.3",
