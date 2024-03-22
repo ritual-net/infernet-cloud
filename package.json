@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
+		"dev:docker": "docker compose build --force-rm --no-cache && docker compose up --detach && docker compose logs -f",
 		"dev:debug": "NODE_OPTIONS='--inspect=localhost:9229' vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
