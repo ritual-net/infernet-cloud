@@ -754,7 +754,7 @@
 						<div class="row">
 							<button
 								type="button"
-								on:click={() => $form.nodes = [...$form.nodes, Node.parse({})]}
+								on:click={() => $form.nodes = [...$form.nodes, Node.getDefault()]}
 							>
 								Add Node
 							</button>
