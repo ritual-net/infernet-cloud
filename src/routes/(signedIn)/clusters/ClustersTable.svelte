@@ -13,7 +13,7 @@
 
 
 	// Actions
-	import { addToast } from '$/components/Toaster.svelte'
+	import { applyAction } from '$app/forms'
 
 
 	// Components
@@ -73,28 +73,12 @@
 				value: 'delete',
 				label: 'Delete Cluster',
 				formAction: `${clusterRoute}?/delete`,
-				formSubmit: () => {
+				formSubmit: async () => {
 					return async ({ result }) => {
-						if(result.type === 'failure')
-							addToast({
-								data: {
-									type: 'error',
-									title: `Couldn't delete cluster.`,
-									description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-								},
-							})
+						await applyAction(result)
 
-						else {
+						if(result.type === 'success')
 							await invalidate('.')
-
-							addToast({
-								data: {
-									type: 'success',
-									title: `Deleted cluster.`,
-									description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-								},
-							})
-						}
 					}
 				},
 			},
