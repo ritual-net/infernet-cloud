@@ -1,5 +1,5 @@
 // Schema
-import { superValidate } from 'sveltekit-superforms/server'
+import { message, superValidate } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
@@ -28,20 +28,31 @@ export const actions: Actions = {
 			}
 		)
 
-		if(!response.ok)
-			return fail(response.status, {
+		if(!response.ok){
+			const result = await response.json()
+
+			return message(
 				formData,
-				result: await response.json(),
-			})
+				{
+					title: `Couldn't update cluster configuration.`,
+					description: result,
+				},
+				{
+					status: response.status,
+				},
+			)
+		}
 
 		const result = await response.json()
 
-		if(!result.success)
-			return fail(500, {
-				formData,
-				result,
-			})
+		return message(
+			formData,
+			{
+				title: `Updated cluster configuration.`,
+				description: result,
+			},
+		)
 
-		return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId }))
+		// return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId }))
 	},
 }
