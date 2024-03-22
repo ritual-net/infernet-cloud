@@ -14,9 +14,11 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"edgedb:init": "edgedb project init; npm run edgedb:generate",
+		"edgedb:init": "edgedb project init; npm run edgedb:migrate",
 		"edgedb:migrate": "edgedb migration create; edgedb migrate; npm run edgedb:generate",
-		"edgedb:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js --target ts"
+		"edgedb:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js --target ts",
+		"edgedb:destroy": "edgedb instance destroy -I infernet_cloud --force",
+		"edgedb:cli": "edgedb"
 	},
 	"devDependencies": {
 		"@edgedb/generate": "^0.4.1",
@@ -43,7 +45,6 @@
 		"vite": "^5.0.3",
 		"vitest": "^1.0.0"
 	},
-	"type": "module",
 	"dependencies": {
 		"@aws-sdk/client-ec2": "^3.507.0",
 		"@google-cloud/compute": "^4.1.0",
@@ -51,5 +52,6 @@
 		"dotenv": "^16.4.3",
 		"edgedb": "^1.4.1",
 		"googleapis": "^131.0.0"
-	}
+	},
+	"type": "module"
 }
