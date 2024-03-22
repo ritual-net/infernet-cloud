@@ -91,8 +91,8 @@
 
 	let currentForm = FormAction.SignUp
 	
-	let email = ''
-	$: $signUpForm.email = $signInForm.email = $resetPasswordForm.email = email
+	// let email = ''
+	// $: $signUpForm.email = $signInForm.email = $resetPasswordForm.email = email
 
 
 	// Components
@@ -151,8 +151,9 @@
 						type="email"
 						name="email"
 						placeholder="Email address"
-						bind:value={email}
+						bind:value={$signUpForm.email}
 						{...$signUpConstraints.email}
+						on:change={e => { $signInForm.email = $resetPasswordForm.email = e.target.value }}
 					/>
 
 					<input
@@ -192,8 +193,9 @@
 						type="email"
 						name="email"
 						placeholder="Email address"
-						bind:value={email}
+						bind:value={$signInForm.email}
 						{...$signInConstraints.email}
+						on:change={e => { $signUpForm.email = $resetPasswordForm.email = e.target.value }}
 					/>
 
 					<input
@@ -236,8 +238,9 @@
 						type="email"
 						name="email"
 						placeholder="Email address"
-						bind:value={email}
+						bind:value={$resetPasswordForm.email}
 						{...$resetPasswordConstraints.email}
+						on:change={e => { $signUpForm.email = $signInForm.email = e.target.value }}
 					/>
 
 					<button
