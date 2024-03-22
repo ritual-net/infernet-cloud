@@ -110,6 +110,8 @@ dd {
 	grid: 'stack';
 	align-items: start;
 
+	&:before,
+	&:after,
 	& > * {
 		grid-area: stack;
 	}
