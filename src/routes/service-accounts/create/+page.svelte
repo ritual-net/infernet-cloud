@@ -131,7 +131,7 @@
 								type="text"
 								id="name"
 								name="name"
-								placeholder="My First Infernet Cluster"
+								placeholder="My {$form.provider ? $form.provider : 'Cloud'} Account"
 								bind:value={$form.name}
 								{...$constraints.name}
 							/>
