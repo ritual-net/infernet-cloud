@@ -191,6 +191,8 @@
 	}
 
 	[data-melt-select-menu] {
+		overflow-y: auto;
+
 		display: grid;
 
 		clip-path: inset(calc(-1 * var(--select-borderWidth)) round calc(var(--select-cornerRadius) + var(--select-borderWidth)));
