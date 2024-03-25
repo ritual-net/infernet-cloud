@@ -44,11 +44,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				alert(result.data?.result?.message)
-		},
 	})
 
 	export const snapshot = { capture, restore }
