@@ -33,7 +33,7 @@ export const actions: Actions = {
 		const result = await response.text()
 
 		return message(
-			formData,
+			{},
 			{
 				title: `Starting node.`,
 				description: result,
@@ -70,7 +70,7 @@ export const actions: Actions = {
 		const result = await response.text()
 
 		return message(
-			formData,
+			{},
 			{
 				title: `Stopping node.`,
 				description: result,
