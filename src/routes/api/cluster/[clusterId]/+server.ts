@@ -61,26 +61,29 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 
 	if (!updatedCluster)
 		return error(500, 'Failed to update cluster');
-
-	let result: Awaited<ReturnType<typeof clusterAction>>
 	
-	try {
-		// Apply Terraform changes to create cluster
-		result = await clusterAction(
-			client,
-			updatedCluster.id,
-			TFAction.Apply
-		);
-	} catch (e) {
-		console.error(e)
+	// Apply Terraform changes to updated cluster
+	// (Run in background - don't block API response)
+	(async () => {
+		let result: Awaited<ReturnType<typeof clusterAction>>
 
-		return error(500, JSON.stringify(e))
-	}
+		try {
+			result = await clusterAction(
+				client,
+				updatedCluster.id,
+				TFAction.Apply
+			);
+		} catch (e) {
+			console.error(e)
 
-	const { success, error: errorMessage } = result
+			// return error(500, JSON.stringify(e))
+		}
 
-	if(!success)
-		return error(500, errorMessage)
+		// const { success, error: errorMessage } = result
+
+		// if(!success)
+		// 	return error(500, errorMessage)
+	})();
 
 	return json({
 		cluster: updatedCluster,
