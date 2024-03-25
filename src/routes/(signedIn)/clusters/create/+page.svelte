@@ -331,7 +331,12 @@
 												{...!providerConfigs
 													? {
 														placeholder: 'Loading...',
-														items: [$form.config.region].filter(Boolean),
+														items: [
+															$form.config.region && {
+																value: $form.config.region,
+																label: $form.config.region,
+															}
+														].filter(Boolean),
 														disabled: true,
 													}
 													: {
@@ -368,7 +373,12 @@
 												{...!regionConfig
 													? {
 														placeholder: 'Choose a region first.',
-														items: [$form.config.zone].filter(Boolean),
+														items: [
+															$form.config.zone && {
+																value: $form.config.zone,
+																label: $form.config.zone,
+															}
+														].filter(Boolean),
 														disabled: true,
 													}
 													: {
@@ -406,7 +416,12 @@
 												{...!zoneConfig
 													? {
 														placeholder: 'Choose a zone first.',
-														items: [$form.config.machine_type].filter(Boolean),
+														items: [
+															$form.config.machine_type && {
+																value: $form.config.machine_type,
+																label: $form.config.machine_type,
+															}
+														].filter(Boolean),
 														disabled: true,
 													}
 													: {
