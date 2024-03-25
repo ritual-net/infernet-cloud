@@ -70,12 +70,12 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(500, (e as Error).message);
 	}
 
-	// Run Terraform action in background - don't block API response
+	// Apply Terraform changes to created cluster
+	// (Run in background - don't block API response)
 	(async () => {
 		let result: Awaited<ReturnType<typeof clusterAction>>
 
 		try {
-			// Apply Terraform changes to create cluster
 			result = await clusterAction(
 				client,
 				cluster.id,
