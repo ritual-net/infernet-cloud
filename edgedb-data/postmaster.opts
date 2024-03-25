@@ -1,0 +1,1 @@
+/usr/lib/aarch64-linux-gnu/edgedb-server-4/bin/postgres "-D" "/var/lib/edgedb/data" "-c" "listen_addresses=" "-c" "unix_socket_permissions=0700" "-c" "unix_socket_directories=/run/edgedb" "-c" "max_connections=80" "-c" "max_locks_per_transaction=1024" "-c" "max_pred_locks_per_transaction=1024" "-c" "log_min_messages=NOTICE" "-c" "log_statement=none" "-c" "log_line_prefix="
