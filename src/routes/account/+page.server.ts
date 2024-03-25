@@ -13,15 +13,24 @@ export const load: ServerLoad = async ({
 
 // Actions
 import { type Actions, redirect } from '@sveltejs/kit'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 export const actions: Actions = {
 	signOut: async ({
-		request,
-		fetch,
 		cookies,
 	}) => {
 		cookies.delete('edgedb-auth-token', { path: '/' })
 
-		redirect(303, '/login')
+		return flashRedirect(
+			303,
+			'/login',
+			{
+				type: 'success',
+				message: {
+					title: `Signed out.`,
+				},
+			},
+			cookies,
+		)
 	},
 }
