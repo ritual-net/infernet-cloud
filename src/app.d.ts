@@ -14,7 +14,15 @@ declare global {
 			user: User;
 		}
 
-		// interface PageData {}
+		interface PageData {
+			flash?: {
+				type: 'success' | 'error',
+				message: {
+					title?: string,
+					description?: string,
+				},
+			};
+		}
 
 		interface PageState {
 			showContainerForm?: 'create' | 'edit',

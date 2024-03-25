@@ -1,6 +1,11 @@
+// Actions
+import { loadFlash } from 'sveltekit-flash-message/server'
+
+
+// Data
 import type { LayoutServerLoad } from './$types'
 
-export const load: LayoutServerLoad = async ({
+export const load: LayoutServerLoad = loadFlash(async ({
 	locals: { client },
 	fetch,
 }) => {
@@ -12,4 +17,4 @@ export const load: LayoutServerLoad = async ({
 	return {
 		user,
 	}
-}
+})
