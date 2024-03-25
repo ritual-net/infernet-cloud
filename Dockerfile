@@ -10,7 +10,7 @@ RUN pnpm i
 
 FROM deps AS builder
 COPY . .
-COPY .env.docker.example .env
+COPY .env.docker .env
 
 # Build SvelteKit app
 RUN pnpm build
