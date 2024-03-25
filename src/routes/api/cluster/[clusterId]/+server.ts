@@ -23,6 +23,42 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 };
 
 /**
+ * Apply Terraform changes to cluster.
+ *
+ * @param locals - The locals object contains the client.
+ * @param params - The parameters object, expected to contain 'clusterId'.
+ * @returns Cluster object.
+ */
+export const POST: RequestHandler = async ({ locals: { client }, params }) => {
+	const clusterId = params.clusterId;
+
+	if (!clusterId) {
+		return error(400, 'Cluster id is required');
+	}
+
+	let result: Awaited<ReturnType<typeof clusterAction>>
+
+	try {
+		result = await clusterAction(
+			client,
+			clusterId,
+			TFAction.Apply
+		);
+	} catch (e) {
+		console.error(e)
+
+		return error(500, JSON.stringify(e))
+	}
+
+	const { success, error: errorMessage } = result
+
+	if(!success)
+		return error(500, errorMessage)
+
+	return json(await getClusterById(client, clusterId, false));
+};
+
+/**
  * Update a cluster by its ID.
  *
  * @param locals - The locals object contains the client.
@@ -61,7 +97,7 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 
 	if (!updatedCluster)
 		return error(500, 'Failed to update cluster');
-	
+
 	// Apply Terraform changes to updated cluster
 	// (Run in background - don't block API response)
 	(async () => {

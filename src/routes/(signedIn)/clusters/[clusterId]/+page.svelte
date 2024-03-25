@@ -16,7 +16,14 @@
 	import { resolveRoute } from '$app/paths'
 
 
+	// Actions
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
+	import { applyAction } from '$app/forms'
+	import { invalidate } from '$app/navigation'
+
+
 	// Components
+	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodesTable from './NodesTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
@@ -49,12 +56,40 @@
 				</div>
 			</dl>
 
-		<a
-			href={resolveRoute(`/clusters/[clusterId]/edit`, {
-				clusterId: $page.params.clusterId,
-			})}
-			class="button primary"
-		>Edit Cluster</a>
+			<a
+				href={resolveRoute(`/clusters/[clusterId]/edit`, {
+					clusterId: $page.params.clusterId,
+				})}
+				class="button primary"
+			>Edit Cluster</a>
+
+			<DropdownMenu
+				labelText="Cluster Actions"
+				items={[
+					{
+						value: 'apply',
+						label: 'Apply Changes',
+						formAction: `?/apply`,
+						formSubmit: async (e) => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: 'Applying changes to cluster...',
+								},
+							})
+
+							return async ({ result }) => {
+								await applyAction(result)
+
+								if(result.type === 'success')
+									await invalidate('.')
+
+								removeToast(toast.id)
+							}
+						},
+					},
+				]}
+			/>
 		</div>
 	</header>
 
