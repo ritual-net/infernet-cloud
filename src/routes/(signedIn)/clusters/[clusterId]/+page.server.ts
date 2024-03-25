@@ -21,7 +21,7 @@ export const actions: Actions = {
 			return message(
 				{},
 				{
-					title: `Couldn't delete cluster.`
+					title: `Couldn't delete cluster.`,
 					description: result,
 				},
 				{
@@ -35,7 +35,7 @@ export const actions: Actions = {
 		return message(
 			{},
 			{
-				title: `Deleted cluster.`
+				title: `Deleted cluster.`,
 				description: result,
 			},
 			{
