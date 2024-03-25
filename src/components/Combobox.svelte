@@ -191,13 +191,15 @@
 		cursor: context-menu;
 
 		&:after {
-			margin: var(--combobox-paddingY) var(--combobox-paddingX);
+			padding: var(--combobox-paddingY) var(--combobox-paddingX);
+			padding-right: calc(var(--combobox-paddingX) - 0.25em);
 
 			content: '▾';
 			width: 1em;
 			flex: 0 auto;
-			margin-right: -0.25em;
 			text-align: center;
+
+			backdrop-filter: blur(8px);
 		}
 	}
 
