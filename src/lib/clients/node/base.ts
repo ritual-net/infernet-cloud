@@ -27,6 +27,14 @@ export interface BaseNodeClient {
 	stopNodes(ids: string[], args: object): Promise<void>;
 
 	/**
+	 * Restart set of infernet nodes.
+	 *
+	 * @param ids - List of node ids to restart
+	 * @param args - Additional arguments needed to restart nodes
+	 */
+	restartNodes(ids: string[], args: object): Promise<void>;
+
+	/**
 	 * Get status and ip of set of infernet nodes.
 	 *
 	 * @param ids - List of node ids to get status and ip of

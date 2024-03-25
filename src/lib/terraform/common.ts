@@ -1,8 +1,10 @@
 import { e } from '$/lib/db';
 import { getClusterById } from '../db/queries';
+import { routerAction } from '$/lib/clients/node/common';
 import { ProviderTerraform } from '$/lib';
 import type { Client } from 'edgedb';
 import type { ProviderServiceAccount } from '$/types/provider';
+import { NodeAction } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
 
 /**
@@ -46,11 +48,19 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				error: error ?? null,
 				healthy: success,
 				locked: false,
-				router_ip: state?.outputs?.router_ip?.value ?? null,
+				router: {
+					id: state?.outputs?.router?.value?.id ?? '',
+					ip: state?.outputs?.router?.value?.ip ?? '',
+				},
 				tfstate: JSON.stringify(state),
 			},
 		}))
 		.run(client);
+
+	// Restart router to apply any changes to IP address list
+	if (success && cluster.deploy_router && action == TFAction.Apply) {
+		await routerAction(client, state!.outputs!.router!.value!.id, NodeAction.restart);
+	}
 
 	// Update node provider IDs
 	const nodeInfo = state?.outputs?.nodes?.value;
@@ -80,6 +90,5 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				nodeInfo,
 			});
 	}
-
 	return { error, success };
 };
