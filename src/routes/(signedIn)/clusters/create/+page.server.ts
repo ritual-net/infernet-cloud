@@ -31,14 +31,15 @@ export const load: PageServerLoad = async ({
 
 
 // Actions
-import { type Actions, fail, redirect } from '@sveltejs/kit'
-import { invalidate } from '$app/navigation'
+import { type Actions, fail } from '@sveltejs/kit'
 import { resolveRoute } from '$app/paths'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 export const actions: Actions = {
 	default: async ({
 		request,
 		fetch,
+		cookies,
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
@@ -72,14 +73,25 @@ export const actions: Actions = {
 
 		const result = await response.json()
 
-		return message(
-			formData,
-			{
-				title: `Created cluster ${formData.data.config.name}.`,
-				description: result.message,
-			},
-		)
+		// return message(
+		// 	formData,
+		// 	{
+		// 		title: `Created cluster "${formData.data.config.name}"${formData.data.nodes.length ? ` with ${formData.data.nodes.length} node${formData.data.nodes.length === 1 ? '' : 's'}.` : ''}`,
+		// 		description: result.message,
+		// 	},
+		// )
 
-		// return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }))
+		return flashRedirect(
+			303,
+			resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }),
+			{
+				type: 'success',
+				message: {
+					title: `Created cluster "${formData.data.config.name}"${formData.data.nodes.length ? ` with ${formData.data.nodes.length} node${formData.data.nodes.length === 1 ? '' : 's'}.` : ''}`,
+					description: result.message,
+				},
+			},
+			cookies,
+		)
 	},
 }
