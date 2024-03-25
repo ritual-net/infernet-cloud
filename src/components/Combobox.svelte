@@ -191,8 +191,10 @@
 		cursor: context-menu;
 
 		&:after {
-			padding: var(--combobox-paddingY) var(--combobox-paddingX);
-			padding-right: calc(var(--combobox-paddingX) - 0.25em);
+			margin: var(--borderWidth);
+			padding: var(--combobox-paddingY) calc(var(--combobox-paddingX) - 0.25em);
+			overflow: hidden;
+			border-radius: 0.33em;
 
 			content: '▾';
 			width: 1em;
