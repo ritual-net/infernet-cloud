@@ -27,10 +27,6 @@
 	import { FormData } from './schema'
 
 
-	// Actions
-	import { addToast } from '$/components/Toaster.svelte'
-
-
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
 	import { yupClient } from 'sveltekit-superforms/adapters'
@@ -49,17 +45,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: `Couldn't add container configuration.`,
-						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
-		},
 
 		onSubmit: ({ cancel }) => {
 			if(mode === 'create')

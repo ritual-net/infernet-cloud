@@ -40,17 +40,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: `Couldn't save cluster configuration.`,
-						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
-		},
 	})
 
 	export const snapshot = { capture, restore }
