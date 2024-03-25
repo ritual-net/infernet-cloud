@@ -44,22 +44,27 @@ export abstract class BaseResourceClient {
 	 */
 	async getProviderInfo(credentials: Record<string, any>): Promise<ProviderInfo[]> {
 		await this.auth(credentials);
+
 		const regions = await this.getRegions();
-		const providerInfo = await Promise.all(
+
+		return await Promise.all(
 			regions.map(async (region) => {
-				const machines = await this.getMachines(region);
-				const zones = await this.getZones(region);
-				const zonesInfo: ZoneInfo[] = zones.map((zone) => ({
-					name: zone,
-					machines: machines,
-				}));
+				const [
+					machines,
+					zones,
+				] = await Promise.all([
+					this.getMachines(region),
+					this.getZones(region),
+				])
 
 				return {
-					region: region,
-					zones: zonesInfo,
+					region,
+					zones: zones.map((zone) => ({
+						name: zone,
+						machines,
+					} as ZoneInfo)),
 				} as ProviderInfo;
 			})
 		);
-		return providerInfo;
 	}
 }
