@@ -24,7 +24,6 @@
 
 
 	// Actions
-	import { resolveRoute } from '$app/paths'
 	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
 
 
@@ -47,14 +46,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'success'){
-				goto(resolveRoute('/clusters/[clusterId]', {
-					clusterId: result.data.clusterId,
-				}))
-			}
-		},
 	})
 
 	export const snapshot = { capture, restore }

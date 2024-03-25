@@ -19,10 +19,6 @@
 	} = $page.data as PageData
 
 
-	// Functions
-	import { goto } from '$app/navigation'
-
-
 	// Schema
 	import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 
@@ -62,17 +58,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(SignInFormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'success'){
-				console.log({result})
-				goto('/')
-			}
-
-
-		// if(response.status === 204)
-		// 	return redirect(301, '/clusters')
-		},
 	})
 
 	const {
