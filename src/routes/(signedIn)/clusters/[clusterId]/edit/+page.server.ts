@@ -4,15 +4,20 @@ import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
 
-// Actions
-import { type Actions, fail, redirect } from '@sveltejs/kit'
+// Functions
 import { resolveRoute } from '$app/paths'
+
+
+// Actions
+import { type Actions, fail } from '@sveltejs/kit'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 export const actions: Actions = {
 	default: async ({
 		request,
 		fetch,
 		params: { clusterId },
+		cookies,
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
@@ -45,14 +50,25 @@ export const actions: Actions = {
 
 		const result = await response.json()
 
-		return message(
-			formData,
-			{
-				title: `Updated cluster configuration.`,
-				description: result,
-			},
-		)
+		// return message(
+		// 	formData,
+		// 	{
+		// 		title: `Updated cluster configuration.`,
+		// 		description: result,
+		// 	},
+		// )
 
-		// return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId }))
+		return flashRedirect(
+			303,
+			resolveRoute('/clusters/[clusterId]', { clusterId }),
+			{
+				type: 'success',
+				message: {
+					title: `Updated cluster configuration.`,
+					description: result,
+				},
+			},
+			cookies,
+		)
 	},
 }

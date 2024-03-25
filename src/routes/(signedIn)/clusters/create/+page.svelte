@@ -24,7 +24,6 @@
 
 
 	// Actions
-	import { resolveRoute } from '$app/paths'
 	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
 	import { createQuery } from '@tanstack/svelte-query'
 

@@ -45,21 +45,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onChange: (event) => {
-			console.log('onChange', event)
-		},
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: `Couldn't connect service account.`,
-						description: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
-		},
 	})
 
 	export const snapshot = { capture, restore }

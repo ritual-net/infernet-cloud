@@ -9,10 +9,6 @@
 	import { page } from '$app/stores'
 
 
-	// Actions
-	import { addToast } from '$/components/Toaster.svelte'
-
-
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
 
@@ -26,16 +22,6 @@
 	} = superForm({}, {
 		dataType: 'json',
 		customValidity: true,
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				addToast({
-					data: {
-						type: 'error',
-						title: result.data && (result.data.result?.message ?? JSON.stringify(result.data.result)),
-					},
-				})
-		},
 	})
 </script>
 

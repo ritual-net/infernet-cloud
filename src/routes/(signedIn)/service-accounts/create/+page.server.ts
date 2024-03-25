@@ -1,3 +1,7 @@
+// Types/constants
+import { providers } from '$/types/provider'
+
+
 // Schema
 import { superValidate, message } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
@@ -15,13 +19,15 @@ export const load: PageServerLoad = async () => {
 
 
 // Actions
-import { type Actions, fail, redirect } from '@sveltejs/kit'
-import { providers } from '$/types/provider'
+import { type Actions, fail } from '@sveltejs/kit'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
+import { resolveRoute } from '$app/paths'
 
 export const actions: Actions = {
 	default: async ({
 		request,
 		fetch,
+		cookies,
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
@@ -49,13 +55,27 @@ export const actions: Actions = {
 			)
 		}
 
-		return message(
-			formData,
+		const newServiceAccount = await response.json()
+
+		// return message(
+		// 	formData,
+		// 	{
+		// 		title: `Connected service account.`,
+		// 		description: `"${formData.data.name}" is set up to deploy clusters on ${providers[formData.data.provider].name}.`,
+		// 	},
+		// )
+
+		return flashRedirect(
+			303,
+			resolveRoute('/service-accounts/[serviceAccountId]', { serviceAccountId: newServiceAccount.id }),
 			{
-				title: `Connected service account.`,
-				description: `"${formData.data.name}" is set up to deploy clusters on ${providers[formData.data.provider].name}.`,
+				type: 'success',
+				message: {
+					title: `Connected service account.`,
+					description: `"${formData.data.name}" is set up to deploy clusters on ${providers[formData.data.provider].name}.`,
+				},
 			},
+			cookies,
 		)
-		// return redirect (301, '/service-accounts')
 	},
 }

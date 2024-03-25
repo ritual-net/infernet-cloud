@@ -29,6 +29,7 @@ export const load: ServerLoad = async ({
 
 // Actions
 import { type Actions, fail, redirect } from '@sveltejs/kit'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 export const actions: Actions = {
 	signUp: async ({
@@ -75,6 +76,7 @@ export const actions: Actions = {
 	logIn: async ({
 		request,
 		fetch,
+		cookies,
 	}) => {
 		const signInFormData = await superValidate(request, yup(SignInFormData))
 
@@ -102,14 +104,23 @@ export const actions: Actions = {
 			)
 		}
 
-		// if(response.status === 204)
-		// 	return redirect(301, '/clusters')
+		// return message(
+		// 	signInFormData,
+		// 	{
+		// 		title: `Signed in as ${signInFormData.data.email}.`,
+		// 	},
+		// )
 
-		return message(
-			signInFormData,
+		return flashRedirect(
+			303,
+			'/clusters',
 			{
-				title: `Signed in as ${signInFormData.data.email}.`,
+				type: 'success',
+				message: {
+					title: `Signed in as ${signInFormData.data.email}.`,
+				},
 			},
+			cookies,
 		)
 	},
 
