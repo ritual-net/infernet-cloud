@@ -2,7 +2,7 @@ export const formatNumberCompact = (
 	number: number,
 ) => (
 	new Intl.NumberFormat(
-		[...globalThis.navigator.languages],
+		[...globalThis.navigator?.languages ?? 'en-US'],
 		{
 			notation: 'compact',
 			compactDisplay: 'short',
