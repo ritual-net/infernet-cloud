@@ -215,7 +215,7 @@
 			type="submit"
 			class="primary"
 		>
-			Save Changes
+			Save and Apply Changes
 		</button>
 	</footer>
 </form>
