@@ -14,6 +14,7 @@
 
 	// Actions
 	import { applyAction } from '$app/forms'
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
 
 
 	// Components
@@ -73,12 +74,21 @@
 				value: 'delete',
 				label: 'Delete Cluster',
 				formAction: `${clusterRoute}?/delete`,
-				formSubmit: async () => {
+				formSubmit: async (e) => {
+					const toast = addToast({
+						data: {
+							type: 'default',
+							title: 'Deleting cluster...',
+						},
+					})
+
 					return async ({ result }) => {
 						await applyAction(result)
 
 						if(result.type === 'success')
 							await invalidate('.')
+
+						removeToast(toast.id)
 					}
 				},
 			},
