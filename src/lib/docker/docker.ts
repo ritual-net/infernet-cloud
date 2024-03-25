@@ -81,10 +81,6 @@ export class DockerHubClient {
 		try {
 			const response = await axios.get(orgsUrl, { headers: this.headers.orgHeaders });
 			const orgs = response.data.results.map((org: DockerHubOrg) => org.orgname);
-			// All users should have access to public ritualnetwork imgs
-			if (!orgs.includes('ritualnetwork')) {
-				orgs.push('ritualnetwork');
-			}
 			return orgs;
 		} catch (error) {
 			throw new Error(`Failed to fetch organizations: ${(error as Error).message}`);
@@ -92,7 +88,7 @@ export class DockerHubClient {
 	}
 
 	/**
-	 * Retrieves all repos (public and private) that user has access to.
+	 * Retrieves all repos owned by user or an organization the user is in.
 	 *
 	 * @returns Flat array of tagged repo ids.
 	 */
@@ -109,5 +105,16 @@ export class DockerHubClient {
 			...orgs.map((org) => this.getRepos(org)),
 		]);
 		return allRepos.flat();
+	}
+
+	/**
+	 * Retrieves all public ritualnetwork repos.
+	 *
+	 * @returns Flat array of tagged repo ids.
+	 */
+	public async getRitualImages(creds: DockerHubCreds): Promise<string[]> {
+		await this.authenticate(creds);
+		const ritualRepos = await this.getRepos('ritualnetwork');
+		return ritualRepos;
 	}
 }
