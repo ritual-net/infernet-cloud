@@ -88,7 +88,7 @@ node build
 First, setup your **environment file**:
 
 ```bash
-cp .env.docker.example .env
+cp .env.docker.example .env.docker
 ```
 
 You **should (only) modify** the following variables:
