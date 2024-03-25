@@ -49,14 +49,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'success'){
-				goto(resolveRoute('/clusters/[clusterId]', {
-					clusterId: result.data.clusterId,
-				}))
-			}
-		},
 	})
 
 	export const snapshot = { capture, restore }
