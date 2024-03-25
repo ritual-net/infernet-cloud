@@ -63,10 +63,14 @@ export const actions: Actions = {
 
 		const result = await response.json()
 
-		// return {
-		// 	formData,
-		// 	result: await response.json(),
-		// }
-		return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }))
+		return message(
+			formData,
+			{
+				title: `Created cluster "${formData.data.config.name}"${formData.data.nodes.length ? `with ${formData.data.nodes.length} node${formData.data.nodes.length === 1 ? '' : 's'}.` : ''}`,
+				description: result.message,
+			},
+		)
+
+		// return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }))
 	},
 }
