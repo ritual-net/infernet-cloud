@@ -6,6 +6,10 @@
 
 	// Context
 	import { page } from '$app/stores'
+	import { browser } from '$app/environment'
+
+	import { getFlash } from 'sveltekit-flash-message'
+ 	const flash = getFlash(page)
 
 
 	// Actions
@@ -13,7 +17,7 @@
 
 	$: if($page.form?.form?.message){
 		const {
-			title = 'Success',
+			title,
 			description,
 		} = $page.form.form.message as {
 			title?: string,
@@ -23,8 +27,18 @@
 		addToast({
 			data: {
 				type: $page.status < 400 ? 'success' : 'error',
-				title,
+				title: title ?? ($page.status < 400 ? 'Success' : 'Error'),
 				description,
+			},
+		})
+	}
+
+	$: if($flash){
+		addToast({
+			data: {
+				type: $flash.type,
+				title: $flash.message.title ?? ($flash.type === 'success' ? 'Success' : 'Error'),
+				description: $flash.message.description,
 			},
 		})
 	}
