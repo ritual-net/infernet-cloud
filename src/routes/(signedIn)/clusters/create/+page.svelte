@@ -23,6 +23,10 @@
 	} = $page.data as PageData
 
 
+	// Functions
+	import { resolveRoute } from '$app/paths'
+
+
 	// Actions
 	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
 	import { createQuery } from '@tanstack/svelte-query'
