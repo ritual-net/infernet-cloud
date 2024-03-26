@@ -113,7 +113,7 @@ export const actions: Actions = {
 
 		return flashRedirect(
 			303,
-			'/clusters',
+			'/',
 			{
 				type: 'success',
 				message: {
