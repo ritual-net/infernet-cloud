@@ -49,12 +49,12 @@
 		</div>
 
 		<div class="row">
-			<!-- <dl class="card inline">
+			<dl class="card inline">
 				<div class="row">
 					<dt>Status</dt>
 					<dd>{cluster.healthy ? 'Healthy' : 'Unhealthy'}</dd>
 				</div>
-			</dl> -->
+			</dl>
 
 			<a
 				href={resolveRoute(`/clusters/[clusterId]/edit`, {
@@ -114,44 +114,6 @@
 			/>
 		</div>
 	</header>
-
-	<section class="column">
-		<h3>Status</h3>
-
-		<dl class="card column">
-			<section class="row">
-				<dt>Status</dt>
-
-				<dd>
-					{cluster.locked ? 'Updating' : cluster.healthy ? 'Healthy' : 'Unhealthy'}
-				</dd>
-			</section>
-
-			{#if cluster.tfstate}
-				<section class="row">
-					<dt>Terraform State</dt>
-	
-					<dd>
-						<output>
-							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
-						</output>
-					</dd>
-				</section>
-			{/if}
-
-			{#if cluster.error}
-				<section class="row">
-					<dt>Error</dt>
-	
-					<dd>
-						<output>
-							<code>{cluster.error}</code>
-						</output>
-					</dd>
-				</section>
-			{/if}
-		</dl>
-	</section>
 
 	<section class="column">
 		<h3>Details</h3>
@@ -236,6 +198,44 @@
 		</dl>
 	</section>
 
+	<section class="column">
+		<h3>Status</h3>
+
+		<dl class="card column">
+			<section class="row">
+				<dt>Status</dt>
+
+				<dd>
+					{cluster.locked ? 'Updating' : cluster.healthy ? 'Healthy' : 'Unhealthy'}
+				</dd>
+			</section>
+
+			{#if cluster.tfstate}
+				<section class="column">
+					<dt>Terraform State</dt>
+	
+					<dd>
+						<output>
+							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
+						</output>
+					</dd>
+				</section>
+			{/if}
+
+			{#if cluster.error}
+				<section class="column">
+					<dt>Error</dt>
+	
+					<dd>
+						<output>
+							<code>{cluster.error}</code>
+						</output>
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
 	<section>
 		<h3>Nodes</h3>
 
@@ -268,9 +268,15 @@
 
 	output {
 		font-size: 0.75em;
-	}
-	code {
-		white-space: pre-wrap;
-		word-break: break-word;
+
+		& pre  {
+			max-height: 15.6rem;
+    		overflow-y: auto;
+
+			& code {
+				white-space: pre-wrap;
+				word-break: break-word;
+			}
+		}
 	}
 </style>
