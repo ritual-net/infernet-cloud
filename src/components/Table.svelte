@@ -276,10 +276,14 @@
 	td[data-column="menu"] {
 		padding: 0;
 
-		> :global(*) {
-			all: reset;
-			padding: 1em;
+		> :global(button) {
+			--button-backgroundColor: transparent;
+    		--button-borderWidth: 0;
+			--button-paddingY: 1em;
+			--button-paddingX: 1em;
+			width: 100%;
 			height: 100%;
+			text-align: end;
 		}
 	}
 
