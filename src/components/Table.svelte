@@ -50,7 +50,6 @@
 	import { melt } from '@melt-ui/svelte'
 	import ContextMenu from './ContextMenu.svelte'
 	import DropdownMenu from './DropdownMenu.svelte'
-	import EllipsisIcon from '../icons/EllipsisIcon.svelte'
 
 
 	// Transitions/animations
@@ -142,9 +141,7 @@
 								>
 									<DropdownMenu
 										items={contextMenu(datum)}
-									>
-										<EllipsisIcon />
-									</DropdownMenu>
+									/>
 								</td>
 							{/if}
 						</tr>
@@ -284,6 +281,7 @@
 		padding: 0;
 
 		> :global(*) {
+			all: reset;
 			padding: 1em;
 			height: 100%;
 		}
