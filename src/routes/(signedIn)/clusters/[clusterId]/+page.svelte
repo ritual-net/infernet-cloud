@@ -49,12 +49,12 @@
 		</div>
 
 		<div class="row">
-			<dl class="card inline">
+			<!-- <dl class="card inline">
 				<div class="row">
 					<dt>Status</dt>
 					<dd>{cluster.healthy ? 'Healthy' : 'Unhealthy'}</dd>
 				</div>
-			</dl>
+			</dl> -->
 
 			<a
 				href={resolveRoute(`/clusters/[clusterId]/edit`, {
@@ -116,6 +116,44 @@
 	</header>
 
 	<section class="column">
+		<h3>Status</h3>
+
+		<dl class="card column">
+			<section class="row">
+				<dt>Status</dt>
+
+				<dd>
+					{cluster.locked ? 'Updating' : cluster.healthy ? 'Healthy' : 'Unhealthy'}
+				</dd>
+			</section>
+
+			{#if cluster.tfstate}
+				<section class="row">
+					<dt>Terraform State</dt>
+	
+					<dd>
+						<output>
+							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
+						</output>
+					</dd>
+				</section>
+			{/if}
+
+			{#if cluster.error}
+				<section class="row">
+					<dt>Error</dt>
+	
+					<dd>
+						<output>
+							<code>{cluster.error}</code>
+						</output>
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
+	<section class="column">
 		<h3>Details</h3>
 
 		<dl class="card column">
@@ -135,28 +173,6 @@
 						/>
 						{cluster.service_account.name}
 					</a>
-				</dd>
-			</section>
-
-			<section class="row">
-				<dt>IPs Allowed (HTTP)</dt>
-
-				{#if cluster.ip_allow_http?.length}
-					<dd class="column inline">
-						{#each cluster.ip_allow_http as ip}
-							{ip}
-						{/each}
-					</dd>
-				{:else}
-					<dd>All</dd>
-				{/if}
-			</section>
-
-			<section class="row">
-				<dt>Has Deployed Router?</dt>
-
-				<dd>
-					{cluster.deploy_router ? 'Yes' : 'No'}
 				</dd>
 			</section>
 
@@ -185,16 +201,48 @@
 					{cluster.machine_type}
 				</dd>
 			</section>
+
+			<section class="row">
+				<dt>IPs Allowed (HTTP)</dt>
+
+				{#if cluster.ip_allow_http?.length}
+					<dd class="column inline">
+						{#each cluster.ip_allow_http as ip}
+							{ip}
+						{/each}
+					</dd>
+				{:else}
+					<dd>All</dd>
+				{/if}
+			</section>
+
+			<section class="row">
+				<dt>Has Deployed Router?</dt>
+
+				<dd>
+					{cluster.deploy_router ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
+			{#if cluster.router?.ip}
+				<section class="row">
+					<dt>Router IP</dt>
+
+					<dd>
+						{cluster.router.ip}
+					</dd>
+				</section>
+			{/if}
 		</dl>
 	</section>
 
-	<div>
+	<section>
 		<h3>Nodes</h3>
 
 		<NodesTable
 			nodes={cluster.nodes}
 		/>
-	</div>
+	</section>
 </div>
 
 
@@ -216,5 +264,13 @@
 
 		background-color: var(--color-ritualBlack);
 		color: #fff;
+	}
+
+	output {
+		font-size: 0.75em;
+	}
+	code {
+		white-space: pre-wrap;
+		word-break: break-word;
 	}
 </style>
