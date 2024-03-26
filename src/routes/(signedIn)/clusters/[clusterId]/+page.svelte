@@ -88,6 +88,28 @@
 							}
 						},
 					},
+					{
+						value: 'delete',
+						label: 'Delete Cluster',
+						formAction: `?/delete`,
+						formSubmit: async (e) => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: 'Deleting cluster...',
+								},
+							})
+
+							return async ({ result }) => {
+								await applyAction(result)
+
+								if(result.type === 'success')
+									await invalidate('.')
+
+								removeToast(toast.id)
+							}
+						},
+					},
 				]}
 			/>
 		</div>
