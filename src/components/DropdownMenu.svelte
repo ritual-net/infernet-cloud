@@ -31,17 +31,23 @@
 
 	// Actions
 	import { enhance } from '$app/forms'
+
+
+	// Components
+	import EllipsisIcon from '$/icons/EllipsisIcon.svelte'
 </script>
 
 
-<div
+<button
 	use:melt={$trigger}
 	aria-label={labelText}
 	on:click|stopPropagation
 	on:contextmenu={e => { if($open) e.stopPropagation() }}
 >
-	<slot />
-</div>
+	<slot>
+		<EllipsisIcon />
+	</slot>
+</button>
 
 <div use:melt={$menu}>
 	{#each items as subitem}
