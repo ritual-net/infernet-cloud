@@ -43,6 +43,10 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	let cluster: Cluster
 
 	try {
+		// Exclude zone (unused by backend)
+		if(serviceAccount.provider === 'AWS')
+			delete config.zone
+
 		// Insert cluster
 		cluster = (await e
 			.params(
