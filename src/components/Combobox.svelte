@@ -202,6 +202,7 @@
 			text-align: center;
 
 			backdrop-filter: blur(8px);
+			background-color: var(--combobox-backgroundColor);
 
 			pointer-events: none;
 		}
