@@ -202,6 +202,8 @@
 			text-align: center;
 
 			backdrop-filter: blur(8px);
+
+			pointer-events: none;
 		}
 	}
 
