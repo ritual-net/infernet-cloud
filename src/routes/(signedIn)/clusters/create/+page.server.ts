@@ -87,7 +87,7 @@ export const actions: Actions = {
 			{
 				type: 'success',
 				message: {
-					title: `Created cluster "${formData.data.config.name}"${formData.data.nodes.length ? ` with ${formData.data.nodes.length} node${formData.data.nodes.length === 1 ? '' : 's'}.` : ''}`,
+					title: `Created cluster "${formData.data.config.name}"${formData.data.nodes.length ? ` containing ${formData.data.nodes.length} node${formData.data.nodes.length === 1 ? '' : 's'}.` : ''}`,
 					description: result.message,
 				},
 			},
