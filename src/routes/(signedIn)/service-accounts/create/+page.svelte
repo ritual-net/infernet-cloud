@@ -402,13 +402,19 @@
 														'\t'
 													)
 												}
-												value={$form.credentials && Object.entries($form.credentials).length ? JSON.stringify($form.credentials) : ''}
+												value={
+													$form.credentials && Object.entries($form.credentials).length
+														? JSON.stringify(
+															$form.credentials,
+															null,
+															'\t'
+														)
+														: ''
+												}
 												on:input={(e) => {
 													try {
 														$form.credentials = JSON.parse(e.target.value)
-													}catch(e){
-
-													}
+													}catch(e){}
 												}}
 												{...$constraints.credentials}
 												aria-invalid={$errors.credentials ? 'true' : undefined}
