@@ -83,7 +83,7 @@ export const actions: Actions = {
 
 		return flashRedirect(
 			303,
-			resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }),
+			resolveRoute('/clusters/[clusterId]', { clusterId: result.cluster.id }),
 			{
 				type: 'success',
 				message: {
