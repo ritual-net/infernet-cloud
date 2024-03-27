@@ -191,4 +191,12 @@
 
 		background-color: var(--dropdownMenu-borderColor);
 	}
+
+	form {
+		display: contents;
+
+		& button {
+			all: unset;
+		}
+	}
 </style>
