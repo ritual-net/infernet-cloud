@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import { providers, type ProviderInfo } from '$/types/provider'
+	import { providers, type ProviderInfo, ProviderTypeEnum } from '$/types/provider'
 	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
 	enum Fieldset {
@@ -353,19 +353,27 @@
 													: {
 														placeholder: 'Choose region...',
 														items: (
-															Object.entries(
-																Object.groupBy(
-																	providerConfigs,
-																	providerConfig => providerConfig.region.name.match(/, (.+?)$/)[1]
+															serviceAccount.provider === ProviderTypeEnum.GCP
+																? (
+																	// Group by continents
+																	Object.entries(
+																		Object.groupBy(
+																			providerConfigs,
+																			providerConfig => providerConfig.region.name.match(/, (.+?)$/)[1]
+																		)
+																	)
+																		.map(([continent, configs]) => ({
+																			value: continent,
+																			label: continent,
+																			items: configs.map(config => ({
+																				value: config.region.id,
+																				label: `${config.region.id} (${config.region.name})`,
+																			}))
+																		}))
 																)
-															)
-																.map(([continent, configs]) => ({
-																	value: continent,
-																	label: continent,
-																	items: configs.map(config => ({
-																		value: config.region.id,
-																		label: `${config.region.id} (${config.region.name})`,
-																	}))
+																: providerConfigs.map(config => ({
+																	value: config.region.id,
+																	label: `${config.region.id} (${config.region.name})`,
 																}))
 														),
 													}
