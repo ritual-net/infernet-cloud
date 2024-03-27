@@ -86,6 +86,7 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		path: '/',
 		secure: true,
 		sameSite: 'strict',
+		maxAge: 24 * 60 * 60,
 	});
 
 	return json({

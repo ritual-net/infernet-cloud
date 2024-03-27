@@ -121,6 +121,7 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		path: '/',
 		secure: true,
 		sameSite: 'strict',
+		maxAge: 24 * 60 * 60,
 	});
 
 	// return new Response(null, { status: 204 });

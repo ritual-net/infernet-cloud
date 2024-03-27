@@ -54,6 +54,7 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 		path: '/',
 		secure: true,
 		sameSite: 'strict',
+		maxAge: 24 * 60 * 60,
 	});
 
 	return new Response(`Reset email sent to '${email_sent}'`);
