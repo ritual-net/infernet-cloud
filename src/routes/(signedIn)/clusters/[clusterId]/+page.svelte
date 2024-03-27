@@ -269,9 +269,15 @@
 	output {
 		font-size: 0.75em;
 
-		& pre  {
+		& pre {
+			overflow-y: auto;
 			max-height: 15.6rem;
-    		overflow-y: auto;
+			padding: 1em;
+
+			background: rgba(0, 0, 0, 0.05);
+			border-radius: 0.5em;
+
+			tab-size: 2;
 
 			& code {
 				white-space: pre-wrap;
