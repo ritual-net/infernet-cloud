@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import { providers, type ProviderInfo } from '$/types/provider'
+	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
 	enum Fieldset {
 		CreateCluster,
@@ -323,7 +324,7 @@
 													</label>
 												</h3>
 
-												<p>Select the <a href={providers[serviceAccount.provider].regionsInfoLink} target="_blank">region</a> where your cluster should be deployed.</p>
+												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">region</a> where your cluster should be deployed.</p>
 											</div>
 
 											<Combobox
@@ -365,7 +366,7 @@
 													</label>
 												</h3>
 
-												<p>Select the <a href={providers[serviceAccount.provider].regionsInfoLink} target="_blank">zone</a> where your cluster should be deployed.</p>
+												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">zone</a> where your cluster should be deployed.</p>
 											</div>
 
 											<Combobox
