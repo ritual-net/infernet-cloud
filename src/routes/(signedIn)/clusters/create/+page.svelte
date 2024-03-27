@@ -353,27 +353,23 @@
 													: {
 														placeholder: 'Choose region...',
 														items: (
-															serviceAccount.provider === ProviderTypeEnum.GCP
-																? (
-																	// Group by continents
-																	Object.entries(
-																		Object.groupBy(
-																			providerConfigs,
-																			providerConfig => providerConfig.region.name.match(/, (.+?)$/)[1]
-																		)
+															// Group by continents
+															Object.entries(
+																Object.groupBy(
+																	providerConfigs,
+																	providerConfig => (
+																		providerConfig.region.name.match(/^(.+) \(.+\)/)?.[1]
+																		|| providerConfig.region.name.match(/, (.+?)$/)?.[1]
 																	)
-																		.map(([continent, configs]) => ({
-																			value: continent,
-																			label: continent,
-																			items: configs.map(config => ({
-																				value: config.region.id,
-																				label: `${config.region.id} (${config.region.name})`,
-																			}))
-																		}))
 																)
-																: providerConfigs.map(config => ({
-																	value: config.region.id,
-																	label: `${config.region.id} (${config.region.name})`,
+															)
+																.map(([continent, configs]) => ({
+																	value: continent,
+																	label: continent,
+																	items: configs.map(config => ({
+																		value: config.region.id,
+																		label: `${config.region.id} – ${config.region.name}`,
+																	}))
 																}))
 														),
 													}
