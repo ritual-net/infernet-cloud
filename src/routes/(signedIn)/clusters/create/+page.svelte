@@ -347,10 +347,19 @@
 													: {
 														placeholder: 'Choose region...',
 														items: (
-															providerConfigs
-																.map(config => ({
-																	value: config.region.id,
-																	label: config.region.name,
+															Object.entries(
+																Object.groupBy(
+																	providerConfigs,
+																	providerConfig => providerConfig.region.name.match(/, (.+?)$/)[1]
+																)
+															)
+																.map(([continent, configs]) => ({
+																	value: continent,
+																	label: continent,
+																	items: configs.map(config => ({
+																		value: config.region.id,
+																		label: config.region.name,
+																	}))
 																}))
 														),
 													}
