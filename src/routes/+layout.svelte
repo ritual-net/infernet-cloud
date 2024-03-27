@@ -6,6 +6,54 @@
 
 	// Context
 	import { page } from '$app/stores'
+	import { browser } from '$app/environment'
+
+	import { getFlash } from 'sveltekit-flash-message'
+ 	const flash = getFlash(page)
+
+
+	// Global state
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				enabled: browser,
+			},
+		},
+	})
+
+
+	// Actions
+	import { addToast } from '$/components/Toaster.svelte'
+
+	$: if($page.form?.form?.message){
+		const {
+			title,
+			description,
+		} = $page.form.form.message as {
+			title?: string,
+			description?: string,
+		}
+
+		addToast({
+			data: {
+				type: $page.status < 400 ? 'success' : 'error',
+				title: title ?? ($page.status < 400 ? 'Success' : 'Error'),
+				description,
+			},
+		})
+	}
+
+	$: if($flash){
+		addToast({
+			data: {
+				type: $flash.type,
+				title: $flash.message.title ?? ($flash.type === 'success' ? 'Success' : 'Error'),
+				description: $flash.message.description,
+			},
+		})
+	}
 
 
 	// Components
@@ -14,19 +62,21 @@
 </script>
 
 
-<header>
-	<Nav />
-</header>
+<QueryClientProvider client={queryClient}>
+	<header>
+		<Nav />
+	</header>
 
-<div class="main-wrapper">
-	<main>
-		<slot />
-	</main>
-</div>
+	<div class="main-wrapper">
+		<main>
+			<slot />
+		</main>
+	</div>
 
-<!-- <footer></footer> -->
+	<!-- <footer></footer> -->
 
-<Toaster />
+	<Toaster />
+</QueryClientProvider>
 
 
 <style>

@@ -191,6 +191,9 @@
 	}
 
 	[data-melt-select-menu] {
+		z-index: 1;
+		overflow-y: auto;
+
 		display: grid;
 
 		clip-path: inset(calc(-1 * var(--select-borderWidth)) round calc(var(--select-cornerRadius) + var(--select-borderWidth)));
@@ -200,16 +203,20 @@
 		border-radius: var(--select-cornerRadius);
 
 		color: var(--button-textColor);
-
-		cursor: pointer;
 	}
 
 	[data-melt-select-group] {
 		display: grid;
 
 		& [data-melt-select-group-label] {
+			position: sticky;
+			top: 0;
+			backdrop-filter: blur(3px);
+			background-color: var(--combobox-backgroundColor);
+			padding: var(--combobox-paddingY) var(--combobox-paddingX);
+
 			font-weight: bold;
-			padding: var(--select-paddingY) var(--select-paddingX);
+			font-size: 0.85em;
 		}
 
 		& [data-melt-select-option] {

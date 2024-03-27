@@ -42,19 +42,19 @@ export class AWSResourceClient extends BaseResourceClient {
 			this.creds = creds;
 			this.amazonCompute = await this.createInstance('us-east-1');
 			// sanity check to enusure creds are valid
-			await this.getRegions();
+			await this.getRegionIds();
 		} catch (error) {
 			throw new Error(`Error during AWS authentication: ${(error as Error).message}`);
 		}
 	}
 
 	/**
-	 * Returns a list of all available region names.
+	 * Returns a list of all available region IDs.
 	 *
-	 * @returns A flat array of region names.
+	 * @returns A flat array of region IDs.
 	 * Example return value: ['us-east-1', 'us-west-2', 'eu-west-1']
 	 */
-	async getRegions(): Promise<string[]> {
+	async getRegionIds(): Promise<string[]> {
 		const command = new DescribeRegionsCommand({});
 		const response = await this.amazonCompute.send(command);
 		return (response.Regions?.map((region) => region.RegionName) ?? []).filter(

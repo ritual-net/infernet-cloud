@@ -22,13 +22,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 	// Extract token from cookie
 	const token = event.cookies.get('edgedb-auth-token')
 
-	// if (!token) {
-	// 	return error(
-	// 		400,
-	// 		'Could not find "token" in the cookie store. Is this the same user agent/browser that started the authorization flow?'
-	// 	);
-	// }
-
 	// Attach client to the event
 	event.locals.client = createClient().withGlobals({
 		'ext::auth::client_token': token,

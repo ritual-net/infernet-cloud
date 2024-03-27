@@ -24,7 +24,10 @@ export type Machine = {
 };
 
 export type ProviderInfo = {
-	region: string;
+	region: {
+		id: string;
+		name?: string;
+	},
 	zones: ZoneInfo[];
 };
 
@@ -40,6 +43,11 @@ export type NodeInfo = {
 	ip?: string;
 	node?: InfernetNode;
 };
+
+export type InfernetNodeWithInfo = {
+	node: InfernetNode;
+	info?: NodeInfo;
+}
 
 export enum NodeAction {
 	start = 'start',
@@ -61,4 +69,4 @@ export const providers = {
 		name: 'Google Cloud Platform',
 		icon: GCPIcon,
 	},
-}
+} as const

@@ -21,8 +21,13 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 		return error(400, 'Node id is required');
 	}
 	try {
-		const nodeInfo = ((await nodeAction(client, [id], NodeAction.info)) as NodeInfo[])[0];
-		return json(nodeInfo);
+		const result = await nodeAction(client, [id], NodeAction.info);
+
+		return json({
+			node: result.nodes[0].node,
+			info: result.nodes[0].info,
+			infoError: result.infoError?.message,
+		});
 	} catch (e) {
 		return error(400, (e as Error).message);
 	}
@@ -33,7 +38,7 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
  *
  * @param locals - The locals object contains the client.
  * @param params - The parameters object, expected to contain 'nodeId'.
- * @returns Success boolean and Terraform message.
+ * @returns Deleted node ID.
  */
 export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.nodeId;
@@ -50,7 +55,7 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 	}
 
 	// Delete node
-	await e
+	const deletedNode = await e
 		.update(e.Cluster, () => ({
 			filter_single: { id: cluster.id },
 			set: {
@@ -63,10 +68,31 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		}))
 		.run(client);
 
+	if(!deletedNode)
+		return error(500, 'No node to delete.')
+
 	// Apply Terraform changes to cluster
-	const { error: errorMessage, success } = await clusterAction(client, cluster.id, TFAction.Apply);
+	let result: Awaited<ReturnType<typeof clusterAction>>
+
+	try {
+		// Apply Terraform changes to cluster
+		result = await clusterAction(
+			client,
+			cluster.id,
+			TFAction.Apply
+		);
+	} catch (e) {
+		console.error(e)
+
+		return error(500, JSON.stringify(e))
+	}
+
+	const { success, error: errorMessage } = result
+
+	if(!success)
+		return error(500, errorMessage)
+
 	return json({
-		message: success ? 'Node destroyed successfully.' : errorMessage,
-		success,
-	});
+		node: deletedNode,
+	})
 };

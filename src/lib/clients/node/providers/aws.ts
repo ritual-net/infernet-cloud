@@ -72,18 +72,22 @@ export class AWSNodeClient implements BaseNodeClient {
 	 */
 	async getNodesInfo(ids: string[]): Promise<NodeInfo[]> {
 		const command = new DescribeInstancesCommand({ InstanceIds: ids });
+
 		const result = await this.client.send(command);
-		const nodesInfo: NodeInfo[] = [];
-		result.Reservations?.forEach((reservation) => {
-			reservation.Instances?.forEach((instance) => {
-				nodesInfo.push({
-					id: instance.InstanceId!,
-					status: instance.State?.Name,
-					ip: instance.PublicIpAddress,
-					node: undefined,
-				});
-			});
-		});
-		return nodesInfo;
+
+		return (
+			result.Reservations
+				?.flatMap(reservation => (
+					reservation
+						.Instances
+						?.map(instance => ({
+							id: instance.InstanceId!,
+							status: instance.State?.Name,
+							ip: instance.PublicIpAddress,
+						}))
+					?? []
+				))
+			?? []
+		);
 	}
 }

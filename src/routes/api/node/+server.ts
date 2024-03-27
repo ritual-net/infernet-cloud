@@ -11,7 +11,7 @@ import type { RequestHandler } from '@sveltejs/kit';
  *
  * @param locals - The locals object contains the client.
  * @param request - The request object containing 'node' and 'cluster_id'.
- * @returns - Success boolean and Terraform message.
+ * @returns - Updated cluster ID.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	const { node, cluster_id: clusterId } = await request.json();
@@ -24,9 +24,13 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, `Cluster ID ${clusterId} does not exist`);
 	}
 
+	let updatedCluster: {
+		id: string;
+	} | null
+
 	try {
 		// Create node and update cluster
-		await e
+		updatedCluster = await e
 			.params(
 				{
 					node: createNodeParams,
@@ -42,12 +46,31 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					}))
 			)
 			.run(client, { node });
-
-		// Apply Terraform changes to cluster
-		const { error: errorMessage, success } = await clusterAction(client, clusterId, TFAction.Apply);
-
-		return json({ message: success ? 'Node created successfully' : errorMessage, success });
 	} catch (e) {
 		return error(400, (e as Error).message);
 	}
+
+	let result: Awaited<ReturnType<typeof clusterAction>>
+
+	try {
+		// Apply Terraform changes to cluster
+		result = await clusterAction(
+			client,
+			cluster.id,
+			TFAction.Apply
+		);
+	} catch (e) {
+		console.error(e)
+
+		return error(500, JSON.stringify(e))
+	}
+
+	const { success, error: errorMessage } = result
+
+	if(!success)
+		return error(500, errorMessage)
+
+	return json({
+		cluster: updatedCluster,
+	})
 };

@@ -76,11 +76,11 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		case ProviderTypeEnum.AWS: {
 			try {
 				await new ProviderClient[ProviderTypeEnum.AWS]().auth({
-					user_name: credentials.UserName,
-					access_key_id: credentials.AccessKeyId,
-					status: credentials.Status,
-					secret_access_key: credentials.SecretAccessKey,
-					create_date: credentials.CreateDates,
+					user_name: credentials.AccessKey.UserName,
+					access_key_id: credentials.AccessKey.AccessKeyId,
+					status: credentials.AccessKey.Status,
+					secret_access_key: credentials.AccessKey.SecretAccessKey,
+					create_date: credentials.AccessKey.CreateDates,
 				});
 			} catch (err) {
 				return error(400, `Error validating credentials: ${(err as Error).message}`);
@@ -89,12 +89,11 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 				user: e.global.current_user,
 				name,
 				creds: e.tuple({
-					// RHS casing to match AWS API
-					user_name: e.str(credentials.UserName),
-					access_key_id: e.str(credentials.AccessKeyId),
-					status: e.str(credentials.Status),
-					secret_access_key: e.str(credentials.SecretAccessKey),
-					create_date: e.str(credentials.CreateDate),
+					user_name: e.str(credentials.AccessKey.UserName),
+					access_key_id: e.str(credentials.AccessKey.AccessKeyId),
+					status: e.str(credentials.AccessKey.Status),
+					secret_access_key: e.str(credentials.AccessKey.SecretAccessKey),
+					create_date: e.str(credentials.AccessKey.CreateDate),
 				}),
 			});
 			break;
