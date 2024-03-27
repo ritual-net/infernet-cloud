@@ -33,10 +33,13 @@ export class DockerHubClient {
 	 * @param repoName - full name of repo: owner/repo-name
 	 * @returns Tag string.
 	 */
-	private async getTag(repoName: string): Promise<string> {
+	private async getTag(repoName: string, useHeaders: boolean = false): Promise<string> {
 		const tagsUrl = `${BASEURL}/repositories/${repoName}/tags/?page_size=100`;
 		try {
-			const response = await axios.get(tagsUrl, { headers: this.headers.repoHeaders });
+			const response = useHeaders
+				? await axios.get(tagsUrl, { headers: this.headers.repoHeaders })
+				: await axios.get(tagsUrl);
+
 			const tagsList = response.data.results;
 			return tagsList.length > 0 ? tagsList[0].name : '';
 		} catch (error) {
@@ -52,15 +55,20 @@ export class DockerHubClient {
 	 * @param ownerName - DockerHub repo owner id.
 	 * @returns Flat array of tagged repo ids.
 	 */
-	private async getRepos(ownerName: string): Promise<string[]> {
+	private async getRepos(ownerName: string, useHeaders: boolean = false): Promise<string[]> {
 		const repoUrl = `${BASEURL}/repositories/${ownerName}/?page_size=100`;
 		try {
-			const response = await axios.get(repoUrl, { headers: this.headers.repoHeaders });
+			const response = useHeaders
+				? await axios.get(repoUrl, { headers: this.headers.repoHeaders })
+				: await axios.get(repoUrl);
+
 			const repos = response.data.results;
 			return await Promise.all(
 				repos.map(async (repo: DockerHubRepo) => {
 					const repoName = `${repo.namespace}/${repo.name}`;
-					const tag = await this.getTag(repoName);
+					const tag = useHeaders
+						? await this.getTag(repoName, useHeaders)
+						: await this.getTag(repoName);
 					return tag ? `${repoName}:${tag}` : repoName;
 				})
 			);
@@ -101,8 +109,8 @@ export class DockerHubClient {
 
 		// Get all repos for user and orgs
 		const allRepos = await Promise.all([
-			this.getRepos(creds.username),
-			...orgs.map((org) => this.getRepos(org)),
+			this.getRepos(creds.username, true),
+			...orgs.map((org) => this.getRepos(org, true)),
 		]);
 		return allRepos.flat();
 	}
@@ -112,8 +120,7 @@ export class DockerHubClient {
 	 *
 	 * @returns Flat array of tagged repo ids.
 	 */
-	public async getRitualImages(creds: DockerHubCreds): Promise<string[]> {
-		await this.authenticate(creds);
+	public async getRitualImages(): Promise<string[]> {
 		const ritualRepos = await this.getRepos('ritualnetwork');
 		return ritualRepos;
 	}
