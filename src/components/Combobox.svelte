@@ -86,13 +86,23 @@
 		items
 			.map(item => (
 				'items' in item ?
-					filterItems(item.items, input)
+					{
+						...item,
+						items: filterItems(item.items, input),
+					}
 				: itemMatchesInput(item, input) ?
 					item
 				:
 					undefined
 			))
-			.filter(Boolean)
+			.filter(item => (
+				!item ?
+					false
+				: 'items' in item ?
+					item.items.length > 0
+				:
+					true
+			))
 	) as MenuItems<Value>
 
 	$: filteredItems = $touchedInput
