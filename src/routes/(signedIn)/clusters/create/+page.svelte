@@ -101,32 +101,32 @@
 	$: providerConfigs = $providerConfigsQuery.data
 
 	$: regionConfig = (
-		providerConfigs && $form.config.region && (
-			providerConfigs
+		providerConfigs && $form.config.region
+			? providerConfigs
 				.find(regionConfig => (
-					regionConfig.region === $form.config.region
+					regionConfig.region.id === $form.config.region
 				))
-		)
+			: undefined
 	)
 
 	$: zoneConfig = (
-		regionConfig && $form.config.zone && (
-			regionConfig
+		regionConfig && $form.config.zone
+			? regionConfig
 				?.zones
 				.find(zoneConfig => (
 					zoneConfig.name === $form.config.zone
 				))
-		)
+			: undefined
 	)
 
 	$: machineConfig = (
-		zoneConfig && $form.config.machine_type && (
-			zoneConfig
+		zoneConfig && $form.config.machine_type
+			? zoneConfig
 				.machines
 				.find(machineConfig => (
-					machineConfig.region === $form.config.region
+					machineConfig.id === $form.config.machine_type
 				))
-		)
+			: undefined
 	)
 
 
