@@ -350,7 +350,7 @@
 															providerConfigs
 																.map(config => ({
 																	value: config.region.id,
-																	label: config.region.label,
+																	label: config.region.name,
 																}))
 														),
 													}
