@@ -228,7 +228,7 @@
 	
 					<dd>
 						<output>
-							<code>{cluster.error}</code>
+							<pre><code>{cluster.error}</code></pre>
 						</output>
 					</dd>
 				</section>
