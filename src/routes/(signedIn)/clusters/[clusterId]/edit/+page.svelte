@@ -169,7 +169,10 @@
 								name="config.ip_allow_http"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								bind:value={$form.config.ip_allow_http}
+								value={$form.config.ip_allow_http.join(', ')}
+								on:input={e => {
+									$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
+								}}
 								{...$constraints.config?.ip_allow_http}
 								disabled={allowIps === 'all'}
 							/>
@@ -180,7 +183,10 @@
 								name="config.ip_allow_ssh"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								bind:value={$form.config.ip_allow_ssh}
+								value={$form.config.ip_allow_http.join(', ')}
+								on:input={e => {
+									$form.config.ip_allow_ssh = e.target.value.split(',').map(ip => ip.trim())
+								}}
 								{...$constraints.config?.ip_allow_ssh}
 								disabled={allowIps === 'all'}
 							/>
