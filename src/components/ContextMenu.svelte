@@ -128,8 +128,11 @@
 		--contextMenu-textColor: var(--textColor);
 	}
 
-	[data-melt-context-menu-trigger] {
+	/* [data-melt-context-menu-trigger] {
 		display: contents;
+	} */
+	:global([data-melt-context-menu-trigger]) {
+		cursor: context-menu;
 	}
 
 	[data-melt-context-menu] {
