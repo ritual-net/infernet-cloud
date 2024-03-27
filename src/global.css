@@ -110,6 +110,8 @@ dd {
 	grid: 'stack';
 	align-items: start;
 
+	&:before,
+	&:after,
 	& > * {
 		grid-area: stack;
 	}
@@ -156,13 +158,14 @@ input, textarea {
 	--input-backgroundColor: var(--input-default-backgroundColor);
 	--input-borderColor: var(--borderColor);
 	--input-borderWidth: var(--borderWidth);
+	--input-cornerRadius: 0.33em;
 	--input-textColor: var(--input-default-textColor);
 
 	padding: var(--input-paddingY) var(--input-paddingX);
 
 	background-color: var(--input-backgroundColor);
 	box-shadow: 0 0 0 var(--input-borderWidth) var(--input-borderColor);
-	border-radius: 0.33em;
+	border-radius: var(--input-cornerRadius);
 
 	color: var(--input-textColor);
 
@@ -170,6 +173,11 @@ input, textarea {
 
 	&.small {
 		font-size: 0.8em;
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 }
 textarea {
