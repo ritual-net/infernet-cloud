@@ -1,5 +1,6 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { EDGEDB_AUTH_BASE_URL } from '$lib/auth';
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 /**
  * Handles the link in the email verification flow.
@@ -13,18 +14,44 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 	const url = new URL(request.url);
 	const verification_token = url.searchParams.get('verification_token');
 	if (!verification_token) {
-		return error(
-			400,
-			`Verify request is missing 'verification_token' search param. The verification email is malformed.`
-		);
+		// return error(
+		// 	400,
+		// 	`Verify request is missing 'verification_token' search param. The verification email is malformed.`
+		// );
+
+		return flashRedirect(
+			303,
+			'/login',
+			{
+				type: 'error',
+				message: {
+					title: `Couldn't verify your email address.`,
+					description: `Verify request is missing 'verification_token' search param. The verification email is malformed.`,
+				},
+			},
+			cookies,
+		)
 	}
 
 	const verifier = cookies.get('edgedb-pkce-verifier');
 	if (!verifier) {
-		return error(
-			400,
-			`Could not find 'verifier' in the cookie store. Is this the same user agent/browser that started the authorization flow?`
-		);
+		// return error(
+		// 	400,
+		// 	`Could not find 'verifier' in the cookie store. Is this the same user agent/browser that started the authorization flow?`
+		// );
+
+		return flashRedirect(
+			303,
+			'/login',
+			{
+				type: 'error',
+				message: {
+					title: `Couldn't verify your email address.`,
+					description: `Make sure you're opening the link in the same browser you used to sign up.`,
+				},
+			},
+			cookies,
+		)
 	}
 
 	const verifyUrl = new URL('verify', EDGEDB_AUTH_BASE_URL);
@@ -41,8 +68,22 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 	});
 
 	if (!verifyResponse.ok) {
-		const text = await verifyResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+		const result = await verifyResponse.text();
+
+		// return error(400, `Error from the auth server: ${result}`);
+
+		return flashRedirect(
+			303,
+			'/login',
+			{
+				type: 'error',
+				message: {
+					title: `Couldn't verify your email address.`,
+					description: `Error from the auth server: ${result}`,
+				},
+			},
+			cookies,
+		)
 	}
 
 	const { code } = (await verifyResponse.json()) as { code: string };
@@ -55,8 +96,22 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 	});
 
 	if (!tokenResponse.ok) {
-		const text = await tokenResponse.text();
-		return error(400, `Error from the auth server: ${text}`);
+		const result = await tokenResponse.text();
+
+		// return error(400, `Error from the auth server: ${result}`);
+
+		return flashRedirect(
+			303,
+			'/login',
+			{
+				type: 'error',
+				message: {
+					title: `Couldn't verify your email address.`,
+					description: `Error from the auth server: ${result}`,
+				},
+			},
+			cookies,
+		)
 	}
 
 	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
@@ -68,5 +123,17 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		sameSite: 'strict',
 	});
 
-	return new Response(null, { status: 204 });
+	// return new Response(null, { status: 204 });
+
+	return flashRedirect(
+		303,
+		'/login#logIn',
+		{
+			type: 'success',
+			message: {
+				title: `Email address verified!`,
+			},
+		},
+		cookies,
+	)
 };
