@@ -203,8 +203,6 @@
 		border-radius: var(--select-cornerRadius);
 
 		color: var(--button-textColor);
-
-		cursor: pointer;
 	}
 
 	[data-melt-select-group] {
