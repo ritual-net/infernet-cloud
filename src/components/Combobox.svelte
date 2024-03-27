@@ -306,6 +306,7 @@
 
 	.placeholder {
 		display: block;
+		padding: var(--combobox-paddingY) var(--combobox-paddingX);
 		opacity: 0.5;
 	}
 </style>
