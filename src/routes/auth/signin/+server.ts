@@ -38,13 +38,20 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	});
 
 	if (!authenticateResponse.ok) {
-		const result = await authenticateResponse.text();
+		const result = await authenticateResponse
+			.text()
+			.then((text): string => {
+				try {
+					const json = JSON.parse(text)
+					console.error(json)
+					return JSON.parse(text).error.message as string
+				}catch(e){
+					console.error(text)
+					return text
+				}
+			});
 
-		try {
-			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		} catch (e) {
-			return error(500, `Error from the auth server: ${result}`);
-		}
+		return error(500, result);
 	}
 
 	const { code } = (await authenticateResponse.json()) as { code: string };
@@ -57,13 +64,20 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	});
 
 	if (!tokenResponse.ok) {
-		const result = await tokenResponse.text();
+		const result = await tokenResponse
+			.text()
+			.then((text): string => {
+				try {
+					const json = JSON.parse(text)
+					console.error(json)
+					return JSON.parse(text).error.message as string
+				}catch(e){
+					console.error(text)
+					return text
+				}
+			});
 
-		try {
-			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		} catch (e) {
-			return error(500, `Error from the auth server: ${result}`);
-		}
+		return error(500, result);
 	}
 
 	const result = await tokenResponse.text();

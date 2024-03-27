@@ -31,13 +31,20 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	});
 
 	if (!sendResetResponse.ok) {
-		const result = await sendResetResponse.text();
+		const result = await sendResetResponse
+			.text()
+			.then((text): string => {
+				try {
+					const json = JSON.parse(text)
+					console.error(json)
+					return JSON.parse(text).error.message as string
+				}catch(e){
+					console.error(text)
+					return text
+				}
+			});
 
-		try {
-			return error(500, `Error from the auth server: ${JSON.parse(result).error.message}`);
-		} catch (e) {
-			return error(500, `Error from the auth server: ${result}`);
-		}
+		return error(500, result);
 	}
 
 	const { email_sent } = await sendResetResponse.json();

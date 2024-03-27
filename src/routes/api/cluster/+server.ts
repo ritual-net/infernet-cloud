@@ -40,9 +40,15 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account could not be retrieved');
 	}
 
+	let cluster: Cluster
+
 	try {
+		// Exclude zone (unused by backend)
+		if(serviceAccount.provider === 'AWS')
+			delete config.zone
+
 		// Insert cluster
-		const cluster = (await e
+		cluster = (await e
 			.params(
 				{
 					nodes: e.array(createNodeParams),
@@ -58,19 +64,40 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					})
 			)
 			.run(client, { nodes })) as Cluster;
-
-		// Apply Terraform changes to create cluster
-		const { error: errorMessage, success } = await clusterAction(
-			client,
-			cluster.id,
-			TFAction.Apply
-		);
-		return json({
-			id: cluster.id,
-			message: success ? 'Cluster created successfully' : errorMessage,
-			success,
-		});
 	} catch (e) {
+		console.error(e)
+
+		if(e.message?.includes(`violates exclusivity constraint`)){
+			return error(500, `A cluster with name "${config.name}" already exists.`)
+		}
+
 		return error(500, (e as Error).message);
 	}
+
+	// Apply Terraform changes to created cluster
+	// (Run in background - don't block API response)
+	(async () => {
+		let result: Awaited<ReturnType<typeof clusterAction>>
+
+		try {
+			result = await clusterAction(
+				client,
+				cluster.id,
+				TFAction.Apply
+			);
+		} catch (e) {
+			console.error(e)
+
+			// return error(500, JSON.stringify(e))
+		}
+
+		// const { success, error: errorMessage } = result
+
+		// if(!success)
+		// 	return error(500, errorMessage)
+	})();
+
+	return json({
+		cluster,
+	})
 };
