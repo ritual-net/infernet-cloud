@@ -191,6 +191,7 @@
 	}
 
 	[data-melt-select-menu] {
+		z-index: 1;
 		overflow-y: auto;
 
 		display: grid;
