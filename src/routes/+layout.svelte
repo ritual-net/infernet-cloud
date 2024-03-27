@@ -45,7 +45,7 @@
 		})
 	}
 
-	$: if($flash){
+	$: if(browser && $flash){
 		addToast({
 			data: {
 				type: $flash.type,
