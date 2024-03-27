@@ -41,6 +41,7 @@
 		positioning: {
 			placement,
 			fitViewport: true,
+			boundary: document.getElementsByTagName('main')[0],
 		},
 	})
 
@@ -230,8 +231,14 @@
 		display: grid;
 
 		& [data-melt-combobox-group-label] {
-			font-weight: bold;
+			position: sticky;
+			top: 0;
+			backdrop-filter: blur(3px);
+			background-color: var(--combobox-backgroundColor);
 			padding: var(--combobox-paddingY) var(--combobox-paddingX);
+
+			font-weight: bold;
+			font-size: 0.85em;
 		}
 
 		& [data-melt-combobox-option] {

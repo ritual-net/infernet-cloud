@@ -211,8 +211,14 @@
 		display: grid;
 
 		& [data-melt-select-group-label] {
+			position: sticky;
+			top: 0;
+			backdrop-filter: blur(3px);
+			background-color: var(--combobox-backgroundColor);
+			padding: var(--combobox-paddingY) var(--combobox-paddingX);
+
 			font-weight: bold;
-			padding: var(--select-paddingY) var(--select-paddingX);
+			font-size: 0.85em;
 		}
 
 		& [data-melt-select-option] {
