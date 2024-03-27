@@ -4,6 +4,7 @@ import { NodeClient } from '$/lib/index';
 import { NodeAction } from '$/types/provider';
 import type { Client } from 'edgedb';
 import type {
+	InfernetNodeWithInfo,
 	NodeInfo,
 	ProviderServiceAccount,
 	ProviderServiceAccountCreds,
@@ -19,11 +20,20 @@ import type {
  * @throws Error if nodes, cluster could not be retrieved, or action is not supported
  * @remarks nodes have to belong to same cluster
  */
-export const nodeAction = async (
+export const nodeAction = async <
+	_NodeAction extends NodeAction
+>(
 	client: Client,
 	nodeIds: string[],
-	action: NodeAction
-): Promise<NodeInfo[] | undefined> => {
+	action: _NodeAction,
+): Promise<
+	_NodeAction extends NodeAction.info
+		? {
+			nodes: InfernetNodeWithInfo[],
+			infoError?: Error,
+		}
+		: undefined
+> => {
 	const nodes = await getNodesByIds(client, nodeIds);
 	if (nodes.length === 0) {
 		throw Error('Nodes could not be retrieved.');
@@ -55,13 +65,26 @@ export const nodeAction = async (
 			return;
 
 		case NodeAction.info:
-			const nodesInfo = await nodeClient.getNodesInfo(providerIds, functionArgs);
-			// add node objects to node info before returning
-			const nodesMap = new Map(nodes.map((node) => [node.provider_id, node]));
-			nodesInfo.forEach((nodeInfo) => {
-				nodeInfo.node = nodesMap.get(nodeInfo.id);
-			});
-			return nodesInfo;
+			let infoError: Error | undefined;
+
+			const nodesInfo = await nodeClient
+				.getNodesInfo(providerIds, functionArgs)
+				.catch(error => {
+					console.error(error);
+					infoError = error;
+					return [];
+				});
+
+			const nodeInfoByProviderId = new Map(nodesInfo.map(node => [node.id, node]));
+
+			return {
+				nodes: nodes
+					.map(node => ({
+						node,
+						info: node.provider_id ? nodeInfoByProviderId.get(node.provider_id) : undefined,
+					} as InfernetNodeWithInfo)),
+				infoError,
+			};
 
 		case NodeAction.restart:
 			await nodeClient.restartNodes(providerIds, functionArgs);
