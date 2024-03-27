@@ -29,8 +29,8 @@ export const nodeAction = async <
 ): Promise<
 	_NodeAction extends NodeAction.info
 		? {
-			info: NodeInfo[],
-			error?: Error,
+			nodes: InfernetNodeWithInfo[],
+			infoError?: Error,
 		}
 		: undefined
 > => {
@@ -65,18 +65,26 @@ export const nodeAction = async <
 			return;
 
 		case NodeAction.info:
-			const nodesInfo = await nodeClient.getNodesInfo(providerIds, functionArgs)
-				.catch(e => {
-					console.error(e);
+			let infoError: Error | undefined;
+
+			const nodesInfo = await nodeClient
+				.getNodesInfo(providerIds, functionArgs)
+				.catch(error => {
+					console.error(error);
+					infoError = error;
 					return [];
 				});
 
 			const nodeInfoByProviderId = new Map(nodesInfo.map(node => [node.id, node]));
 
-			return nodes.map(node => ({
-				...node,
-				info: node.provider_id ? nodeInfoByProviderId.get(node.provider_id) : undefined,
-			} as InfernetNodeWithInfo));
+			return {
+				nodes: nodes
+					.map(node => ({
+						node,
+						info: node.provider_id ? nodeInfoByProviderId.get(node.provider_id) : undefined,
+					} as InfernetNodeWithInfo)),
+				infoError,
+			};
 
 		case NodeAction.restart:
 			await nodeClient.restartNodes(providerIds, functionArgs);
