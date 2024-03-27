@@ -26,7 +26,7 @@ export type Machine = {
 export type ProviderInfo = {
 	region: {
 		id: string;
-		label?: string;
+		name?: string;
 	},
 	zones: ZoneInfo[];
 };
