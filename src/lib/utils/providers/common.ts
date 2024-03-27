@@ -1,9 +1,8 @@
 import { ProviderTypeEnum } from '$/types/provider';
 import type { ProviderInfo } from '$/types/provider';
 
-export const providers = {
+export const providerRegionsAndZones = {
 	[ProviderTypeEnum.AWS]: {
-		name: 'Amazon Web Services',
 		regionsInfoLink:
 			'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions',
 		regions: [
@@ -126,7 +125,6 @@ export const providers = {
 		],
 	},
 	[ProviderTypeEnum.GCP]: {
-		name: 'Google Cloud Platform',
 		regionsInfoLink: 'https://cloud.google.com/compute/docs/regions-zones/#available',
 		regions: [
 			{
@@ -744,8 +742,8 @@ export const providers = {
  * @returns human-readable region name string
  */
 export const getHumanReadableRegion = (region: string, provider: ProviderTypeEnum): string => {
-	const providerRegions = providers[provider].regions;
-	const regionObj = providerRegions.find((r) => r.value === region);
+	const regions = providerRegionsAndZones[provider].regions;
+	const regionObj = regions.find((r) => r.value === region);
 	if (!regionObj) {
 		throw new Error(`Region ${region} not found for provider ${provider}`);
 	}

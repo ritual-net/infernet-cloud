@@ -56,11 +56,9 @@ export const providers = {
 	[ProviderTypeEnum.AWS]: {
 		name: 'Amazon Web Services',
 		icon: AWSIcon,
-		regionsInfoLink: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions',
 	},
 	[ProviderTypeEnum.GCP]: {
 		name: 'Google Cloud Platform',
 		icon: GCPIcon,
-		regionsInfoLink: 'https://cloud.google.com/compute/docs/regions-zones/#available',
 	},
 } as const
