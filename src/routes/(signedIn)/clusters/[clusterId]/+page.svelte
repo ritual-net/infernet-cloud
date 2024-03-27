@@ -249,6 +249,7 @@
 <style>
 	.container {
 		gap: 2rem;
+		margin-bottom: 20dvh;
 	}
 
 	.icon {
