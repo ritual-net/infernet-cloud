@@ -1,6 +1,7 @@
 <script context="module" lang="ts">
 	export enum CellType {
 		ServiceAccount,
+		Status,
 	}
 </script>
 
@@ -22,8 +23,19 @@
 		<img src={providers[cluster.service_account.provider].icon} />
 		{cluster.service_account.name}
 	</div>
-{:else}
+{:else if cellType === CellType.Status}
+	{@const clusterStatus = cluster.locked ? 'updating' : cluster.healthy ? 'healthy' : 'unhealthy'}
 
+	<div
+		class="status"
+		data-status={clusterStatus}
+	>
+		{{
+			'healthy': 'Healthy',
+			'updating': 'Updating',
+			'unhealthy': 'Unhealthy',
+		}[clusterStatus]}
+	</div>
 {/if}
 
 
@@ -35,5 +47,25 @@
 	img {
 		width: 1.5em;
 		height: 1.5em;
+	}
+
+	.status {
+		&[data-status="healthy"] {
+			--status-color: #16B371;
+		}
+
+		&[data-status="updating"] {
+			--status-color: #b3a316;
+		}
+
+		&[data-status="unhealthy"] {
+			--status-color: #b33d16;
+		}
+
+		&:before {
+			content: '⏺';
+			margin-right: 0.33em;
+			color: var(--status-color)
+		}
 	}
 </style>

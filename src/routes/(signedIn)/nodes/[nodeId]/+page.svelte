@@ -41,7 +41,12 @@
 			<dl class="card inline">
 				<div class="row">
 					<dt>Status</dt>
-					<dd>{node.status}</dd>
+					<dd>
+						<div
+							class="status"
+							data-status={node.status}
+						>{node.status}</div>
+					</dd>
 				</div>
 			</dl>
 
@@ -96,5 +101,25 @@
 
 		background-color: var(--color-ritualBlack);
 		color: #fff;
+	}
+
+	.status {
+		&[data-status="healthy"] {
+			--status-color: #16B371;
+		}
+
+		&[data-status="updating"] {
+			--status-color: #b3a316;
+		}
+
+		&[data-status="unhealthy"] {
+			--status-color: #b33d16;
+		}
+
+		&:before {
+			content: '⏺';
+			margin-right: 0.33em;
+			color: var(--status-color)
+		}
 	}
 </style>

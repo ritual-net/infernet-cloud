@@ -51,7 +51,13 @@
 		},
 		{
 			header: 'Status',
-			accessor: cluster => cluster.healthy ? 'Healthy' : 'Unhealthy',
+			accessor: cluster => cluster.healthy,
+			cell: ({ value: cluster }) => (
+				createRender(ClustersTableCell, {
+					cellType: CellType.Status,
+					cluster,
+				})
+			),
 		},
 	]}
 	getRowLink={cluster => (
