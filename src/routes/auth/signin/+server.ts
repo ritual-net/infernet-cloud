@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 		cookies.set('edgedb-auth-token', auth_token, {
 			httpOnly: true,
 			path: '/',
-			// secure: true,
+			secure: true,
 			sameSite: 'strict',
 			maxAge: 24 * 60 * 60,
 		});

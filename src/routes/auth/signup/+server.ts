@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	cookies.set('edgedb-pkce-verifier', pkce.verifier, {
 		httpOnly: true,
 		path: '/',
-		// secure: true,
+		secure: true,
 		sameSite: 'strict',
 		maxAge: 24 * 60 * 60,
 	});
