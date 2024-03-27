@@ -4,17 +4,31 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		node
+		node,
+		info,
+		infoError,
 	} = $page.data as PageData)
 
 
+	// Internal state
+	// (Computed)
+	$: nodeStatus = info?.status ?? 'unknown'
+
+
+	// Functions
+	import { formatNumberCompact } from '$/lib/format'
+
+
 	// Actions
-	import { enhance } from '$app/forms'
+	import { applyAction, enhance } from '$app/forms'
+	import { invalidate } from '$app/navigation'
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
 
 
 	// Components
-	// import NodesContainersTable from './NodesContainersTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import DropdownMenu from '$/components/DropdownMenu.svelte'
+	// import NodesContainersTable from './NodesContainersTable.svelte'
 </script>
 
 
@@ -44,18 +58,78 @@
 					<dd>
 						<div
 							class="status"
-							data-status={node.status}
-						>{node.status}</div>
+							data-status={nodeStatus}
+						>{{
+							'unknown': 'Unknown',
+							'healthy': 'Healthy',
+							'updating': 'Updating',
+							'unhealthy': 'Unhealthy',
+						}[nodeStatus]}</div>
 					</dd>
 				</div>
 			</dl>
 
-			<form
+			<!-- <form
 				method="POST"
 				action="/?start"
+				use:enhance
 			>
 				<button type="submit">Start Node</button>
-			</form>
+			</form> -->
+
+			<DropdownMenu
+				labelText="Node Actions"
+				items={[
+					{
+						value: 'start',
+						label: 'Start Node',
+						formAction: `?/start`,
+						formSubmit: async (e) => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: 'Starting node...',
+								},
+							})
+		
+							invalidate($page.url)
+		
+							return async ({ result }) => {
+								await applyAction(result)
+		
+								if(result.type === 'success')
+									await invalidate($page.url)
+		
+								removeToast(toast.id)
+							}
+						},
+					},
+					{
+						value: 'stop',
+						label: 'Stop Node',
+						formAction: `?/stop`,
+						formSubmit: async (e) => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: 'Stopping node...',
+								},
+							})
+		
+							invalidate($page.url)
+		
+							return async ({ result }) => {
+								await applyAction(result)
+		
+								if(result.type === 'success')
+									await invalidate($page.url)
+		
+								removeToast(toast.id)
+							}
+						},
+					},
+				]}
+			/>
 		</div>
 	</header>
 
@@ -64,12 +138,64 @@
 
 		<dl class="card column">
 			<section class="row">
-				<dt>IP</dt>
+				<dt>Forward Stats?</dt>
 
 				<dd>
-					{node.ip}
+					{node.forward_stats ? 'Yes' : 'No'}
 				</dd>
 			</section>
+
+			<section class="row">
+				<dt>Chain Enabled?</dt>
+
+				<dd>
+					{node.chain_enabled ? 'Yes' : 'No'}
+				</dd>
+			</section>
+		</dl>
+	</section>
+
+	{#if node.chain_enabled}
+		<section class="column">
+			<h3>Onchain Details</h3>
+
+			<dl class="card column">
+				{#if node.coordinator_address}
+					<section class="row">
+						<dt>Coordinator Address</dt>
+
+						<dd>
+							{node.coordinator_address}
+						</dd>
+					</section>
+				{/if}
+
+				{#if node.max_gas_limit !== undefined && node.max_gas_limit !== null}
+					<section class="row">
+						<dt>Max Gas Limit</dt>
+
+						<dd>
+							{formatNumberCompact(node.max_gas_limit)}
+						</dd>
+					</section>
+				{/if}
+			</dl>
+		</section>
+	{/if}
+
+	<section class="column">
+		<h3>Status</h3>
+
+		<dl class="card column">
+			{#if infoError}
+				<section class="column">
+					<dt>Error</dt>
+
+					<dd>
+						{infoError}
+					</dd>
+				</section>
+			{/if}
 		</dl>
 	</section>
 
@@ -116,10 +242,14 @@
 			--status-color: #b33d16;
 		}
 
+		&[data-status="unknown"] {
+			--status-color: gray;
+		}
+
 		&:before {
 			content: '⏺';
 			margin-right: 0.33em;
-			color: var(--status-color)
+			color: var(--status-color);
 		}
 	}
 </style>
