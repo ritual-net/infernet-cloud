@@ -53,48 +53,52 @@ export abstract class BaseTerraform {
 		serviceAccount: ProviderServiceAccount,
 		action: TFAction
 	) {
-		// Create fresh temporary directory
-		const tempDir = await TerraformUtils.createTempDir(this.type);
-
-		// Create terraform files
-		await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
-
-		// Create node config files under configs/
-		await TerraformUtils.createNodeConfigFiles(tempDir, cluster.nodes);
-
-		// If state file exist in db, write it to file
-		if (cluster?.tfstate) {
-			await SystemUtils.writeJsonToFile(
-				path.join(tempDir, 'terraform.tfstate'),
-				JSON.parse(cluster.tfstate)
-			);
-		}
-
-		// Initialize terraform
-		await SystemUtils.executeCommands(tempDir, 'terraform init');
-		if (!tempDir) {
-			return { success: false, error: 'Cluster could not be updated.' };
-		}
-
-		let error;
 		try {
-			await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve`);
-		} catch (e) {
-			// We catch the error here so we can store the state file in the db.
-			// Even if the apply fails, the cluster may be partially created / updated,
-			// so we want the state file to reflect that.
-			const commandError = e as CommandExecutionError;
-			error = commandError.stderr ?? commandError.error ?? commandError;
+			// Create fresh temporary directory
+			const tempDir = await TerraformUtils.createTempDir(this.type);
+
+			// Create terraform files
+			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
+
+			// Create node config files under configs/
+			await TerraformUtils.createNodeConfigFiles(tempDir, cluster.nodes);
+
+			// If state file exist in db, write it to file
+			if (cluster?.tfstate) {
+				await SystemUtils.writeJsonToFile(
+					path.join(tempDir, 'terraform.tfstate'),
+					JSON.parse(cluster.tfstate)
+				);
+			}
+
+			// Initialize terraform
+			await SystemUtils.executeCommands(tempDir, 'terraform init');
+			if (!tempDir) {
+				return { success: false, error: 'Cluster could not be updated.' };
+			}
+
+			let error;
+			try {
+				await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve`);
+			} catch (e) {
+				// We catch the error here so we can store the state file in the db.
+				// Even if the apply fails, the cluster may be partially created / updated,
+				// so we want the state file to reflect that.
+				const commandError = e as CommandExecutionError;
+				error = commandError.stderr ?? commandError.error ?? commandError;
+			}
+
+			// Store state file in db under cluster entry
+			const state = (await SystemUtils.readJsonFromFile(
+				path.join(tempDir, 'terraform.tfstate')
+			)) as TFState;
+
+			// Remove temporary directory
+			SystemUtils.removeDir(tempDir);
+
+			return { success: error ? false : true, error, state };
+		}catch(error){
+			return { success: false, error: JSON.stringify(error) };
 		}
-
-		// Store state file in db under cluster entry
-		const state = (await SystemUtils.readJsonFromFile(
-			path.join(tempDir, 'terraform.tfstate')
-		)) as TFState;
-
-		// Remove temporary directory
-		SystemUtils.removeDir(tempDir);
-
-		return { success: error ? false : true, error, state };
 	}
 }

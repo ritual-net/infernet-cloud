@@ -19,11 +19,11 @@ import { TFAction } from '$/types/terraform';
 export const clusterAction = async (client: Client, clusterId: string, action: TFAction) => {
 	const cluster = await getClusterById(client, clusterId, true);
 	if (!cluster) {
-		return { error: 'Cluster not found', success: false };
+		return { error: 'Cluster not found.', success: false };
 	}
 
 	if (cluster.locked) {
-		return { error: 'Cluster mutation is progress. Please wait.', success: false };
+		return { error: 'The cluster is already in the process of being updated. Please wait and try again.', success: false };
 	}
 
 	// Lock the cluster to prevent concurrent mutations

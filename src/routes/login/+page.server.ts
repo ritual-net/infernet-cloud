@@ -1,5 +1,5 @@
 // Schema
-import { superValidate } from 'sveltekit-superforms/server'
+import { superValidate, message } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
 import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 
@@ -8,10 +8,12 @@ import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
 import type { ServerLoad } from '@sveltejs/kit'
 
 export const load: ServerLoad = async ({
-	locals: { user },
+	parent,
 }) => {
+	const { user } = await parent()
+
 	if(user)
-		redirect(303, '/clusters')
+		redirect(303, '/')
 
 	const signUpFormData = await superValidate(yup(SignUpFormData))
 	const signInFormData = await superValidate(yup(SignInFormData))
@@ -27,6 +29,7 @@ export const load: ServerLoad = async ({
 
 // Actions
 import { type Actions, fail, redirect } from '@sveltejs/kit'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 export const actions: Actions = {
 	signUp: async ({
@@ -44,23 +47,36 @@ export const actions: Actions = {
 			body: JSON.stringify(signUpFormData.data),
 		})
 
-		if(!response.ok)
-			return fail(response.status, {
+		if(!response.ok){
+			const result = await response.json()
+
+			return message(
 				signUpFormData,
-				result: await response.json(),
-			})
-
-		if(response.status === 204)
-			return redirect(301, '/service-accounts')
-
-		return {
-			signUpFormData,
+				{
+					title: `Couldn't sign up.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				},
+			)
 		}
+
+		// const newUser = response.json()
+
+		return message(
+			signUpFormData,
+			{
+				title: `Welcome, ${signUpFormData.data.name}!`,
+				description: `Check your email ${signUpFormData.data.email} for a confirmation link.`
+			},
+		)
 	},
 
-	signIn: async ({
+	logIn: async ({
 		request,
 		fetch,
+		cookies,
 	}) => {
 		const signInFormData = await superValidate(request, yup(SignInFormData))
 
@@ -73,18 +89,39 @@ export const actions: Actions = {
 			body: JSON.stringify(signInFormData.data),
 		})
 
-		if(!response.ok)
-			return fail(response.status, {
+		if(!response.ok){
+			const result = await response.json()
+
+			return message(
 				signInFormData,
-				result: await response.json(),
-			})
-
-		if(response.status === 204)
-			return redirect(301, '/clusters')
-
-		return {
-			signInFormData,
+				{
+					title: `Couldn't sign in.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				},
+			)
 		}
+
+		// return message(
+		// 	signInFormData,
+		// 	{
+		// 		title: `Signed in as ${signInFormData.data.email}.`,
+		// 	},
+		// )
+
+		return flashRedirect(
+			303,
+			'/',
+			{
+				type: 'success',
+				message: {
+					title: `Signed in as ${signInFormData.data.email}.`,
+				},
+			},
+			cookies,
+		)
 	},
 
 	resetPassword: async ({
@@ -97,32 +134,32 @@ export const actions: Actions = {
 			return fail(400, { resetPasswordFormData })
 		}
 
-		const response = await fetch('/auth/send-reset-password-email', {
+		const response = await fetch('/auth/send-password-reset-email', {
 			method: 'POST',
 			body: JSON.stringify(resetPasswordFormData.data),
 		})
 
 		if(!response.ok){
 			const result = await response.text()
-			
-			try {
-				return fail(response.status, {
-					resetPasswordFormData,
-					result: JSON.parse(result),
-				})
-			}catch(e){
-				return fail(response.status, {
-					resetPasswordFormData,
-					result: result,
-				})
-			}
+
+			return message(
+				resetPasswordFormData,
+				{
+					title: `Couldn't reset password.`,
+					description: result,
+				},
+				{
+					status: response.status,
+				},
+			)
 		}
 
-		if(response.status === 204)
-			return redirect(301, '/clusters')
-
-		return {
+		return message(
 			resetPasswordFormData,
-		}
+			{
+				title: `Password reset request sent.`,
+				description: `Check your email ${resetPasswordFormData.data.email} for a password reset link.`,
+			},
+		)
 	},
 }
