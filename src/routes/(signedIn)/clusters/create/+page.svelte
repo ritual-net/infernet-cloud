@@ -767,7 +767,10 @@
 												pushState(href, {
 													showContainerForm: 'create',
 													nodeId: node.id,
-													containerFormData: result.data,
+													containerFormData: {
+														...result.data,
+														imagesPromise: await result.data.imagesPromise,
+													}
 												})
 											} else {
 												console.error(`Failed to preload shallow route: ${href}`)
@@ -794,7 +797,7 @@
 												formData: {
 													container,
 												},
-												imagesPromise,
+												imagesPromise: await imagesPromise,
 											},
 										}
 
