@@ -358,7 +358,7 @@
 																	label: continent,
 																	items: configs.map(config => ({
 																		value: config.region.id,
-																		label: config.region.name,
+																		label: `${config.region.id} (${config.region.name})`,
 																	}))
 																}))
 														),
