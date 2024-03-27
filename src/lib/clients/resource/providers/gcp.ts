@@ -29,19 +29,19 @@ export class GCPResourceClient extends BaseResourceClient {
 			this.projectId = creds.project_id;
 			this.googleCompute = google.compute({ version: 'v1', auth: authClient });
 			// sanity check for creds
-			await this.getRegions();
+			await this.getRegionIds();
 		} catch (error) {
 			throw new Error(`Error during GCP authentication: ${(error as Error).message}`);
 		}
 	}
 
 	/**
-	 * Returns a list of all available region names.
+	 * Returns a list of all available region IDs.
 	 *
-	 * @returns A flat array of region names.
+	 * @returns A flat array of region IDs.
 	 * Example return value: ['us-east1', 'us-west1', 'us-central1']
 	 */
-	async getRegions(): Promise<string[]> {
+	async getRegionIds(): Promise<string[]> {
 		const response = await this.googleCompute.regions.list({
 			project: this.projectId,
 		});
