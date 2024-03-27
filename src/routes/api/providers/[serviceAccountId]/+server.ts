@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { getHumanReadableProviderInfo } from '$/lib/utils/providers/common';
+import { getProviderInfoWithRegionLabels } from '$/lib/utils/providers/common';
 import { getServiceAccountById } from '$/lib/db/queries';
 import { ProviderClient } from '$/lib/index';
 import { ProviderTypeEnum } from '$/types/provider';
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	}
 
 	return json(
-		getHumanReadableProviderInfo(
+		getProviderInfoWithRegionLabels(
 			ProviderTypeEnum[serviceAccount.provider],
 			await new ProviderClient[serviceAccount.provider]().getProviderInfo(serviceAccount.creds)
 		)

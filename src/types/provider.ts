@@ -24,7 +24,10 @@ export type Machine = {
 };
 
 export type ProviderInfo = {
-	region: string;
+	region: {
+		id: string;
+		label?: string;
+	},
 	zones: ZoneInfo[];
 };
 

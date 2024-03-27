@@ -737,18 +737,20 @@ export const providerRegionsAndZones = {
 /**
  * Returns the human-readable region name.
  *
- * @param region technical region id by provider
+ * @param regionId technical region id by provider
  * @param provider cloud provider name
  * @returns human-readable region name string
  */
-export const getHumanReadableRegion = (region: string, provider: ProviderTypeEnum): string => {
+export const getRegionLabel = (regionId: string, provider: ProviderTypeEnum): string => {
 	const regions = providerRegionsAndZones[provider].regions;
-	const regionObj = regions.find((r) => r.value === region);
-	if (!regionObj) {
-		throw new Error(`Region ${region} not found for provider ${provider}`);
+
+	const region = regions.find((r) => r.value === regionId);
+
+	if (!region) {
+		throw new Error(`Region ${regionId} not found for provider ${provider}`);
 	}
 
-	return regionObj.label;
+	return region.label;
 };
 
 /**
@@ -758,15 +760,15 @@ export const getHumanReadableRegion = (region: string, provider: ProviderTypeEnu
  * @param provider original provider info object
  * @returns human-readable provider info object
  */
-export const getHumanReadableProviderInfo = (
+export const getProviderInfoWithRegionLabels = (
 	provider: ProviderTypeEnum,
 	providerInfo: ProviderInfo[]
-): ProviderInfo[] => {
-	return providerInfo.map((info) => ({
-		region: getHumanReadableRegion(info.region, provider),
-		zones: info.zones.map((zone) => ({
-			name: `${getHumanReadableRegion(info.region, provider)}-${zone.name.slice(-1)}`,
-			machines: zone.machines,
-		})),
-	}));
-};
+): ProviderInfo[] => (
+	providerInfo.map((providerInfo) => ({
+		region: {
+			...providerInfo.region,
+			label: getRegionLabel(providerInfo.region.id, provider),
+		},
+		zones: providerInfo.zones,
+	}))
+);

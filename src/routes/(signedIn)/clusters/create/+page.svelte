@@ -349,8 +349,8 @@
 														items: (
 															providerConfigs
 																.map(config => ({
-																	value: config.region,
-																	label: config.region,
+																	value: config.region.id,
+																	label: config.region.label,
 																}))
 														),
 													}
