@@ -16,6 +16,7 @@ export const Config = z
 
 		'deploy_router': z
 			.boolean()
+			.required()
 			.default(false),
 
 		'ip_allow_http': z
@@ -61,7 +62,9 @@ export const Container = z
 			.required(),
 
 		'external': z
-			.boolean(),
+			.boolean()
+			.required()
+			.default(false),
 
 		'allowed_addresses': z
 			.array(
@@ -93,6 +96,7 @@ export const Container = z
 
 		'gpu': z
 			.boolean()
+			.required()
 			.default(false),
 	})
 
@@ -100,6 +104,7 @@ export const NodeConfig = z
 	.object({
 		'chain_enabled': z
 			.boolean()
+			.required()
 			.default(false),
 
 		'trail_head_blocks': z
@@ -167,6 +172,7 @@ export const NodeConfig = z
 
 		'forward_stats': z
 			.boolean()
+			.required()
 			.default(false),
 	})
 
