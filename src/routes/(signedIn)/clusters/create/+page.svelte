@@ -20,7 +20,7 @@
 	const {
 		formData,
 		serviceAccounts,
-		images,
+		imagesPromise,
 	} = $page.data as PageData
 
 
@@ -794,7 +794,7 @@
 												formData: {
 													container,
 												},
-												images,
+												imagesPromise,
 											},
 										}
 

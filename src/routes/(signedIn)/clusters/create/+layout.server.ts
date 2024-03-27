@@ -4,11 +4,10 @@ export const load: LayoutServerLoad = async ({
 	request,
 	fetch,
 }) => {
-	const images = [
-		'ritualnet/llm-inference:0.0.1',
-	]
+	const imagesPromise = fetch(`/api/images/ritual`)
+		.then(response => response.json())
 
 	return {
-		images,
+		imagesPromise,
 	}
 }
