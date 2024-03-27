@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 
 	return flashRedirect(
 		303,
-		'/login#logIn',
+		'/',
 		{
 			type: 'success',
 			message: {
