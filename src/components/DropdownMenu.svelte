@@ -148,8 +148,6 @@
 		border-radius: var(--dropdownMenu-cornerRadius);
 
 		color: var(--button-textColor);
-
-		cursor: pointer;
 	}
 
 	[data-melt-dropdown-menu-item] {

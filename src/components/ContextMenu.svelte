@@ -145,8 +145,6 @@
 		border-radius: var(--contextMenu-cornerRadius);
 
 		color: var(--button-textColor);
-
-		cursor: pointer;
 	}
 
 	[data-melt-context-menu-item] {

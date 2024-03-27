@@ -223,8 +223,6 @@
 		border-radius: var(--combobox-cornerRadius);
 
 		color: var(--button-textColor);
-
-		cursor: pointer;
 	}
 
 	[data-melt-combobox-group] {
