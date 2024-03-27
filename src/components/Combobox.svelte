@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types
-	import type { MenuItems } from '$lib/menus'
+	import type { MenuItem, MenuItems } from '$lib/menus'
 	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
 
 	type Value = $$Generic<any>
@@ -67,16 +67,36 @@
 	}
 
 	// (Computed)
-	$: filteredItems = $touchedInput
-		? items
-			.filter((item) => {
-				const normalizedInput = $inputValue.toLowerCase()
+	const itemMatchesInput = (
+		item: MenuItem<Value>,
+		input: string,
+	) => {
+		const normalizedInput = input.toLowerCase()
 
-				return (
-					String(item.value).toLowerCase().includes(normalizedInput)
-					|| item.label.toLowerCase().includes(normalizedInput)
-				)
-			})
+		return (
+			String(item.value).toLowerCase().includes(normalizedInput)
+			|| item.label.toLowerCase().includes(normalizedInput)
+		)
+	}
+
+	const filterItems = (
+		items: MenuItems<Value>,
+		input: string,
+	): MenuItems<Value> => (
+		items
+			.map(item => (
+				'items' in item ?
+					filterItems(item.items, input)
+				: itemMatchesInput(item, input) ?
+					item
+				:
+					undefined
+			))
+			.filter(Boolean)
+	) as MenuItems<Value>
+
+	$: filteredItems = $touchedInput
+		? filterItems(items, $inputValue)
 		: items
 </script>
 
