@@ -3,6 +3,10 @@
 	import type { getClustersForUser } from '$/lib/db/queries'
 
 
+	// Context
+	import { page } from '$app/stores'
+
+
 	// Functions
 	import { resolveRoute } from '$app/paths'
 	import { goto, invalidate } from '$app/navigation'
