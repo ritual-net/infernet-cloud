@@ -24,7 +24,10 @@ export type Machine = {
 };
 
 export type ProviderInfo = {
-	region: string;
+	region: {
+		id: string;
+		name?: string;
+	},
 	zones: ZoneInfo[];
 };
 
@@ -61,4 +64,4 @@ export const providers = {
 		name: 'Google Cloud Platform',
 		icon: GCPIcon,
 	},
-}
+} as const

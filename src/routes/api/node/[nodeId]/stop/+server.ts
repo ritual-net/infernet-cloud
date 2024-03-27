@@ -1,4 +1,4 @@
-import { error, json } from '@sveltejs/kit';
+import { error, text } from '@sveltejs/kit';
 import { nodeAction } from '$/lib/clients/node/common';
 import { NodeAction } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ locals: { client }, params }) => {
 	}
 	try {
 		await nodeAction(client, [id], NodeAction.stop);
-		return json({ success: true, message: 'Stopping nodes...' });
+		return text('Stopping nodes...');
 	} catch (e) {
 		return error(400, (e as Error).message);
 	}

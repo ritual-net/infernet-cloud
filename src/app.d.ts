@@ -14,7 +14,15 @@ declare global {
 			user: User;
 		}
 
-		// interface PageData {}
+		interface PageData {
+			flash?: {
+				type: 'success' | 'error',
+				message: {
+					title?: string,
+					description?: string,
+				},
+			};
+		}
 
 		interface PageState {
 			showContainerForm?: 'create' | 'edit',
@@ -24,6 +32,13 @@ declare global {
 		}
 
 		// interface Platform {}
+
+		namespace Superforms {
+			type Message = {
+				title?: string,
+				description?: string,
+			}
+		}
 	}
 }
 

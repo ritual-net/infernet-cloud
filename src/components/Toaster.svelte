@@ -6,6 +6,8 @@
 		description?: string,
 	}
 
+	export { type Toast } from '@melt-ui/svelte'
+
 
 	// Internal state
 	const {
@@ -21,6 +23,7 @@
 
 	// Actions
 	export const addToast = helpers.addToast
+	export const removeToast = helpers.removeToast
 
 
 	// Transitions/animations
@@ -56,7 +59,7 @@
 
 					{#if data.description}
 						<div use:melt={$description(id)}>
-							<p>{@html data.description.replaceAll(/\{.+\}/g, m => `<code>${m.replace(/</g, '&lt;')}</code>`)}</p>
+							<p>{@html data.description?.replace(/</g, '&lt;').replaceAll(/\{.+\}/g, m => `<code>${m}</code>`)}</p>
 						</div>
 					{/if}
 				</div>
@@ -67,29 +70,51 @@
 
 
 <style>
+	:root {
+		--toast-typeSuccess-backgroundColor: rgb(246, 255, 246);
+		--toast-typeSuccess-borderColor: rgba(0, 160, 0, 0.2);
+
+		--toast-typeError-backgroundColor: rgb(255, 246, 246);
+		--toast-typeError-borderColor: rgba(255, 0, 0, 0.2);
+	}
+
 	[data-portal] {
 		isolation: isolate;
 
+		overflow: hidden auto;
+
 		position: fixed;
-		right: 1em;
-		bottom: 1em;
+		right: 0;
+		bottom: 0;
 		max-height: 100dvh;
-
-		overflow-y: auto;
-
-		padding: var(--borderWidth);
+		padding: 1em;
 
 		> div {
 			align-content: end;
 
 			& [data-melt-toast-content] {
+				--toast-backgroundColor: #fff;
+				--toast-borderColor: var(--borderColor);
+
+				&[data-type="success"] {
+					--toast-backgroundColor: var(--toast-typeSuccess-backgroundColor);
+					--toast-borderColor: var(--toast-typeSuccess-borderColor);
+				}
+
+				&[data-type="error"] {
+					--toast-backgroundColor: var(--toast-typeError-backgroundColor);
+					--toast-borderColor: var(--toast-typeError-borderColor);
+				}
+
 				position: relative;
 
 				& .card {
+					--card-backgroundColor: var(--toast-backgroundColor);
+					--card-borderColor: var(--toast-borderColor);
 					--card-paddingY: 0.75em;
 					--card-paddingX: 1em;
 
-					width: min(35ch, 100%);
+					width: min(35ch, 100vw - 2rem);
 					row-gap: 0.25em;
 
 					transition: 0.3s;

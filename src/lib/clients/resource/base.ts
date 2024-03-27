@@ -16,9 +16,9 @@ export abstract class BaseResourceClient {
 	/**
 	 * Get the list of regions available on the cloud provider.
 	 *
-	 * @returns Flat array of all regions.
+	 * @returns Flat array of all region IDs.
 	 */
-	abstract getRegions(): Promise<string[]>;
+	abstract getRegionIds(): Promise<string[]>;
 
 	/**
 	 * Get the list of zones in a region.
@@ -44,22 +44,29 @@ export abstract class BaseResourceClient {
 	 */
 	async getProviderInfo(credentials: Record<string, any>): Promise<ProviderInfo[]> {
 		await this.auth(credentials);
-		const regions = await this.getRegions();
-		const providerInfo = await Promise.all(
-			regions.map(async (region) => {
-				const machines = await this.getMachines(region);
-				const zones = await this.getZones(region);
-				const zonesInfo: ZoneInfo[] = zones.map((zone) => ({
-					name: zone,
-					machines: machines,
-				}));
+
+		const regionIds = await this.getRegionIds();
+
+		return await Promise.all(
+			regionIds.map(async (regionId) => {
+				const [
+					machines,
+					zones,
+				] = await Promise.all([
+					this.getMachines(regionId),
+					this.getZones(regionId),
+				])
 
 				return {
-					region: region,
-					zones: zonesInfo,
+					region: {
+						id: regionId,
+					},
+					zones: zones.map((zone) => ({
+						name: zone,
+						machines,
+					} as ZoneInfo)),
 				} as ProviderInfo;
 			})
 		);
-		return providerInfo;
 	}
 }
