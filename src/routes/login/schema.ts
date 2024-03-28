@@ -13,7 +13,7 @@ export const SignUpFormData = z
 
 		'password': z
 			.string()
-			.min(16)
+			.min(10)
 			.required(),
 
 		'provider': z
@@ -32,7 +32,7 @@ export const SignInFormData = z
 
 		'password': z
 			.string()
-			.min(16)
+			.min(10)
 			.required(),
 
 		'provider': z
