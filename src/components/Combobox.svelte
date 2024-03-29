@@ -63,7 +63,7 @@
 	)
 
 	$: if (!$open) {
-		$inputValue = $selected?.label ?? ''
+		$inputValue = (Array.isArray($selected) ? $selected[0] : $selected)?.label ?? ''
 	}
 
 	// (Computed)
