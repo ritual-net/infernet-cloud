@@ -17,10 +17,8 @@ export default {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter(),
 		alias: {
-			'$components': './src/components',
-			'$db': './src/server/db',
 			'$schema': './dbschema',
 			'$': './src',
 		},
 	},
-}
+};

@@ -151,6 +151,10 @@
 						</tr>
 					</ContextMenu>
 				</Subscribe>
+			{:else}
+				<div class="placeholder">
+					<slot />
+				</div>
 			{/each}
 		</tbody>
 	</table>
@@ -168,13 +172,13 @@
 
 	div {
 		--table-backgroundColor: var(--table-layoutDefault-backgroundColor);
-		--table-outerBorderColor: var(--table-layoutDefault-backgroundColor);
+		--table-outerBorderColor: var(--table-layoutDefault-outerBorderColor);
 		--table-borderWidth: var(--borderWidth);
 		--table-cornerRadius: 0.33em;
 
 		&[data-layout="card"] {
 			--table-backgroundColor: var(--table-layoutCard-backgroundColor);
-			--table-outerBorderColor: var(--table-layoutCard-backgroundColor);
+			--table-outerBorderColor: var(--table-layoutCard-outerBorderColor);
 		}
 
 		overflow-x: auto;

@@ -17,6 +17,7 @@
 		closeDelay: 0,
 		closeOnPointerDown: false,
 		forceVisible: true,
+		disableHoverableContent: true,
 	})
 
 
