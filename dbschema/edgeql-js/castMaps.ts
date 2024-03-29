@@ -32,6 +32,7 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _std.$bool ? _std.$bool : 
   T extends _std.$bigint ? _std.$bigint : 
   T extends _std.$JsonEmpty ? _std.$JsonEmpty : 
+  T extends _std.$Endian ? _std.$Endian : 
   T extends _schema.$Volatility ? _schema.$Volatility : 
   T extends _schema.$TypeModifier ? _schema.$TypeModifier : 
   T extends _schema.$TriggerTiming ? _schema.$TriggerTiming : 
@@ -86,6 +87,7 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _std.$bool ? _std.$bool : 
   T extends _std.$bigint ? _std.$bigint : 
   T extends _std.$JsonEmpty ? _std.$JsonEmpty : 
+  T extends _std.$Endian ? _std.$Endian : 
   T extends _schema.$Volatility ? _schema.$Volatility : 
   T extends _schema.$TypeModifier ? _schema.$TypeModifier : 
   T extends _schema.$TriggerTiming ? _schema.$TriggerTiming : 
@@ -237,6 +239,12 @@ type getSharedParentScalar<A, B> =
   :
   A extends _std.$JsonEmpty ?
     B extends _std.$JsonEmpty ?
+    B
+    :
+    never
+  :
+  A extends _std.$Endian ?
+    B extends _std.$Endian ?
     B
     :
     never
@@ -566,6 +574,12 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
   if (a.__name__ === "std::JsonEmpty") {
     if(b.__name__ === "std::JsonEmpty") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "std::Endian") {
+    if(b.__name__ === "std::Endian") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
