@@ -47,3 +47,18 @@ export enum NodeAction {
 	info = 'info',
 	restart = 'restart',
 }
+
+
+import AWSIcon from '$/assets/aws.svg'
+import GCPIcon from '$/assets/gcp.svg'
+
+export const providers = {
+	[ProviderTypeEnum.AWS]: {
+		name: 'Amazon Web Services',
+		icon: AWSIcon,
+	},
+	[ProviderTypeEnum.GCP]: {
+		name: 'Google Cloud Platform',
+		icon: GCPIcon,
+	},
+}

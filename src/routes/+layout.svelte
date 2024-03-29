@@ -1,14 +1,4 @@
 <script lang="ts">
-	// Context
-	import { page } from '$app/stores'
-
-	import { setContext } from 'svelte'
-	import { writable } from 'svelte/store'
-
-	const isSignedIn = writable(false)
-	setContext('isSignedIn', isSignedIn)
-
-
 	// Global Styles
 	import '../fonts.css'
 	import '../global.css'
@@ -43,14 +33,23 @@
 	:global(body) {
 		min-height: 100vh;
 		min-height: 100dvh;
+	/* } */
 
-		display: grid;
+	/* :global(body > div) { */
+		min-height: 100vh;
+		min-height: 100dvh;
+
+		display: grid !important;
 		grid:
 			'header' auto
 			'main' 1fr
 			'footer' auto
 			/ minmax(0, 1fr);
 		;
+
+		/* & > div { */
+			/* isolation: isolate; */
+		/* } */
 	}
 
 	header, main, footer {
@@ -82,6 +81,8 @@
 	main {
 		grid-area: main;
 		align-content: start;
+
+		gap: 2rem 1rem;
 	}
 
 	footer {

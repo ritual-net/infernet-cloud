@@ -9,7 +9,11 @@ import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
  * @param request - The request object containing 'reset_token' and 'password'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
+export const POST: RequestHandler = async ({
+	cookies,
+	fetch,
+	request,
+}) => {
 	const { reset_token, password } = (await request.json()) as {
 		reset_token: string;
 		password: string;

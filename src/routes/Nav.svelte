@@ -2,10 +2,6 @@
 	// Context
 	import { page } from '$app/stores'
 
-	import { getContext } from 'svelte'
-
-	const isSignedIn = getContext<SvelteStore<boolean>>('isSignedIn')
-
 
 	// Internal state
 	let navItems: {
@@ -15,21 +11,25 @@
 
 	$: navItems = [
 		{
+			href: '/service-accounts',
+			label: 'Accounts',
+		},
+		{
 			href: '/clusters',
 			label: 'Clusters',
 		},
-		{
-			href: '/nodes',
-			label: 'Nodes',
-		},
-		$isSignedIn ? {
-			href: '/login',
-			label: 'Sign out',
+		$page.data.user ? {
+			href: '/account',
+			label: $page.data.user.name || $page.data.user.email,
 		} : {
 			href: '/login',
 			label: 'Login',
 		},
 	]
+
+
+	// Components
+	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
 
 
@@ -39,11 +39,7 @@
 		aria-current={$page.url.pathname === '/' ? 'page' : undefined}
 		class="home row"
 	>
-		<img
-			class="logo"
-			src="/ritual.svg"
-			alt="Ritual Logo"
-		/>
+		<RitualLogo />
 
 		<h1>
 			Infernet Cloud
@@ -88,7 +84,7 @@
 			gap: 0.33em;
 			font-family: var(--fontFamily-display);
 
-			& img {
+			& :global(svg) {
 				height: 1.25em;
 			}
 		}

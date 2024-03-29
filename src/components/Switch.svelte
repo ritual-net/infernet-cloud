@@ -1,5 +1,7 @@
 <script lang="ts">
 	// Inputs
+	export let id: string | undefined
+	export let name: string | undefined
 	export let checked = false
 	export let labelText: string | undefined
 	export let disabled = false
@@ -23,28 +25,32 @@
 
 	$: createSync(options).disabled(disabled, _ => { disabled = _ })
 
-	const id = `switch-${crypto.randomUUID()}`
+	const buttonId = `switch-${crypto.randomUUID()}`
 </script>
 
 
-{#if labelText}
+<!-- {#if labelText}
 	<label
-		for="{id}"
-		id="{id}-label"
+		for="{buttonId}"
+		id="{buttonId}-label"
 	>
 		{labelText}
 	</label>
-{/if}
+{/if} -->
 
 <button
 	use:melt={$root}
-	id="{id}"
-	aria-labelledby="{id}-label"
+	id="{buttonId}"
+	aria-labelledby="{buttonId}-label"
 >
 	<span class="thumb" />
 </button>
 
-<input use:melt={$input} />
+<input
+	use:melt={$input}
+	{id}
+	{name}
+/>
 
 
 <style>

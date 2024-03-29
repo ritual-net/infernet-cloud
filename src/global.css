@@ -3,6 +3,7 @@
 	--fontFamily-display: 'Izoard', sans-serif;
 
 	--color-ritualBlack: #000;
+	--color-ritualGreen: #40FFAF;
 	
 	--textColor: var(--color-ritualBlack);
 
@@ -78,8 +79,29 @@ p {
 a {
 	transition: 0.2s color;
 
-	&:hover {
+	/* &:hover {
 		color: #000;
+	} */
+
+	p &:not(.button) {
+		text-decoration: underline;
+	}
+}
+
+ol, ul {
+	padding-inline-start: 1.5em;
+
+	& > li {
+		padding-inline-start: 0.25em;
+	}
+}
+
+dt {
+	opacity: 0.5;
+}
+dd {
+	.row > & {
+		text-align: end;
 	}
 }
 
@@ -154,9 +176,12 @@ input, textarea {
 textarea {
 	width: 100%;
 }
+:user-invalid {
+	outline-color: red;
+}
 
 
-button {
+button, .button {
 	--button-paddingX: 1em;
 	--button-paddingY: 0.5em;
 	--button-backgroundColor: var(--button-default-backgroundColor);
@@ -173,6 +198,7 @@ button {
 	border-radius: 0.33em;
 
 	color: var(--button-textColor);
+	text-align: center;
 
 	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 
@@ -191,6 +217,11 @@ button {
 	&.small {
 		font-size: 0.8em;
 	}
+
+	&:disabled,
+	&[aria-disabled="true"] {
+		opacity: 0.5;
+	}
 }
 
 .card {
@@ -205,7 +236,6 @@ button {
 	overflow: hidden;
 	
 	padding: var(--card-paddingY) var(--card-paddingX);
-	
 	background-color: var(--card-backgroundColor);
 	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
 	border-radius: var(--card-cornerRadius);
@@ -224,9 +254,26 @@ button {
 			box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
 		}
 	}
+
+	.column:has(:is(header, section, footer)) {
+		row-gap: var(--card-borderWidth);
+	}
 }
 
 .annotation {
 	opacity: 0.5;
 	font-size: 0.85em;
+}
+
+fieldset {
+	transition: 0.3s var(--transition-easeOutExpo);
+
+	&:disabled {
+		opacity: 0.25;
+	}
+}
+
+code, .code {
+	font-family: monospace;
+	font-size-adjust: from-font;
 }

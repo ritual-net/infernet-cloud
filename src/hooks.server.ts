@@ -1,5 +1,5 @@
-import { error, type Handle } from '@sveltejs/kit';
-import { createClient } from './lib/db';
+import { error, type Handle } from '@sveltejs/kit'
+import { createClient } from './lib/db'
 
 /**
  * Global middleware for the server.
@@ -16,17 +16,11 @@ import { createClient } from './lib/db';
 export const handle: Handle = async ({ event, resolve }) => {
 	// Allow requests to the auth server
 	if (event.url.pathname.startsWith('/auth')) {
-		return await resolve(event);
+		return await resolve(event)
 	}
 
 	// Extract token from cookie
-	const token = event.cookies.get('edgedb-auth-token');
-	if (!token) {
-		return error(
-			400,
-			'Could not find "token" in the cookie store. Is this the same user agent/browser that started the authorization flow?'
-		);
-	}
+	const token = event.cookies.get('edgedb-auth-token')
 
 	// Attach client to the event
 	event.locals.client = createClient().withGlobals({

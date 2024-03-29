@@ -52,7 +52,7 @@
 
 	$: createSync(states).selected(
 		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
-		selected => { value = selected.value as Value },
+		selected => { value = selected?.value as Value },
 	)
 
 	let triggerElement: Element
@@ -62,14 +62,14 @@
 <div class="stack">
 	<input
 		type="text"
-		use:melt={$hiddenInput}
 		{id}
+		use:melt={$hiddenInput}
 		on:focus={() => triggerElement.click()}
 	/>
 
 	{#if labelText}
 		<!-- svelte-ignore a11y-label-has-associated-control -->
-		<label use:melt={$label}>{labelText}</label>
+		<!-- <label use:melt={$label}>{labelText}</label> -->
 	{/if}
 
 	<button

@@ -1,26 +1,30 @@
 <script lang="ts">
 	// Context
-	let clusters = [
-		{ id: '1', name: 'Cluster A' },
-		{ id: '2', name: 'Cluster B' },
-	]
+	import { page } from '$app/stores'
+
+	$: clusters = $page.data.clusters
 
 
 	// Components
-	import Table from '$components/Table.svelte'
+	import ClustersTable from './ClustersTable.svelte'
 </script>
 
 
-<Table
-	data={clusters}
-	columns={[
-		{
-			header: 'Id',
-			accessor: d => d.id,
-		},
-		{
-			header: 'Name',
-			accessor: d => d.name,
-		},
-	]}
-/>
+<div class="column">
+	<header class="row">
+		<h2>Clusters</h2>
+
+		<a
+			class="button primary"
+			href="/clusters/create"
+		>
+			Create Cluster
+		</a>
+	</header>
+
+	<section>
+		<ClustersTable
+			{clusters}
+		/>
+	</section>
+</div>

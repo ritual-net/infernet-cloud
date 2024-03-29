@@ -9,7 +9,11 @@ import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
  * @param fetch - The fetch function.
  * @param request - The request object containing 'code'.
  */
-export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
+export const GET: RequestHandler = async ({
+	cookies,
+	fetch,
+	request,
+}) => {
 	const url = new URL(request.url);
 
 	const code = url.searchParams.get('code');
