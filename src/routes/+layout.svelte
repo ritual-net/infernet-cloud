@@ -6,6 +6,42 @@
 
 	// Context
 	import { page } from '$app/stores'
+	import { browser } from '$app/environment'
+
+	import { getFlash } from 'sveltekit-flash-message'
+ 	const flash = getFlash(page)
+
+
+	// Actions
+	import { addToast } from '$/components/Toaster.svelte'
+
+	$: if($page.form?.form?.message){
+		const {
+			title,
+			description,
+		} = $page.form.form.message as {
+			title?: string,
+			description?: string,
+		}
+
+		addToast({
+			data: {
+				type: $page.status < 400 ? 'success' : 'error',
+				title: title ?? ($page.status < 400 ? 'Success' : 'Error'),
+				description,
+			},
+		})
+	}
+
+	$: if($flash){
+		addToast({
+			data: {
+				type: $flash.type,
+				title: $flash.message.title ?? ($flash.type === 'success' ? 'Success' : 'Error'),
+				description: $flash.message.description,
+			},
+		})
+	}
 
 
 	// Components

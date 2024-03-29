@@ -5,11 +5,16 @@
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
-	import { goto } from '$app/navigation'
+	import { goto, invalidate } from '$app/navigation'
 
 
 	// Inputs
 	export let clusters: Awaited<ReturnType<typeof getClustersForUser>>
+
+
+	// Actions
+	import { applyAction } from '$app/forms'
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
 
 
 	// Components
@@ -69,15 +74,21 @@
 				value: 'delete',
 				label: 'Delete Cluster',
 				formAction: `${clusterRoute}?/delete`,
-				formSubmit: () => {
-					return async ({ result }) => {
-						if(result.type === 'failure')
-							alert(result.data?.result?.message)
+				formSubmit: async (e) => {
+					const toast = addToast({
+						data: {
+							type: 'default',
+							title: 'Deleting cluster...',
+						},
+					})
 
-						else {
+					return async ({ result }) => {
+						await applyAction(result)
+
+						if(result.type === 'success')
 							await invalidate('.')
-							alert(result.data?.result?.message)
-						}
+
+						removeToast(toast.id)
 					}
 				},
 			},

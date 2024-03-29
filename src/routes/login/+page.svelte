@@ -2,7 +2,7 @@
 	// Constants
 	enum FormAction {
 		SignUp = '?/signUp',
-		SignIn = '?/signIn',
+		LogIn = '?/logIn',
 		ResetPassword = '?/resetPassword',
 	}
 
@@ -17,10 +17,6 @@
 		signInFormData,
 		resetPasswordFormData,
 	} = $page.data as PageData
-
-
-	// Functions
-	import { goto } from '$app/navigation'
 
 
 	// Schema
@@ -46,8 +42,8 @@
 		invalidateAll: false,
 
 		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				alert(result.data?.result?.message)
+			if(result.type === 'success')
+				currentForm = FormAction.LogIn
 		},
 	})
 
@@ -62,11 +58,6 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(SignInFormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				alert(result.data?.result?.message)
-		},
 	})
 
 	const {
@@ -84,12 +75,13 @@
 		invalidateAll: false,
 
 		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				alert(result.data?.result?.message)
+			if(result.type === 'success')
+				currentForm = FormAction.LogIn
 		},
 	})
 
 	let currentForm = FormAction.SignUp
+	$: currentForm = globalThis.location?.hash.replace(/^#/, '?/')
 	
 	// let email = ''
 	// $: $signUpForm.email = $signInForm.email = $resetPasswordForm.email = email
@@ -109,7 +101,7 @@
 				label: 'Sign Up',
 			},
 			{
-				id: FormAction.SignIn,
+				id: FormAction.LogIn,
 				label: 'Log In',
 			},
 			{
@@ -171,11 +163,11 @@
 					>Sign Up</button>
 				</form>
 
-			{:else if item.id === FormAction.SignIn}
+			{:else if item.id === FormAction.LogIn}
 				<form
 					method="POST"
 					use:signInEnhance
-					action={FormAction.SignIn}
+					action={FormAction.LogIn}
 					class="card column"
 				>
 					<input

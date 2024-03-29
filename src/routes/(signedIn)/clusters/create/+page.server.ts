@@ -1,5 +1,5 @@
 // Schema
-import { superValidate } from 'sveltekit-superforms/server'
+import { message, superValidate } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
 import { FormData } from './schema'
 
@@ -31,14 +31,15 @@ export const load: PageServerLoad = async ({
 
 
 // Actions
-import { type Actions, fail, redirect } from '@sveltejs/kit'
-import { invalidate } from '$app/navigation'
+import { type Actions, fail } from '@sveltejs/kit'
 import { resolveRoute } from '$app/paths'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 export const actions: Actions = {
 	default: async ({
 		request,
 		fetch,
+		cookies,
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
@@ -55,18 +56,42 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		if(!response.ok)
-			return fail(response.status, {
+		if(!response.ok){
+			const result = await response.json()
+
+			return message(
 				formData,
-				result: await response.json(),
-			})
+				{
+					title: `Couldn't create cluster.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				},
+			)
+		}
 
 		const result = await response.json()
 
-		// return {
+		// return message(
 		// 	formData,
-		// 	result: await response.json(),
-		// }
-		return redirect(301, resolveRoute('/clusters/[clusterId]', { clusterId: result.clusterId }))
+		// 	{
+		// 		title: `Created cluster "${formData.data.config.name}"${formData.data.nodes.length ? ` with ${formData.data.nodes.length} node${formData.data.nodes.length === 1 ? '' : 's'}.` : ''}`,
+		// 		description: result.message,
+		// 	},
+		// )
+
+		return flashRedirect(
+			303,
+			resolveRoute('/clusters/[clusterId]', { clusterId: result.cluster.id }),
+			{
+				type: 'success',
+				message: {
+					title: `Created cluster "${formData.data.config.name}"${formData.data.nodes.length ? ` with ${formData.data.nodes.length} node${formData.data.nodes.length === 1 ? '' : 's'}.` : ''}`,
+					description: result.message,
+				},
+			},
+			cookies,
+		)
 	},
 }

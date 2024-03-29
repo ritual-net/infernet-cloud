@@ -36,16 +36,15 @@
 		enhance,
 		errors,
 		constraints,
+
+		capture,
+		restore,
+
 		submitting,
 	} = superForm(formData, {
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				alert(result.data?.result?.message)
-		},
 
 		onSubmit: ({ cancel }) => {
 			if(mode === 'create')
@@ -56,6 +55,8 @@
 			cancel()
 		},
 	})
+
+	export const snapshot = { capture, restore }
 
 	let allowIps: 'all' | 'restricted' = 'all'
 

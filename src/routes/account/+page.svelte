@@ -22,11 +22,6 @@
 	} = superForm({}, {
 		dataType: 'json',
 		customValidity: true,
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				alert(result.data?.result?.message)
-		},
 	})
 </script>
 

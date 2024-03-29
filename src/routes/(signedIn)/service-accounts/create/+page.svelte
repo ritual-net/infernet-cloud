@@ -21,6 +21,10 @@
 	} = $page.data as PageData
 
 
+	// Actions
+	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
+
+
 	// Internal state
 	import { superForm } from 'sveltekit-superforms/client'
 	import { yupClient } from 'sveltekit-superforms/adapters'
@@ -31,17 +35,32 @@
 		errors,	
 		allErrors,
 		constraints,
+
+		capture,
+		restore,
+
 		submitting,
+		delayed,
 	} = superForm(formData, {
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-
-		onResult: ({ result }) => {
-			if(result.type === 'failure')
-				alert(result.data?.result?.message)
-		},
 	})
+
+	export const snapshot = { capture, restore }
+
+	let delayedToast: Toast
+	$: if($delayed){
+		delayedToast = addToast({
+			data: {
+				type: 'default',
+				title: `Connecting service account...`,
+			},
+		})
+	}else{
+		if(delayedToast)
+			removeToast(delayedToast.id)
+	}
 
 	let currentFieldset = Fieldset.ChooseCloudProvider
 

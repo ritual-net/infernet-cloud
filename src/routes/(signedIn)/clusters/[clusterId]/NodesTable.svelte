@@ -15,6 +15,7 @@
 	// Actions
 	import { applyAction } from '$app/forms'
 	import { invalidate } from '$app/navigation'
+	import { addToast } from '$/components/Toaster.svelte'
 
 
 	// Components
@@ -73,14 +74,10 @@
 				formAction: `${nodeRoute}?/start`,
 				formSubmit: async () => {
 					return async ({ result }) => {
-						if(result.type === 'failure')
-							alert(result.data?.result?.message)
+						await applyAction(result)
 
-						else {
-							await applyAction(result)
-
+						if(result.type === 'success')
 							await invalidate('.')
-						}
 					}
 				},
 			},
@@ -90,14 +87,10 @@
 				formAction: `${nodeRoute}?/stop`,
 				formSubmit: async () => {
 					return async ({ result }) => {
-						if(result.type === 'failure')
-							alert(result.data?.result?.message)
+						await applyAction(result)
 
-						else {
-							await applyAction(result)
-
+						if(result.type === 'success')
 							await invalidate('.')
-						}
 					}
 				},
 			},
