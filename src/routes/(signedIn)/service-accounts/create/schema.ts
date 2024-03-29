@@ -68,32 +68,35 @@ export const GcpCredentials = z
 
 export const AwsCredentials = z
 	.object({
-		'user_name': z
-			.string()
-			.default('')
-			.required(),
-			
-		'access_key_id': z
-			.string()
-			.default('')
-			.required(),
-			
-		'status': z
-			.string()
-			.default('')
-			.required(),
-			
-		'secret_access_key': z
-			.string()
-			.default('')
-			.required(),
-			
-		'create_date': z
-			.string()
-			.default('')
+		'AccessKey': z
+			.object({
+				'UserName': z
+					.string()
+					.default('')
+					.required(),
+
+				'AccessKeyId': z
+					.string()
+					.default('')
+					.required(),
+
+				'Status': z
+					.string()
+					.default('')
+					.required(),
+
+				'SecretAccessKey': z
+					.string()
+					.default('')
+					.required(),
+
+				'CreateDate': z
+					.string()
+					.default('')
+					.required(),
+			})
 			.required(),
 	})
-	  
 
 export const FormData = z
 	.object({

@@ -204,6 +204,22 @@
 									<li>
 										<p class="row wrap">
 											<span>
+												Sign into <a href="https://console.aws.amazon.com" target="_blank">Amazon Web Services Console</a> and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey" target="_blank">create an Access Key</a>.
+											</span>
+
+											<a
+												class="button small"
+												href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey"
+												target="_blank"
+											>
+												Create Access Key
+											</a>
+										</p>
+									</li>
+
+									<li>
+										<p class="row wrap">
+											<span>
 												Download and run the following script in a terminal to create an IAM user:
 											</span>
 
@@ -386,13 +402,19 @@
 														'\t'
 													)
 												}
-												value={$form.credentials && Object.entries($form.credentials).length ? JSON.stringify($form.credentials) : ''}
+												value={
+													$form.credentials && Object.entries($form.credentials).length
+														? JSON.stringify(
+															$form.credentials,
+															null,
+															'\t'
+														)
+														: ''
+												}
 												on:input={(e) => {
 													try {
 														$form.credentials = JSON.parse(e.target.value)
-													}catch(e){
-
-													}
+													}catch(e){}
 												}}
 												{...$constraints.credentials}
 												aria-invalid={$errors.credentials ? 'true' : undefined}
