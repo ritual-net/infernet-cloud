@@ -16,7 +16,14 @@
 	import { resolveRoute } from '$app/paths'
 
 
+	// Actions
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
+	import { applyAction } from '$app/forms'
+	import { invalidate } from '$app/navigation'
+
+
 	// Components
+	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodesTable from './NodesTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
@@ -49,12 +56,62 @@
 				</div>
 			</dl>
 
-		<a
-			href={resolveRoute(`/clusters/[clusterId]/edit`, {
-				clusterId: $page.params.clusterId,
-			})}
-			class="button primary"
-		>Edit Cluster</a>
+			<a
+				href={resolveRoute(`/clusters/[clusterId]/edit`, {
+					clusterId: $page.params.clusterId,
+				})}
+				class="button primary"
+			>Edit Cluster</a>
+
+			<DropdownMenu
+				labelText="Cluster Actions"
+				items={[
+					{
+						value: 'apply',
+						label: 'Apply Changes',
+						formAction: `?/apply`,
+						formSubmit: async (e) => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: 'Applying changes to cluster...',
+								},
+							})
+
+							return async ({ result }) => {
+								await applyAction(result)
+
+								if(result.type === 'success')
+									await invalidate('.')
+
+								removeToast(toast.id)
+							}
+						},
+					},
+					{
+						value: 'delete',
+						label: 'Delete Cluster',
+						formAction: `?/delete`,
+						formSubmit: async (e) => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: 'Deleting cluster...',
+								},
+							})
+
+							return async ({ result }) => {
+								await applyAction(result)
+
+								if(result.type === 'success')
+									await invalidate('.')
+
+								removeToast(toast.id)
+							}
+						},
+					},
+				]}
+			/>
 		</div>
 	</header>
 
@@ -78,28 +135,6 @@
 						/>
 						{cluster.service_account.name}
 					</a>
-				</dd>
-			</section>
-
-			<section class="row">
-				<dt>IPs Allowed (HTTP)</dt>
-
-				{#if cluster.ip_allow_http?.length}
-					<dd class="column inline">
-						{#each cluster.ip_allow_http as ip}
-							{ip}
-						{/each}
-					</dd>
-				{:else}
-					<dd>All</dd>
-				{/if}
-			</section>
-
-			<section class="row">
-				<dt>Has Deployed Router?</dt>
-
-				<dd>
-					{cluster.deploy_router ? 'Yes' : 'No'}
 				</dd>
 			</section>
 
@@ -128,22 +163,93 @@
 					{cluster.machine_type}
 				</dd>
 			</section>
+
+			<section class="row">
+				<dt>IPs Allowed (HTTP)</dt>
+
+				{#if cluster.ip_allow_http?.length}
+					<dd class="column inline">
+						{#each cluster.ip_allow_http as ip}
+							{ip}
+						{/each}
+					</dd>
+				{:else}
+					<dd>All</dd>
+				{/if}
+			</section>
+
+			<section class="row">
+				<dt>Has Deployed Router?</dt>
+
+				<dd>
+					{cluster.deploy_router ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
+			{#if cluster.router?.ip}
+				<section class="row">
+					<dt>Router IP</dt>
+
+					<dd>
+						{cluster.router.ip}
+					</dd>
+				</section>
+			{/if}
 		</dl>
 	</section>
 
-	<div>
+	<section class="column">
+		<h3>Status</h3>
+
+		<dl class="card column">
+			<section class="row">
+				<dt>Status</dt>
+
+				<dd>
+					{cluster.locked ? 'Updating' : cluster.healthy ? 'Healthy' : 'Unhealthy'}
+				</dd>
+			</section>
+
+			{#if cluster.tfstate}
+				<section class="column">
+					<dt>Terraform State</dt>
+	
+					<dd>
+						<output>
+							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
+						</output>
+					</dd>
+				</section>
+			{/if}
+
+			{#if cluster.error}
+				<section class="column">
+					<dt>Error</dt>
+	
+					<dd>
+						<output>
+							<pre><code>{cluster.error}</code></pre>
+						</output>
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
+	<section>
 		<h3>Nodes</h3>
 
 		<NodesTable
 			nodes={cluster.nodes}
 		/>
-	</div>
+	</section>
 </div>
 
 
 <style>
 	.container {
 		gap: 2rem;
+		margin-bottom: 20dvh;
 	}
 
 	.icon {
@@ -159,5 +265,25 @@
 
 		background-color: var(--color-ritualBlack);
 		color: #fff;
+	}
+
+	output {
+		font-size: 0.75em;
+
+		& pre {
+			overflow-y: auto;
+			max-height: 15.6rem;
+			padding: 1em;
+
+			background: rgba(0, 0, 0, 0.05);
+			border-radius: 0.5em;
+
+			tab-size: 2;
+
+			& code {
+				white-space: pre-wrap;
+				word-break: break-word;
+			}
+		}
 	}
 </style>

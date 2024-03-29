@@ -110,6 +110,8 @@ dd {
 	grid: 'stack';
 	align-items: start;
 
+	&:before,
+	&:after,
 	& > * {
 		grid-area: stack;
 	}
@@ -171,6 +173,11 @@ input, textarea {
 
 	&.small {
 		font-size: 0.8em;
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 }
 textarea {

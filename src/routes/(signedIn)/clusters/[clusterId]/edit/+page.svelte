@@ -67,6 +67,7 @@
 	// Components
 	import Tabs from '$/components/Tabs.svelte'
 	import Select from '$/components/Select.svelte'
+	import Switch from '$/components/Switch.svelte'
 </script>
 
 
@@ -168,7 +169,10 @@
 								name="config.ip_allow_http"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								bind:value={$form.config.ip_allow_http}
+								value={$form.config.ip_allow_http.join(', ')}
+								on:input={e => {
+									$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
+								}}
 								{...$constraints.config?.ip_allow_http}
 								disabled={allowIps === 'all'}
 							/>
@@ -179,7 +183,10 @@
 								name="config.ip_allow_ssh"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								bind:value={$form.config.ip_allow_ssh}
+								value={$form.config.ip_allow_http.join(', ')}
+								on:input={e => {
+									$form.config.ip_allow_ssh = e.target.value.split(',').map(ip => ip.trim())
+								}}
 								{...$constraints.config?.ip_allow_ssh}
 								disabled={allowIps === 'all'}
 							/>
@@ -187,6 +194,25 @@
 					</svelte:fragment>
 				</Tabs>
 			{/if}
+		</section>
+
+		<section class="row wrap">
+			<div class="column inline">
+				<h3>
+					<label for="config.deploy_router">
+						Deploy Router?
+					</label>
+				</h3>
+
+				<p>Determine whether your cluster will be deployed with a router.</p>
+			</div>
+
+			<Switch
+				id="config.deploy_router"
+				name="config.deploy_router"
+				bind:checked={$form.config.deploy_router}
+				labelText="Deploy Router?"
+			/>
 		</section>
 	</div>
 
@@ -204,7 +230,7 @@
 			type="submit"
 			class="primary"
 		>
-			Save Changes
+			Save and Apply Changes
 		</button>
 	</footer>
 </form>

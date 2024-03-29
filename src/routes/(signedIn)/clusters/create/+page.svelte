@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
-	import { providers, ProviderTypeEnum } from '$/types/provider'
+	import { providers, type ProviderInfo } from '$/types/provider'
+	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
 	enum Fieldset {
 		CreateCluster,
@@ -23,11 +24,17 @@
 	} = $page.data as PageData
 
 
+	// Functions
+	import { resolveRoute } from '$app/paths'
+
+
 	// Actions
 	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
+	import { createQuery } from '@tanstack/svelte-query'
 
 
 	// Internal state
+	// (Form)
 	import { superForm } from 'sveltekit-superforms/client'
 	import { yupClient } from 'sveltekit-superforms/adapters'
 
@@ -64,15 +71,68 @@
 			removeToast(delayedToast.id)
 	}
 
+	// (UI state)
 	let currentFieldset = Fieldset.CreateCluster
 
 	let allowIps: 'all' | 'restricted' = 'all'
 
+	// (Computed)
 	$: serviceAccount = serviceAccounts.find(serviceAccount => serviceAccount.id === $form.serviceAccountId)
+
+	$: providerConfigsQuery = createQuery({
+		queryKey: ['providerConfig', {
+			serviceAccountId: $form.serviceAccountId as string,
+		}] as const,
+
+		queryFn: async ({
+			queryKey: [_, {
+				serviceAccountId,
+			}],
+		}) => (
+			await fetch(
+				resolveRoute('/api/providers/[serviceAccountId]', {
+					serviceAccountId,
+				})
+			)
+				.then(response => response.json()) as ProviderInfo[]
+		),
+	})
+
+	$: providerConfigs = $providerConfigsQuery.data
+
+	$: regionConfig = (
+		providerConfigs && $form.config.region
+			? providerConfigs
+				.find(regionConfig => (
+					regionConfig.region.id === $form.config.region
+				))
+			: undefined
+	)
+
+	$: zoneConfig = (
+		regionConfig && $form.config.zone
+			? regionConfig
+				?.zones
+				.find(zoneConfig => (
+					zoneConfig.name === $form.config.zone
+				))
+			: undefined
+	)
+
+	$: machineConfig = (
+		zoneConfig && $form.config.machine_type
+			? zoneConfig
+				.machines
+				.find(machineConfig => (
+					machineConfig.id === $form.config.machine_type
+				))
+			: undefined
+	)
 
 
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
+	import Combobox from '$/components/Combobox.svelte'
 	import Dialog from '$/components/Dialog.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
@@ -230,7 +290,10 @@
 														name="config.ip_allow_http"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														bind:value={$form.config.ip_allow_http}
+														value={$form.config.ip_allow_http.join(', ')}
+														on:input={e => {
+															$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
+														}}
 														{...$constraints.config?.ip_allow_http}
 														disabled={allowIps === 'all'}
 													/>
@@ -241,7 +304,10 @@
 														name="config.ip_allow_ssh"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														bind:value={$form.config.ip_allow_ssh}
+														value={$form.config.ip_allow_ssh.join(', ')}
+														on:input={e => {
+															$form.config.ip_allow_ssh = e.target.value.split(',').map(ip => ip.trim())
+														}}
 														{...$constraints.config?.ip_allow_ssh}
 														disabled={allowIps === 'all'}
 													/>
@@ -251,112 +317,167 @@
 									{/if}
 								</section>
 
-								<section class="row wrap">
-									<div class="column inline">
-										<h3>
-											<label for="config.region">
-												Region
-											</label>
-										</h3>
+								<div class="stack">
+									<fieldset
+										class="column"
+										disabled={!$providerConfigsQuery.isSuccess}
+									>
+										<section class="row wrap">
+											<div class="column inline">
+												<h3>
+													<label for="config.region">
+														Region
+													</label>
+												</h3>
 
-										<p>Select the region where your cluster should be deployed.</p>
-									</div>
+												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">region</a> where your cluster should be deployed.</p>
+											</div>
 
-									<Select
-										required
-										id="config.region"
-										name="config.region"
-										labelText="Region"
-										bind:value={$form.config.region}
-										items={[
-											{
-												value: 'US-north-1',
-												label: 'US-north-1',
-											},
-										]}
-									/>
-								</section>
+											<Combobox
+												required
+												id="config.region"
+												name="config.region"
+												labelText="Region"
+												bind:value={$form.config.region}
+												{...!providerConfigs
+													? {
+														placeholder: 'Loading...',
+														items: [
+															$form.config.region && {
+																value: $form.config.region,
+																label: $form.config.region,
+															}
+														].filter(Boolean),
+														disabled: true,
+													}
+													: {
+														placeholder: 'Choose region...',
+														items: (
+															Object.entries(
+																Object.groupBy(
+																	providerConfigs,
+																	providerConfig => providerConfig.region.name.match(/, (.+?)$/)[1]
+																)
+															)
+																.map(([continent, configs]) => ({
+																	value: continent,
+																	label: continent,
+																	items: configs.map(config => ({
+																		value: config.region.id,
+																		label: `${config.region.id} (${config.region.name})`,
+																	}))
+																}))
+														),
+													}
+												}
+											/>
+										</section>
 
-								{#if serviceAccount?.provider === ProviderTypeEnum.GCP}
-									<section class="row wrap">
-										<div class="column inline">
-											<h3>
-												<label for="config.zone">
-													Zone
-												</label>
-											</h3>
+										<section class="row wrap">
+											<div class="column inline">
+												<h3>
+													<label for="config.zone">
+														Zone
+													</label>
+												</h3>
 
-											<p>Select the zone where your cluster should be deployed.</p>
+												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">zone</a> where your cluster should be deployed.</p>
+											</div>
+
+											<Combobox
+												required
+												id="config.zone"
+												name="config.zone"
+												labelText="Zone"
+												bind:value={$form.config.zone}
+												{...!regionConfig
+													? {
+														placeholder: 'Choose a region first.',
+														items: [
+															$form.config.zone && {
+																value: $form.config.zone,
+																label: $form.config.zone,
+															}
+														].filter(Boolean),
+														disabled: true,
+													}
+													: {
+														placeholder: 'Choose zone...',
+														items: (
+															regionConfig
+																.zones
+																.map(zone => ({
+																	value: zone.name,
+																	label: zone.name,
+																}))
+														),
+													}
+												}
+											/>
+										</section>
+
+										<section class="row wrap">
+											<div class="column inline">
+												<h3>
+													<label for="config.machine_type">
+														Machine Type
+													</label>
+												</h3>
+
+												<p>Select the type of machine you would like to deploy.</p>
+											</div>
+
+											<Combobox
+												required
+												id="config.machine_type"
+												name="config.machine_type"
+												labelText="Machine Type"
+												bind:value={$form.config.machine_type}
+												{...!zoneConfig
+													? {
+														placeholder: 'Choose a zone first.',
+														items: [
+															$form.config.machine_type && {
+																value: $form.config.machine_type,
+																label: $form.config.machine_type,
+															}
+														].filter(Boolean),
+														disabled: true,
+													}
+													: {
+														placeholder: 'Choose machine type...',
+														items: (
+															zoneConfig
+																.machines
+																.map(machineConfig => ({
+																	value: machineConfig.name,
+																	label: `${machineConfig.name} (${machineConfig.description})`,
+																}))
+														),
+													}
+												}
+											/>
+										</section>
+									</fieldset>
+
+									{#if $providerConfigsQuery.isPending}
+										<div
+											class="loading-status card row"
+											transition:scale|global
+										>
+											<img class="icon" src={providers[serviceAccount.provider].icon} />
+											<p>Loading available cloud configurations...</p>
 										</div>
-
-										<Select
-											required
-											id="config.zone"
-											name="config.zone"
-											labelText="Zone"
-											bind:value={$form.config.zone}
-											items={[
-												{
-													value: 'US-north-1',
-													label: 'US-north-1',
-												},
-											]}
-										/>
-									</section>
-
-									<section class="row wrap">
-										<div class="column inline">
-											<h3>
-												<label for="config.machine_type">
-													Machine Type
-												</label>
-											</h3>
-
-											<p>Select the type of machine you would like to deploy.</p>
+									{:else if $providerConfigsQuery.isError}
+										<div
+											class="loading-status card row"
+											transition:scale|global
+										>
+											<img class="icon" src={providers[serviceAccount.provider].icon} />
+											<p>Couldn't load available cloud configurations. Please try again.</p>
 										</div>
-
-										<Select
-											required
-											id="config.machine_type"
-											name="config.machine_type"
-											labelText="Machine Type"
-											bind:value={$form.config.machine_type}
-											items={[
-												{
-													value: 'e2-standard-2',
-													label: 'e2-standard-2',
-												},
-											]}
-										/>
-									</section>
-
-								{:else if serviceAccount?.provider === ProviderTypeEnum.AWS}
-									<section class="row wrap">
-										<div class="column inline">
-											<h3>
-												<label for="config.machine_type">
-													Machine Type
-												</label>
-											</h3>
-
-											<p>Select the type of machine you would like to deploy.</p>
-										</div>
-
-										<Select
-											required
-											id="config.machine_type"
-											name="config.machine_type"
-											labelText="Machine Type"
-											bind:value={$form.config.machine_type}
-											items={[
-												{
-													value: 'e2-standard-2',
-													label: 'e2-standard-2',
-												},
-											]}
-										/>
-									</section>
-								{/if}
+									{/if}
+								</div>
 							</fieldset>
 						</Collapsible>
 					</div>
@@ -764,3 +885,16 @@
 		</svelte:fragment>
 	</Tabs>
 </form>
+
+
+<style>
+	.loading-status {
+		position: relative;
+		place-self: center;
+	}
+
+	.icon {
+		width: 1.5em;
+		height: 1.5em;
+	}
+</style>

@@ -31,17 +31,23 @@
 
 	// Actions
 	import { enhance } from '$app/forms'
+
+
+	// Components
+	import EllipsisIcon from '$/icons/EllipsisIcon.svelte'
 </script>
 
 
-<div
+<button
 	use:melt={$trigger}
 	aria-label={labelText}
 	on:click|stopPropagation
 	on:contextmenu={e => { if($open) e.stopPropagation() }}
 >
-	<slot />
-</div>
+	<slot>
+		<EllipsisIcon />
+	</slot>
+</button>
 
 <div use:melt={$menu}>
 	{#each items as subitem}
@@ -142,8 +148,6 @@
 		border-radius: var(--dropdownMenu-cornerRadius);
 
 		color: var(--button-textColor);
-
-		cursor: pointer;
 	}
 
 	[data-melt-dropdown-menu-item] {
@@ -186,5 +190,13 @@
 		margin-inline: var(--dropdownMenu-paddingX);
 
 		background-color: var(--dropdownMenu-borderColor);
+	}
+
+	form {
+		display: contents;
+
+		& button {
+			all: unset;
+		}
 	}
 </style>
