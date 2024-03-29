@@ -1,0 +1,232 @@
+:root {
+	--fontFamily-base: 'Barlow', sans-serif;
+	--fontFamily-display: 'Izoard', sans-serif;
+
+	--color-ritualBlack: #000;
+	
+	--textColor: var(--color-ritualBlack);
+
+	--page-backgroundColor: #FBFBFB;
+
+	--borderColor: #e5e5e5;
+	--borderWidth: 1px;
+
+	--backdropFilter: blur(6px);
+
+	--transition-easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
+
+	--active-transitionInDuration: 0.1s;
+	--active-transitionOutDuration: 0.2s;
+	--active-scale: 0.975;
+	--active-opacity: 0.8;
+
+	--button-default-backgroundColor: #fff;
+	--button-default-textColor: var(--textColor);
+	--button-primary-backgroundColor: var(--color-ritualBlack);
+	--button-primary-textColor: #fff;
+
+	--input-default-backgroundColor: #fbfbfb;
+	--input-default-textColor: var(--textColor);
+
+	--card-default-backgroundColor: #fff;
+	--card-default-textColor: var(--textColor);
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+
+	border: none;
+
+	color: inherit;
+	font: inherit;
+	font-style: normal;
+	text-align: inherit;
+	text-decoration: none;
+
+	transition-timing-function: var(--transition-easeOutExpo);
+}
+
+:root {
+	background-color: var(--page-backgroundColor);
+
+	color: var(--textColor);
+
+	font-family: var(--fontFamily-base);
+	font-size: 18px;
+	line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-wrap: balance;
+}
+
+h2 {
+	font-size: 1.333em;
+}
+
+h3 {
+	font-size: 1.25em;
+}
+
+p {
+	opacity: 0.75;
+	text-wrap: pretty;
+}
+
+a {
+	transition: 0.2s color;
+
+	&:hover {
+		color: #000;
+	}
+}
+
+.stack {
+	display: grid;
+	grid: 'stack';
+	align-items: start;
+
+	& > * {
+		grid-area: stack;
+	}
+}
+
+.row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.75em 1em;
+
+	&.inline {
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: start;
+		gap: 0.25ch 0.75ch;
+	}
+
+	&.wrap {
+		flex-wrap: wrap;
+	}
+
+	&.equal > * {
+		flex: 1;
+	}
+}
+
+.column {
+	display: grid;
+	grid:
+		'.'
+		/ minmax(0, 1fr)
+	;
+	gap: 1em;
+
+	&.inline {
+		gap: 0.75ex;
+	}
+}
+
+input, textarea {
+	--input-paddingX: 1em;
+	--input-paddingY: 0.5em;
+	--input-backgroundColor: var(--input-default-backgroundColor);
+	--input-borderColor: var(--borderColor);
+	--input-borderWidth: var(--borderWidth);
+	--input-cornerRadius: 0.33em;
+	--input-textColor: var(--input-default-textColor);
+
+	padding: var(--input-paddingY) var(--input-paddingX);
+
+	background-color: var(--input-backgroundColor);
+	box-shadow: 0 0 0 var(--input-borderWidth) var(--input-borderColor);
+	border-radius: var(--input-cornerRadius);
+
+	color: var(--input-textColor);
+
+	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+
+	&.small {
+		font-size: 0.8em;
+	}
+}
+textarea {
+	width: 100%;
+}
+
+
+button {
+	--button-paddingX: 1em;
+	--button-paddingY: 0.5em;
+	--button-backgroundColor: var(--button-default-backgroundColor);
+	--button-borderColor: var(--borderColor);
+	--button-borderWidth: var(--borderWidth);
+	--button-textColor: var(--button-default-textColor);
+
+	cursor: pointer;
+
+	padding: var(--button-paddingY) var(--button-paddingX);
+
+	background-color: var(--button-backgroundColor);
+	box-shadow: 0 0 0 var(--button-borderWidth) var(--button-borderColor);
+	border-radius: 0.33em;
+
+	color: var(--button-textColor);
+
+	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+
+	&:active {
+		transition-duration: var(--active-transitionInDuration);
+		opacity: var(--active-opacity);
+		scale: var(--active-scale);
+	}
+
+	&.primary {
+		--button-backgroundColor: var(--button-primary-backgroundColor);
+		--button-borderColor: transparent;
+		--button-textColor: var(--button-primary-textColor);
+	}
+
+	&.small {
+		font-size: 0.8em;
+	}
+}
+
+.card {
+	--card-paddingX: 1.75em;
+	--card-paddingY: 1em;
+	--card-backgroundColor: var(--card-default-backgroundColor);
+	--card-borderColor: var(--borderColor);
+	--card-borderWidth: var(--borderWidth);
+	--card-cornerRadius: 0.33em;
+
+	/* clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth))); */
+	overflow: hidden;
+	
+	padding: var(--card-paddingY) var(--card-paddingX);
+	
+	background-color: var(--card-backgroundColor);
+	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
+	border-radius: var(--card-cornerRadius);
+
+	& p {
+		font-size: 0.888em;
+	}
+
+	&:has(:is(header, section, footer)) {
+		padding: 0;
+		row-gap: var(--card-borderWidth);
+
+		& :is(header, section, footer) {
+			padding: var(--card-paddingY) var(--card-paddingX);
+
+			box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
+		}
+	}
+}
+
+.annotation {
+	opacity: 0.5;
+	font-size: 0.85em;
+}
