@@ -6,25 +6,25 @@ settings:
 
 dependencies:
   '@aws-sdk/client-ec2':
-    specifier: ^3.507.0
+    specifier: ^3.544.0
     version: 3.544.0
   '@fontsource/barlow':
-    specifier: ^5.0.8
+    specifier: ^5.0.12
     version: 5.0.12
   '@google-cloud/compute':
-    specifier: ^4.1.0
+    specifier: ^4.3.0
     version: 4.3.0
   '@tanstack/svelte-query':
-    specifier: ^5.28.6
+    specifier: ^5.28.9
     version: 5.28.9(svelte@4.2.12)
   aws-sdk:
-    specifier: ^2.1540.0
+    specifier: ^2.1588.0
     version: 2.1588.0
   axios:
-    specifier: ^1.6.5
+    specifier: ^1.6.8
     version: 1.6.8
   dotenv:
-    specifier: ^16.4.3
+    specifier: ^16.4.5
     version: 16.4.5
   edgedb:
     specifier: ^1.4.1
@@ -33,13 +33,13 @@ dependencies:
     specifier: ^131.0.0
     version: 131.0.0
   svelte-headless-table:
-    specifier: ^0.18.1
+    specifier: ^0.18.2
     version: 0.18.2(svelte@4.2.12)
   sveltekit-flash-message:
     specifier: ^2.4.4
     version: 2.4.4(@sveltejs/kit@2.5.5)(svelte@4.2.12)
   sveltekit-superforms:
-    specifier: ^2.10.6
+    specifier: ^2.12.0
     version: 2.12.0(@sveltejs/kit@2.5.5)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.20.2)(svelte@4.2.12)
   yup:
     specifier: ^1.4.0
@@ -56,37 +56,37 @@ devDependencies:
     specifier: ^0.70.0
     version: 0.70.0(svelte@4.2.12)
   '@playwright/test':
-    specifier: ^1.28.1
+    specifier: ^1.42.1
     version: 1.42.1
   '@sveltejs/adapter-auto':
-    specifier: ^3.0.0
+    specifier: ^3.2.0
     version: 3.2.0(@sveltejs/kit@2.5.5)
   '@sveltejs/adapter-node':
     specifier: ^4.0.1
     version: 4.0.1(@sveltejs/kit@2.5.5)
   '@sveltejs/kit':
-    specifier: ^2.0.0
+    specifier: ^2.5.5
     version: 2.5.5(@sveltejs/vite-plugin-svelte@3.0.2)(svelte@4.2.12)(vite@5.2.6)
   '@sveltejs/vite-plugin-svelte':
-    specifier: ^3.0.0
+    specifier: ^3.0.2
     version: 3.0.2(svelte@4.2.12)(vite@5.2.6)
   '@types/eslint':
     specifier: 8.56.0
     version: 8.56.0
   '@types/node':
-    specifier: ^20.11.5
+    specifier: ^20.11.30
     version: 20.11.30
   '@types/tar':
-    specifier: ^6.1.10
+    specifier: ^6.1.11
     version: 6.1.11
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.0.0
+    specifier: ^6.21.0
     version: 6.21.0(@typescript-eslint/parser@6.21.0)(eslint@8.57.0)(typescript@5.4.3)
   '@typescript-eslint/parser':
-    specifier: ^6.0.0
+    specifier: ^6.21.0
     version: 6.21.0(eslint@8.57.0)(typescript@5.4.3)
   eslint:
-    specifier: ^8.56.0
+    specifier: ^8.57.0
     version: 8.57.0
   eslint-config-prettier:
     specifier: ^9.1.0
@@ -95,40 +95,40 @@ devDependencies:
     specifier: ^2.35.1
     version: 2.35.1(eslint@8.57.0)(svelte@4.2.12)
   postcss:
-    specifier: ^8.4.32
+    specifier: ^8.4.38
     version: 8.4.38
   postcss-load-config:
-    specifier: ^5.0.2
+    specifier: ^5.0.3
     version: 5.0.3(postcss@8.4.38)
   postcss-nesting:
     specifier: ^12.1.0
     version: 12.1.0(postcss@8.4.38)
   prettier:
-    specifier: ^3.1.1
+    specifier: ^3.2.5
     version: 3.2.5
   prettier-plugin-svelte:
-    specifier: ^3.1.2
+    specifier: ^3.2.2
     version: 3.2.2(prettier@3.2.5)(svelte@4.2.12)
   svelte:
-    specifier: ^4.2.7
+    specifier: ^4.2.12
     version: 4.2.12
   svelte-check:
-    specifier: ^3.6.0
+    specifier: ^3.6.8
     version: 3.6.8(postcss-load-config@5.0.3)(postcss@8.4.38)(svelte@4.2.12)
   tar:
-    specifier: ^6.2.0
+    specifier: ^6.2.1
     version: 6.2.1
   tslib:
-    specifier: ^2.4.1
+    specifier: ^2.6.2
     version: 2.6.2
   typescript:
-    specifier: ^5.0.0
+    specifier: ^5.4.3
     version: 5.4.3
   vite:
-    specifier: ^5.0.3
+    specifier: ^5.2.6
     version: 5.2.6(@types/node@20.11.30)
   vitest:
-    specifier: ^1.0.0
+    specifier: ^1.4.0
     version: 1.4.0(@types/node@20.11.30)
 
 packages:
