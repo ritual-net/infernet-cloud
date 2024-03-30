@@ -21,8 +21,13 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 		return error(400, 'Node id is required');
 	}
 	try {
-		const nodeInfo = ((await nodeAction(client, [id], NodeAction.info)) as NodeInfo[])[0];
-		return json(nodeInfo);
+		const result = await nodeAction(client, [id], NodeAction.info);
+
+		return json({
+			node: result.nodes[0].node,
+			info: result.nodes[0].info,
+			infoError: result.infoError?.message,
+		});
 	} catch (e) {
 		return error(400, (e as Error).message);
 	}

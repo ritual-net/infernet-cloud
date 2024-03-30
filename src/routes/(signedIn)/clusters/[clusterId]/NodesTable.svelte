@@ -3,6 +3,10 @@
 	import type { InfernetNode } from '$schema/interfaces'
 
 
+	// Context
+	import { page } from '$app/stores'
+
+
 	// Inputs
 	export let nodes: InfernetNode[]
 
@@ -15,7 +19,7 @@
 	// Actions
 	import { applyAction } from '$app/forms'
 	import { invalidate } from '$app/navigation'
-	import { addToast } from '$/components/Toaster.svelte'
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
 
 
 	// Components
@@ -72,12 +76,23 @@
 				value: 'start',
 				label: 'Start Node',
 				formAction: `${nodeRoute}?/start`,
-				formSubmit: async () => {
+				formSubmit: async (e) => {
+					const toast = addToast({
+						data: {
+							type: 'default',
+							title: 'Starting node...',
+						},
+					})
+
+					invalidate($page.url)
+
 					return async ({ result }) => {
 						await applyAction(result)
 
 						if(result.type === 'success')
-							await invalidate('.')
+							await invalidate($page.url)
+
+						removeToast(toast.id)
 					}
 				},
 			},
@@ -85,12 +100,23 @@
 				value: 'stop',
 				label: 'Stop Node',
 				formAction: `${nodeRoute}?/stop`,
-				formSubmit: async () => {
+				formSubmit: async (e) => {
+					const toast = addToast({
+						data: {
+							type: 'default',
+							title: 'Stopping node...',
+						},
+					})
+
+					invalidate($page.url)
+
 					return async ({ result }) => {
 						await applyAction(result)
 
 						if(result.type === 'success')
-							await invalidate('.')
+							await invalidate($page.url)
+
+						removeToast(toast.id)
 					}
 				},
 			},

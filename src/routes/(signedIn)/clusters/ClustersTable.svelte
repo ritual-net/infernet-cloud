@@ -3,6 +3,10 @@
 	import type { getClustersForUser } from '$/lib/db/queries'
 
 
+	// Context
+	import { page } from '$app/stores'
+
+
 	// Functions
 	import { resolveRoute } from '$app/paths'
 	import { goto, invalidate } from '$app/navigation'
@@ -51,7 +55,13 @@
 		},
 		{
 			header: 'Status',
-			accessor: cluster => cluster.healthy ? 'Healthy' : 'Unhealthy',
+			accessor: cluster => cluster.healthy,
+			cell: ({ value: cluster }) => (
+				createRender(ClustersTableCell, {
+					cellType: CellType.Status,
+					cluster,
+				})
+			),
 		},
 	]}
 	getRowLink={cluster => (

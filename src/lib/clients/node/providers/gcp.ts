@@ -74,19 +74,20 @@ export class GCPNodeClient implements BaseNodeClient {
 	 * @returns Flat array of node info objects
 	 */
 	async getNodesInfo(ids: string[], args: object): Promise<NodeInfo[]> {
-		const nodesInfoPromises = ids.map((id) =>
-			this.client
-				.get({
-					...args,
-					instance: id,
-				})
-				.then((result) => ({
-					id: id,
-					status: result[0]?.status ?? undefined,
-					ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
-					node: undefined,
-				}))
+		return Promise.all(
+			ids
+			.map((id) => (
+				this.client
+					.get({
+						...args,
+						instance: id,
+					})
+					.then((result) => ({
+						id: id,
+						status: result[0]?.status ?? undefined,
+						ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
+					}))
+			))
 		);
-		return Promise.all(nodesInfoPromises);
 	}
 }

@@ -12,6 +12,10 @@
 	} = $page.data as PageData)
 
 
+	// Internal state
+	$: clusterStatus = cluster.locked ? 'updating' : cluster.healthy ? 'healthy' : 'unhealthy'
+
+
 	// Functions
 	import { resolveRoute } from '$app/paths'
 
@@ -52,7 +56,18 @@
 			<dl class="card inline">
 				<div class="row">
 					<dt>Status</dt>
-					<dd>{cluster.healthy ? 'Healthy' : 'Unhealthy'}</dd>
+					<dd>
+						<div
+							class="status"
+							data-status={clusterStatus}
+						>
+							{{
+								'healthy': 'Healthy',
+								'updating': 'Updating',
+								'unhealthy': 'Unhealthy',
+							}[clusterStatus]}
+						</div>
+					</dd>
 				</div>
 			</dl>
 
@@ -284,6 +299,26 @@
 				white-space: pre-wrap;
 				word-break: break-word;
 			}
+		}
+	}
+
+	.status {
+		&[data-status="healthy"] {
+			--status-color: #16B371;
+		}
+
+		&[data-status="updating"] {
+			--status-color: #b3a316;
+		}
+
+		&[data-status="unhealthy"] {
+			--status-color: #b33d16;
+		}
+
+		&:before {
+			content: '⏺';
+			margin-right: 0.33em;
+			color: var(--status-color)
 		}
 	}
 </style>
