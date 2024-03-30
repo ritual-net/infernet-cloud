@@ -1,26 +1,26 @@
 <script lang="ts">
-	// Inputs
-	export let data
+	// Context
+	import type { PageData } from './$types'
+
+	export let data: PageData
 	const {
 		formData,
-		images,
+		imagesPromise,
 	} = data
 
+	let configurations = []
+
+
+	// Inputs
 	// (View options)
 	export let placement: 'standalone' | 'in-modal' = 'standalone'
 	export let mode: 'create' | 'edit' = 'create'
 	export let submitLabel = 'Add Container'
 
 
-	// Context
-	// import { page } from '$app/stores'
-	// import type { PageData } from './$types'
-
-	// const {
-	// 	formData,
-	// } = $page.data as PageData
-
-	let configurations = []
+	// Internal state
+	let images: string[] | undefined
+	$: imagesPromise.then(_ => images = _)
 
 
 	// Schema
@@ -144,10 +144,20 @@
 				name="container.image"
 				labelText="Service Account"
 				bind:value={$form.container.image}
-				items={images.map(image => ({
-					value: image,
-					label: image,
-				}))}
+				{...!images
+					? {
+						items: [],
+						placeholder: `Loading images...`,
+						disabled: true,
+					}
+					: {
+						items: images
+							.map(image => ({
+								value: image,
+								label: image,
+							})),
+					}
+				}
 			/>
 		</section>
 

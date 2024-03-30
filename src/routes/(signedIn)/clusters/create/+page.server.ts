@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({
 	parent,
 	fetch,
 }) => {
-	const data = await parent()
+	const parentData = await parent()
 
 	const serviceAccounts = await fetch(`/api/service_account`)
 		.then<QueriedServiceAccount[]>(response => response.json())
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({
 	const formData = await superValidate(yup(FormData))
 
 	return {
-		images: data.images,
+		imagesPromise: parentData.imagesPromise,
 		serviceAccounts,
 		formData,
 	}

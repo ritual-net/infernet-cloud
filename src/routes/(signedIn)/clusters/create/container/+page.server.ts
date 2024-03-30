@@ -11,12 +11,12 @@ import { redirect } from '@sveltejs/kit'
 export const load: PageServerLoad = async ({
 	parent,
 }) => {
-	const data = await parent()
+	const parentData = await parent()
 
 	const formData = await superValidate(yup(FormData))
 		
 	return {
-		images: data.images,
+		imagesPromise: parentData.imagesPromise,
 		formData,
 	}
 }
