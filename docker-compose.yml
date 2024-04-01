@@ -1,6 +1,24 @@
 version: '3'
 
+networks:
+  public_network:
+    external: true
+
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - server
+    networks:
+      - public_network
+
   server:
     container_name: server
     build:
@@ -14,6 +32,8 @@ services:
     depends_on:
       edgedb:
         condition: service_healthy
+    networks:
+      - public_network
 
   edgedb:
     container_name: edgedb
