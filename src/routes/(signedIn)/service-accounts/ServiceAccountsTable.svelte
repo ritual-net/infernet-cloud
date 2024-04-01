@@ -1,46 +1,40 @@
 <script lang="ts">
 	// Types/constants
-	import type { QueriedServiceAccount } from '../api/service_account/+server'
-
+	import type { QueriedServiceAccount } from '../api/service_account/+server';
 
 	// Inputs
-	export let serviceAccounts: QueriedServiceAccount[]
-
+	export let serviceAccounts: QueriedServiceAccount[];
 
 	// Functions
-	import { resolveRoute } from '$app/paths'
-
+	import { resolveRoute } from '$app/paths';
 
 	// Components
-	import { createRender } from 'svelte-headless-table'
-	import Table from '$/components/Table.svelte'
-	import ServiceAccountsTableCell, { CellType } from './ServiceAccountsTableCell.svelte'
+	import { createRender } from 'svelte-headless-table';
+	import Table from '$/components/Table.svelte';
+	import ServiceAccountsTableCell, { CellType } from './ServiceAccountsTableCell.svelte';
 </script>
-
 
 <Table
 	data={serviceAccounts}
 	columns={[
 		{
 			header: 'Name',
-			accessor: serviceAccount => serviceAccount.name,
+			accessor: (serviceAccount) => serviceAccount.name,
 		},
 		{
 			header: 'Cloud Provider',
-			accessor: serviceAccount => serviceAccount,
-			cell: ({ value: serviceAccount }) => (
+			accessor: (serviceAccount) => serviceAccount,
+			cell: ({ value: serviceAccount }) =>
 				createRender(ServiceAccountsTableCell, {
 					cellType: CellType.CloudProvider,
 					serviceAccount,
-				})
-			),
+				}),
 		},
 	]}
-	getRowLink={serviceAccount => (
+	getRowLink={(serviceAccount) =>
 		resolveRoute(`/service-accounts/[serviceAccountId]`, {
 			serviceAccountId: serviceAccount.id,
-		})
-	)}
+		})}
 >
 	<p>No service accounts configured.</p>
 </Table>

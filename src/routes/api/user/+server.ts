@@ -1,15 +1,13 @@
-import { e } from '$/lib/db'
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from '@sveltejs/kit'
+import { e } from '$/lib/db';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /**
  * Fetch the signed in user.
  *
  * @returns the current User object.
  */
-export const GET: RequestHandler = async ({
-	locals: { client },
-}) => {
+export const GET: RequestHandler = async ({ locals: { client } }) => {
 	const user = await e
 		.select(e.global.current_user, () => ({
 			name: true,
@@ -17,5 +15,5 @@ export const GET: RequestHandler = async ({
 		}))
 		.run(client);
 
-	return json(user)
+	return json(user);
 };

@@ -3,11 +3,11 @@
 	--fontFamily-display: 'Izoard', sans-serif;
 
 	--color-ritualBlack: #000;
-	--color-ritualGreen: #40FFAF;
-	
+	--color-ritualGreen: #40ffaf;
+
 	--textColor: var(--color-ritualBlack);
 
-	--page-backgroundColor: #FBFBFB;
+	--page-backgroundColor: #fbfbfb;
 
 	--borderColor: #e5e5e5;
 	--borderWidth: 1px;
@@ -59,7 +59,12 @@
 	line-height: 1.5;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	text-wrap: balance;
 }
 
@@ -88,7 +93,8 @@ a {
 	}
 }
 
-ol, ul {
+ol,
+ul {
 	padding-inline-start: 1.5em;
 
 	& > li {
@@ -143,8 +149,7 @@ dd {
 	display: grid;
 	grid:
 		'.'
-		/ minmax(0, 1fr)
-	;
+		/ minmax(0, 1fr);
 	gap: 1em;
 
 	&.inline {
@@ -152,7 +157,8 @@ dd {
 	}
 }
 
-input, textarea {
+input,
+textarea {
 	--input-paddingX: 1em;
 	--input-paddingY: 0.5em;
 	--input-backgroundColor: var(--input-default-backgroundColor);
@@ -187,8 +193,8 @@ textarea {
 	outline-color: red;
 }
 
-
-button, .button {
+button,
+.button {
 	--button-paddingX: 1em;
 	--button-paddingY: 0.5em;
 	--button-backgroundColor: var(--button-default-backgroundColor);
@@ -226,7 +232,7 @@ button, .button {
 	}
 
 	&:disabled,
-	&[aria-disabled="true"] {
+	&[aria-disabled='true'] {
 		opacity: 0.5;
 	}
 }
@@ -241,7 +247,7 @@ button, .button {
 
 	/* clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth))); */
 	overflow: hidden;
-	
+
 	padding: var(--card-paddingY) var(--card-paddingX);
 	background-color: var(--card-backgroundColor);
 	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
@@ -280,7 +286,8 @@ fieldset {
 	}
 }
 
-code, .code {
+code,
+.code {
 	font-family: monospace;
 	font-size-adjust: from-font;
 }

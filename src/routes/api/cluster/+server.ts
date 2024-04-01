@@ -15,7 +15,7 @@ import type { RequestHandler } from '@sveltejs/kit';
  */
 export const GET: RequestHandler = async ({ locals: { client } }) => {
 	// Get all clusters for user
-	const result = await getClustersForUser(client)
+	const result = await getClustersForUser(client);
 
 	return json(result);
 };
@@ -40,12 +40,11 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account could not be retrieved');
 	}
 
-	let cluster: Cluster
+	let cluster: Cluster;
 
 	try {
 		// Exclude zone (unused by backend)
-		if(serviceAccount.provider === 'AWS')
-			delete config.zone
+		if (serviceAccount.provider === 'AWS') delete config.zone;
 
 		// Insert cluster
 		cluster = (await e
@@ -65,10 +64,10 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			)
 			.run(client, { nodes })) as Cluster;
 	} catch (e) {
-		console.error(e)
+		console.error(e);
 
-		if(e.message?.includes(`violates exclusivity constraint`)){
-			return error(500, `A cluster with name "${config.name}" already exists.`)
+		if (e.message?.includes(`violates exclusivity constraint`)) {
+			return error(500, `A cluster with name "${config.name}" already exists.`);
 		}
 
 		return error(500, (e as Error).message);
@@ -77,16 +76,12 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	// Apply Terraform changes to created cluster
 	// (Run in background - don't block API response)
 	(async () => {
-		let result: Awaited<ReturnType<typeof clusterAction>>
+		let result: Awaited<ReturnType<typeof clusterAction>>;
 
 		try {
-			result = await clusterAction(
-				client,
-				cluster.id,
-				TFAction.Apply
-			);
+			result = await clusterAction(client, cluster.id, TFAction.Apply);
 		} catch (e) {
-			console.error(e)
+			console.error(e);
 
 			// return error(500, JSON.stringify(e))
 		}
@@ -99,5 +94,5 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 
 	return json({
 		cluster,
-	})
+	});
 };

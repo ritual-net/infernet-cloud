@@ -1,35 +1,28 @@
 <script lang="ts">
 	// Context
-	import type { PageData } from './$types'
+	import type { PageData } from './$types';
 
-	export let data: PageData
-	const {
-		formData,
-		imagesPromise,
-	} = data
+	export let data: PageData;
+	const { formData, imagesPromise } = data;
 
-	let configurations = []
-
+	let configurations = [];
 
 	// Inputs
 	// (View options)
-	export let placement: 'standalone' | 'in-modal' = 'standalone'
-	export let mode: 'create' | 'edit' = 'create'
-	export let submitLabel = 'Add Container'
-
+	export let placement: 'standalone' | 'in-modal' = 'standalone';
+	export let mode: 'create' | 'edit' = 'create';
+	export let submitLabel = 'Add Container';
 
 	// Internal state
-	let images: string[] | undefined
-	$: imagesPromise.then(_ => images = _)
-
+	let images: string[] | undefined;
+	$: imagesPromise.then((_) => (images = _));
 
 	// Schema
-	import { FormData } from './schema'
-
+	import { FormData } from './schema';
 
 	// Internal state
-	import { superForm } from 'sveltekit-superforms/client'
-	import { yupClient } from 'sveltekit-superforms/adapters'
+	import { superForm } from 'sveltekit-superforms/client';
+	import { yupClient } from 'sveltekit-superforms/adapters';
 
 	const {
 		form,
@@ -47,46 +40,38 @@
 		validators: yupClient(FormData),
 
 		onSubmit: ({ cancel }) => {
-			if(mode === 'create')
-				$form.container.container_id = crypto.randomUUID()
+			if (mode === 'create') $form.container.container_id = crypto.randomUUID();
 
-			onSubmit?.($form)
+			onSubmit?.($form);
 
-			cancel()
+			cancel();
 		},
-	})
+	});
 
-	export const snapshot = { capture, restore }
+	export const snapshot = { capture, restore };
 
-	let allowIps: 'all' | 'restricted' = 'all'
+	let allowIps: 'all' | 'restricted' = 'all';
 
-	let startingConfig: typeof form
-
+	let startingConfig: typeof form;
 
 	// Events
-	import { goto } from '$app/navigation'
+	import { goto } from '$app/navigation';
 
 	export let onSubmit: (_: typeof $form) => void = () => {
-		goto('/clusters/create/#/nodes')
-	}
+		goto('/clusters/create/#/nodes');
+	};
 
 	export let onCancel: () => void = () => {
-		goto('/clusters/create/#/nodes')
-	}
-
+		goto('/clusters/create/#/nodes');
+	};
 
 	// Components
-	import Switch from '$/components/Switch.svelte'
-	import Select from '$/components/Select.svelte'
-	import Tabs from '$/components/Tabs.svelte'
+	import Switch from '$/components/Switch.svelte';
+	import Select from '$/components/Select.svelte';
+	import Tabs from '$/components/Tabs.svelte';
 </script>
 
-
-<form
-	class="column"
-	method="POST"
-	use:enhance
->
+<form class="column" method="POST" use:enhance>
 	{#if placement === 'standalone'}
 		<header>
 			<h2>Customize container</h2>
@@ -95,16 +80,12 @@
 
 	{#if mode === 'create'}
 		<fieldset class="card column">
-			<header>
-				Start from existing
-			</header>
+			<header>Start from existing</header>
 
 			<section class="row wrap">
 				<div class="column inline">
 					<h3>
-						<label for="startingConfig">
-							Starting configuration
-						</label>
+						<label for="startingConfig"> Starting configuration </label>
 					</h3>
 
 					<p>Choose an existing container to pre-fill variables from.</p>
@@ -114,7 +95,9 @@
 					id="startingConfig"
 					name="startingConfig"
 					labelText="Starting Configuration"
-					placeholder={configurations.length ? `Select container config...` : `No existing containers found`}
+					placeholder={configurations.length
+						? `Select container config...`
+						: `No existing containers found`}
 					bind:value={startingConfig}
 					items={configurations}
 				/>
@@ -123,16 +106,12 @@
 	{/if}
 
 	<fieldset class="card column">
-		<header>
-			Customize container
-		</header>
+		<header>Customize container</header>
 
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="container.image">
-						Image
-					</label>
+					<label for="container.image"> Image </label>
 				</h3>
 
 				<p>Choose the image this container is deployed with.</p>
@@ -146,18 +125,16 @@
 				bind:value={$form.container.image}
 				{...!images
 					? {
-						items: [],
-						placeholder: `Loading images...`,
-						disabled: true,
-					}
+							items: [],
+							placeholder: `Loading images...`,
+							disabled: true,
+						}
 					: {
-						items: images
-							.map(image => ({
+							items: images.map((image) => ({
 								value: image,
 								label: image,
 							})),
-					}
-				}
+						}}
 			/>
 		</section>
 
@@ -185,9 +162,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="container.description">
-						Description
-					</label>
+					<label for="container.description"> Description </label>
 				</h3>
 
 				<p>Add a description for this container.</p>
@@ -206,9 +181,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="container.external">
-						Visibility
-					</label>
+					<label for="container.external"> Visibility </label>
 				</h3>
 
 				<p>Determine if container is publicly accessible.</p>
@@ -236,9 +209,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="container.gpu">
-						Has GPU?
-					</label>
+					<label for="container.gpu"> Has GPU? </label>
 				</h3>
 
 				<p>Determine if GPU-enabled.</p>
@@ -266,9 +237,7 @@
 					},
 				]}
 			>
-				<svelte:fragment slot="content"
-					let:item
-				>
+				<svelte:fragment slot="content" let:item>
 					{#if item.id === 0}
 						<textarea
 							id="container.allowed_addresses"
@@ -279,7 +248,6 @@
 							{...$constraints.container?.allowed_addresses}
 							disabled={allowIps === 'all'}
 						/>
-
 					{:else if item.id === 1}
 						<textarea
 							id="container.allowed_delegate_addresses"
@@ -290,7 +258,6 @@
 							{...$constraints.container?.allowed_delegate_addresses}
 							disabled={allowIps === 'all'}
 						/>
-
 					{:else if item.id === 2}
 						<textarea
 							id="container.allowed_ips"
@@ -309,9 +276,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="container.command">
-						Start Command
-					</label>
+					<label for="container.command"> Start Command </label>
 				</h3>
 
 				<p>Enter the start command for this container below.</p>
@@ -331,9 +296,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="container.env">
-						Environment Variables
-					</label>
+					<label for="container.env"> Environment Variables </label>
 				</h3>
 
 				<p>Please enter the contents of the .env file for this container.</p>
@@ -353,20 +316,11 @@
 
 	<footer class="row">
 		<div class="row">
-			<button
-				type="button"
-				on:click={onCancel}
-			>
-				Cancel
-			</button>
+			<button type="button" on:click={onCancel}> Cancel </button>
 		</div>
 
 		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting}
-			>
+			<button type="submit" class="primary" disabled={$submitting}>
 				{submitLabel}
 			</button>
 		</div>

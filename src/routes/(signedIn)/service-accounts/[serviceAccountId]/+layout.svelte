@@ -1,15 +1,11 @@
 <nav class="breadcrumb">
-	<a
-		href="/service-accounts"
-		class="row inline"
-	>
+	<a href="/service-accounts" class="row inline">
 		<span>←</span>
 		<span>Service Accounts</span>
 	</a>
 </nav>
 
 <slot />
-
 
 <style>
 	nav {

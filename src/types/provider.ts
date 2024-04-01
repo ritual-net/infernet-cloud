@@ -27,7 +27,7 @@ export type ProviderInfo = {
 	region: {
 		id: string;
 		name?: string;
-	},
+	};
 	zones: ZoneInfo[];
 };
 
@@ -47,7 +47,7 @@ export type NodeInfo = {
 export type InfernetNodeWithInfo = {
 	node: InfernetNode;
 	info?: NodeInfo;
-}
+};
 
 export enum NodeAction {
 	start = 'start',
@@ -56,9 +56,8 @@ export enum NodeAction {
 	restart = 'restart',
 }
 
-
-import AWSIcon from '$/assets/aws.svg'
-import GCPIcon from '$/assets/gcp.svg'
+import AWSIcon from '$/assets/aws.svg';
+import GCPIcon from '$/assets/gcp.svg';
 
 export const providers = {
 	[ProviderTypeEnum.AWS]: {
@@ -69,4 +68,4 @@ export const providers = {
 		name: 'Google Cloud Platform',
 		icon: GCPIcon,
 	},
-} as const
+} as const;

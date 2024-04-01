@@ -1,26 +1,24 @@
 <script lang="ts">
 	// Types
-	type TabId = $$Generic<string | number>
-
+	type TabId = $$Generic<string | number>;
 
 	// Inputs
 	export let items: {
-		id: TabId,
-		label?: string,
-	}[]
-	export let value: TabId | undefined
-	export let labelText: string
+		id: TabId;
+		label?: string;
+	}[];
+	export let value: TabId | undefined;
+	export let labelText: string;
 
 	// (View options)
-	export let orientation: 'horizontal' | 'vertical' = 'horizontal'
-	let className = ''
-	export { className as class }
+	export let orientation: 'horizontal' | 'vertical' = 'horizontal';
+	let className = '';
+	export { className as class };
 
-	export let layout: 'default' | 'tooltip-dots' = 'default'
-
+	export let layout: 'default' | 'tooltip-dots' = 'default';
 
 	// Internal state
-	import { melt, createTabs, createSync } from '@melt-ui/svelte'
+	import { melt, createTabs, createSync } from '@melt-ui/svelte';
 
 	const {
 		elements: { root, list, content, trigger },
@@ -29,44 +27,36 @@
 	} = createTabs({
 		orientation,
 		defaultValue: String(value ?? items[0]?.id),
-	})
+	});
 
-	$: createSync(states).value(String(value), _ => { value = _ as TabId })
-	$: createSync(options).orientation(orientation, _ => { orientation = _ })
-
+	$: createSync(states).value(String(value), (_) => {
+		value = _ as TabId;
+	});
+	$: createSync(options).orientation(orientation, (_) => {
+		orientation = _;
+	});
 
 	// Components
-	import Tooltip from './Tooltip.svelte'
-
+	import Tooltip from './Tooltip.svelte';
 
 	// Transitions/animations
-	import SizeTransition from './SizeTransition.svelte'
+	import SizeTransition from './SizeTransition.svelte';
 
-	import { crossfade } from 'svelte/transition'
-	import { cubicInOut } from 'svelte/easing'
+	import { crossfade } from 'svelte/transition';
+	import { cubicInOut } from 'svelte/easing';
 
 	const [indicatorIn, indicatorOut] = crossfade({
 		duration: 250,
 		easing: cubicInOut,
-	})
+	});
 </script>
 
-
 <SizeTransition>
-	<div
-		use:melt={$root}
-		data-layout={layout}
-	>
-		<div
-			use:melt={$list}
-			aria-label={labelText}
-		>
+	<div use:melt={$root} data-layout={layout}>
+		<div use:melt={$list} aria-label={labelText}>
 			{#if layout === 'default'}
 				{#each items as item (item.id)}
-					<button
-						type="button"
-						use:melt={$trigger(String(item.id))}
-					>
+					<button type="button" use:melt={$trigger(String(item.id))}>
 						{item.label}
 
 						{#if String(value) === String(item.id)}
@@ -78,16 +68,10 @@
 						{/if}
 					</button>
 				{/each}
-
 			{:else if layout === 'tooltip-dots'}
 				{#each items as item (item.id)}
-					<Tooltip
-						labelText={item.label}
-					>
-						<button
-							type="button"
-							use:melt={$trigger(String(item.id))}
-						>
+					<Tooltip labelText={item.label}>
+						<button type="button" use:melt={$trigger(String(item.id))}>
 							{#if String(value) === String(item.id)}
 								<div
 									class="trigger-indicator"
@@ -109,7 +93,7 @@
 			<div
 				use:melt={$content(String(item.id))}
 				on:focus|capture={(e) => {
-					value = item.id
+					value = item.id;
 				}}
 			>
 				<slot name="content" {item} />
@@ -118,7 +102,6 @@
 	</div>
 </SizeTransition>
 
-
 <style>
 	[data-melt-tabs] {
 		isolation: isolate;
@@ -126,18 +109,16 @@
 		display: grid;
 		gap: var(--borderWidth);
 
-		&[data-orientation="horizontal"] {
+		&[data-orientation='horizontal'] {
 			grid:
 				'tabs-list' auto
-				'tabs-content' 1fr
-			;
+				'tabs-content' 1fr;
 		}
 
-		&[data-orientation="vertical"] {
+		&[data-orientation='vertical'] {
 			grid:
 				'tabs-list tabs-content'
-				/ auto 1fr
-			;
+				/ auto 1fr;
 		}
 	}
 
@@ -145,11 +126,11 @@
 		grid-area: tabs-list;
 		position: relative;
 
-		&[data-orientation="horizontal"] {
+		&[data-orientation='horizontal'] {
 			display: flex;
 		}
 
-		&[data-orientation="vertical"] {
+		&[data-orientation='vertical'] {
 			display: grid;
 		}
 	}
@@ -165,10 +146,10 @@
 
 			pointer-events: none;
 		}
-		&[data-orientation="horizontal"] .trigger-indicator {
+		&[data-orientation='horizontal'] .trigger-indicator {
 			border-bottom: var(--color-ritualBlack) 2px solid;
 		}
-		&[data-orientation="vertical"] .trigger-indicator {
+		&[data-orientation='vertical'] .trigger-indicator {
 			border-right: var(--color-ritualBlack) 2px solid;
 		}
 	}
@@ -191,12 +172,10 @@
 		}
 	}
 
-
-	[data-melt-tabs][data-layout="tooltip-dots"] {
+	[data-melt-tabs][data-layout='tooltip-dots'] {
 		grid:
 			'.' 1fr
-			/ [tabs-list-start tabs-content] 1fr [tabs-list-end tabs-content-end]
-		;
+			/ [tabs-list-start tabs-content] 1fr [tabs-list-end tabs-content-end];
 
 		& > [data-melt-tabs-list] {
 			place-self: start end;

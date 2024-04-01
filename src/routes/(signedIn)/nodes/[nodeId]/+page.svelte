@@ -1,43 +1,32 @@
 <script lang="ts">
 	// Context
-	import type { PageData } from './$types'
-	import { page } from '$app/stores'
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
-	$: ({
-		node,
-		info,
-		infoError,
-	} = $page.data as PageData)
-
+	$: ({ node, info, infoError } = $page.data as PageData);
 
 	// Internal state
 	// (Computed)
-	$: nodeStatus = info?.status ?? 'unknown'
-
+	$: nodeStatus = info?.status ?? 'unknown';
 
 	// Functions
-	import { formatNumberCompact } from '$/lib/format'
-
+	import { formatNumberCompact } from '$/lib/format';
 
 	// Actions
-	import { applyAction, enhance } from '$app/forms'
-	import { invalidate } from '$app/navigation'
-	import { addToast, removeToast } from '$/components/Toaster.svelte'
-
+	import { applyAction, enhance } from '$app/forms';
+	import { invalidate } from '$app/navigation';
+	import { addToast, removeToast } from '$/components/Toaster.svelte';
 
 	// Components
-	import RitualLogo from '$/icons/RitualLogo.svelte'
-	import DropdownMenu from '$/components/DropdownMenu.svelte'
+	import RitualLogo from '$/icons/RitualLogo.svelte';
+	import DropdownMenu from '$/components/DropdownMenu.svelte';
 	// import NodesContainersTable from './NodesContainersTable.svelte'
 </script>
-
 
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">
-			<div
-				class="icon"
-			>
+			<div class="icon">
 				<RitualLogo />
 			</div>
 
@@ -56,15 +45,14 @@
 				<div class="row">
 					<dt>Status</dt>
 					<dd>
-						<div
-							class="status"
-							data-status={nodeStatus}
-						>{{
-							'unknown': 'Unknown',
-							'healthy': 'Healthy',
-							'updating': 'Updating',
-							'unhealthy': 'Unhealthy',
-						}[nodeStatus]}</div>
+						<div class="status" data-status={nodeStatus}>
+							{{
+								unknown: 'Unknown',
+								healthy: 'Healthy',
+								updating: 'Updating',
+								unhealthy: 'Unhealthy',
+							}[nodeStatus]}
+						</div>
 					</dd>
 				</div>
 			</dl>
@@ -90,18 +78,17 @@
 									type: 'default',
 									title: 'Starting node...',
 								},
-							})
-		
-							invalidate($page.url)
-		
+							});
+
+							invalidate($page.url);
+
 							return async ({ result }) => {
-								await applyAction(result)
-		
-								if(result.type === 'success')
-									await invalidate($page.url)
-		
-								removeToast(toast.id)
-							}
+								await applyAction(result);
+
+								if (result.type === 'success') await invalidate($page.url);
+
+								removeToast(toast.id);
+							};
 						},
 					},
 					{
@@ -114,18 +101,17 @@
 									type: 'default',
 									title: 'Stopping node...',
 								},
-							})
-		
-							invalidate($page.url)
-		
+							});
+
+							invalidate($page.url);
+
 							return async ({ result }) => {
-								await applyAction(result)
-		
-								if(result.type === 'success')
-									await invalidate($page.url)
-		
-								removeToast(toast.id)
-							}
+								await applyAction(result);
+
+								if (result.type === 'success') await invalidate($page.url);
+
+								removeToast(toast.id);
+							};
 						},
 					},
 				]}
@@ -210,7 +196,6 @@
 	</div> -->
 </div>
 
-
 <style>
 	.container {
 		gap: 2rem;
@@ -252,19 +237,19 @@
 	}
 
 	.status {
-		&[data-status="healthy"] {
-			--status-color: #16B371;
+		&[data-status='healthy'] {
+			--status-color: #16b371;
 		}
 
-		&[data-status="updating"] {
+		&[data-status='updating'] {
 			--status-color: #b3a316;
 		}
 
-		&[data-status="unhealthy"] {
+		&[data-status='unhealthy'] {
 			--status-color: #b33d16;
 		}
 
-		&[data-status="unknown"] {
+		&[data-status='unknown'] {
 			--status-color: gray;
 		}
 

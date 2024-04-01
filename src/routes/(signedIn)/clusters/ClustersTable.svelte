@@ -1,32 +1,26 @@
 <script lang="ts">
 	// Types
-	import type { getClustersForUser } from '$/lib/db/queries'
-
+	import type { getClustersForUser } from '$/lib/db/queries';
 
 	// Context
-	import { page } from '$app/stores'
-
+	import { page } from '$app/stores';
 
 	// Functions
-	import { resolveRoute } from '$app/paths'
-	import { goto, invalidate } from '$app/navigation'
-
+	import { resolveRoute } from '$app/paths';
+	import { goto, invalidate } from '$app/navigation';
 
 	// Inputs
-	export let clusters: Awaited<ReturnType<typeof getClustersForUser>>
-
+	export let clusters: Awaited<ReturnType<typeof getClustersForUser>>;
 
 	// Actions
-	import { applyAction } from '$app/forms'
-	import { addToast, removeToast } from '$/components/Toaster.svelte'
-
+	import { applyAction } from '$app/forms';
+	import { addToast, removeToast } from '$/components/Toaster.svelte';
 
 	// Components
-	import Table from '$/components/Table.svelte'
-	import ClustersTableCell, { CellType } from './ClustersTableCell.svelte'
-	import { createRender } from 'svelte-headless-table'
+	import Table from '$/components/Table.svelte';
+	import ClustersTableCell, { CellType } from './ClustersTableCell.svelte';
+	import { createRender } from 'svelte-headless-table';
 </script>
-
 
 <Table
 	data={clusters}
@@ -37,47 +31,43 @@
 		// },
 		{
 			header: 'Name',
-			accessor: cluster => cluster.name,
+			accessor: (cluster) => cluster.name,
 		},
 		{
 			header: 'Service Account',
-			accessor: cluster => cluster,
-			cell: ({ value: cluster }) => (
+			accessor: (cluster) => cluster,
+			cell: ({ value: cluster }) =>
 				createRender(ClustersTableCell, {
 					cellType: CellType.ServiceAccount,
 					cluster,
-				})
-			),
+				}),
 		},
 		{
 			header: 'Nodes',
-			accessor: cluster => cluster.node_count,
+			accessor: (cluster) => cluster.node_count,
 		},
 		{
 			header: 'Status',
-			accessor: cluster => cluster.healthy,
-			cell: ({ value: cluster }) => (
+			accessor: (cluster) => cluster.healthy,
+			cell: ({ value: cluster }) =>
 				createRender(ClustersTableCell, {
 					cellType: CellType.Status,
 					cluster,
-				})
-			),
+				}),
 		},
 	]}
-	getRowLink={cluster => (
-		resolveRoute(`/clusters/[clusterId]`, { clusterId: cluster.id })
-	)}
-	contextMenu={cluster => {
+	getRowLink={(cluster) => resolveRoute(`/clusters/[clusterId]`, { clusterId: cluster.id })}
+	contextMenu={(cluster) => {
 		const clusterRoute = resolveRoute(`/clusters/[clusterId]`, {
 			clusterId: cluster.id,
-		})
+		});
 
 		return [
 			{
 				value: 'edit',
 				label: 'Edit Cluster',
 				onClick: () => {
-					goto(`${clusterRoute}/edit`)
+					goto(`${clusterRoute}/edit`);
 				},
 			},
 			{
@@ -90,19 +80,18 @@
 							type: 'default',
 							title: 'Deleting cluster...',
 						},
-					})
+					});
 
 					return async ({ result }) => {
-						await applyAction(result)
+						await applyAction(result);
 
-						if(result.type === 'success')
-							await invalidate('.')
+						if (result.type === 'success') await invalidate('.');
 
-						removeToast(toast.id)
-					}
+						removeToast(toast.id);
+					};
 				},
 			},
-		]
+		];
 	}}
 >
 	<p>You have not created any clusters.</p>

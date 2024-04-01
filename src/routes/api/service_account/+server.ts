@@ -1,5 +1,5 @@
 import { e } from '$/lib/db';
-import type { Client } from 'edgedb'
+import type { Client } from 'edgedb';
 import { ProviderClient } from '$/lib/index';
 import { ProviderTypeEnum } from '$/types/provider';
 import { error, json } from '@sveltejs/kit';
@@ -11,17 +11,16 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param locals - The locals object contains the client.
  * @returns Array of ServiceAccount objects.
  */
-const getServiceAccounts = async (client: Client) => (
+const getServiceAccounts = async (client: Client) =>
 	await e
 		.select(e.ServiceAccount, () => ({
 			id: true,
 			name: true,
 			provider: true,
 		}))
-		.run(client)
-)
+		.run(client);
 
-export type QueriedServiceAccount = Awaited<ReturnType<typeof getServiceAccounts>>[number]
+export type QueriedServiceAccount = Awaited<ReturnType<typeof getServiceAccounts>>[number];
 
 export const GET: RequestHandler = async ({ locals: { client } }) => {
 	try {

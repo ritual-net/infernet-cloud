@@ -1,16 +1,14 @@
 <script lang="ts">
 	// Constants
 	enum FormAction {
-		SignOut = '?/signOut'
+		SignOut = '?/signOut',
 	}
 
-
 	// Context
-	import { page } from '$app/stores'
-
+	import { page } from '$app/stores';
 
 	// Internal state
-	import { superForm } from 'sveltekit-superforms/client'
+	import { superForm } from 'sveltekit-superforms/client';
 
 	const {
 		formId: signOutFormId,
@@ -19,24 +17,21 @@
 		enhance: signOutEnhance,
 		constraints: signOutConstraints,
 		submitting: signOutSubmitting,
-	} = superForm({}, {
-		dataType: 'json',
-		customValidity: true,
-	})
+	} = superForm(
+		{},
+		{
+			dataType: 'json',
+			customValidity: true,
+		}
+	);
 </script>
-
 
 <div class="container column">
 	<header>
 		<h2>Account</h2>
 	</header>
 
-	<form
-		method="POST"
-		use:signOutEnhance
-		action={FormAction.SignOut}
-		class="card column"
-	>
+	<form method="POST" use:signOutEnhance action={FormAction.SignOut} class="card column">
 		<section class="row">
 			<h3>Name</h3>
 
@@ -52,19 +47,15 @@
 		<section class="row">
 			<h3>Sign out</h3>
 
-			<button
-				class="destructive"
-				type="submit"
-			>Sign out</button>
+			<button class="destructive" type="submit">Sign out</button>
 		</section>
 	</form>
 </div>
-
 
 <style>
 	.container {
 		display: grid;
 		grid-template-columns: minmax(0, 30rem);
-    	justify-content: center;
+		justify-content: center;
 	}
 </style>

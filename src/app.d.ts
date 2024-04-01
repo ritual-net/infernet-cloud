@@ -1,7 +1,7 @@
-import type { Client } from 'edgedb'
+import type { Client } from 'edgedb';
 
-import type { User } from '$schema/interfaces'
-import type ContainerForm from '$/routes/clusters/create/container/+page.svelte'
+import type { User } from '$schema/interfaces';
+import type ContainerForm from '$/routes/clusters/create/container/+page.svelte';
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
@@ -16,30 +16,30 @@ declare global {
 
 		interface PageData {
 			flash?: {
-				type: 'success' | 'error',
+				type: 'success' | 'error';
 				message: {
-					title?: string,
-					description?: string,
-				},
+					title?: string;
+					description?: string;
+				};
 			};
 		}
 
 		interface PageState {
-			showContainerForm?: 'create' | 'edit',
-			nodeId: string,
-			containerId: string,
-			containerFormData?: ContainerForm['$$prop_def']['data'],
+			showContainerForm?: 'create' | 'edit';
+			nodeId: string;
+			containerId: string;
+			containerFormData?: ContainerForm['$$prop_def']['data'];
 		}
 
 		// interface Platform {}
 
 		namespace Superforms {
 			type Message = {
-				title?: string,
-				description?: string,
-			}
+				title?: string;
+				description?: string;
+			};
 		}
 	}
 }
 
-export {}
+export {};

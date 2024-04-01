@@ -1,21 +1,19 @@
 <script lang="ts">
 	// Types
-	import type { MenuItems } from '$lib/menus'
-	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
+	import type { MenuItems } from '$lib/menus';
+	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions';
 
-	type Value = $$Generic<any>
-
+	type Value = $$Generic<any>;
 
 	// Inputs
-	export let items: MenuItems<Value>
-	export let labelText: string | undefined
+	export let items: MenuItems<Value>;
+	export let labelText: string | undefined;
 
 	// (View options)
-	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
-
+	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end';
 
 	// Internal state
-	import { melt, createDropdownMenu } from '@melt-ui/svelte'
+	import { melt, createDropdownMenu } from '@melt-ui/svelte';
 
 	const {
 		elements: { trigger, menu, item, separator, arrow },
@@ -26,23 +24,22 @@
 			placement,
 			fitViewport: true,
 		},
-	})
-
+	});
 
 	// Actions
-	import { enhance } from '$app/forms'
-
+	import { enhance } from '$app/forms';
 
 	// Components
-	import EllipsisIcon from '$/icons/EllipsisIcon.svelte'
+	import EllipsisIcon from '$/icons/EllipsisIcon.svelte';
 </script>
-
 
 <button
 	use:melt={$trigger}
 	aria-label={labelText}
 	on:click|stopPropagation
-	on:contextmenu={e => { if($open) e.stopPropagation() }}
+	on:contextmenu={(e) => {
+		if ($open) e.stopPropagation();
+	}}
 >
 	<slot>
 		<EllipsisIcon />
@@ -59,64 +56,39 @@
 
 				{#if 'items' in _subitem}
 					<!-- TODO: make recursive with Svelte 5 snippets -->
-				{:else}
-					{#if _subitem.formAction}
-						<form
-							method="POST"
-							action={_subitem.formAction}
-							use:enhance={_subitem?.formSubmit}
-						>
-							<button
-								type="submit"
-								use:melt={$item}
-							>
-								<div class="row">
-									{_subitem.label}
-								</div>
-							</button>
-						</form>
-					{:else}
-						<div
-							use:melt={$item}
-							on:m-click={e => _subitem.onClick?.(_subitem)}
-						>
+				{:else if _subitem.formAction}
+					<form method="POST" action={_subitem.formAction} use:enhance={_subitem?.formSubmit}>
+						<button type="submit" use:melt={$item}>
 							<div class="row">
 								{_subitem.label}
 							</div>
+						</button>
+					</form>
+				{:else}
+					<div use:melt={$item} on:m-click={(e) => _subitem.onClick?.(_subitem)}>
+						<div class="row">
+							{_subitem.label}
 						</div>
-					{/if}
+					</div>
 				{/if}
 			{/each}
-		{:else}
-			{#if subitem.formAction}
-				<form
-					method="POST"
-					action={subitem.formAction}
-					use:enhance={subitem?.formSubmit}
-				>
-					<button
-						type="submit"
-						use:melt={$item}
-					>
-						<div class="row">
-							{subitem.label}
-						</div>
-					</button>
-				</form>
-			{:else}
-				<div
-					use:melt={$item}
-					on:m-click={e => subitem.onClick?.(subitem)}
-				>
+		{:else if subitem.formAction}
+			<form method="POST" action={subitem.formAction} use:enhance={subitem?.formSubmit}>
+				<button type="submit" use:melt={$item}>
 					<div class="row">
 						{subitem.label}
 					</div>
+				</button>
+			</form>
+		{:else}
+			<div use:melt={$item} on:m-click={(e) => subitem.onClick?.(subitem)}>
+				<div class="row">
+					{subitem.label}
 				</div>
-			{/if}
+			</div>
 		{/if}
 	{/each}
 </div>
-
 
 <style>
 	:root {
@@ -130,7 +102,7 @@
 		--dropdownMenu-cornerRadius: 0.33em;
 
 		--dropdownMenu-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
-		
+
 		--dropdownMenu-textColor: var(--textColor);
 	}
 
@@ -141,7 +113,10 @@
 	[data-melt-dropdown-menu] {
 		display: grid;
 
-		clip-path: inset(calc(-1 * var(--dropdownMenu-borderWidth)) round calc(var(--dropdownMenu-cornerRadius) + var(--dropdownMenu-borderWidth)));
+		clip-path: inset(
+			calc(-1 * var(--dropdownMenu-borderWidth)) round
+				calc(var(--dropdownMenu-cornerRadius) + var(--dropdownMenu-borderWidth))
+		);
 		background-color: var(--dropdownMenu-backgroundColor);
 		backdrop-filter: var(--dropdownMenu-backdropFilter);
 		box-shadow: 0 0 0 var(--dropdownMenu-borderWidth) var(--dropdownMenu-borderColor);

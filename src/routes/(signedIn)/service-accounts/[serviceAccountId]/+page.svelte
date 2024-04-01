@@ -1,33 +1,25 @@
 <script lang="ts">
 	// Types/constants
-	import { providers } from '$/types/provider'
-
+	import { providers } from '$/types/provider';
 
 	// Context
-	import type { PageData } from './$types'
-	import { page } from '$app/stores'
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
-	$: ({
-		serviceAccount,
-	} = $page.data as PageData)
-
+	$: ({ serviceAccount } = $page.data as PageData);
 
 	// Functions
-	import { resolveRoute } from '$app/paths'
-
+	import { resolveRoute } from '$app/paths';
 
 	// Components
 	// import ClustersTable from '$/routes/clusters/ClustersTable.svelte'
-	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import RitualLogo from '$/icons/RitualLogo.svelte';
 </script>
-
 
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">
-			<div
-				class="icon"
-			>
+			<div class="icon">
 				<RitualLogo />
 			</div>
 
@@ -56,10 +48,7 @@
 				<dt>Cloud Provider</dt>
 
 				<dd class="row">
-					<img
-						class="icon"
-						src={providers[serviceAccount.provider].icon}
-					/>
+					<img class="icon" src={providers[serviceAccount.provider].icon} />
 					{providers[serviceAccount.provider].name}
 				</dd>
 			</section>
@@ -90,7 +79,6 @@
 		/>
 	</div> -->
 </div>
-
 
 <style>
 	.container {

@@ -1,13 +1,12 @@
 <script lang="ts" context="module">
 	// Types
 	type ToastData = {
-		type?: 'default' | 'success' | 'error',
-		title: string,
-		description?: string,
-	}
+		type?: 'default' | 'success' | 'error';
+		title: string;
+		description?: string;
+	};
 
-	export { type Toast } from '@melt-ui/svelte'
-
+	export { type Toast } from '@melt-ui/svelte';
 
 	// Internal state
 	const {
@@ -17,25 +16,20 @@
 		actions: { portal },
 	} = createToaster<ToastData>({
 		closeDelay: 100000,
-	})
-	import { createToaster, melt } from '@melt-ui/svelte'
-
+	});
+	import { createToaster, melt } from '@melt-ui/svelte';
 
 	// Actions
-	export const addToast = helpers.addToast
-	export const removeToast = helpers.removeToast
-
+	export const addToast = helpers.addToast;
+	export const removeToast = helpers.removeToast;
 
 	// Transitions/animations
-	import { flip } from 'svelte/animate'
-	import { fly } from 'svelte/transition'
-	import { expoOut } from 'svelte/easing'
+	import { flip } from 'svelte/animate';
+	import { fly } from 'svelte/transition';
+	import { expoOut } from 'svelte/easing';
 </script>
 
-
-<div
-	use:portal
->
+<div use:portal>
 	<div class="column">
 		{#each $toasts as { id, data } (id)}
 			<div
@@ -47,10 +41,7 @@
 			>
 				<div class="card column">
 					<div>
-						<button
-							use:melt={$close(id)}
-							class="small"
-						>
+						<button use:melt={$close(id)} class="small">
 							<span>✕</span>
 						</button>
 
@@ -59,7 +50,11 @@
 
 					{#if data.description}
 						<div use:melt={$description(id)}>
-							<p>{@html data.description?.replace(/</g, '&lt;').replaceAll(/\{.+\}/g, m => `<code>${m}</code>`)}</p>
+							<p>
+								{@html data.description
+									?.replace(/</g, '&lt;')
+									.replaceAll(/\{.+\}/g, (m) => `<code>${m}</code>`)}
+							</p>
 						</div>
 					{/if}
 				</div>
@@ -67,7 +62,6 @@
 		{/each}
 	</div>
 </div>
-
 
 <style>
 	:root {
@@ -96,12 +90,12 @@
 				--toast-backgroundColor: #fff;
 				--toast-borderColor: var(--borderColor);
 
-				&[data-type="success"] {
+				&[data-type='success'] {
 					--toast-backgroundColor: var(--toast-typeSuccess-backgroundColor);
 					--toast-borderColor: var(--toast-typeSuccess-borderColor);
 				}
 
-				&[data-type="error"] {
+				&[data-type='error'] {
 					--toast-backgroundColor: var(--toast-typeError-backgroundColor);
 					--toast-borderColor: var(--toast-typeError-borderColor);
 				}

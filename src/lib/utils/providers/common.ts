@@ -744,7 +744,7 @@ export const providerRegionsAndZones = {
 export const getRegionName = (regionId: string, provider: ProviderTypeEnum): string => {
 	const regions = providerRegionsAndZones[provider].regions;
 
-	const region = regions.find(region => region.id === regionId);
+	const region = regions.find((region) => region.id === regionId);
 
 	if (!region) {
 		throw new Error(`Region ${regionId} not found for provider ${provider}`);
@@ -763,12 +763,11 @@ export const getRegionName = (regionId: string, provider: ProviderTypeEnum): str
 export const getProviderInfoWithRegionLabels = (
 	provider: ProviderTypeEnum,
 	providerInfo: ProviderInfo[]
-): ProviderInfo[] => (
+): ProviderInfo[] =>
 	providerInfo.map((providerInfo) => ({
 		region: {
 			...providerInfo.region,
 			name: getRegionName(providerInfo.region.id, provider),
 		},
 		zones: providerInfo.zones,
-	}))
-);
+	}));

@@ -1,15 +1,11 @@
 <nav class="breadcrumb">
-	<a
-		href="/clusters"
-		class="row inline"
-	>
+	<a href="/clusters" class="row inline">
 		<span>←</span>
 		<span>Clusters</span>
 	</a>
 </nav>
 
 <slot />
-
 
 <style>
 	nav {

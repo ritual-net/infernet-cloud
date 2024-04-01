@@ -1,38 +1,32 @@
 <script lang="ts">
 	// Constants
-	import { ProviderTypeEnum, providers } from '$/types/provider'
+	import { ProviderTypeEnum, providers } from '$/types/provider';
 
 	enum Fieldset {
 		ChooseCloudProvider,
 		CloudProviderConfig,
 	}
 
-
 	// Data
-	import { FormData, AwsCredentials, GcpCredentials } from './schema'
-
+	import { FormData, AwsCredentials, GcpCredentials } from './schema';
 
 	// Context
-	import type { PageData } from './$types'
-	import { page } from '$app/stores'
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
-	const {
-		formData,
-	} = $page.data as PageData
-
+	const { formData } = $page.data as PageData;
 
 	// Actions
-	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
-
+	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte';
 
 	// Internal state
-	import { superForm } from 'sveltekit-superforms/client'
-	import { yupClient } from 'sveltekit-superforms/adapters'
+	import { superForm } from 'sveltekit-superforms/client';
+	import { yupClient } from 'sveltekit-superforms/adapters';
 
 	const {
 		form,
 		enhance,
-		errors,	
+		errors,
 		allErrors,
 		constraints,
 
@@ -45,41 +39,33 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-	})
+	});
 
-	export const snapshot = { capture, restore }
+	export const snapshot = { capture, restore };
 
-	let delayedToast: Toast
-	$: if($delayed){
+	let delayedToast: Toast;
+	$: if ($delayed) {
 		delayedToast = addToast({
 			data: {
 				type: 'default',
 				title: `Connecting service account...`,
 			},
-		})
-	}else{
-		if(delayedToast)
-			removeToast(delayedToast.id)
+		});
+	} else {
+		if (delayedToast) removeToast(delayedToast.id);
 	}
 
-	let currentFieldset = Fieldset.ChooseCloudProvider
-
+	let currentFieldset = Fieldset.ChooseCloudProvider;
 
 	// Components
-	import Select from '$/components/Select.svelte'
-	import Tabs from '$/components/Tabs.svelte'
-
+	import Select from '$/components/Select.svelte';
+	import Tabs from '$/components/Tabs.svelte';
 
 	// Transitions/animations
-	import { fly } from 'svelte/transition'
+	import { fly } from 'svelte/transition';
 </script>
 
-
-<form
-	method="POST"
-	use:enhance
-	class="column"
->
+<form method="POST" use:enhance class="column">
 	<Tabs
 		bind:value={currentFieldset}
 		items={[
@@ -94,9 +80,7 @@
 		]}
 		layout="tooltip-dots"
 	>
-		<svelte:fragment slot="content"
-			let:item
-		>
+		<svelte:fragment slot="content" let:item>
 			<fieldset
 				class="column"
 				in:fly={{ x: 40, duration: 200 }}
@@ -113,9 +97,7 @@
 						<section class="row wrap">
 							<div class="column inline">
 								<h3>
-									<label for="provider">
-										Provider
-									</label>
+									<label for="provider"> Provider </label>
 								</h3>
 
 								<p></p>
@@ -127,7 +109,7 @@
 								name="provider"
 								bind:value={$form.provider}
 								placeholder="Select provider..."
-								items={Object.values(ProviderTypeEnum).map(provider => ({
+								items={Object.values(ProviderTypeEnum).map((provider) => ({
 									icon: providers[provider].icon,
 									value: provider,
 									label: providers[provider].name,
@@ -138,9 +120,7 @@
 						<section class="row wrap">
 							<div class="column inline">
 								<h3>
-									<label for="name">
-										Name
-									</label>
+									<label for="name"> Name </label>
 								</h3>
 
 								<p></p>
@@ -158,44 +138,30 @@
 					</div>
 
 					<footer class="row">
-						<a
-							class="button"
-							href="."
-						>
-							Cancel
-						</a>
-				
+						<a class="button" href="."> Cancel </a>
+
 						<div class="row">
-							<button
-								type="button"
-								class="primary"
-								on:click={() => currentFieldset++}
-							>
+							<button type="button" class="primary" on:click={() => currentFieldset++}>
 								Continue
 							</button>
 						</div>
 					</footer>
-
 				{:else if item.id === Fieldset.CloudProviderConfig}
 					<div class="card column">
 						<section class="column">
-							<h3>
-								Instructions
-							</h3>
+							<h3>Instructions</h3>
 
 							{#if $form.provider === 'AWS'}
 								<ol class="column">
 									<li>
 										<p class="row wrap">
 											<span>
-												Install the <a href="https://aws.amazon.com/cli" target="_blank"><code>aws</code> CLI</a>.
+												Install the <a href="https://aws.amazon.com/cli" target="_blank"
+													><code>aws</code> CLI</a
+												>.
 											</span>
 
-											<a
-												class="button small"
-												href="https://aws.amazon.com/cli"
-												target="_blank"
-											>
+											<a class="button small" href="https://aws.amazon.com/cli" target="_blank">
 												Install CLI
 											</a>
 										</p>
@@ -204,7 +170,14 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Sign into <a href="https://console.aws.amazon.com" target="_blank">Amazon Web Services Console</a> and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey" target="_blank">create an Access Key</a>.
+												Sign into <a href="https://console.aws.amazon.com" target="_blank"
+													>Amazon Web Services Console</a
+												>
+												and
+												<a
+													href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey"
+													target="_blank">create an Access Key</a
+												>.
 											</span>
 
 											<a
@@ -235,16 +208,24 @@
 									</li>
 
 									<li>
-										<p>Paste the JSON output below (everything after "Service account details:").</p>
+										<p>
+											Paste the JSON output below (everything after "Service account details:").
+										</p>
 									</li>
 								</ol>
-
 							{:else if $form.provider === 'GCP'}
 								<ol class="column">
 									<li>
 										<p class="row wrap">
 											<span>
-												Sign into <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a> and <a href="https://support.google.com/googleapi/answer/6251787?ref_topic=7014522&sjid=9306585338551455963-NC#zippy=%2Ccreate-a-project" target="_blank">create a new Project</a>.
+												Sign into <a href="https://console.cloud.google.com" target="_blank"
+													>Google Cloud Console</a
+												>
+												and
+												<a
+													href="https://support.google.com/googleapi/answer/6251787?ref_topic=7014522&sjid=9306585338551455963-NC#zippy=%2Ccreate-a-project"
+													target="_blank">create a new Project</a
+												>.
 											</span>
 
 											<a
@@ -260,7 +241,10 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Enable the <a href="https://console.cloud.google.com/apis/library/compute.googleapis.com" target="_blank">Compute Engine API</a> for your Project.
+												Enable the <a
+													href="https://console.cloud.google.com/apis/library/compute.googleapis.com"
+													target="_blank">Compute Engine API</a
+												> for your Project.
 											</span>
 
 											<a
@@ -276,7 +260,10 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Install the <a href="https://cloud.google.com/sdk/docs/install" target="_blank"><code>gcloud</code> CLI</a> on your local machine.
+												Install the <a
+													href="https://cloud.google.com/sdk/docs/install"
+													target="_blank"><code>gcloud</code> CLI</a
+												> on your local machine.
 											</span>
 
 											<a
@@ -292,7 +279,10 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Locate your Project's <a href="https://support.google.com/googleapi/answer/7014113" target="_blank">Project ID</a> for the next step.
+												Locate your Project's <a
+													href="https://support.google.com/googleapi/answer/7014113"
+													target="_blank">Project ID</a
+												> for the next step.
 											</span>
 
 											<a
@@ -309,7 +299,8 @@
 									<li>
 										<p class="row wrap">
 											<span>
-												Download and run the following script in a terminal to create a Service Account User:
+												Download and run the following script in a terminal to create a Service
+												Account User:
 											</span>
 
 											<a
@@ -324,7 +315,10 @@
 									</li>
 
 									<li>
-										<p>A key file will be generated for the Service Account User. Paste its contents below (JSON object under "Service account details")</p>
+										<p>
+											A key file will be generated for the Service Account User. Paste its contents
+											below (JSON object under "Service account details")
+										</p>
 									</li>
 								</ol>
 							{/if}
@@ -362,7 +356,7 @@
 									let:item
 								>
 									{#if item.id === 0} -->
-										<!-- {#if 'project_id' in $form.credentials}
+							<!-- {#if 'project_id' in $form.credentials}
 											<fieldset>
 												<section class="row wrap">
 													<div class="column inline">
@@ -387,59 +381,51 @@
 
 										{/if} -->
 
-									<!-- {:else} -->
-										<div class="stack">
-											<textarea
-												name="credentials"
-												rows="13"
-												placeholder={
-													JSON.stringify(
-														{
-															['GCP']: GcpCredentials.getDefault(),
-															['AWS']: AwsCredentials.getDefault(),
-														}[$form.provider],
-														null,
-														'\t'
-													)
-												}
-												value={
-													$form.credentials && Object.entries($form.credentials).length
-														? JSON.stringify(
-															$form.credentials,
-															null,
-															'\t'
-														)
-														: ''
-												}
-												on:input={(e) => {
-													try {
-														$form.credentials = JSON.parse(e.target.value)
-													}catch(e){}
-												}}
-												{...$constraints.credentials}
-												aria-invalid={$errors.credentials ? 'true' : undefined}
-											/>
+							<!-- {:else} -->
+							<div class="stack">
+								<textarea
+									name="credentials"
+									rows="13"
+									placeholder={JSON.stringify(
+										{
+											['GCP']: GcpCredentials.getDefault(),
+											['AWS']: AwsCredentials.getDefault(),
+										}[$form.provider],
+										null,
+										'\t'
+									)}
+									value={$form.credentials && Object.entries($form.credentials).length
+										? JSON.stringify($form.credentials, null, '\t')
+										: ''}
+									on:input={(e) => {
+										try {
+											$form.credentials = JSON.parse(e.target.value);
+										} catch (e) {}
+									}}
+									{...$constraints.credentials}
+									aria-invalid={$errors.credentials ? 'true' : undefined}
+								/>
 
-											<button
-												type="button"
-												class="small"
-												style="
+								<button
+									type="button"
+									class="small"
+									style="
 													margin: 1em;
 													place-self: end end
 												"
-												on:click={async e => {
-													// $form.credentials = JSON.parse(await navigator.clipboard.readText())
+									on:click={async (e) => {
+										// $form.credentials = JSON.parse(await navigator.clipboard.readText())
 
-													// @ts-ignore
-													e.target.previousElementSibling.value = await navigator.clipboard.readText()
-												}}
-											>Paste from clipboard</button>
-										</div>
+										// @ts-ignore
+										e.target.previousElementSibling.value = await navigator.clipboard.readText();
+									}}>Paste from clipboard</button
+								>
+							</div>
 
-										{#each Object.values($errors.credentials ?? []).filter(Boolean) as error}
-											<p>{error}</p>
-										{/each}
-									<!-- {/if}
+							{#each Object.values($errors.credentials ?? []).filter(Boolean) as error}
+								<p>{error}</p>
+							{/each}
+							<!-- {/if}
 								</svelte:fragment>
 							</Tabs> -->
 						</section>
@@ -447,20 +433,11 @@
 
 					<footer class="row">
 						<div class="row">
-							<button
-								type="button"
-								on:click={() => currentFieldset--}
-							>
-								Back
-							</button>
+							<button type="button" on:click={() => currentFieldset--}> Back </button>
 						</div>
-				
+
 						<div class="row">
-							<button
-								type="submit"
-								class="primary"
-								disabled={$submitting || $allErrors.length > 0}
-							>
+							<button type="submit" class="primary" disabled={$submitting || $allErrors.length > 0}>
 								Connect
 							</button>
 						</div>

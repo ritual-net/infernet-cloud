@@ -1,31 +1,28 @@
 <script lang="ts">
 	// Types
-	import type { MenuItems } from '$lib/menus'
-	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
+	import type { MenuItems } from '$lib/menus';
+	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions';
 
-	type Value = $$Generic<any>
-
+	type Value = $$Generic<any>;
 
 	// Inputs
-	export let value: Value | undefined
-	export let items: MenuItems<Value>
+	export let value: Value | undefined;
+	export let items: MenuItems<Value>;
 
-	export let labelText: string | undefined
-	export let placeholder: string = 'Select...'
+	export let labelText: string | undefined;
+	export let placeholder: string = 'Select...';
 
-	export let id: string | undefined
-	export let name: string | undefined
-	export let required: boolean = false
-	export let disabled: boolean = false
-	export let multiple: boolean = false
+	export let id: string | undefined;
+	export let name: string | undefined;
+	export let required: boolean = false;
+	export let disabled: boolean = false;
+	export let multiple: boolean = false;
 
 	// (View options)
-	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
-
-
+	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end';
 
 	// Internal state
-	import { melt, createSelect, createSync } from '@melt-ui/svelte'
+	import { melt, createSelect, createSync } from '@melt-ui/svelte';
 
 	const {
 		elements: { trigger, menu, option, group, groupLabel, label, hiddenInput },
@@ -42,30 +39,24 @@
 			placement,
 			fitViewport: true,
 		},
-	})
+	});
 
-	const {
-		open,
-		selectedLabel,
-		selected,
-	} = states
+	const { open, selectedLabel, selected } = states;
 
 	$: createSync(states).selected(
-		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
-		selected => { value = selected?.value as Value },
-	)
+		items
+			.flatMap((itemOrGroup) => ('items' in itemOrGroup ? itemOrGroup.items : itemOrGroup))
+			.find((item) => 'value' in item && item.value === value),
+		(selected) => {
+			value = selected?.value as Value;
+		}
+	);
 
-	let triggerElement: Element
+	let triggerElement: Element;
 </script>
 
-
 <div class="stack">
-	<input
-		type="text"
-		{id}
-		use:melt={$hiddenInput}
-		on:focus={() => triggerElement.click()}
-	/>
+	<input type="text" {id} use:melt={$hiddenInput} on:focus={() => triggerElement.click()} />
 
 	{#if labelText}
 		<!-- svelte-ignore a11y-label-has-associated-control -->
@@ -91,16 +82,11 @@
 	</button>
 
 	{#if $open}
-		<div
-			use:melt={$menu}
-		>
+		<div use:melt={$menu}>
 			{#each items as item (item.value)}
 				{#if 'items' in item}
 					<div use:melt={$group(String(item.value))}>
-						<div
-							class="row"
-							use:melt={$groupLabel(item.label)}
-						>
+						<div class="row" use:melt={$groupLabel(item.label)}>
 							<div class="row">
 								{#if item.icon}
 									<img src={item.icon} />
@@ -156,7 +142,6 @@
 	{/if}
 </div>
 
-
 <style>
 	:root {
 		--select-paddingX: 1em;
@@ -170,7 +155,7 @@
 		--select-cornerRadius: 0.33em;
 
 		--select-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
-		
+
 		--select-textColor: var(--textColor);
 	}
 
@@ -196,7 +181,10 @@
 
 		display: grid;
 
-		clip-path: inset(calc(-1 * var(--select-borderWidth)) round calc(var(--select-cornerRadius) + var(--select-borderWidth)));
+		clip-path: inset(
+			calc(-1 * var(--select-borderWidth)) round
+				calc(var(--select-cornerRadius) + var(--select-borderWidth))
+		);
 		background-color: var(--select-backgroundColor);
 		backdrop-filter: var(--select-backdropFilter);
 		box-shadow: 0 0 0 var(--select-borderWidth) var(--select-borderColor);
@@ -268,7 +256,7 @@
 		}
 	}
 
-	[data-melt-select-hidden-input]	{
+	[data-melt-select-hidden-input] {
 		display: block;
 		position: static !important;
 		transform: none !important;

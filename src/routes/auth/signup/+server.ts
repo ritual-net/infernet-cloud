@@ -42,22 +42,19 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	});
 
 	if (!registerResponse.ok) {
-		const result = await registerResponse
-			.text()
-			.then((text): string => {
-				try {
-					const json = JSON.parse(text)
-					console.error(json)
-					return JSON.parse(text).error.message as string
-				}catch(e){
-					console.error(text)
-					return text
-				}
-			})
+		const result = await registerResponse.text().then((text): string => {
+			try {
+				const json = JSON.parse(text);
+				console.error(json);
+				return JSON.parse(text).error.message as string;
+			} catch (e) {
+				console.error(text);
+				return text;
+			}
+		});
 
 		return error(400, result);
 	}
-
 
 	// Get the identity from the auth server
 	const client = createClient();
@@ -90,6 +87,6 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	});
 
 	return json({
-		user
-	})
+		user,
+	});
 };

@@ -97,7 +97,7 @@ export abstract class BaseTerraform {
 			SystemUtils.removeDir(tempDir);
 
 			return { success: error ? false : true, error, state };
-		}catch(error){
+		} catch (error) {
 			return { success: false, error: JSON.stringify(error) };
 		}
 	}

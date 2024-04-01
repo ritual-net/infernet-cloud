@@ -1,6 +1,6 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { EDGEDB_AUTH_BASE_URL } from '$lib/auth';
-import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 
 /**
  * Handles the link in the email verification flow.
@@ -29,8 +29,8 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 					description: `Verify request is missing 'verification_token' search param. The verification email is malformed.`,
 				},
 			},
-			cookies,
-		)
+			cookies
+		);
 	}
 
 	const verifier = cookies.get('edgedb-pkce-verifier');
@@ -50,8 +50,8 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 					description: `Make sure you're opening the link in the same browser you used to sign up.`,
 				},
 			},
-			cookies,
-		)
+			cookies
+		);
 	}
 
 	const verifyUrl = new URL('verify', EDGEDB_AUTH_BASE_URL);
@@ -82,8 +82,8 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 					description: `Error from the auth server: ${result}`,
 				},
 			},
-			cookies,
-		)
+			cookies
+		);
 	}
 
 	const { code } = (await verifyResponse.json()) as { code: string };
@@ -110,8 +110,8 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 					description: `Error from the auth server: ${result}`,
 				},
 			},
-			cookies,
-		)
+			cookies
+		);
 	}
 
 	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
@@ -135,6 +135,6 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 				title: `Email address verified!`,
 			},
 		},
-		cookies,
-	)
+		cookies
+	);
 };

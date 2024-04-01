@@ -36,24 +36,19 @@ export const POST: RequestHandler = async ({ locals: { client }, params }) => {
 		return error(400, 'Cluster id is required');
 	}
 
-	let result: Awaited<ReturnType<typeof clusterAction>>
+	let result: Awaited<ReturnType<typeof clusterAction>>;
 
 	try {
-		result = await clusterAction(
-			client,
-			clusterId,
-			TFAction.Apply
-		);
+		result = await clusterAction(client, clusterId, TFAction.Apply);
 	} catch (e) {
-		console.error(e)
+		console.error(e);
 
-		return error(500, JSON.stringify(e))
+		return error(500, JSON.stringify(e));
 	}
 
-	const { success, error: errorMessage } = result
+	const { success, error: errorMessage } = result;
 
-	if(!success)
-		return error(500, errorMessage)
+	if (!success) return error(500, errorMessage);
 
 	return json(await getClusterById(client, clusterId, false));
 };
@@ -95,22 +90,17 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 		}))
 		.run(client);
 
-	if (!updatedCluster)
-		return error(500, 'Failed to update cluster');
+	if (!updatedCluster) return error(500, 'Failed to update cluster');
 
 	// Apply Terraform changes to updated cluster
 	// (Run in background - don't block API response)
 	(async () => {
-		let result: Awaited<ReturnType<typeof clusterAction>>
+		let result: Awaited<ReturnType<typeof clusterAction>>;
 
 		try {
-			result = await clusterAction(
-				client,
-				updatedCluster.id,
-				TFAction.Apply
-			);
+			result = await clusterAction(client, updatedCluster.id, TFAction.Apply);
 		} catch (e) {
-			console.error(e)
+			console.error(e);
 
 			// return error(500, JSON.stringify(e))
 		}
@@ -123,7 +113,7 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 
 	return json({
 		cluster: updatedCluster,
-	})
+	});
 };
 
 /**
@@ -140,25 +130,20 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		return error(400, 'Cluster id is required');
 	}
 
-	let result: Awaited<ReturnType<typeof clusterAction>>
-	
+	let result: Awaited<ReturnType<typeof clusterAction>>;
+
 	try {
 		// Apply Terraform changes to cluster
-		result = await clusterAction(
-			client,
-			id,
-			TFAction.Destroy
-		);
+		result = await clusterAction(client, id, TFAction.Destroy);
 	} catch (e) {
-		console.error(e)
+		console.error(e);
 
-		return error(500, JSON.stringify(e))
+		return error(500, JSON.stringify(e));
 	}
 
-	const { success, error: errorMessage } = result
+	const { success, error: errorMessage } = result;
 
-	if(!success)
-		return error(500, errorMessage)
+	if (!success) return error(500, errorMessage);
 
 	// Delete cluster, nodes and containers deleted through cascade
 	const deletedCluster = await e
@@ -167,10 +152,9 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		}))
 		.run(client);
 
-	if(!deletedCluster)
-		return error(500, 'No cluster to delete.')
+	if (!deletedCluster) return error(500, 'No cluster to delete.');
 
 	return json({
-		cluster: deletedCluster
-	})
+		cluster: deletedCluster,
+	});
 };

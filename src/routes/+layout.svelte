@@ -1,19 +1,17 @@
 <script lang="ts">
 	// Global Styles
-	import '../fonts.css'
-	import '../global.css'
-
+	import '../fonts.css';
+	import '../global.css';
 
 	// Context
-	import { page } from '$app/stores'
-	import { browser } from '$app/environment'
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 
-	import { getFlash } from 'sveltekit-flash-message'
- 	const flash = getFlash(page)
-
+	import { getFlash } from 'sveltekit-flash-message';
+	const flash = getFlash(page);
 
 	// Global state
-	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -21,20 +19,16 @@
 				enabled: browser,
 			},
 		},
-	})
-
+	});
 
 	// Actions
-	import { addToast } from '$/components/Toaster.svelte'
+	import { addToast } from '$/components/Toaster.svelte';
 
-	$: if($page.form?.form?.message){
-		const {
-			title,
-			description,
-		} = $page.form.form.message as {
-			title?: string,
-			description?: string,
-		}
+	$: if ($page.form?.form?.message) {
+		const { title, description } = $page.form.form.message as {
+			title?: string;
+			description?: string;
+		};
 
 		addToast({
 			data: {
@@ -42,25 +36,23 @@
 				title: title ?? ($page.status < 400 ? 'Success' : 'Error'),
 				description,
 			},
-		})
+		});
 	}
 
-	$: if(browser && $flash){
+	$: if (browser && $flash) {
 		addToast({
 			data: {
 				type: $flash.type,
 				title: $flash.message.title ?? ($flash.type === 'success' ? 'Success' : 'Error'),
 				description: $flash.message.description,
 			},
-		})
+		});
 	}
 
-
 	// Components
-	import Nav from './Nav.svelte'
-	import Toaster from '$/components/Toaster.svelte'
+	import Nav from './Nav.svelte';
+	import Toaster from '$/components/Toaster.svelte';
 </script>
-
 
 <QueryClientProvider client={queryClient}>
 	<header>
@@ -78,14 +70,13 @@
 	<Toaster />
 </QueryClientProvider>
 
-
 <style>
 	:global(body) {
 		min-height: 100vh;
 		min-height: 100dvh;
-	/* } */
+		/* } */
 
-	/* :global(body > div) { */
+		/* :global(body > div) { */
 		min-height: 100vh;
 		min-height: 100dvh;
 
@@ -95,14 +86,14 @@
 			'main' 1fr
 			'footer' auto
 			/ minmax(0, 1fr);
-		;
-
 		/* & > div { */
-			/* isolation: isolate; */
+		/* isolation: isolate; */
 		/* } */
 	}
 
-	header, main, footer {
+	header,
+	main,
+	footer {
 		display: grid;
 		grid-template-columns: minmax(0, 50rem);
 		justify-content: center;

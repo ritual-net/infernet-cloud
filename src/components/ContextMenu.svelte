@@ -1,21 +1,19 @@
 <script lang="ts">
 	// Types
-	import type { MenuItems } from '$lib/menus'
-	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
+	import type { MenuItems } from '$lib/menus';
+	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions';
 
-	type Value = $$Generic<any>
-
+	type Value = $$Generic<any>;
 
 	// Inputs
-	export let items: MenuItems<Value> | undefined
-	export let labelText: string | undefined
+	export let items: MenuItems<Value> | undefined;
+	export let labelText: string | undefined;
 
 	// (View options)
-	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-start'
-
+	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-start';
 
 	// Internal state
-	import { melt, createContextMenu } from '@melt-ui/svelte'
+	import { melt, createContextMenu } from '@melt-ui/svelte';
 
 	const {
 		elements: { trigger, menu, item, separator },
@@ -25,22 +23,17 @@
 			placement,
 			fitViewport: true,
 		},
-	})
-
+	});
 
 	// Actions
-	import { enhance } from '$app/forms'
+	import { enhance } from '$app/forms';
 </script>
-
 
 <!-- <div
 	use:melt={$trigger}
 	aria-label={labelText}
 > -->
-	<slot
-		trigger={$trigger}
-		aria-label={labelText}
-	/>
+<slot trigger={$trigger} aria-label={labelText} />
 <!-- </div> -->
 
 <div use:melt={$menu}>
@@ -53,64 +46,39 @@
 
 				{#if 'items' in _subitem}
 					<!-- TODO: make recursive with Svelte 5 snippets -->
-				{:else}
-					{#if _subitem.formAction}
-						<form
-							method="POST"
-							action={_subitem.formAction}
-							use:enhance={_subitem?.formSubmit}
-						>
-							<button
-								type="submit"
-								use:melt={$item}
-							>
-								<div class="row">
-									{_subitem.label}
-								</div>
-							</button>
-						</form>
-					{:else}
-						<div
-							use:melt={$item}
-							on:m-click={e => _subitem.onClick?.(_subitem)}
-						>
+				{:else if _subitem.formAction}
+					<form method="POST" action={_subitem.formAction} use:enhance={_subitem?.formSubmit}>
+						<button type="submit" use:melt={$item}>
 							<div class="row">
 								{_subitem.label}
 							</div>
+						</button>
+					</form>
+				{:else}
+					<div use:melt={$item} on:m-click={(e) => _subitem.onClick?.(_subitem)}>
+						<div class="row">
+							{_subitem.label}
 						</div>
-					{/if}
+					</div>
 				{/if}
 			{/each}
-		{:else}
-			{#if subitem.formAction}
-				<form
-					method="POST"
-					action={subitem.formAction}
-					use:enhance={subitem?.formSubmit}
-				>
-					<button
-						type="submit"
-						use:melt={$item}
-					>
-						<div class="row">
-							{subitem.label}
-						</div>
-					</button>
-				</form>
-			{:else}
-				<div
-					use:melt={$item}
-					on:m-click={e => subitem.onClick?.(subitem)}
-				>
+		{:else if subitem.formAction}
+			<form method="POST" action={subitem.formAction} use:enhance={subitem?.formSubmit}>
+				<button type="submit" use:melt={$item}>
 					<div class="row">
 						{subitem.label}
 					</div>
+				</button>
+			</form>
+		{:else}
+			<div use:melt={$item} on:m-click={(e) => subitem.onClick?.(subitem)}>
+				<div class="row">
+					{subitem.label}
 				</div>
-			{/if}
+			</div>
 		{/if}
 	{/each}
 </div>
-
 
 <style>
 	:root {
@@ -124,7 +92,7 @@
 		--contextMenu-cornerRadius: 0.33em;
 
 		--contextMenu-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
-		
+
 		--contextMenu-textColor: var(--textColor);
 	}
 
@@ -138,7 +106,10 @@
 	[data-melt-context-menu] {
 		display: grid;
 
-		clip-path: inset(calc(-1 * var(--contextMenu-borderWidth)) round calc(var(--contextMenu-cornerRadius) + var(--contextMenu-borderWidth)));
+		clip-path: inset(
+			calc(-1 * var(--contextMenu-borderWidth)) round
+				calc(var(--contextMenu-cornerRadius) + var(--contextMenu-borderWidth))
+		);
 		background-color: var(--contextMenu-backgroundColor);
 		backdrop-filter: var(--contextMenu-backdropFilter);
 		box-shadow: 0 0 0 var(--contextMenu-borderWidth) var(--contextMenu-borderColor);

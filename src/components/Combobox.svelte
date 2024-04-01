@@ -1,30 +1,28 @@
 <script lang="ts">
 	// Types
-	import type { MenuItem, MenuItems } from '$lib/menus'
-	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions'
+	import type { MenuItem, MenuItems } from '$lib/menus';
+	import type { FloatingConfig } from '@melt-ui/svelte/internal/actions';
 
-	type Value = $$Generic<any>
-
+	type Value = $$Generic<any>;
 
 	// Inputs
-	export let value: Value | undefined
-	export let items: MenuItems<Value>
+	export let value: Value | undefined;
+	export let items: MenuItems<Value>;
 
-	export let labelText: string | undefined
-	export let placeholder: string = 'Select...'
+	export let labelText: string | undefined;
+	export let placeholder: string = 'Select...';
 
-	export let id: string | undefined
-	export let name: string | undefined
-	export let required: boolean = false
-	export let disabled: boolean = false
-	export let multiple: boolean = false
+	export let id: string | undefined;
+	export let name: string | undefined;
+	export let required: boolean = false;
+	export let disabled: boolean = false;
+	export let multiple: boolean = false;
 
 	// (View options)
-	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
-
+	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end';
 
 	// Internal state
-	import { melt, createCombobox, createSync } from '@melt-ui/svelte'
+	import { melt, createCombobox, createSync } from '@melt-ui/svelte';
 
 	const {
 		elements: { input, menu, option, group, groupLabel, label, hiddenInput },
@@ -43,73 +41,55 @@
 			fitViewport: true,
 			boundary: document.getElementsByTagName('main')[0],
 		},
-	})
+	});
 
-	const {
-		open,
-		inputValue,
-		touchedInput,
-		selected,
-	} = states
+	const { open, inputValue, touchedInput, selected } = states;
 
 	$: createSync(states).selected(
-		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
-		selected => { value = selected?.value as Value },
-	)
+		items
+			.flatMap((itemOrGroup) => ('items' in itemOrGroup ? itemOrGroup.items : itemOrGroup))
+			.find((item) => 'value' in item && item.value === value),
+		(selected) => {
+			value = selected?.value as Value;
+		}
+	);
 
-	$: createSync(options).disabled(
-		disabled,
-		_ => { disabled = _ },
-	)
+	$: createSync(options).disabled(disabled, (_) => {
+		disabled = _;
+	});
 
 	$: if (!$open) {
-		$inputValue = (Array.isArray($selected) ? $selected[0] : $selected)?.label ?? ''
+		$inputValue = (Array.isArray($selected) ? $selected[0] : $selected)?.label ?? '';
 	}
 
 	// (Computed)
-	const itemMatchesInput = (
-		item: MenuItem<Value>,
-		input: string,
-	) => {
-		const normalizedInput = input.toLowerCase()
+	const itemMatchesInput = (item: MenuItem<Value>, input: string) => {
+		const normalizedInput = input.toLowerCase();
 
 		return (
-			String(item.value).toLowerCase().includes(normalizedInput)
-			|| item.label.toLowerCase().includes(normalizedInput)
-		)
-	}
+			String(item.value).toLowerCase().includes(normalizedInput) ||
+			item.label.toLowerCase().includes(normalizedInput)
+		);
+	};
 
-	const filterItems = (
-		items: MenuItems<Value>,
-		input: string,
-	): MenuItems<Value> => (
+	const filterItems = (items: MenuItems<Value>, input: string): MenuItems<Value> =>
 		items
-			.map(item => (
-				'items' in item ?
-					{
-						...item,
-						items: filterItems(item.items, input),
-					}
-				: itemMatchesInput(item, input) ?
-					item
-				:
-					undefined
-			))
-			.filter(item => (
-				!item ?
-					false
-				: 'items' in item ?
-					item.items.length > 0
-				:
-					true
-			))
-	) as MenuItems<Value>
+			.map((item) =>
+				'items' in item
+					? {
+							...item,
+							items: filterItems(item.items, input),
+						}
+					: itemMatchesInput(item, input)
+						? item
+						: undefined
+			)
+			.filter((item) =>
+				!item ? false : 'items' in item ? item.items.length > 0 : true
+			) as MenuItems<Value>;
 
-	$: filteredItems = $touchedInput
-		? filterItems(items, $inputValue)
-		: items
+	$: filteredItems = $touchedInput ? filterItems(items, $inputValue) : items;
 </script>
-
 
 <div>
 	<!-- svelte-ignore a11y-label-has-associated-control -->
@@ -118,10 +98,7 @@
 	</label> -->
 
 	<div class="stack">
-		<input
-			use:melt={$input}
-			{placeholder}
-		/>
+		<input use:melt={$input} {placeholder} />
 	</div>
 </div>
 
@@ -132,10 +109,7 @@
 			{#each filteredItems as item (item.value)}
 				{#if 'items' in item}
 					<li use:melt={$group(String(item.value))}>
-						<div
-							class="row"
-							use:melt={$groupLabel(item.label)}
-						>
+						<div class="row" use:melt={$groupLabel(item.label)}>
 							<div class="row">
 								{#if item.icon}
 									<img src={item.icon} />
@@ -193,9 +167,7 @@
 	</ul>
 {/if}
 
-
 <style>
-	
 	:root {
 		--combobox-paddingX: 1em;
 		--combobox-paddingY: 0.5em;
@@ -246,7 +218,10 @@
 		display: grid;
 		padding-inline-start: 0;
 
-		clip-path: inset(calc(-1 * var(--combobox-borderWidth)) round calc(var(--combobox-cornerRadius) + var(--combobox-borderWidth)));
+		clip-path: inset(
+			calc(-1 * var(--combobox-borderWidth)) round
+				calc(var(--combobox-cornerRadius) + var(--combobox-borderWidth))
+		);
 		background-color: var(--combobox-backgroundColor);
 		backdrop-filter: var(--combobox-backdropFilter);
 		box-shadow: 0 0 0 var(--combobox-borderWidth) var(--combobox-borderColor);
@@ -318,7 +293,7 @@
 		}
 	}
 
-	[data-melt-combobox-hidden-input]	{
+	[data-melt-combobox-hidden-input] {
 		display: block;
 		position: static !important;
 		transform: none !important;

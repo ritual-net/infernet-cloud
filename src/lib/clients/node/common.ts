@@ -20,18 +20,16 @@ import type {
  * @throws Error if nodes, cluster could not be retrieved, or action is not supported
  * @remarks nodes have to belong to same cluster
  */
-export const nodeAction = async <
-	_NodeAction extends NodeAction
->(
+export const nodeAction = async <_NodeAction extends NodeAction>(
 	client: Client,
 	nodeIds: string[],
-	action: _NodeAction,
+	action: _NodeAction
 ): Promise<
 	_NodeAction extends NodeAction.info
 		? {
-			nodes: InfernetNodeWithInfo[],
-			infoError?: Error,
-		}
+				nodes: InfernetNodeWithInfo[];
+				infoError?: Error;
+			}
 		: undefined
 > => {
 	const nodes = await getNodesByIds(client, nodeIds);
@@ -67,22 +65,22 @@ export const nodeAction = async <
 		case NodeAction.info:
 			let infoError: Error | undefined;
 
-			const nodesInfo = await nodeClient
-				.getNodesInfo(providerIds, functionArgs)
-				.catch(error => {
-					console.error(error);
-					infoError = error;
-					return [];
-				});
+			const nodesInfo = await nodeClient.getNodesInfo(providerIds, functionArgs).catch((error) => {
+				console.error(error);
+				infoError = error;
+				return [];
+			});
 
-			const nodeInfoByProviderId = new Map(nodesInfo.map(node => [node.id, node]));
+			const nodeInfoByProviderId = new Map(nodesInfo.map((node) => [node.id, node]));
 
 			return {
-				nodes: nodes
-					.map(node => ({
-						node,
-						info: node.provider_id ? nodeInfoByProviderId.get(node.provider_id) : undefined,
-					} as InfernetNodeWithInfo)),
+				nodes: nodes.map(
+					(node) =>
+						({
+							node,
+							info: node.provider_id ? nodeInfoByProviderId.get(node.provider_id) : undefined,
+						}) as InfernetNodeWithInfo
+				),
 				infoError,
 			};
 

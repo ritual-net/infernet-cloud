@@ -49,22 +49,22 @@ export abstract class BaseResourceClient {
 
 		return await Promise.all(
 			regionIds.map(async (regionId) => {
-				const [
-					machines,
-					zones,
-				] = await Promise.all([
+				const [machines, zones] = await Promise.all([
 					this.getMachines(regionId),
 					this.getZones(regionId),
-				])
+				]);
 
 				return {
 					region: {
 						id: regionId,
 					},
-					zones: zones.map((zone) => ({
-						name: zone,
-						machines,
-					} as ZoneInfo)),
+					zones: zones.map(
+						(zone) =>
+							({
+								name: zone,
+								machines,
+							}) as ZoneInfo
+					),
 				} as ProviderInfo;
 			})
 		);

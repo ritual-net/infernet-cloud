@@ -1,44 +1,34 @@
 <script lang="ts">
 	// Types/constants
-	import { providers } from '$/types/provider'
-
+	import { providers } from '$/types/provider';
 
 	// Context
-	import type { PageData } from './$types'
-	import { page } from '$app/stores'
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
-	$: ({
-		cluster
-	} = $page.data as PageData)
-
+	$: ({ cluster } = $page.data as PageData);
 
 	// Internal state
-	$: clusterStatus = cluster.locked ? 'updating' : cluster.healthy ? 'healthy' : 'unhealthy'
-
+	$: clusterStatus = cluster.locked ? 'updating' : cluster.healthy ? 'healthy' : 'unhealthy';
 
 	// Functions
-	import { resolveRoute } from '$app/paths'
-
+	import { resolveRoute } from '$app/paths';
 
 	// Actions
-	import { addToast, removeToast } from '$/components/Toaster.svelte'
-	import { applyAction } from '$app/forms'
-	import { invalidate } from '$app/navigation'
-
+	import { addToast, removeToast } from '$/components/Toaster.svelte';
+	import { applyAction } from '$app/forms';
+	import { invalidate } from '$app/navigation';
 
 	// Components
-	import DropdownMenu from '$/components/DropdownMenu.svelte'
-	import NodesTable from './NodesTable.svelte'
-	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import DropdownMenu from '$/components/DropdownMenu.svelte';
+	import NodesTable from './NodesTable.svelte';
+	import RitualLogo from '$/icons/RitualLogo.svelte';
 </script>
-
 
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">
-			<div
-				class="icon"
-			>
+			<div class="icon">
 				<RitualLogo />
 			</div>
 
@@ -57,14 +47,11 @@
 				<div class="row">
 					<dt>Status</dt>
 					<dd>
-						<div
-							class="status"
-							data-status={clusterStatus}
-						>
+						<div class="status" data-status={clusterStatus}>
 							{{
-								'healthy': 'Healthy',
-								'updating': 'Updating',
-								'unhealthy': 'Unhealthy',
+								healthy: 'Healthy',
+								updating: 'Updating',
+								unhealthy: 'Unhealthy',
 							}[clusterStatus]}
 						</div>
 					</dd>
@@ -75,8 +62,8 @@
 				href={resolveRoute(`/clusters/[clusterId]/edit`, {
 					clusterId: $page.params.clusterId,
 				})}
-				class="button primary"
-			>Edit Cluster</a>
+				class="button primary">Edit Cluster</a
+			>
 
 			<DropdownMenu
 				labelText="Cluster Actions"
@@ -91,16 +78,15 @@
 									type: 'default',
 									title: 'Applying changes to cluster...',
 								},
-							})
+							});
 
 							return async ({ result }) => {
-								await applyAction(result)
+								await applyAction(result);
 
-								if(result.type === 'success')
-									await invalidate('.')
+								if (result.type === 'success') await invalidate('.');
 
-								removeToast(toast.id)
-							}
+								removeToast(toast.id);
+							};
 						},
 					},
 					{
@@ -113,16 +99,15 @@
 									type: 'default',
 									title: 'Deleting cluster...',
 								},
-							})
+							});
 
 							return async ({ result }) => {
-								await applyAction(result)
+								await applyAction(result);
 
-								if(result.type === 'success')
-									await invalidate('.')
+								if (result.type === 'success') await invalidate('.');
 
-								removeToast(toast.id)
-							}
+								removeToast(toast.id);
+							};
 						},
 					},
 				]}
@@ -144,10 +129,7 @@
 						})}
 						class="row"
 					>
-						<img
-							class="icon"
-							src={providers[cluster.service_account.provider].icon}
-						/>
+						<img class="icon" src={providers[cluster.service_account.provider].icon} />
 						{cluster.service_account.name}
 					</a>
 				</dd>
@@ -228,7 +210,7 @@
 			{#if cluster.tfstate}
 				<section class="column">
 					<dt>Terraform State</dt>
-	
+
 					<dd>
 						<output>
 							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
@@ -240,7 +222,7 @@
 			{#if cluster.error}
 				<section class="column">
 					<dt>Error</dt>
-	
+
 					<dd>
 						<output>
 							<pre><code>{cluster.error}</code></pre>
@@ -254,12 +236,9 @@
 	<section>
 		<h3>Nodes</h3>
 
-		<NodesTable
-			nodes={cluster.nodes}
-		/>
+		<NodesTable nodes={cluster.nodes} />
 	</section>
 </div>
-
 
 <style>
 	.container {
@@ -303,22 +282,22 @@
 	}
 
 	.status {
-		&[data-status="healthy"] {
-			--status-color: #16B371;
+		&[data-status='healthy'] {
+			--status-color: #16b371;
 		}
 
-		&[data-status="updating"] {
+		&[data-status='updating'] {
 			--status-color: #b3a316;
 		}
 
-		&[data-status="unhealthy"] {
+		&[data-status='unhealthy'] {
 			--status-color: #b33d16;
 		}
 
 		&:before {
 			content: '⏺';
 			margin-right: 0.33em;
-			color: var(--status-color)
+			color: var(--status-color);
 		}
 	}
 </style>

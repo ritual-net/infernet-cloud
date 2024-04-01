@@ -68,31 +68,25 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		}))
 		.run(client);
 
-	if(!deletedNode)
-		return error(500, 'No node to delete.')
+	if (!deletedNode) return error(500, 'No node to delete.');
 
 	// Apply Terraform changes to cluster
-	let result: Awaited<ReturnType<typeof clusterAction>>
+	let result: Awaited<ReturnType<typeof clusterAction>>;
 
 	try {
 		// Apply Terraform changes to cluster
-		result = await clusterAction(
-			client,
-			cluster.id,
-			TFAction.Apply
-		);
+		result = await clusterAction(client, cluster.id, TFAction.Apply);
 	} catch (e) {
-		console.error(e)
+		console.error(e);
 
-		return error(500, JSON.stringify(e))
+		return error(500, JSON.stringify(e));
 	}
 
-	const { success, error: errorMessage } = result
+	const { success, error: errorMessage } = result;
 
-	if(!success)
-		return error(500, errorMessage)
+	if (!success) return error(500, errorMessage);
 
 	return json({
 		node: deletedNode,
-	})
+	});
 };

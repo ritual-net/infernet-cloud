@@ -38,18 +38,16 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	});
 
 	if (!authenticateResponse.ok) {
-		const result = await authenticateResponse
-			.text()
-			.then((text): string => {
-				try {
-					const json = JSON.parse(text)
-					console.error(json)
-					return JSON.parse(text).error.message as string
-				}catch(e){
-					console.error(text)
-					return text
-				}
-			});
+		const result = await authenticateResponse.text().then((text): string => {
+			try {
+				const json = JSON.parse(text);
+				console.error(json);
+				return JSON.parse(text).error.message as string;
+			} catch (e) {
+				console.error(text);
+				return text;
+			}
+		});
 
 		return error(500, result);
 	}
@@ -64,18 +62,16 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	});
 
 	if (!tokenResponse.ok) {
-		const result = await tokenResponse
-			.text()
-			.then((text): string => {
-				try {
-					const json = JSON.parse(text)
-					console.error(json)
-					return JSON.parse(text).error.message as string
-				}catch(e){
-					console.error(text)
-					return text
-				}
-			});
+		const result = await tokenResponse.text().then((text): string => {
+			try {
+				const json = JSON.parse(text);
+				console.error(json);
+				return JSON.parse(text).error.message as string;
+			} catch (e) {
+				console.error(text);
+				return text;
+			}
+		});
 
 		return error(500, result);
 	}

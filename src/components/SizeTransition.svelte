@@ -1,8 +1,7 @@
 <script lang="ts">
 	// Internal state
-	let borderBoxSize: ResizeObserverSize[]
+	let borderBoxSize: ResizeObserverSize[];
 </script>
-
 
 <div
 	class="size-transition"
@@ -14,7 +13,6 @@
 		<slot />
 	</div>
 </div>
-
 
 <style>
 	.size-transition {

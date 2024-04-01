@@ -1,12 +1,10 @@
 <script lang="ts">
 	// Context
-	import { page } from '$app/stores'
-
+	import { page } from '$app/stores';
 
 	// Actions
-	$: console.error($page.error)
+	$: console.error($page.error);
 </script>
-
 
 <h3>There was a problem loading the page.</h3>
 

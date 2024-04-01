@@ -1,42 +1,33 @@
 <script lang="ts">
 	// Types/constants
-	import { providers, type ProviderInfo, ProviderTypeEnum } from '$/types/provider'
-	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
+	import { providers, type ProviderInfo, ProviderTypeEnum } from '$/types/provider';
+	import { providerRegionsAndZones } from '$/lib/utils/providers/common';
 
 	enum Fieldset {
 		CreateCluster,
 		AddNodes,
 	}
 
-
 	// Schema
-	import { Node, FormData } from './schema'
-
+	import { Node, FormData } from './schema';
 
 	// Context
-	import type { PageData } from './$types'
-	import { page } from '$app/stores'
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
-	const {
-		formData,
-		serviceAccounts,
-		imagesPromise,
-	} = $page.data as PageData
-
+	const { formData, serviceAccounts, imagesPromise } = $page.data as PageData;
 
 	// Functions
-	import { resolveRoute } from '$app/paths'
-
+	import { resolveRoute } from '$app/paths';
 
 	// Actions
-	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
-	import { createQuery } from '@tanstack/svelte-query'
-
+	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte';
+	import { createQuery } from '@tanstack/svelte-query';
 
 	// Internal state
 	// (Form)
-	import { superForm } from 'sveltekit-superforms/client'
-	import { yupClient } from 'sveltekit-superforms/adapters'
+	import { superForm } from 'sveltekit-superforms/client';
+	import { yupClient } from 'sveltekit-superforms/adapters';
 
 	const {
 		form,
@@ -53,108 +44,85 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-	})
+	});
 
-	export const snapshot = { capture, restore }
+	export const snapshot = { capture, restore };
 
-	let delayedToast: Toast
-	$: if($delayed){
+	let delayedToast: Toast;
+	$: if ($delayed) {
 		delayedToast = addToast({
 			data: {
 				type: 'default',
 				title: `Creating cluster...`,
 				description: `This may take a few minutes.`,
 			},
-		})
-	}else{
-		if(delayedToast)
-			removeToast(delayedToast.id)
+		});
+	} else {
+		if (delayedToast) removeToast(delayedToast.id);
 	}
 
 	// (UI state)
-	let currentFieldset = Fieldset.CreateCluster
+	let currentFieldset = Fieldset.CreateCluster;
 
-	let allowIps: 'all' | 'restricted' = 'all'
+	let allowIps: 'all' | 'restricted' = 'all';
 
 	// (Computed)
-	$: serviceAccount = serviceAccounts.find(serviceAccount => serviceAccount.id === $form.serviceAccountId)
+	$: serviceAccount = serviceAccounts.find(
+		(serviceAccount) => serviceAccount.id === $form.serviceAccountId
+	);
 
 	$: providerConfigsQuery = createQuery({
-		queryKey: ['providerConfig', {
-			serviceAccountId: $form.serviceAccountId as string,
-		}] as const,
+		queryKey: [
+			'providerConfig',
+			{
+				serviceAccountId: $form.serviceAccountId as string,
+			},
+		] as const,
 
-		queryFn: async ({
-			queryKey: [_, {
-				serviceAccountId,
-			}],
-		}) => (
-			await fetch(
+		queryFn: async ({ queryKey: [_, { serviceAccountId }] }) =>
+			(await fetch(
 				resolveRoute('/api/providers/[serviceAccountId]', {
 					serviceAccountId,
 				})
-			)
-				.then(response => response.json()) as ProviderInfo[]
-		),
-	})
+			).then((response) => response.json())) as ProviderInfo[],
+	});
 
-	$: providerConfigs = $providerConfigsQuery.data
+	$: providerConfigs = $providerConfigsQuery.data;
 
-	$: regionConfig = (
+	$: regionConfig =
 		providerConfigs && $form.config.region
-			? providerConfigs
-				.find(regionConfig => (
-					regionConfig.region.id === $form.config.region
-				))
-			: undefined
-	)
+			? providerConfigs.find((regionConfig) => regionConfig.region.id === $form.config.region)
+			: undefined;
 
-	$: zoneConfig = (
+	$: zoneConfig =
 		regionConfig && $form.config.zone
-			? regionConfig
-				?.zones
-				.find(zoneConfig => (
-					zoneConfig.name === $form.config.zone
-				))
-			: undefined
-	)
+			? regionConfig?.zones.find((zoneConfig) => zoneConfig.name === $form.config.zone)
+			: undefined;
 
-	$: machineConfig = (
+	$: machineConfig =
 		zoneConfig && $form.config.machine_type
-			? zoneConfig
-				.machines
-				.find(machineConfig => (
-					machineConfig.id === $form.config.machine_type
-				))
-			: undefined
-	)
-
+			? zoneConfig.machines.find((machineConfig) => machineConfig.id === $form.config.machine_type)
+			: undefined;
 
 	// Components
-	import Collapsible from '$/components/Collapsible.svelte'
-	import Combobox from '$/components/Combobox.svelte'
-	import Dialog from '$/components/Dialog.svelte'
-	import Switch from '$/components/Switch.svelte'
-	import Select from '$/components/Select.svelte'
-	import Tabs from '$/components/Tabs.svelte'
-	import NodeContainersTable from './NodeContainersTable.svelte'
-	import ContainerForm from './container/+page.svelte'
-
+	import Collapsible from '$/components/Collapsible.svelte';
+	import Combobox from '$/components/Combobox.svelte';
+	import Dialog from '$/components/Dialog.svelte';
+	import Switch from '$/components/Switch.svelte';
+	import Select from '$/components/Select.svelte';
+	import Tabs from '$/components/Tabs.svelte';
+	import NodeContainersTable from './NodeContainersTable.svelte';
+	import ContainerForm from './container/+page.svelte';
 
 	// Shallow Routes
-	import { preloadData, goto, pushState } from '$app/navigation'
-
+	import { preloadData, goto, pushState } from '$app/navigation';
 
 	// Transitions/animations
-	import { fly, scale } from 'svelte/transition'
-	import { flip } from 'svelte/animate'
+	import { fly, scale } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
 </script>
 
-
-<form
-	method="POST"
-	use:enhance
->
+<form method="POST" use:enhance>
 	<Tabs
 		bind:value={currentFieldset}
 		items={[
@@ -169,9 +137,7 @@
 		]}
 		layout="tooltip-dots"
 	>
-		<svelte:fragment slot="content"
-			let:item
-		>
+		<svelte:fragment slot="content" let:item>
 			<fieldset
 				class="column"
 				in:fly={{ x: 40, duration: 200 }}
@@ -188,9 +154,7 @@
 						<section class="row wrap">
 							<div class="column inline">
 								<h3>
-									<label for="serviceAccountId">
-										Service Account
-									</label>
+									<label for="serviceAccountId"> Service Account </label>
 								</h3>
 
 								<p></p>
@@ -202,7 +166,7 @@
 								name="serviceAccountId"
 								labelText="Service Account"
 								bind:value={$form.serviceAccountId}
-								items={serviceAccounts.map(serviceAccount => ({
+								items={serviceAccounts.map((serviceAccount) => ({
 									icon: providers[serviceAccount.provider].icon,
 									value: serviceAccount.id,
 									label: serviceAccount.name,
@@ -213,9 +177,7 @@
 						<section class="row wrap">
 							<div class="column inline">
 								<h3 class="row inline">
-									<label for="config.name">
-										Cluster name
-									</label>
+									<label for="config.name"> Cluster name </label>
 								</h3>
 
 								<p>Give your cluster a human-readable name.</p>
@@ -232,17 +194,12 @@
 						</section>
 
 						<Collapsible open={serviceAccount?.provider}>
-							<fieldset
-								class="column"
-								disabled={!(serviceAccount?.provider)}
-							>
+							<fieldset class="column" disabled={!serviceAccount?.provider}>
 								<section class="column wrap">
 									<div class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="allowIps">
-													Firewall
-												</label>
+												<label for="allowIps"> Firewall </label>
 											</h3>
 
 											<p>Determine which IP addresses will have permissions to this cluster.</p>
@@ -262,7 +219,7 @@
 												{
 													value: 'restricted',
 													label: 'Only allowed IPs',
-												}
+												},
 											]}
 										/>
 									</div>
@@ -281,9 +238,7 @@
 												},
 											]}
 										>
-											<svelte:fragment slot="content"
-												let:item
-											>
+											<svelte:fragment slot="content" let:item>
 												{#if item.id === 0}
 													<textarea
 														id="config.ip_allow_http"
@@ -291,13 +246,14 @@
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 														value={$form.config.ip_allow_http.join(', ')}
-														on:input={e => {
-															$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
+														on:input={(e) => {
+															$form.config.ip_allow_http = e.target.value
+																.split(',')
+																.map((ip) => ip.trim());
 														}}
 														{...$constraints.config?.ip_allow_http}
 														disabled={allowIps === 'all'}
 													/>
-
 												{:else}
 													<textarea
 														id="config.ip_allow_ssh"
@@ -305,8 +261,10 @@
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 														value={$form.config.ip_allow_ssh.join(', ')}
-														on:input={e => {
-															$form.config.ip_allow_ssh = e.target.value.split(',').map(ip => ip.trim())
+														on:input={(e) => {
+															$form.config.ip_allow_ssh = e.target.value
+																.split(',')
+																.map((ip) => ip.trim());
 														}}
 														{...$constraints.config?.ip_allow_ssh}
 														disabled={allowIps === 'all'}
@@ -318,19 +276,19 @@
 								</section>
 
 								<div class="stack">
-									<fieldset
-										class="column"
-										disabled={!$providerConfigsQuery.isSuccess}
-									>
+									<fieldset class="column" disabled={!$providerConfigsQuery.isSuccess}>
 										<section class="row wrap">
 											<div class="column inline">
 												<h3>
-													<label for="config.region">
-														Region
-													</label>
+													<label for="config.region"> Region </label>
 												</h3>
 
-												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">region</a> where your cluster should be deployed.</p>
+												<p>
+													Select the <a
+														href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink}
+														target="_blank">region</a
+													> where your cluster should be deployed.
+												</p>
 											</div>
 
 											<Combobox
@@ -341,51 +299,50 @@
 												bind:value={$form.config.region}
 												{...!providerConfigs
 													? {
-														placeholder: 'Loading...',
-														items: [
-															$form.config.region && {
-																value: $form.config.region,
-																label: $form.config.region,
-															}
-														].filter(Boolean),
-														disabled: true,
-													}
+															placeholder: 'Loading...',
+															items: [
+																$form.config.region && {
+																	value: $form.config.region,
+																	label: $form.config.region,
+																},
+															].filter(Boolean),
+															disabled: true,
+														}
 													: {
-														placeholder: 'Choose region...',
-														items: (
-															// Group by continents
-															Object.entries(
-																Object.groupBy(
-																	providerConfigs,
-																	providerConfig => (
-																		providerConfig.region.name.match(/^(.+) \(.+\)/)?.[1]
-																		|| providerConfig.region.name.match(/, (.+?)$/)?.[1]
+															placeholder: 'Choose region...',
+															items:
+																// Group by continents
+																Object.entries(
+																	Object.groupBy(
+																		providerConfigs,
+																		(providerConfig) =>
+																			providerConfig.region.name.match(/^(.+) \(.+\)/)?.[1] ||
+																			providerConfig.region.name.match(/, (.+?)$/)?.[1]
 																	)
-																)
-															)
-																.map(([continent, configs]) => ({
+																).map(([continent, configs]) => ({
 																	value: continent,
 																	label: continent,
-																	items: configs.map(config => ({
+																	items: configs.map((config) => ({
 																		value: config.region.id,
 																		label: `${config.region.id} – ${config.region.name}`,
-																	}))
-																}))
-														),
-													}
-												}
+																	})),
+																})),
+														}}
 											/>
 										</section>
 
 										<section class="row wrap">
 											<div class="column inline">
 												<h3>
-													<label for="config.zone">
-														Zone
-													</label>
+													<label for="config.zone"> Zone </label>
 												</h3>
 
-												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">zone</a> where your cluster should be deployed.</p>
+												<p>
+													Select the <a
+														href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink}
+														target="_blank">zone</a
+													> where your cluster should be deployed.
+												</p>
 											</div>
 
 											<Combobox
@@ -396,36 +353,29 @@
 												bind:value={$form.config.zone}
 												{...!regionConfig
 													? {
-														placeholder: 'Choose a region first.',
-														items: [
-															$form.config.zone && {
-																value: $form.config.zone,
-																label: $form.config.zone,
-															}
-														].filter(Boolean),
-														disabled: true,
-													}
+															placeholder: 'Choose a region first.',
+															items: [
+																$form.config.zone && {
+																	value: $form.config.zone,
+																	label: $form.config.zone,
+																},
+															].filter(Boolean),
+															disabled: true,
+														}
 													: {
-														placeholder: 'Choose zone...',
-														items: (
-															regionConfig
-																.zones
-																.map(zone => ({
-																	value: zone.name,
-																	label: zone.name,
-																}))
-														),
-													}
-												}
+															placeholder: 'Choose zone...',
+															items: regionConfig.zones.map((zone) => ({
+																value: zone.name,
+																label: zone.name,
+															})),
+														}}
 											/>
 										</section>
 
 										<section class="row wrap">
 											<div class="column inline">
 												<h3>
-													<label for="config.machine_type">
-														Machine Type
-													</label>
+													<label for="config.machine_type"> Machine Type </label>
 												</h3>
 
 												<p>Select the type of machine you would like to deploy.</p>
@@ -439,44 +389,33 @@
 												bind:value={$form.config.machine_type}
 												{...!zoneConfig
 													? {
-														placeholder: 'Choose a zone first.',
-														items: [
-															$form.config.machine_type && {
-																value: $form.config.machine_type,
-																label: $form.config.machine_type,
-															}
-														].filter(Boolean),
-														disabled: true,
-													}
+															placeholder: 'Choose a zone first.',
+															items: [
+																$form.config.machine_type && {
+																	value: $form.config.machine_type,
+																	label: $form.config.machine_type,
+																},
+															].filter(Boolean),
+															disabled: true,
+														}
 													: {
-														placeholder: 'Choose machine type...',
-														items: (
-															zoneConfig
-																.machines
-																.map(machineConfig => ({
-																	value: machineConfig.name,
-																	label: `${machineConfig.name} (${machineConfig.description})`,
-																}))
-														),
-													}
-												}
+															placeholder: 'Choose machine type...',
+															items: zoneConfig.machines.map((machineConfig) => ({
+																value: machineConfig.name,
+																label: `${machineConfig.name} (${machineConfig.description})`,
+															})),
+														}}
 											/>
 										</section>
 									</fieldset>
 
 									{#if $providerConfigsQuery.isPending}
-										<div
-											class="loading-status card row"
-											transition:scale|global
-										>
+										<div class="loading-status card row" transition:scale|global>
 											<img class="icon" src={providers[serviceAccount.provider].icon} />
 											<p>Loading available cloud configurations...</p>
 										</div>
 									{:else if $providerConfigsQuery.isError}
-										<div
-											class="loading-status card row"
-											transition:scale|global
-										>
+										<div class="loading-status card row" transition:scale|global>
 											<img class="icon" src={providers[serviceAccount.provider].icon} />
 											<p>Couldn't load available cloud configurations. Please try again.</p>
 										</div>
@@ -539,9 +478,7 @@
 							<section class="row wrap">
 								<div class="column inline">
 									<h3>
-										<label for="config.deploy_router">
-											Deploy Router?
-										</label>
+										<label for="config.deploy_router"> Deploy Router? </label>
 									</h3>
 
 									<p>Determine whether your cluster will be deployed with a router.</p>
@@ -558,22 +495,12 @@
 					</div>
 
 					<footer class="row">
-						<a
-							class="button"
-							href="/clusters"
-						>
-							Cancel
-						</a>
+						<a class="button" href="/clusters"> Cancel </a>
 
-						<button
-							type="button"
-							class="primary"
-							on:click={() => currentFieldset++}
-						>
+						<button type="button" class="primary" on:click={() => currentFieldset++}>
 							Continue
 						</button>
 					</footer>
-
 				{:else if item.id === Fieldset.AddNodes}
 					{#each $form.nodes as node, i (node.id)}
 						<article
@@ -589,7 +516,7 @@
 										type="button"
 										class="small"
 										on:click={() => {
-											$form.nodes = $form.nodes.toSpliced(i, 1)
+											$form.nodes = $form.nodes.toSpliced(i, 1);
 										}}
 										transition:scale
 									>
@@ -601,12 +528,13 @@
 							<section class="row wrap">
 								<div class="column inline">
 									<h3>
-										<label for="nodes.{i}.config.chain_enabled">
-											Onchain?
-										</label>
+										<label for="nodes.{i}.config.chain_enabled"> Onchain? </label>
 									</h3>
 
-									<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
+									<p>
+										Determines if the node is listening to Ritual chain for events, or whether it is
+										latent.
+									</p>
 								</div>
 
 								<Switch
@@ -618,16 +546,11 @@
 							</section>
 
 							<Collapsible open={node.config.chain_enabled}>
-								<fieldset
-									class="column"
-									disabled={!node.config.chain_enabled}
-								>
+								<fieldset class="column" disabled={!node.config.chain_enabled}>
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
-												<label for="nodes.{i}.config.trail_head_blocks">
-													Trail Head Blocks
-												</label>
+												<label for="nodes.{i}.config.trail_head_blocks"> Trail Head Blocks </label>
 											</h3>
 
 											<p>The number of blocks.</p>
@@ -645,9 +568,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="nodes.{i}.config.rpc_url">
-													RPC URL
-												</label>
+												<label for="nodes.{i}.config.rpc_url"> RPC URL </label>
 											</h3>
 
 											<p>The Ethereum node RPC URL.</p>
@@ -685,9 +606,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3>
-												<label for="nodes.{i}.config.max_gas_limit">
-													Max Gas Limit
-												</label>
+												<label for="nodes.{i}.config.max_gas_limit"> Max Gas Limit </label>
 											</h3>
 
 											<p>The threshold to trigger an Ethereum transaction in gwei.</p>
@@ -705,9 +624,7 @@
 									<section class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="nodes.{i}.config.private_key">
-													Private Key
-												</label>
+												<label for="nodes.{i}.config.private_key"> Private Key </label>
 											</h3>
 
 											<p>The private key of the node.</p>
@@ -728,12 +645,12 @@
 							<section class="row wrap">
 								<div class="column inline">
 									<h3 class="row inline">
-										<label for="nodes.{i}.config.forward_stats">
-											Forward Stats?
-										</label>
+										<label for="nodes.{i}.config.forward_stats"> Forward Stats? </label>
 									</h3>
 
-									<p>If checked, register this node to be shown publicly on the Infernet explorer.</p>
+									<p>
+										If checked, register this node to be shown publicly on the Infernet explorer.
+									</p>
 								</div>
 
 								<Switch
@@ -747,9 +664,7 @@
 							<section class="column">
 								<div class="row">
 									<div class="column inline">
-										<h3>
-											Containers
-										</h3>
+										<h3>Containers</h3>
 
 										<p>Assign new or existing container configurations to this node.</p>
 									</div>
@@ -757,11 +672,11 @@
 									<a
 										href="/clusters/create/container"
 										on:click={async (e) => {
-											e.preventDefault()
+											e.preventDefault();
 
-											const { href } = e.currentTarget
+											const { href } = e.currentTarget;
 
-											const result = await preloadData(href)
+											const result = await preloadData(href);
 
 											if (result.type === 'loaded' && result.status === 200) {
 												pushState(href, {
@@ -770,25 +685,22 @@
 													containerFormData: {
 														...result.data,
 														imagesPromise: await result.data.imagesPromise,
-													}
-												})
+													},
+												});
 											} else {
-												console.error(`Failed to preload shallow route: ${href}`)
-												goto(href)
+												console.error(`Failed to preload shallow route: ${href}`);
+												goto(href);
 											}
 										}}
 									>
-										<button
-											type="button"
-											class="primary"
-										>Add Container</button>
+										<button type="button" class="primary">Add Container</button>
 									</a>
 								</div>
 
 								<NodeContainersTable
 									bind:containers={node.containers}
-									onEdit={async container => {
-										const href = `/clusters/create/container`
+									onEdit={async (container) => {
+										const href = `/clusters/create/container`;
 
 										const result = {
 											type: 'loaded',
@@ -799,7 +711,7 @@
 												},
 												imagesPromise: await imagesPromise,
 											},
-										}
+										};
 
 										if (result.type === 'loaded' && result.status === 200) {
 											pushState(href, {
@@ -807,10 +719,10 @@
 												nodeId: node.id,
 												containerId: container.container_id,
 												containerFormData: result.data,
-											})
+											});
 										} else {
-											console.error(`Failed to preload shallow route: ${href}`)
-											goto(href)
+											console.error(`Failed to preload shallow route: ${href}`);
+											goto(href);
 										}
 									}}
 								/>
@@ -819,42 +731,41 @@
 									title={`Customize container`}
 									open={Boolean($page.state.showContainerForm) && $page.state.nodeId === node.id}
 									onClose={() => {
-										history.back()
+										history.back();
 									}}
 								>
 									<ContainerForm
 										data={$page.state.containerFormData}
 										mode={$page.state.showContainerForm}
-										{...(
-											$page.state.showContainerForm === 'create' ?
-												{
+										{...$page.state.showContainerForm === 'create'
+											? {
 													submitLabel: 'Add Container',
 
 													onSubmit: ({ container }) => {
-														node.containers.push(container)
-														node.containers = node.containers
+														node.containers.push(container);
+														node.containers = node.containers;
 
-														history.back()
+														history.back();
 													},
 												}
-											: $page.state.showContainerForm === 'edit' ?
-												{
-													submitLabel: 'Save Changes',
+											: $page.state.showContainerForm === 'edit'
+												? {
+														submitLabel: 'Save Changes',
 
-													onSubmit: ({ container }) => {
-														node.containers[
-															node.containers.findIndex(container => container.container_id === $page.state.containerId)
-														] = container
-														node.containers = node.containers
+														onSubmit: ({ container }) => {
+															node.containers[
+																node.containers.findIndex(
+																	(container) => container.container_id === $page.state.containerId
+																)
+															] = container;
+															node.containers = node.containers;
 
-														history.back()
-													},
-												}
-											:
-												{}
-										)}
+															history.back();
+														},
+													}
+												: {}}
 										onCancel={() => {
-											history.back()
+											history.back();
 										}}
 										placement={'in-modal'}
 									/>
@@ -864,27 +775,17 @@
 					{/each}
 
 					<footer class="row">
-						<button type="button"
-							on:click={() => currentFieldset--}
-						>
-							Back
-						</button>
-				
+						<button type="button" on:click={() => currentFieldset--}> Back </button>
+
 						<div class="row">
 							<button
 								type="button"
-								on:click={() => $form.nodes = [...$form.nodes, Node.getDefault()]}
+								on:click={() => ($form.nodes = [...$form.nodes, Node.getDefault()])}
 							>
 								Add Node
 							</button>
 
-							<button
-								type="submit"
-								class="primary"
-								disabled={$submitting}
-							>
-								Submit
-							</button>
+							<button type="submit" class="primary" disabled={$submitting}> Submit </button>
 						</div>
 					</footer>
 				{/if}
@@ -892,7 +793,6 @@
 		</svelte:fragment>
 	</Tabs>
 </form>
-
 
 <style>
 	.loading-status {

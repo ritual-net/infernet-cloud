@@ -31,18 +31,16 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	});
 
 	if (!sendResetResponse.ok) {
-		const result = await sendResetResponse
-			.text()
-			.then((text): string => {
-				try {
-					const json = JSON.parse(text)
-					console.error(json)
-					return JSON.parse(text).error.message as string
-				}catch(e){
-					console.error(text)
-					return text
-				}
-			});
+		const result = await sendResetResponse.text().then((text): string => {
+			try {
+				const json = JSON.parse(text);
+				console.error(json);
+				return JSON.parse(text).error.message as string;
+			} catch (e) {
+				console.error(text);
+				return text;
+			}
+		});
 
 		return error(500, result);
 	}

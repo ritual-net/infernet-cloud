@@ -76,18 +76,14 @@ export class AWSNodeClient implements BaseNodeClient {
 		const result = await this.client.send(command);
 
 		return (
-			result.Reservations
-				?.flatMap(reservation => (
-					reservation
-						.Instances
-						?.map(instance => ({
-							id: instance.InstanceId!,
-							status: instance.State?.Name,
-							ip: instance.PublicIpAddress,
-						}))
-					?? []
-				))
-			?? []
+			result.Reservations?.flatMap(
+				(reservation) =>
+					reservation.Instances?.map((instance) => ({
+						id: instance.InstanceId!,
+						status: instance.State?.Name,
+						ip: instance.PublicIpAddress,
+					})) ?? []
+			) ?? []
 		);
 	}
 }

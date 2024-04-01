@@ -75,8 +75,7 @@ export class GCPNodeClient implements BaseNodeClient {
 	 */
 	async getNodesInfo(ids: string[], args: object): Promise<NodeInfo[]> {
 		return Promise.all(
-			ids
-			.map((id) => (
+			ids.map((id) =>
 				this.client
 					.get({
 						...args,
@@ -87,7 +86,7 @@ export class GCPNodeClient implements BaseNodeClient {
 						status: result[0]?.status ?? undefined,
 						ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
 					}))
-			))
+			)
 		);
 	}
 }

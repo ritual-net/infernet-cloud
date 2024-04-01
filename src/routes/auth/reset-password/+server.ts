@@ -9,11 +9,7 @@ import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
  * @param request - The request object containing 'reset_token' and 'password'.
  * @returns The response object.
  */
-export const POST: RequestHandler = async ({
-	cookies,
-	fetch,
-	request,
-}) => {
+export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	const { reset_token, password } = (await request.json()) as {
 		reset_token: string;
 		password: string;
@@ -49,18 +45,16 @@ export const POST: RequestHandler = async ({
 	});
 
 	if (!resetResponse.ok) {
-		const result = await resetResponse
-			.text()
-			.then((text): string => {
-				try {
-					const json = JSON.parse(text)
-					console.error(json)
-					return JSON.parse(text).error.message as string
-				}catch(e){
-					console.error(text)
-					return text
-				}
-			});
+		const result = await resetResponse.text().then((text): string => {
+			try {
+				const json = JSON.parse(text);
+				console.error(json);
+				return JSON.parse(text).error.message as string;
+			} catch (e) {
+				console.error(text);
+				return text;
+			}
+		});
 
 		return error(500, result);
 	}
@@ -74,18 +68,16 @@ export const POST: RequestHandler = async ({
 	});
 
 	if (!tokenResponse.ok) {
-		const result = await tokenResponse
-			.text()
-			.then((text): string => {
-				try {
-					const json = JSON.parse(text)
-					console.error(json)
-					return JSON.parse(text).error.message as string
-				}catch(e){
-					console.error(text)
-					return text
-				}
-			});
+		const result = await tokenResponse.text().then((text): string => {
+			try {
+				const json = JSON.parse(text);
+				console.error(json);
+				return JSON.parse(text).error.message as string;
+			} catch (e) {
+				console.error(text);
+				return text;
+			}
+		});
 
 		return error(500, result);
 	}

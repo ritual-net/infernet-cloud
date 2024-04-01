@@ -5,18 +5,15 @@
 	}
 </script>
 
-
 <script lang="ts">
 	// Types/constants
-	import { providers } from '$/types/provider'
-	import type { getClustersForUser } from '$/lib/db/queries'
-
+	import { providers } from '$/types/provider';
+	import type { getClustersForUser } from '$/lib/db/queries';
 
 	// Inputs
-	export let cluster: Awaited<ReturnType<typeof getClustersForUser>>[number]
-	export let cellType: CellType
+	export let cluster: Awaited<ReturnType<typeof getClustersForUser>>[number];
+	export let cellType: CellType;
 </script>
-
 
 {#if cellType === CellType.ServiceAccount}
 	<div class="row">
@@ -26,18 +23,14 @@
 {:else if cellType === CellType.Status}
 	{@const clusterStatus = cluster.locked ? 'updating' : cluster.healthy ? 'healthy' : 'unhealthy'}
 
-	<div
-		class="status"
-		data-status={clusterStatus}
-	>
+	<div class="status" data-status={clusterStatus}>
 		{{
-			'healthy': 'Healthy',
-			'updating': 'Updating',
-			'unhealthy': 'Unhealthy',
+			healthy: 'Healthy',
+			updating: 'Updating',
+			unhealthy: 'Unhealthy',
 		}[clusterStatus]}
 	</div>
 {/if}
-
 
 <style>
 	.row {
@@ -50,22 +43,22 @@
 	}
 
 	.status {
-		&[data-status="healthy"] {
-			--status-color: #16B371;
+		&[data-status='healthy'] {
+			--status-color: #16b371;
 		}
 
-		&[data-status="updating"] {
+		&[data-status='updating'] {
 			--status-color: #b3a316;
 		}
 
-		&[data-status="unhealthy"] {
+		&[data-status='unhealthy'] {
 			--status-color: #b33d16;
 		}
 
 		&:before {
 			content: '⏺';
 			margin-right: 0.33em;
-			color: var(--status-color)
+			color: var(--status-color);
 		}
 	}
 </style>

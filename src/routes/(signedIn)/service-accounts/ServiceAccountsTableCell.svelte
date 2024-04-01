@@ -4,28 +4,22 @@
 	}
 </script>
 
-
 <script lang="ts">
 	// Types/constants
-	import { providers } from '$/types/provider'
-	import type { QueriedServiceAccount } from '../api/service_account/+server'
-
+	import { providers } from '$/types/provider';
+	import type { QueriedServiceAccount } from '../api/service_account/+server';
 
 	// Inputs
-	export let serviceAccount: QueriedServiceAccount
-	export let cellType: CellType
+	export let serviceAccount: QueriedServiceAccount;
+	export let cellType: CellType;
 </script>
-
 
 {#if cellType === CellType.CloudProvider}
 	<div class="row">
 		<img src={providers[serviceAccount.provider].icon} />
 		{providers[serviceAccount.provider].name}
 	</div>
-{:else}
-
-{/if}
-
+{:else}{/if}
 
 <style>
 	.row {

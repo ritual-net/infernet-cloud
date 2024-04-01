@@ -1,25 +1,21 @@
 <script lang="ts">
 	// Types/constants
-	import type { InferType } from 'yup'
-	import type { Container } from './schema'
-
+	import type { InferType } from 'yup';
+	import type { Container } from './schema';
 
 	// Inputs
-	export let containers: InferType<typeof Container>[]
-
+	export let containers: InferType<typeof Container>[];
 
 	// Events
-	export let onEdit: (_: InferType<typeof Container>) => void
-
+	export let onEdit: (_: InferType<typeof Container>) => void;
 
 	// Components
-	import Table from '$/components/Table.svelte'
+	import Table from '$/components/Table.svelte';
 </script>
-
 
 <Table
 	data={containers}
-	getId={container => container.container_id}
+	getId={(container) => container.container_id}
 	columns={[
 		// {
 		// 	header: 'Name',
@@ -27,15 +23,15 @@
 		// },
 		{
 			header: 'Image',
-			accessor: container => container.image,
+			accessor: (container) => container.image,
 		},
 		{
 			header: 'Description',
-			accessor: container => container.description,
+			accessor: (container) => container.description,
 		},
 		{
 			header: 'Visibility',
-			accessor: container => container.external ? 'External' : 'Internal',
+			accessor: (container) => (container.external ? 'External' : 'Internal'),
 		},
 		// {
 		// 	header: 'Allowed Addresses',
@@ -51,7 +47,7 @@
 		// },
 		{
 			header: 'Command',
-			accessor: container => container.command,
+			accessor: (container) => container.command,
 		},
 		// {
 		// 	header: 'Env',
@@ -59,18 +55,18 @@
 		// },
 		{
 			header: 'GPU?',
-			accessor: container => container.gpu,
+			accessor: (container) => container.gpu,
 		},
 	]}
-	onRowClick={container => {
-		onEdit?.(container)
+	onRowClick={(container) => {
+		onEdit?.(container);
 	}}
-	contextMenu={container => [
+	contextMenu={(container) => [
 		{
 			value: 'edit',
 			label: 'Edit Container',
 			onClick: () => {
-				onEdit?.(container)
+				onEdit?.(container);
 			},
 		},
 		{
@@ -80,15 +76,15 @@
 				containers = containers.toSpliced(
 					containers.indexOf(container) + 1,
 					0,
-					Object.assign({}, container, { container_id: crypto.randomUUID() }),
-				)
+					Object.assign({}, container, { container_id: crypto.randomUUID() })
+				);
 			},
 		},
 		{
 			value: 'delete',
 			label: 'Delete Container',
 			onClick: () => {
-				containers = containers.filter(_container => _container !== container)
+				containers = containers.filter((_container) => _container !== container);
 			},
 		},
 	]}

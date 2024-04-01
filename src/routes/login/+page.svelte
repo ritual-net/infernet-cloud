@@ -6,26 +6,19 @@
 		ResetPassword = '?/resetPassword',
 	}
 
-
 	// Context
-	import { page } from '$app/stores'
+	import { page } from '$app/stores';
 
-	import type { PageData } from './$types'
+	import type { PageData } from './$types';
 
-	const {
-		signUpFormData,
-		signInFormData,
-		resetPasswordFormData,
-	} = $page.data as PageData
-
+	const { signUpFormData, signInFormData, resetPasswordFormData } = $page.data as PageData;
 
 	// Schema
-	import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema'
-
+	import { SignUpFormData, SignInFormData, ResetPasswordFormData } from './schema';
 
 	// Internal state
-	import { superForm } from 'sveltekit-superforms/client'
-	import { yupClient } from 'sveltekit-superforms/adapters'
+	import { superForm } from 'sveltekit-superforms/client';
+	import { yupClient } from 'sveltekit-superforms/adapters';
 
 	const {
 		formId: signUpFormId,
@@ -42,10 +35,9 @@
 		invalidateAll: false,
 
 		onResult: ({ result }) => {
-			if(result.type === 'success')
-				currentForm = FormAction.LogIn
+			if (result.type === 'success') currentForm = FormAction.LogIn;
 		},
-	})
+	});
 
 	const {
 		formId: signInFormId,
@@ -58,7 +50,7 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(SignInFormData),
-	})
+	});
 
 	const {
 		formId: resetPasswordFormId,
@@ -75,22 +67,19 @@
 		invalidateAll: false,
 
 		onResult: ({ result }) => {
-			if(result.type === 'success')
-				currentForm = FormAction.LogIn
+			if (result.type === 'success') currentForm = FormAction.LogIn;
 		},
-	})
+	});
 
-	let currentForm = FormAction.SignUp
-	$: currentForm = globalThis.location?.hash.replace(/^#/, '?/')
-	
+	let currentForm = FormAction.SignUp;
+	$: currentForm = globalThis.location?.hash.replace(/^#/, '?/');
+
 	// let email = ''
 	// $: $signUpForm.email = $signInForm.email = $resetPasswordForm.email = email
 
-
 	// Components
-	import Tabs from '$/components/Tabs.svelte'
+	import Tabs from '$/components/Tabs.svelte';
 </script>
-
 
 <div class="container">
 	<Tabs
@@ -110,21 +99,10 @@
 			},
 		]}
 	>
-		<svelte:fragment slot="content"
-			let:item
-		>
+		<svelte:fragment slot="content" let:item>
 			{#if item.id === FormAction.SignUp}
-				<form
-					method="POST"
-					use:signUpEnhance
-					action={FormAction.SignUp}
-					class="card column"
-				>
-					<input
-						type="hidden"
-						name="__superform_id"
-						bind:value={$signUpFormId}
-					/>
+				<form method="POST" use:signUpEnhance action={FormAction.SignUp} class="card column">
+					<input type="hidden" name="__superform_id" bind:value={$signUpFormId} />
 
 					<div class="column inline">
 						<h3>Create account</h3>
@@ -145,7 +123,9 @@
 						placeholder="Email address"
 						bind:value={$signUpForm.email}
 						{...$signUpConstraints.email}
-						on:change={e => { $signInForm.email = $resetPasswordForm.email = e.target.value }}
+						on:change={(e) => {
+							$signInForm.email = $resetPasswordForm.email = e.target.value;
+						}}
 					/>
 
 					<input
@@ -156,25 +136,11 @@
 						{...$signUpConstraints.password}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$signUpSubmitting}
-					>Sign Up</button>
+					<button type="submit" class="primary" disabled={$signUpSubmitting}>Sign Up</button>
 				</form>
-
 			{:else if item.id === FormAction.LogIn}
-				<form
-					method="POST"
-					use:signInEnhance
-					action={FormAction.LogIn}
-					class="card column"
-				>
-					<input
-						type="hidden"
-						name="__superform_id"
-						bind:value={$signInFormId}
-					/>
+				<form method="POST" use:signInEnhance action={FormAction.LogIn} class="card column">
+					<input type="hidden" name="__superform_id" bind:value={$signInFormId} />
 
 					<div class="column inline">
 						<h3>Log In</h3>
@@ -187,7 +153,9 @@
 						placeholder="Email address"
 						bind:value={$signInForm.email}
 						{...$signInConstraints.email}
-						on:change={e => { $signUpForm.email = $resetPasswordForm.email = e.target.value }}
+						on:change={(e) => {
+							$signUpForm.email = $resetPasswordForm.email = e.target.value;
+						}}
 					/>
 
 					<input
@@ -198,28 +166,17 @@
 						{...$signInConstraints.password}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$signInSubmitting}
-					>Log in</button>
+					<button type="submit" class="primary" disabled={$signInSubmitting}>Log in</button>
 				</form>
-
 			{:else if item.id === FormAction.ResetPassword}
 				<form
 					method="POST"
 					use:resetPasswordEnhance
 					action={FormAction.ResetPassword}
 					class="card column"
-					on:submit={() => {
-
-					}}
+					on:submit={() => {}}
 				>
-					<input
-						type="hidden"
-						name="__superform_id"
-						bind:value={$resetPasswordFormId}
-					/>
+					<input type="hidden" name="__superform_id" bind:value={$resetPasswordFormId} />
 
 					<div class="column inline">
 						<h3>Reset Password</h3>
@@ -232,25 +189,24 @@
 						placeholder="Email address"
 						bind:value={$resetPasswordForm.email}
 						{...$resetPasswordConstraints.email}
-						on:change={e => { $signUpForm.email = $signInForm.email = e.target.value }}
+						on:change={(e) => {
+							$signUpForm.email = $signInForm.email = e.target.value;
+						}}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$resetPasswordSubmitting}
-					>Send verification link</button>
+					<button type="submit" class="primary" disabled={$resetPasswordSubmitting}
+						>Send verification link</button
+					>
 				</form>
 			{/if}
 		</svelte:fragment>
 	</Tabs>
 </div>
 
-
 <style>
 	.container {
 		display: grid;
 		grid-template-columns: minmax(0, 30rem);
-    	justify-content: center;
+		justify-content: center;
 	}
 </style>

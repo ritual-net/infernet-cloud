@@ -61,6 +61,7 @@
 		"dotenv": "^16.4.3",
 		"edgedb": "^1.4.1",
 		"googleapis": "^131.0.0",
+		"openai": "^4.30.0",
 		"svelte-headless-table": "^0.18.1",
 		"sveltekit-flash-message": "^2.4.4",
 		"sveltekit-superforms": "^2.10.6",

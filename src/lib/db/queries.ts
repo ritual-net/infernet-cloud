@@ -198,9 +198,7 @@ export const getClusterByRouterId = async (
  *
  * @returns Cluster array
  */
-export const getClustersForUser = async (
-	client: Client
-) => (
+export const getClustersForUser = async (client: Client) =>
 	await e
 		.select(e.Cluster, (cluster) => ({
 			service_account: {
@@ -214,5 +212,4 @@ export const getClustersForUser = async (
 			healthy: true,
 			locked: true,
 		}))
-		.run(client)
-);
+		.run(client);

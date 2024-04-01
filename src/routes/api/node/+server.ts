@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 
 	let updatedCluster: {
 		id: string;
-	} | null
+	} | null;
 
 	try {
 		// Create node and update cluster
@@ -50,27 +50,22 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, (e as Error).message);
 	}
 
-	let result: Awaited<ReturnType<typeof clusterAction>>
+	let result: Awaited<ReturnType<typeof clusterAction>>;
 
 	try {
 		// Apply Terraform changes to cluster
-		result = await clusterAction(
-			client,
-			cluster.id,
-			TFAction.Apply
-		);
+		result = await clusterAction(client, cluster.id, TFAction.Apply);
 	} catch (e) {
-		console.error(e)
+		console.error(e);
 
-		return error(500, JSON.stringify(e))
+		return error(500, JSON.stringify(e));
 	}
 
-	const { success, error: errorMessage } = result
+	const { success, error: errorMessage } = result;
 
-	if(!success)
-		return error(500, errorMessage)
+	if (!success) return error(500, errorMessage);
 
 	return json({
 		cluster: updatedCluster,
-	})
+	});
 };

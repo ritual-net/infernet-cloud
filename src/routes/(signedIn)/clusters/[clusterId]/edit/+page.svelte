@@ -1,29 +1,22 @@
 <script lang="ts">
 	// Types/constants
-	import { providers, ProviderTypeEnum } from '$/types/provider'
-
+	import { providers, ProviderTypeEnum } from '$/types/provider';
 
 	// Schema
-	import { FormData } from './schema'
-
+	import { FormData } from './schema';
 
 	// Context
-	import type { PageData } from './$types'
-	import { page } from '$app/stores'
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
-	const {
-		cluster,
-		formData,
-	} = $page.data as PageData
-
+	const { cluster, formData } = $page.data as PageData;
 
 	// Actions
-	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
-
+	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte';
 
 	// Internal state
-	import { superForm } from 'sveltekit-superforms/client'
-	import { yupClient } from 'sveltekit-superforms/adapters'
+	import { superForm } from 'sveltekit-superforms/client';
+	import { yupClient } from 'sveltekit-superforms/adapters';
 
 	const {
 		form,
@@ -40,42 +33,34 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
-	})
+	});
 
-	export const snapshot = { capture, restore }
+	export const snapshot = { capture, restore };
 
-	let delayedToast: Toast
-	$: if($delayed){
+	let delayedToast: Toast;
+	$: if ($delayed) {
 		delayedToast = addToast({
 			data: {
 				type: 'default',
 				title: `Saving cluster...`,
 			},
-		})
-	}else{
-		if(delayedToast)
-			removeToast(delayedToast.id)
+		});
+	} else {
+		if (delayedToast) removeToast(delayedToast.id);
 	}
 
-	let allowIps: 'all' | 'restricted' = 'all'
-
+	let allowIps: 'all' | 'restricted' = 'all';
 
 	// Functions
-	import { resolveRoute } from '$app/paths'
-
+	import { resolveRoute } from '$app/paths';
 
 	// Components
-	import Tabs from '$/components/Tabs.svelte'
-	import Select from '$/components/Select.svelte'
-	import Switch from '$/components/Switch.svelte'
+	import Tabs from '$/components/Tabs.svelte';
+	import Select from '$/components/Select.svelte';
+	import Switch from '$/components/Switch.svelte';
 </script>
 
-
-<form
-	method="POST"
-	use:enhance
-	class="column"
->
+<form method="POST" use:enhance class="column">
 	<header class="row">
 		<legend>
 			<h2>Edit Cluster</h2>
@@ -84,9 +69,7 @@
 
 	<div class="card column">
 		<section class="row wrap">
-			<h3>
-				Service Account
-			</h3>
+			<h3>Service Account</h3>
 
 			<div class="row">
 				<img class="icon" src={providers[cluster.service_account.provider].icon} />
@@ -97,9 +80,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="config.name">
-						Cluster name
-					</label>
+					<label for="config.name"> Cluster name </label>
 				</h3>
 
 				<p>Give your cluster a human-readable name.</p>
@@ -119,9 +100,7 @@
 			<div class="row wrap">
 				<div class="column inline">
 					<h3 class="row inline">
-						<label for="allowIps">
-							Firewall
-						</label>
+						<label for="allowIps"> Firewall </label>
 					</h3>
 
 					<p>Determine which IP addresses will have permissions to this cluster.</p>
@@ -141,7 +120,7 @@
 						{
 							value: 'restricted',
 							label: 'Only allowed IPs',
-						}
+						},
 					]}
 				/>
 			</div>
@@ -160,9 +139,7 @@
 						},
 					]}
 				>
-					<svelte:fragment slot="content"
-						let:item
-					>
+					<svelte:fragment slot="content" let:item>
 						{#if item.id === 0}
 							<textarea
 								id="config.ip_allow_http"
@@ -170,13 +147,12 @@
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								value={$form.config.ip_allow_http.join(', ')}
-								on:input={e => {
-									$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
+								on:input={(e) => {
+									$form.config.ip_allow_http = e.target.value.split(',').map((ip) => ip.trim());
 								}}
 								{...$constraints.config?.ip_allow_http}
 								disabled={allowIps === 'all'}
 							/>
-
 						{:else}
 							<textarea
 								id="config.ip_allow_ssh"
@@ -184,8 +160,8 @@
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								value={$form.config.ip_allow_http.join(', ')}
-								on:input={e => {
-									$form.config.ip_allow_ssh = e.target.value.split(',').map(ip => ip.trim())
+								on:input={(e) => {
+									$form.config.ip_allow_ssh = e.target.value.split(',').map((ip) => ip.trim());
 								}}
 								{...$constraints.config?.ip_allow_ssh}
 								disabled={allowIps === 'all'}
@@ -199,9 +175,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="config.deploy_router">
-						Deploy Router?
-					</label>
+					<label for="config.deploy_router"> Deploy Router? </label>
 				</h3>
 
 				<p>Determine whether your cluster will be deployed with a router.</p>
@@ -226,15 +200,9 @@
 			Cancel
 		</a>
 
-		<button
-			type="submit"
-			class="primary"
-		>
-			Save and Apply Changes
-		</button>
+		<button type="submit" class="primary"> Save and Apply Changes </button>
 	</footer>
 </form>
-
 
 <style>
 	.icon {

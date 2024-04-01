@@ -1,19 +1,18 @@
 <script lang="ts">
 	// Inputs
-	export let id: string | undefined
-	export let name: string | undefined
-	export let checked = false
-	export let labelText: string | undefined
-	export let disabled = false
-
+	export let id: string | undefined;
+	export let name: string | undefined;
+	export let checked = false;
+	export let labelText: string | undefined;
+	export let disabled = false;
 
 	// Internal state
-	import { writable } from 'svelte/store'
-	import { melt, createSwitch, createSync } from '@melt-ui/svelte'
+	import { writable } from 'svelte/store';
+	import { melt, createSwitch, createSync } from '@melt-ui/svelte';
 
-	const _checked = writable(checked)
-	$: checked = $_checked
-	
+	const _checked = writable(checked);
+	$: checked = $_checked;
+
 	const {
 		elements: { root, input },
 		states,
@@ -21,13 +20,14 @@
 	} = createSwitch({
 		checked: _checked,
 		disabled,
-	})
+	});
 
-	$: createSync(options).disabled(disabled, _ => { disabled = _ })
+	$: createSync(options).disabled(disabled, (_) => {
+		disabled = _;
+	});
 
-	const buttonId = `switch-${crypto.randomUUID()}`
+	const buttonId = `switch-${crypto.randomUUID()}`;
 </script>
-
 
 <!-- {#if labelText}
 	<label
@@ -38,26 +38,17 @@
 	</label>
 {/if} -->
 
-<button
-	use:melt={$root}
-	id="{buttonId}"
-	aria-labelledby="{buttonId}-label"
->
+<button use:melt={$root} id={buttonId} aria-labelledby="{buttonId}-label">
 	<span class="thumb" />
 </button>
 
-<input
-	use:melt={$input}
-	{id}
-	{name}
-/>
-
+<input use:melt={$input} {id} {name} />
 
 <style>
 	:root {
-		--switch-default-backgroundColor: #D9D9D940;
+		--switch-default-backgroundColor: #d9d9d940;
 		--switch-checked-backgroundColor: var(--color-ritualBlack);
-		--switch-backgroundColor: #D9D9D988;
+		--switch-backgroundColor: #d9d9d988;
 		--switch-thumb-backgroundColor: #fff;
 		--switch-width: 2.5em;
 		--switch-height: 1.5em;
@@ -71,8 +62,7 @@
 		align-items: stretch;
 		grid:
 			'. thumb .' 100%
-			/ 0fr auto 1fr
-		;
+			/ 0fr auto 1fr;
 
 		width: var(--switch-width);
 		height: var(--switch-height);
@@ -88,7 +78,7 @@
 			grid-template-columns: 1fr auto 0fr;
 		}
 	}
-	
+
 	.thumb {
 		grid-area: thumb;
 		aspect-ratio: 1;

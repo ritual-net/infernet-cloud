@@ -1,19 +1,17 @@
 <script lang="ts">
 	// Types
-	type Value = $$Generic<any>
-
+	type Value = $$Generic<any>;
 
 	// Inputs
-	export let open: boolean
-	export let title: string
-	export let description: string | undefined
-	export let showTrigger = false
-	export let closeOnOutsideClick = false
-
+	export let open: boolean;
+	export let title: string;
+	export let description: string | undefined;
+	export let showTrigger = false;
+	export let closeOnOutsideClick = false;
 
 	// Internal state
-	import { melt, createDialog, createSync } from '@melt-ui/svelte'
-	
+	import { melt, createDialog, createSync } from '@melt-ui/svelte';
+
 	const {
 		elements: {
 			trigger,
@@ -28,42 +26,30 @@
 	} = createDialog({
 		forceVisible: true,
 		closeOnOutsideClick,
-	})
+	});
 
-	$: createSync(states).open(
-		open,
-		_ => { open = _ },
-	)
-
+	$: createSync(states).open(open, (_) => {
+		open = _;
+	});
 
 	// Events
-	export let onClose: () => void
-
+	export let onClose: () => void;
 
 	// Transitions/animations
 	// import { scale } from 'svelte/transition'
 </script>
 
-
 {#if showTrigger}
-	<button
-		type="button"
-		use:melt={$trigger}
-	>
+	<button type="button" use:melt={$trigger}>
 		<slot name="trigger" />
 	</button>
 {/if}
 
-<div
-	use:melt={$portalled}
->
+<div use:melt={$portalled}>
 	{#if open}
 		<div use:melt={$overlay} />
 
-		<div
-			class="column"
-			use:melt={$content}
-		>
+		<div class="column" use:melt={$content}>
 			<header class="row">
 				<div class="column">
 					{#if title}
@@ -83,22 +69,13 @@
 					{/if}
 				</div>
 
-				<button
-					use:melt={$close}
-					aria-label="close"
-					on:m-click={onClose}
-				>
-					✕
-				</button>
+				<button use:melt={$close} aria-label="close" on:m-click={onClose}> ✕ </button>
 			</header>
 
-			<slot
-				close={$close}
-			/>
+			<slot close={$close} />
 		</div>
 	{/if}
 </div>
-
 
 <style>
 	[data-melt-dialog-portalled] {
@@ -113,15 +90,14 @@
 		display: grid;
 		grid:
 			'.' 100dvh
-			/ min(50rem, 100%)
-		;
+			/ min(50rem, 100%);
 		justify-content: center;
 		align-items: start;
 		align-items: safe center;
 
 		transition: 0.3s var(--transition-easeOutExpo);
 
-		&[data-state="closed"] {
+		&[data-state='closed'] {
 			opacity: 0;
 			backdrop-filter: blur(10px);
 		}
@@ -143,8 +119,7 @@
 
 		grid:
 			'.' auto
-			'.' auto
-		;
+			'.' auto;
 
 		height: min-content;
 		padding: 1.5rem;
