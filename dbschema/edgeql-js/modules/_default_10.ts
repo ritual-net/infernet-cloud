@@ -8,7 +8,7 @@ export type $current_userλShape = $.typeutil.flatten<_default.$UserλShape & {
 type $current_user = $.ObjectType<"__default::current_user", $current_userλShape, null, [
   ..._default.$User['__exclusives__'],
 ]>;
-const $current_user = $.makeType<$current_user>(_.spec, "6b0aad6c-ed60-11ee-a3db-1ba14bf23f8e", _.syntax.literal);
+const $current_user = $.makeType<$current_user>(_.spec, "90ba5430-f149-11ee-b2e5-1d94ea65fb5a", _.syntax.literal);
 
 const current_user: $.$expr_PathNode<$.TypeSet<$current_user, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($current_user, $.Cardinality.Many), null);
 
