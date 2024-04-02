@@ -1,9 +1,5 @@
 version: '3'
 
-networks:
-  public_network:
-    external: true
-
 services:
   nginx:
     image: nginx:latest
@@ -16,8 +12,6 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl
     depends_on:
       - server
-    networks:
-      - public_network
 
   server:
     container_name: server
@@ -32,8 +26,6 @@ services:
     depends_on:
       edgedb:
         condition: service_healthy
-    networks:
-      - public_network
 
   edgedb:
     container_name: edgedb
