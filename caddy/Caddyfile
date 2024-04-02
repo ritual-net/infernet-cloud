@@ -1,0 +1,3 @@
+infernet-cloud-staging.origin-ml.com {
+    reverse_proxy localhost:3000
+}

@@ -1,6 +1,18 @@
 version: '3'
 
 services:
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy:/etc/caddy
+      - ./caddy_data:/data
+      - ./caddy_config:/config
+
   server:
     container_name: server
     build:
