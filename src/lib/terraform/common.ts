@@ -2,6 +2,7 @@ import { e } from '$/lib/db';
 import { getClusterById } from '../db/queries';
 import { routerAction } from '$/lib/clients/node/common';
 import { ProviderTerraform } from '$/lib';
+import { parseTerraformError } from '$/lib/utils/terraform';
 import type { Client } from 'edgedb';
 import type { ProviderServiceAccount } from '$/types/provider';
 import { NodeAction } from '$/types/provider';
@@ -90,5 +91,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				nodeInfo,
 			});
 	}
-	return { error, success };
+	
+    const parsedError = error ? parseTerraformError(error) : null;
+	return { error, parsedError, success };
 };

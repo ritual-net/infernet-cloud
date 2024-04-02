@@ -1,3 +1,4 @@
+import OpenAI from 'openai';
 import { promises as fs } from 'fs';
 import path from 'path';
 import tar from 'tar';
@@ -158,4 +159,39 @@ const formatTfVars = (
 		([key, value]) => `${key} = ${formatValue(value)}`
 	);
 	return vars.join('\n');
+};
+
+/**
+ * Use ChatGPT to turn terraform error msgs human readable.
+ *
+ * @param error The error message.
+ */
+export const parseTerraformError = async (error: string): Promise<string> => {
+	const openaiApiKey = process.env.OPENAI_API_KEY;
+	if (!openaiApiKey) {
+		throw new Error('OPENAI_API_KEY is not set');
+	}
+
+	try {
+		const openai = new OpenAI();
+		const completion = await openai.chat.completions.create({
+			messages: [
+				{
+					role: 'system',
+					content:
+						'You are a helpful assistant who can parse complex terraform errors into a readable message.',
+				},
+				{ role: 'user', content: error },
+			],
+			model: 'gpt-3.5-turbo',
+		});
+
+		if (completion.choices[0].message.content === null) {
+			return error;
+		}
+
+		return completion.choices[0].message.content;
+	} catch (err) {
+		return error;
+	}
 };
