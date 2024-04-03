@@ -71,10 +71,20 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	const user = await e.insert(e.User, {
 		email,
 		name,
-		identity: e.select(e.ext.auth.PKCEChallenge, () => ({
-			filter_single: { id: pkceChallengeId },
-		}))
-			.identity,
+		identity: e.assert_single(
+			e.op(
+				'distinct',
+				e.set(
+					e.select(e.ext.auth.PKCEChallenge, () => ({
+						filter_single: { id: pkceChallengeId },
+					})).identity,
+
+					e.select(e.ext.auth.EmailPasswordFactor, (emailPassword) => ({
+						filter_single: e.op(emailPassword.email, '=', email),
+					})).identity,					
+				),
+			),
+		),
 	})
 		.run(client);
 
