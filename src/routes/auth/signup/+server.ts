@@ -58,27 +58,24 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		return error(400, result);
 	}
 
+	const registerResult = await registerResponse.json() as {
+		code: string,
+		provider: string,
+	}
 
-	// Get the identity from the auth server
-	const client = createClient();
-	const emailFactor = await e
-		.select(e.ext.auth.EmailPasswordFactor, (emailPassword) => ({
-			identity: {
-				id: true,
-			},
-			filter: e.op(emailPassword.email, '=', email),
-		}))
-		.run(client);
-
+	const pkceChallengeId = registerResult.code
+	
 	// Create a new user in the database
-	const user = await e
-		.insert(e.User, {
-			email,
-			name,
-			identity: e.select(e.ext.auth.Identity, () => ({
-				filter_single: { id: emailFactor[0].identity.id },
-			})),
-		})
+	const client = createClient();
+
+	const user = await e.insert(e.User, {
+		email,
+		name,
+		identity: e.select(e.ext.auth.PKCEChallenge, () => ({
+			filter_single: { id: pkceChallengeId },
+		}))
+			.identity,
+	})
 		.run(client);
 
 	cookies.set('edgedb-pkce-verifier', pkce.verifier, {
