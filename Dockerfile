@@ -13,6 +13,7 @@ COPY . .
 COPY .env.docker .env
 
 # Build SvelteKit app
+RUN pnpm check
 RUN pnpm build
 
 # Remove dev dependencies
