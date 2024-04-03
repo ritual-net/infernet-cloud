@@ -15,14 +15,14 @@ module default {
     required email: str;
     required identity: ext::auth::Identity;
 
-    # access policy only_owner
-    #   allow all
-    #   using (.id ?= global current_user.id) {
-    #     errmessage := 'You do not have access to this user.'
-    #   };
+    access policy only_owner
+      allow all
+      using (.id ?= global current_user.id) {
+        errmessage := 'You do not have access to this user.'
+      };
 
-    # access policy signup
-    #   allow insert
+    access policy signup
+      allow insert
   }
 
   abstract type ServiceAccount {
