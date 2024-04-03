@@ -12,6 +12,8 @@ services:
       - ./caddy:/etc/caddy
       - ./caddy_data:/data
       - ./caddy_config:/config
+    depends_on:
+      - server
 
   server:
     container_name: server
