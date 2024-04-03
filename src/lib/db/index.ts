@@ -26,7 +26,7 @@ export const ServiceAccountTypeByProvider = {
  */
 export const createClient = () => {
 	if (env.EDGEDB_INSTANCE && env.EDGEDB_SECRET_KEY) {
-		console.log(`Connecting to EdgeDB cloud instance "${env.EDGEDB_INSTANCE}"...`)
+		console.log(`Connecting to EdgeDB Cloud instance "${env.EDGEDB_INSTANCE}"...`)
 		
 		return createEdgedbClient({
 			instanceName: env.EDGEDB_INSTANCE,
