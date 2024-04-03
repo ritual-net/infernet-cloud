@@ -14,9 +14,8 @@ export namespace std {
   }
 }
 export interface User extends std.$Object {
+  "identity": ext.auth.Identity;
   "name": string;
-  "identity_id": string;
-  "identity"?: ext.auth.Identity | null;
   "email": string;
 }
 export interface Cluster extends std.$Object {

@@ -112,8 +112,8 @@ export type $IdentityλShape = $.typeutil.flatten<$AuditableλShape & {
   "subject": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "<identity[is ext::auth::PKCEChallenge]": $.LinkDesc<$PKCEChallenge, $.Cardinality.Many, {}, false, false,  false, false>;
   "<identity[is User]": $.LinkDesc<_default.$User, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<identity[is current_user]": $.LinkDesc<_default.$current_user, $.Cardinality.Many, {}, false, false,  false, false>;
   "<identity[is __default::current_user]": $.LinkDesc<__default_10.$current_user, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<identity[is current_user]": $.LinkDesc<_default.$current_user, $.Cardinality.Many, {}, false, false,  false, false>;
   "<identity": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $Identity = $.ObjectType<"ext::auth::Identity", $IdentityλShape, null, [
