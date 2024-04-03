@@ -79,8 +79,8 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 						filter_single: { id: pkceChallengeId },
 					})).identity,
 
-					e.select(e.ext.auth.EmailPasswordFactor, (emailPassword) => ({
-						filter_single: e.op(emailPassword.email, '=', email),
+					e.select(e.ext.auth.EmailPasswordFactor, (emailPasswordFactor) => ({
+						filter_single: e.op(emailPasswordFactor.email, '=', email),
 					})).identity,					
 				),
 			),
