@@ -11,19 +11,9 @@ module default {
   scalar type CloudProvider extending enum<AWS, GCP>;
 
   type User {
-    required identity_id: uuid {
-      constraint exclusive;
-    }
-
-    identity := (
-      select ext::auth::Identity
-      filter ext::auth::Identity.id = User.identity_id
-    );
-
     required name: str;
-    required email: str {
-      constraint exclusive;
-    }
+    required email: str;
+    required identity: ext::auth::Identity;
 
     access policy only_owner
       allow all
