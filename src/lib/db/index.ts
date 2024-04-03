@@ -25,7 +25,18 @@ export const ServiceAccountTypeByProvider = {
  * @returns The Edgedb client
  */
 export const createClient = () => {
-	if (env.NODE_ENV === 'production') {
+	if (env.EDGEDB_INSTANCE && env.EDGEDB_SECRET_KEY) {
+		console.log(`Connecting to EdgeDB cloud instance "${env.EDGEDB_INSTANCE}"...`)
+		
+		return createEdgedbClient({
+			instanceName: env.EDGEDB_INSTANCE,
+			secretKey: env.EDGEDB_SECRET_KEY,
+		});
+	}
+
+	if (env.EDGEDB_DSN) {
+		console.log(`Connecting to EdgeDB instance at "${env.EDGEDB_DSN}"...`)
+
 		return createEdgedbClient({
 			dsn: env.EDGEDB_DSN,
 			/**
@@ -36,7 +47,8 @@ export const createClient = () => {
 			 */
 			tlsSecurity: 'insecure',
 		});
-	} else {
-		return createEdgedbClient();
 	}
+
+	console.log('Connecting to detected EdgeDB instance...')
+	return createEdgedbClient();
 };
