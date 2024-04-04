@@ -5,7 +5,7 @@
 	export let data: PageData
 	const {
 		formData,
-		imagesPromise,
+		imagesPromise, // Promise<string[]> | string[]
 	} = data
 
 	let configurations = []
@@ -20,7 +20,7 @@
 
 	// Internal state
 	let images: string[] | undefined
-	$: imagesPromise.then(_ => images = _)
+	$: (async () => { images = await imagesPromise })()
 
 
 	// Schema
