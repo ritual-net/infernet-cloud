@@ -157,6 +157,7 @@
 								value: image,
 								label: image,
 							})),
+						placeholder: `Choose an image...`,
 					}
 				}
 			/>
