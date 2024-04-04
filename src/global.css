@@ -152,7 +152,8 @@ dd {
 	}
 }
 
-input, textarea {
+input,
+textarea {
 	--input-paddingX: 1em;
 	--input-paddingY: 0.5em;
 	--input-backgroundColor: var(--input-default-backgroundColor);
@@ -179,6 +180,9 @@ input, textarea {
 		cursor: not-allowed;
 		opacity: 0.5;
 	}
+}
+input {
+	min-width: min(20rem, 100%);
 }
 textarea {
 	width: 100%;
