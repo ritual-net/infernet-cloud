@@ -765,13 +765,13 @@
 											const result = await preloadData(href)
 
 											if (result.type === 'loaded' && result.status === 200) {
-												pushState(href, {
-													showContainerForm: 'create',
+												pushState('#/container/create', {
+													showContainerForm: true,
 													nodeId: node.id,
 													containerFormData: {
 														...result.data,
 														imagesPromise: await result.data.imagesPromise,
-													}
+													},
 												})
 											} else {
 												console.error(`Failed to preload shallow route: ${href}`)
@@ -803,8 +803,8 @@
 										}
 
 										if (result.type === 'loaded' && result.status === 200) {
-											pushState(href, {
-												showContainerForm: 'edit',
+											pushState('#/container/edit', {
+												showContainerForm: true,
 												nodeId: node.id,
 												containerId: container.container_id,
 												containerFormData: result.data,
@@ -818,7 +818,7 @@
 
 								<Dialog
 									title={`Customize container`}
-									open={Boolean($page.state.showContainerForm) && $page.state.nodeId === node.id}
+									open={$page.state.showContainerForm && $page.state.nodeId === node.id}
 									onClose={() => {
 										history.back()
 									}}
@@ -827,7 +827,7 @@
 										data={$page.state.containerFormData}
 										mode={$page.state.showContainerForm}
 										{...(
-											$page.state.showContainerForm === 'create' ?
+											$page.url.hash === '#/container/create' ?
 												{
 													submitLabel: 'Add Container',
 
@@ -838,7 +838,7 @@
 														history.back()
 													},
 												}
-											: $page.state.showContainerForm === 'edit' ?
+											: $page.url.hash === '#/container/edit' ?
 												{
 													submitLabel: 'Save Changes',
 
