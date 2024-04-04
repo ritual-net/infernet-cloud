@@ -30,6 +30,7 @@
 	const {
 		elements: { trigger, menu, option, group, groupLabel, label, hiddenInput },
 		states,
+		options,
 		helpers: { isSelected },
 	} = createSelect<Value>({
 		name,
@@ -53,6 +54,11 @@
 	$: createSync(states).selected(
 		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
 		selected => { value = selected?.value as Value },
+	)
+
+	$: createSync(options).disabled(
+		disabled,
+		_ => { disabled = _ },
 	)
 
 	let triggerElement: Element
