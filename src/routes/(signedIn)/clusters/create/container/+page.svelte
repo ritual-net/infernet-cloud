@@ -143,7 +143,7 @@
 				required
 				id="container.image"
 				name="container.image"
-				labelText="Service Account"
+				labelText="Image"
 				bind:value={$form.container.image}
 				{...!images
 					? {
@@ -162,27 +162,6 @@
 				}
 			/>
 		</section>
-
-		<!-- <section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="container.container_id">
-						Image ID
-					</label>
-				</h3>
-
-				<p>Enter an ID for the image to be used.</p>
-			</div>
-
-			<input
-				type="text"
-				id="container.container_id"
-				name="container.container_id"
-				bind:value={$form.container.container_id}
-				placeholder={`ritualnet/llm-inference`}
-				{...$constraints.container.container_id ?? {}}
-			/>
-		</section> -->
 
 		<section class="row wrap">
 			<div class="column inline">
