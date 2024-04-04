@@ -29,6 +29,7 @@ export interface Cluster extends std.$Object {
   "name": string;
   "router"?: {id: string, ip: string} | null;
   "tfstate"?: string | null;
+  "gpt_error"?: string | null;
 }
 export interface AWSCluster extends Cluster {
   "machine_type": string;

@@ -8,7 +8,7 @@ export type $CloudProvider = {
   "AWS": $.$expr_Literal<$CloudProvider>;
   "GCP": $.$expr_Literal<$CloudProvider>;
 } & $.EnumType<"default::CloudProvider", ["AWS", "GCP"]>;
-const CloudProvider: $CloudProvider = $.makeType<$CloudProvider>(_.spec, "e60ab530-e576-11ee-a322-69f8d536acb3", _.syntax.literal);
+const CloudProvider: $CloudProvider = $.makeType<$CloudProvider>(_.spec, "a03f10ee-d344-11ee-93c9-83e09c85afd1", _.syntax.literal);
 
 export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "identity": $.LinkDesc<_auth.$Identity, $.Cardinality.One, {}, false, false,  false, false>;
@@ -23,7 +23,7 @@ export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c2
 type $User = $.ObjectType<"default::User", $UserλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $User = $.makeType<$User>(_.spec, "e5f92892-e576-11ee-afc8-23341d56a77f", _.syntax.literal);
+const $User = $.makeType<$User>(_.spec, "a0325156-d344-11ee-8850-2d027738c46b", _.syntax.literal);
 
 const User: $.$expr_PathNode<$.TypeSet<$User, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($User, $.Cardinality.Many), null);
 
@@ -39,13 +39,14 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "router": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
   "tfstate": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "gpt_error": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $Cluster = $.ObjectType<"default::Cluster", $ClusterλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },service_account: {__element__: $ServiceAccount, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
   {nodes: {__element__: $InfernetNode, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $Cluster = $.makeType<$Cluster>(_.spec, "e6261e24-e576-11ee-8b13-9f9431bf2a95", _.syntax.literal);
+const $Cluster = $.makeType<$Cluster>(_.spec, "a05029b0-d344-11ee-a2ac-717a6e2306ca", _.syntax.literal);
 
 const Cluster: $.$expr_PathNode<$.TypeSet<$Cluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Cluster, $.Cardinality.Many), null);
 
@@ -56,7 +57,7 @@ export type $AWSClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 type $AWSCluster = $.ObjectType<"default::AWSCluster", $AWSClusterλShape, null, [
   ...$Cluster['__exclusives__'],
 ]>;
-const $AWSCluster = $.makeType<$AWSCluster>(_.spec, "e6456b6c-e576-11ee-8d58-9faf16715ae4", _.syntax.literal);
+const $AWSCluster = $.makeType<$AWSCluster>(_.spec, "a06e0b56-d344-11ee-ac36-a79c6421d454", _.syntax.literal);
 
 const AWSCluster: $.$expr_PathNode<$.TypeSet<$AWSCluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($AWSCluster, $.Cardinality.Many), null);
 
@@ -73,7 +74,7 @@ type $ServiceAccount = $.ObjectType<"default::ServiceAccount", $ServiceAccountλ
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $ServiceAccount = $.makeType<$ServiceAccount>(_.spec, "e60abeb8-e576-11ee-8cfb-6187f5a540e6", _.syntax.literal);
+const $ServiceAccount = $.makeType<$ServiceAccount>(_.spec, "a03f1c9c-d344-11ee-b71a-c77e5224f7ca", _.syntax.literal);
 
 const ServiceAccount: $.$expr_PathNode<$.TypeSet<$ServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ServiceAccount, $.Cardinality.Many), null);
 
@@ -84,7 +85,7 @@ export type $AWSServiceAccountλShape = $.typeutil.flatten<Omit<$ServiceAccount�
 type $AWSServiceAccount = $.ObjectType<"default::AWSServiceAccount", $AWSServiceAccountλShape, null, [
   ...$ServiceAccount['__exclusives__'],
 ]>;
-const $AWSServiceAccount = $.makeType<$AWSServiceAccount>(_.spec, "e656b584-e576-11ee-a0ad-b3669a1feb60", _.syntax.literal);
+const $AWSServiceAccount = $.makeType<$AWSServiceAccount>(_.spec, "a07a939e-d344-11ee-846b-eb623b432903", _.syntax.literal);
 
 const AWSServiceAccount: $.$expr_PathNode<$.TypeSet<$AWSServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($AWSServiceAccount, $.Cardinality.Many), null);
 
@@ -105,7 +106,7 @@ export type $ContainerλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
 type $Container = $.ObjectType<"default::Container", $ContainerλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $Container = $.makeType<$Container>(_.spec, "e60477f6-e576-11ee-a0ed-4d18908623c5", _.syntax.literal);
+const $Container = $.makeType<$Container>(_.spec, "a03a7b2e-d344-11ee-bee7-f96ccdc91fc9", _.syntax.literal);
 
 const Container: $.$expr_PathNode<$.TypeSet<$Container, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Container, $.Cardinality.Many), null);
 
@@ -117,7 +118,7 @@ type $ContainerTemplate = $.ObjectType<"default::ContainerTemplate", $ContainerT
   ...$Container['__exclusives__'],
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $ContainerTemplate = $.makeType<$ContainerTemplate>(_.spec, "e684073c-e576-11ee-b541-81151e92ef37", _.syntax.literal);
+const $ContainerTemplate = $.makeType<$ContainerTemplate>(_.spec, "a09eb30a-d344-11ee-a7f7-41ab4c2e3b12", _.syntax.literal);
 
 const ContainerTemplate: $.$expr_PathNode<$.TypeSet<$ContainerTemplate, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ContainerTemplate, $.Cardinality.Many), null);
 
@@ -129,7 +130,7 @@ export type $GCPClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 type $GCPCluster = $.ObjectType<"default::GCPCluster", $GCPClusterλShape, null, [
   ...$Cluster['__exclusives__'],
 ]>;
-const $GCPCluster = $.makeType<$GCPCluster>(_.spec, "e6b6ba24-e576-11ee-a510-b515059de66f", _.syntax.literal);
+const $GCPCluster = $.makeType<$GCPCluster>(_.spec, "a0bdf904-d344-11ee-9c7d-3f19ef02638e", _.syntax.literal);
 
 const GCPCluster: $.$expr_PathNode<$.TypeSet<$GCPCluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($GCPCluster, $.Cardinality.Many), null);
 
@@ -140,7 +141,7 @@ export type $GCPServiceAccountλShape = $.typeutil.flatten<Omit<$ServiceAccount�
 type $GCPServiceAccount = $.ObjectType<"default::GCPServiceAccount", $GCPServiceAccountλShape, null, [
   ...$ServiceAccount['__exclusives__'],
 ]>;
-const $GCPServiceAccount = $.makeType<$GCPServiceAccount>(_.spec, "e6c7150e-e576-11ee-812d-d3ca84688f13", _.syntax.literal);
+const $GCPServiceAccount = $.makeType<$GCPServiceAccount>(_.spec, "a0caa8ca-d344-11ee-a1d6-3725a9d448a6", _.syntax.literal);
 
 const GCPServiceAccount: $.$expr_PathNode<$.TypeSet<$GCPServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($GCPServiceAccount, $.Cardinality.Many), null);
 
@@ -163,7 +164,7 @@ type $InfernetNode = $.ObjectType<"default::InfernetNode", $InfernetNodeλShape,
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {containers: {__element__: $Container, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $InfernetNode = $.makeType<$InfernetNode>(_.spec, "e607936e-e576-11ee-9a89-ffb3e181faec", _.syntax.literal);
+const $InfernetNode = $.makeType<$InfernetNode>(_.spec, "a03cbe70-d344-11ee-b819-cfc95f0d610f", _.syntax.literal);
 
 const InfernetNode: $.$expr_PathNode<$.TypeSet<$InfernetNode, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($InfernetNode, $.Cardinality.Many), null);
 
@@ -172,7 +173,7 @@ export type $current_userλShape = $.typeutil.flatten<$UserλShape & {
 type $current_user = $.ObjectType<"default::current_user", $current_userλShape, null, [
   ...$User['__exclusives__'],
 ]>;
-const $current_user = $.makeType<$current_user>(_.spec, "e6044178-e576-11ee-830e-dd4e63200b5c", _.syntax.literal);
+const $current_user = $.makeType<$current_user>(_.spec, "a03a4e7e-d344-11ee-ab5e-390360502311", _.syntax.literal);
 
 const current_user: $.$expr_PathNode<$.TypeSet<$current_user, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($current_user, $.Cardinality.Many), null);
 
@@ -182,7 +183,7 @@ const $default__globals: {  current_user: _.syntax.$expr_Global<
               $.Cardinality.AtMostOne
               >} = {  current_user: _.syntax.makeGlobal(
               "default::current_user",
-              $.makeType(_.spec, "e6044178-e576-11ee-830e-dd4e63200b5c", _.syntax.literal),
+              $.makeType(_.spec, "a03a4e7e-d344-11ee-ab5e-390360502311", _.syntax.literal),
               $.Cardinality.AtMostOne) as any};
 
 

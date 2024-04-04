@@ -175,6 +175,7 @@ module default {
     tfstate: str;
     router: tuple<id: str, ip: str>;
     error: str;
+    gpt_error: str;
 
     required service_account: ServiceAccount {
       readonly := true;

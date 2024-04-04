@@ -41,12 +41,14 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
 
+    const parsedError = error ? parseTerraformError(error) : null;
 	// Store state in the database
 	await e
 		.update(e.Cluster, () => ({
 			filter_single: { id: clusterId },
 			set: {
 				error: error ?? null,
+                parsedError: parsedError ?? null,
 				healthy: success,
 				locked: false,
 				router: {
@@ -92,6 +94,5 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 			});
 	}
 	
-    const parsedError = error ? parseTerraformError(error) : null;
 	return { error, parsedError, success };
 };
