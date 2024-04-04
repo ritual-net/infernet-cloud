@@ -160,6 +160,26 @@
 			<h3>Onchain Details</h3>
 
 			<dl class="card column">
+				{#if node.trail_head_blocks}
+					<section class="row">
+						<dt>Trail Head Blocks</dt>
+
+						<dd>
+							{node.trail_head_blocks}
+						</dd>
+					</section>
+				{/if}
+
+				{#if node.rpc_url}
+					<section class="row">
+						<dt>RPC URL</dt>
+
+						<dd>
+							{node.rpc_url}
+						</dd>
+					</section>
+				{/if}
+
 				{#if node.coordinator_address}
 					<section class="row">
 						<dt>Coordinator Address</dt>
@@ -176,6 +196,16 @@
 
 						<dd>
 							{formatNumberCompact(node.max_gas_limit)}
+						</dd>
+					</section>
+				{/if}
+
+				{#if node.private_key}
+					<section class="row">
+						<dt>Private Key</dt>
+
+						<dd>
+							{node.private_key}
 						</dd>
 					</section>
 				{/if}
