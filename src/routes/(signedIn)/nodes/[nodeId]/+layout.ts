@@ -1,5 +1,5 @@
 // Types
-import type { NodeInfo } from '$/types/provider'
+import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
 // Data
@@ -7,7 +7,6 @@ import type { LayoutLoad } from './$types'
 
 import { resolveRoute } from '$app/paths'
 import { error } from '@sveltejs/kit'
-import type { InfernetNode } from '$schema/interfaces'
 
 export const load: LayoutLoad = async ({
 	parent,
@@ -16,7 +15,7 @@ export const load: LayoutLoad = async ({
 }) => {
 	const [
 		parentData,
-		nodeResult,
+		nodeWithInfo,
 	] = await Promise.all([
 		parent(),
 
@@ -33,16 +32,12 @@ export const load: LayoutLoad = async ({
 				return error(response.status, result.message)
 			}
 
-			return await response.json() as {
-				node: InfernetNode,
-				info?: NodeInfo,
-				infoError?: string,
-			}
+			return await response.json() as InfernetNodeWithInfo
 		})()
 	])
 
 	return {
 		...parentData,
-		...nodeResult,
+		...nodeWithInfo,
 	}
 }

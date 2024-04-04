@@ -47,6 +47,7 @@ export type NodeInfo = {
 export type InfernetNodeWithInfo = {
 	node: InfernetNode;
 	info?: NodeInfo;
+	infoError?: string | undefined;
 }
 
 export enum NodeAction {
