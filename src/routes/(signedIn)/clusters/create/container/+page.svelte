@@ -76,6 +76,7 @@
 
 
 	// Components
+	import Combobox from '$/components/Combobox.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
@@ -138,7 +139,7 @@
 				<p>Choose the image this container is deployed with.</p>
 			</div>
 
-			<Select
+			<Combobox
 				required
 				id="container.image"
 				name="container.image"
