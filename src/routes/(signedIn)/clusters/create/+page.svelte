@@ -769,7 +769,7 @@
 
 											if (result.type === 'loaded' && result.status === 200) {
 												pushState('#/container/create', {
-													showContainerForm: true,
+													showContainerForm: 'create',
 													nodeId: node.id,
 													containerFormData: {
 														...result.data,
@@ -807,7 +807,7 @@
 
 										if (result.type === 'loaded' && result.status === 200) {
 											pushState('#/container/edit', {
-												showContainerForm: true,
+												showContainerForm: 'edit',
 												nodeId: node.id,
 												containerId: container.container_id,
 												containerFormData: result.data,
@@ -821,23 +821,18 @@
 
 								<Dialog
 									title={`Customize container`}
-									open={$page.state.showContainerForm && $page.state.nodeId === node.id}
+									open={Boolean($page.state.showContainerForm) && $page.state.nodeId === node.id}
 									onClose={() => {
 										history.back()
 									}}
 								>
+								
 									<ContainerForm
 										data={$page.state.containerFormData}
-										mode={
-											$page.url.hash === '#/container/create' ?
-												'create'
-											: $page.url.hash === '#/container/edit' ?
-												'edit'
-											:
-												undefined
-										}
+										mode={$page.state.showContainerForm}
 										{...(
-											$page.url.hash === '#/container/create' ?
+											$page.state.showContainerForm === 'create' ?
+											// $page.url.hash === '#/container/create' ?
 												{
 													submitLabel: 'Add Container',
 
@@ -848,7 +843,8 @@
 														history.back()
 													},
 												}
-											: $page.url.hash === '#/container/edit' ?
+											: $page.state.showContainerForm === 'edit' ?
+											// : $page.url.hash === '#/container/edit' ?
 												{
 													submitLabel: 'Save Changes',
 
