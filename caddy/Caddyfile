@@ -1,3 +1,5 @@
 infernet-cloud-staging.origin-ml.com {
-	reverse_proxy server:3000
+	reverse_proxy server:3000 {
+		flush_interval 1s
+	}
 }
