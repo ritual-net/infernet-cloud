@@ -39,8 +39,8 @@ dependencies:
     specifier: ^2.4.4
     version: 2.4.4(@sveltejs/kit@2.5.5)(svelte@4.2.12)
   sveltekit-superforms:
-    specifier: ^2.12.0
-    version: 2.12.0(@sveltejs/kit@2.5.5)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.20.2)(svelte@4.2.12)
+    specifier: ^2.12.2
+    version: 2.12.2(@sveltejs/kit@2.5.5)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.20.2)(svelte@4.2.12)
   yup:
     specifier: ^1.4.0
     version: 1.4.0
@@ -3386,8 +3386,8 @@ packages:
     engines: {node: '>= 0.6.0'}
     dev: false
 
-  /joi@17.12.2:
-    resolution: {integrity: sha512-RonXAIzCiHLc8ss3Ibuz45u28GOsWE1UpfDXLbN/9NKbL4tCJf8TWYVKsoYuuh+sAUt7fsSNpA+r2+TBA6Wjmw==}
+  /joi@17.12.3:
+    resolution: {integrity: sha512-2RRziagf555owrm9IRVtdKynOBeITiDpuZqIpgwqXShPncPKNiRQoiGsl/T8SQdq+8ugRzH2LqY67irr2y/d+g==}
     requiresBuild: true
     dependencies:
       '@hapi/hoek': 9.3.0
@@ -4490,8 +4490,8 @@ packages:
       svelte: 4.2.12
     dev: false
 
-  /sveltekit-superforms@2.12.0(@sveltejs/kit@2.5.5)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.20.2)(svelte@4.2.12):
-    resolution: {integrity: sha512-gAZbJbkij0crd5vRT09rYI/XvBq0etAv2j5U95bb3hioYo2TATv8jGCvsPHrCRJQwuJJrIp/xQRJpgSAPuUq2Q==}
+  /sveltekit-superforms@2.12.2(@sveltejs/kit@2.5.5)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.20.2)(svelte@4.2.12):
+    resolution: {integrity: sha512-fFOXaluP1os/Tamx7gzwhT3tXPAfqZ8KYRC0UfXdXeUtlUIUfiGrIifDJ26/9uePmF8Zhqy2M0XjG8W9kQnJpg==}
     peerDependencies:
       '@sveltejs/kit': 1.x || 2.x
       svelte: 3.x || 4.x || >=5.0.0-next.51
@@ -4525,7 +4525,7 @@ packages:
       '@sodaru/yup-to-json-schema': 2.0.1
       '@vinejs/vine': 1.8.0
       arktype: 1.0.29-alpha
-      joi: 17.12.2
+      joi: 17.12.3
       superstruct: 1.0.4
       valibot: 0.30.0
       yup: 1.4.0
