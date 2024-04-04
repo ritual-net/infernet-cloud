@@ -635,6 +635,7 @@
 
 										<input
 											type="number"
+											placeholder="5"
 											id="nodes.{i}.config.trail_head_blocks"
 											name="nodes.{i}.config.trail_head_blocks"
 											bind:value={node.config.trail_head_blocks}
@@ -655,6 +656,7 @@
 
 										<input
 											type="url"
+											placeholder="https://rpc.example.com/rpc"
 											id="nodes.{i}.config.rpc_url"
 											name="nodes.{i}.config.rpc_url"
 											bind:value={node.config.rpc_url}
@@ -675,6 +677,7 @@
 
 										<input
 											type="text"
+											placeholder="0xabcdef...1234567890"
 											id="nodes.{i}.config.coordinator_address"
 											name="nodes.{i}.config.coordinator_address"
 											bind:value={node.config.coordinator_address}
@@ -715,7 +718,7 @@
 
 										<input
 											type="password"
-											placeholder="0xabcdef...11234567890"
+											placeholder="0xabcdef...1234567890"
 											id="nodes.{i}.config.private_key"
 											name="nodes.{i}.config.private_key"
 											bind:value={node.config.private_key}
