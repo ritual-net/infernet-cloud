@@ -187,6 +187,22 @@
 		<h3>Status</h3>
 
 		<dl class="card column">
+			<section class="row">
+				<dt>Status</dt>
+
+				<dd>
+					<div
+						class="status"
+						data-status={nodeStatus}
+					>{{
+						'unknown': 'Unknown',
+						'healthy': 'Healthy',
+						'updating': 'Updating',
+						'unhealthy': 'Unhealthy',
+					}[nodeStatus]}</div>
+				</dd>
+			</section>
+
 			{#if infoError}
 				<section class="column">
 					<dt>Error</dt>
