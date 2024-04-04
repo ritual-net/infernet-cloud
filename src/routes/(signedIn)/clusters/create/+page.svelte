@@ -828,7 +828,14 @@
 								>
 									<ContainerForm
 										data={$page.state.containerFormData}
-										mode={$page.state.showContainerForm}
+										mode={
+											$page.url.hash === '#/container/create' ?
+												'create'
+											: $page.url.hash === '#/container/edit' ?
+												'edit'
+											:
+												undefined
+										}
 										{...(
 											$page.url.hash === '#/container/create' ?
 												{
