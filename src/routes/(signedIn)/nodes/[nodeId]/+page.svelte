@@ -8,7 +8,6 @@
 		info,
 		infoError,
 	} = $page.data as PageData)
-	$: console.log('$page.data', $page.data)
 
 
 	// Internal state
