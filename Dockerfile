@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:21-alpine AS base
 
 FROM base AS deps
 WORKDIR /app
@@ -13,6 +13,7 @@ COPY . .
 COPY .env.docker .env
 
 # Build SvelteKit app
+RUN pnpm svelte-kit sync
 RUN pnpm build
 
 # Remove dev dependencies
