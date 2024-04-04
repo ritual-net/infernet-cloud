@@ -8,7 +8,8 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		cluster
+		cluster,
+		nodesWithInfo,
 	} = $page.data as PageData)
 
 
@@ -254,8 +255,11 @@
 	<section>
 		<h3>Nodes</h3>
 
-		<NodesTable
+		<!-- <NodesTable
 			nodes={cluster.nodes}
+		/> -->
+		<NodesTable
+			{nodesWithInfo}
 		/>
 	</section>
 </div>
