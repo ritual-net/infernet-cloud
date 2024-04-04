@@ -8,6 +8,7 @@
 		info,
 		infoError,
 	} = $page.data as PageData)
+	$: console.log('$page.data', $page.data)
 
 
 	// Internal state
@@ -205,7 +206,7 @@
 						<dt>Private Key</dt>
 
 						<dd>
-							{node.private_key}
+							<span class="secured">{node.private_key}</span>
 						</dd>
 					</section>
 				{/if}
@@ -319,5 +320,9 @@
 			margin-right: 0.33em;
 			color: var(--status-color);
 		}
+	}
+
+	.secured {
+		-webkit-text-security: circle;
 	}
 </style>

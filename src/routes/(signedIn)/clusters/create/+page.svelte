@@ -714,7 +714,8 @@
 										</div>
 
 										<input
-											type="text"
+											type="password"
+											placeholder="0xabcdef...11234567890"
 											id="nodes.{i}.config.private_key"
 											name="nodes.{i}.config.private_key"
 											bind:value={node.config.private_key}
