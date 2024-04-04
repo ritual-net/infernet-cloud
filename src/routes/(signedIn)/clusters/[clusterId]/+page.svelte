@@ -222,7 +222,16 @@
 				<dt>Status</dt>
 
 				<dd>
-					{cluster.locked ? 'Updating' : cluster.healthy ? 'Healthy' : 'Unhealthy'}
+					<div
+						class="status"
+						data-status={clusterStatus}
+					>
+						{{
+							'healthy': 'Healthy',
+							'updating': 'Updating',
+							'unhealthy': 'Unhealthy',
+						}[clusterStatus]}
+					</div>
 				</dd>
 			</section>
 
