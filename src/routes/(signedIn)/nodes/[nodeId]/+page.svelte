@@ -28,7 +28,7 @@
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
-	// import NodesContainersTable from './NodesContainersTable.svelte'
+	import NodeContainersTable from './NodeContainersTable.svelte'
 </script>
 
 
@@ -217,13 +217,13 @@
 		</dl>
 	</section>
 
-	<!-- <div>
+	<div>
 		<h3>Containers</h3>
 
-		<NodesContainersTable
-			nodes={node.containers}
+		<NodeContainersTable
+			containers={node.containers}
 		/>
-	</div> -->
+	</div>
 </div>
 
 
