@@ -16,7 +16,11 @@
 				await new Promise(resolve => setTimeout(resolve, 5000))
 				if(!isMounted) return
 
-				await invalidate(resolveRoute('/api/cluster/[clusterId]', { clusterId: $page.params.clusterId }))
+				await invalidate(
+					resolveRoute('/api/cluster/[clusterId]', {
+						clusterId: $page.params.clusterId
+					})
+				)
 			}
 		})()
 
