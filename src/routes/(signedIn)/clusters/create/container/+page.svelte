@@ -198,7 +198,15 @@
 							label: 'Docker Hub Community',
 							items: dockerImages ?? [],
 						},
-					]
+						dockerImagesQueryValue && {
+							value: 'input',
+							label: 'Custom',
+							items: [{
+								value: dockerImagesQueryValue,
+								label: dockerImagesQueryValue,
+							}],
+						},
+					].filter(Boolean)
 				)}
 				placeholder={`Choose or search for an image...`}
 				{...$constraints.container?.image}
