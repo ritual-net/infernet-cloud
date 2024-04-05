@@ -18,9 +18,46 @@
 	export let submitLabel = 'Add Container'
 
 
+	// API
+	import { resolveRoute } from '$app/paths'
+	import type { DockerHubClient } from '$/lib/docker/docker'
+
+
 	// Internal state
 	let images: string[] | undefined
 	$: (async () => { images = await imagesPromise })()
+
+	import { createQuery } from '@tanstack/svelte-query'
+
+	let dockerImagesQueryValue: string
+
+	$: dockerImagesQuery = createQuery({
+		queryKey: ['dockerImages', {
+			query: dockerImagesQueryValue,
+		}] as const,
+
+		queryFn: async ({
+			queryKey: [_, {
+				query,
+			}],
+		}) => (
+			await fetch(
+				resolveRoute(`/api/images/search/[query]`, {
+					query,
+				})
+			)
+				.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
+		),
+
+		select: result => (
+			result.results.map(item => ({
+				value: item.slug,
+				label: item.slug,
+			}))
+		),
+	})
+
+	$: dockerImages = $dockerImagesQuery.data
 
 
 	// Schema
@@ -144,21 +181,27 @@
 				name="container.image"
 				labelText="Image"
 				bind:value={$form.container.image}
-				{...!images
-					? {
-						items: [],
-						placeholder: `Loading images...`,
-						disabled: true,
-					}
-					: {
-						items: images
-							.map(image => ({
-								value: image,
-								label: image,
-							})),
-						placeholder: `Choose an image...`,
-					}
-				}
+				bind:inputValue={dockerImagesQueryValue}
+				items={(
+					[
+						{
+							value: 'ritualnetwork',
+							label: 'Ritual',
+							items: images
+								?.map(image => ({
+									value: image,
+									label: image,
+								}))
+								?? [],
+						},
+						{
+							value: 'docker',
+							label: 'Docker Hub Community',
+							items: dockerImages ?? [],
+						},
+					]
+				)}
+				placeholder={`Choose or search for an image...`}
 				{...$constraints.container?.image}
 			/>
 		</section>
