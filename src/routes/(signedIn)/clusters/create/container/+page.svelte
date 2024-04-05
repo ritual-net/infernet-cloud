@@ -5,7 +5,7 @@
 	export let data: PageData
 	const {
 		formData,
-		imagesPromise,
+		imagesPromise, // Promise<string[]> | string[]
 	} = data
 
 	let configurations = []
@@ -20,7 +20,7 @@
 
 	// Internal state
 	let images: string[] | undefined
-	$: imagesPromise.then(_ => images = _)
+	$: (async () => { images = await imagesPromise })()
 
 
 	// Schema
@@ -76,6 +76,7 @@
 
 
 	// Components
+	import Combobox from '$/components/Combobox.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
@@ -138,11 +139,11 @@
 				<p>Choose the image this container is deployed with.</p>
 			</div>
 
-			<Select
+			<Combobox
 				required
 				id="container.image"
 				name="container.image"
-				labelText="Service Account"
+				labelText="Image"
 				bind:value={$form.container.image}
 				{...!images
 					? {
@@ -156,31 +157,11 @@
 								value: image,
 								label: image,
 							})),
+						placeholder: `Choose an image...`,
 					}
 				}
 			/>
 		</section>
-
-		<!-- <section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="container.container_id">
-						Image ID
-					</label>
-				</h3>
-
-				<p>Enter an ID for the image to be used.</p>
-			</div>
-
-			<input
-				type="text"
-				id="container.container_id"
-				name="container.container_id"
-				bind:value={$form.container.container_id}
-				placeholder={`ritualnet/llm-inference`}
-				{...$constraints.container.container_id ?? {}}
-			/>
-		</section> -->
 
 		<section class="row wrap">
 			<div class="column inline">

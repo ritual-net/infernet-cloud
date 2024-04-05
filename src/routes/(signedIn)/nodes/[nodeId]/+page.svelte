@@ -28,7 +28,7 @@
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
-	// import NodesContainersTable from './NodesContainersTable.svelte'
+	import NodeContainersTable from './NodeContainersTable.svelte'
 </script>
 
 
@@ -160,6 +160,26 @@
 			<h3>Onchain Details</h3>
 
 			<dl class="card column">
+				{#if node.trail_head_blocks}
+					<section class="row">
+						<dt>Trail Head Blocks</dt>
+
+						<dd>
+							{node.trail_head_blocks}
+						</dd>
+					</section>
+				{/if}
+
+				{#if node.rpc_url}
+					<section class="row">
+						<dt>RPC URL</dt>
+
+						<dd>
+							{node.rpc_url}
+						</dd>
+					</section>
+				{/if}
+
 				{#if node.coordinator_address}
 					<section class="row">
 						<dt>Coordinator Address</dt>
@@ -179,6 +199,16 @@
 						</dd>
 					</section>
 				{/if}
+
+				{#if node.private_key}
+					<section class="row">
+						<dt>Private Key</dt>
+
+						<dd>
+							<span class="secured">{node.private_key}</span>
+						</dd>
+					</section>
+				{/if}
 			</dl>
 		</section>
 	{/if}
@@ -187,6 +217,22 @@
 		<h3>Status</h3>
 
 		<dl class="card column">
+			<section class="row">
+				<dt>Status</dt>
+
+				<dd>
+					<div
+						class="status"
+						data-status={nodeStatus}
+					>{{
+						'unknown': 'Unknown',
+						'healthy': 'Healthy',
+						'updating': 'Updating',
+						'unhealthy': 'Unhealthy',
+					}[nodeStatus]}</div>
+				</dd>
+			</section>
+
 			{#if infoError}
 				<section class="column">
 					<dt>Error</dt>
@@ -201,13 +247,13 @@
 		</dl>
 	</section>
 
-	<!-- <div>
+	<div>
 		<h3>Containers</h3>
 
-		<NodesContainersTable
-			nodes={node.containers}
+		<NodeContainersTable
+			containers={node.containers}
 		/>
-	</div> -->
+	</div>
 </div>
 
 
@@ -273,5 +319,9 @@
 			margin-right: 0.33em;
 			color: var(--status-color);
 		}
+	}
+
+	.secured {
+		-webkit-text-security: circle;
 	}
 </style>

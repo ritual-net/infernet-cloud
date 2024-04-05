@@ -8,7 +8,8 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		cluster
+		cluster,
+		nodesWithInfo,
 	} = $page.data as PageData)
 
 
@@ -97,7 +98,7 @@
 								await applyAction(result)
 
 								if(result.type === 'success')
-									await invalidate('.')
+									await invalidate($page.url)
 
 								removeToast(toast.id)
 							}
@@ -119,7 +120,7 @@
 								await applyAction(result)
 
 								if(result.type === 'success')
-									await invalidate('.')
+									await invalidate($page.url)
 
 								removeToast(toast.id)
 							}
@@ -221,7 +222,16 @@
 				<dt>Status</dt>
 
 				<dd>
-					{cluster.locked ? 'Updating' : cluster.healthy ? 'Healthy' : 'Unhealthy'}
+					<div
+						class="status"
+						data-status={clusterStatus}
+					>
+						{{
+							'healthy': 'Healthy',
+							'updating': 'Updating',
+							'unhealthy': 'Unhealthy',
+						}[clusterStatus]}
+					</div>
 				</dd>
 			</section>
 
@@ -254,8 +264,11 @@
 	<section>
 		<h3>Nodes</h3>
 
-		<NodesTable
+		<!-- <NodesTable
 			nodes={cluster.nodes}
+		/> -->
+		<NodesTable
+			{nodesWithInfo}
 		/>
 	</section>
 </div>

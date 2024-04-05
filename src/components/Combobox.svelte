@@ -111,7 +111,7 @@
 </script>
 
 
-<div>
+<div class="container">
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<!-- <label use:melt={$label}>
 		{labelText}
@@ -197,6 +197,7 @@
 <style>
 	
 	:root {
+		--combobox-minWidth: 20rem;
 		--combobox-paddingX: 1em;
 		--combobox-paddingY: 0.5em;
 		--combobox-groupItem-indentX: 1.5em;
@@ -212,8 +213,12 @@
 		--combobox-textColor: var(--textColor);
 	}
 
+	.container {
+		min-width: min(var(--combobox-minWidth), 100%);
+	}
+
 	div:has(> [data-melt-combobox-trigger]) {
-		display: inline-grid;
+		display: grid;
 		align-items: center;
 		justify-items: end;
 		align-items: center;

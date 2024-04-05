@@ -147,10 +147,6 @@
 						</tr>
 					</ContextMenu>
 				</Subscribe>
-			{:else}
-				<div class="placeholder">
-					<slot />
-				</div>
 			{/each}
 		</tbody>
 	</table>

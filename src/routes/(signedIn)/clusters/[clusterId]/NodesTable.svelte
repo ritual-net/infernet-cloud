@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
-	import type { InfernetNode } from '$schema/interfaces'
+	// import type { InfernetNode } from '$schema/interfaces'
+	import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
 	// Context
@@ -8,7 +9,8 @@
 
 
 	// Inputs
-	export let nodes: InfernetNode[]
+	// export let nodes: InfernetNode[]
+	export let nodesWithInfo: InfernetNodeWithInfo[]
 
 
 	// Functions
@@ -30,16 +32,16 @@
 
 
 <Table
-	data={nodes}
+	data={nodesWithInfo}
 	columns={[
 		{
 			header: 'Name',
-			accessor: node => node.id,
+			accessor: ({ node }) => node.id,
 		},
 		{
 			header: 'Status',
-			accessor: node => node,
-			cell: ({ value: node }) => (
+			accessor: ({ node }) => node,
+			cell: ({ value: { node } }) => (
 				createRender(NodesTableCell, {
 					cellType: CellType.Status,
 					node,
@@ -48,25 +50,25 @@
 		},
 		{
 			header: 'Coordinator Address',
-			accessor: node => node.coordinator_address,
+			accessor: ({ node }) => node.coordinator_address,
 		},
 		{
 			header: 'Gas Limit',
-			accessor: node => (
+			accessor: ({ node }) => (
 				typeof node.max_gas_limit === 'number' && formatNumberCompact(node.max_gas_limit)
 			),
 		},
 		{
 			header: 'Containers',
-			accessor: node => node.containers.length,
+			accessor: ({ node }) => node.containers.length,
 		},
 	]}
-	getRowLink={node => (
+	getRowLink={({ node }) => (
 		resolveRoute(`/nodes/[nodeId]`, {
 			nodeId: node.id,
 		})
 	)}
-	contextMenu={node => {
+	contextMenu={({ node }) => {
 		const nodeRoute = resolveRoute(`/nodes/[nodeId]`, {
 			nodeId: node.id,
 		})

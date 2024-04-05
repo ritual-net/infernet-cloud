@@ -5,7 +5,7 @@ export const load: LayoutServerLoad = async ({
 	fetch,
 }) => {
 	const imagesPromise = fetch(`/api/images/ritual`)
-		.then(response => response.json())
+		.then(response => response.json()) as Promise<string[]>
 
 	return {
 		imagesPromise,

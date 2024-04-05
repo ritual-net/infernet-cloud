@@ -17,8 +17,8 @@
 				if(!isMounted) return
 
 				await invalidate(
-					resolveRoute('/api/cluster/[clusterId]', {
-						clusterId: $page.params.clusterId
+					resolveRoute('/api/node/[nodeId]', {
+						nodeId: $page.params.nodeId,
 					})
 				)
 			}
@@ -31,23 +31,4 @@
 </script>
 
 
-<nav class="breadcrumb">
-	<a
-		href="/clusters"
-		class="row inline"
-	>
-		<span>←</span>
-		<span>Clusters</span>
-	</a>
-</nav>
-
 <slot />
-
-
-<style>
-	nav {
-		& a {
-			opacity: 0.5;
-		}
-	}
-</style>

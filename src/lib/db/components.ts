@@ -85,10 +85,11 @@ export const getClusterSelectParams = (creds: boolean, provider: CloudProvider) 
 			...(creds ? { ...e.is(ServiceAccountTypeByProvider[provider], { creds }) } : {}),
 		},
 		nodes: {
-			...e.InfernetNode['*'],
-			containers: {
-				...e.Container['*'],
-			},
+			id: true,
+			// ...e.InfernetNode['*'],
+			// containers: {
+			// 	...e.Container['*'],
+			// },
 		},
 		...e.Cluster['*'],
 		...ClusterSpreadParamsByProvider[provider],

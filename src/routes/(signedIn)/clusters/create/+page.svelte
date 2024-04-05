@@ -635,6 +635,7 @@
 
 										<input
 											type="number"
+											placeholder="5"
 											id="nodes.{i}.config.trail_head_blocks"
 											name="nodes.{i}.config.trail_head_blocks"
 											bind:value={node.config.trail_head_blocks}
@@ -655,6 +656,7 @@
 
 										<input
 											type="url"
+											placeholder="https://rpc.example.com/rpc"
 											id="nodes.{i}.config.rpc_url"
 											name="nodes.{i}.config.rpc_url"
 											bind:value={node.config.rpc_url}
@@ -675,6 +677,7 @@
 
 										<input
 											type="text"
+											placeholder="0xabcdef...1234567890"
 											id="nodes.{i}.config.coordinator_address"
 											name="nodes.{i}.config.coordinator_address"
 											bind:value={node.config.coordinator_address}
@@ -714,7 +717,8 @@
 										</div>
 
 										<input
-											type="text"
+											type="password"
+											placeholder="0xabcdef...1234567890"
 											id="nodes.{i}.config.private_key"
 											name="nodes.{i}.config.private_key"
 											bind:value={node.config.private_key}
@@ -764,13 +768,13 @@
 											const result = await preloadData(href)
 
 											if (result.type === 'loaded' && result.status === 200) {
-												pushState(href, {
+												pushState('#/container/create', {
 													showContainerForm: 'create',
 													nodeId: node.id,
 													containerFormData: {
 														...result.data,
 														imagesPromise: await result.data.imagesPromise,
-													}
+													},
 												})
 											} else {
 												console.error(`Failed to preload shallow route: ${href}`)
@@ -802,7 +806,7 @@
 										}
 
 										if (result.type === 'loaded' && result.status === 200) {
-											pushState(href, {
+											pushState('#/container/edit', {
 												showContainerForm: 'edit',
 												nodeId: node.id,
 												containerId: container.container_id,
@@ -822,11 +826,13 @@
 										history.back()
 									}}
 								>
+								
 									<ContainerForm
 										data={$page.state.containerFormData}
 										mode={$page.state.showContainerForm}
 										{...(
 											$page.state.showContainerForm === 'create' ?
+											// $page.url.hash === '#/container/create' ?
 												{
 													submitLabel: 'Add Container',
 
@@ -838,6 +844,7 @@
 													},
 												}
 											: $page.state.showContainerForm === 'edit' ?
+											// : $page.url.hash === '#/container/edit' ?
 												{
 													submitLabel: 'Save Changes',
 

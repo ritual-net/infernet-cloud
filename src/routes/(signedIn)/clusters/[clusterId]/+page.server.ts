@@ -22,7 +22,7 @@ export const actions: Actions = {
 				{},
 				{
 					title: `Couldn't apply changes to cluster.`,
-					description: result,
+					description: result.errorMessage,
 				},
 				{
 					status: response.status,

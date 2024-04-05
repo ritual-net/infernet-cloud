@@ -4,7 +4,7 @@ import { e } from '$/lib/db';
 import { nodeAction } from '$/lib/clients/node/common';
 import { getClusterByNodeIds } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
-import { NodeAction, type NodeInfo } from '$/types/provider';
+import { NodeAction, type InfernetNodeWithInfo } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /**
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 			node: result.nodes[0].node,
 			info: result.nodes[0].info,
 			infoError: result.infoError?.message,
-		});
+		} as InfernetNodeWithInfo);
 	} catch (e) {
 		return error(400, (e as Error).message);
 	}

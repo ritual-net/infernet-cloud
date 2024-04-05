@@ -1,5 +1,6 @@
 // Types
 import type { getClusterById } from '$/lib/db/queries'
+import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
 // Data
@@ -22,7 +23,19 @@ export const load: LayoutLoad = async ({
 	if(!cluster)
 		error(404, `Couldn't find a cluster with ID ${clusterId}.`)
 
+	const nodesWithInfo = await Promise.all(
+		cluster.nodes.map(async node => (
+			await fetch(
+				resolveRoute('/api/node/[nodeId]', {
+					nodeId: node.id,
+				})
+			)
+				.then(response => response.json())
+		) as InfernetNodeWithInfo)
+	)
+
 	return {
 		cluster,
+		nodesWithInfo,
 	}
 }
