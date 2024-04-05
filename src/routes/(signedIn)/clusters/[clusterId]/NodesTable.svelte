@@ -49,6 +49,10 @@
 			),
 		},
 		{
+			header: 'IP',
+			accessor: ({ info }) => info?.ip ?? '–',
+		},
+		{
 			header: 'Coordinator Address',
 			accessor: ({ node }) => node.coordinator_address,
 		},

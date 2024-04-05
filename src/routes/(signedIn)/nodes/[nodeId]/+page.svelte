@@ -233,6 +233,16 @@
 				</dd>
 			</section>
 
+			{#if info?.ip}
+				<section class="row">
+					<dt>IP</dt>
+
+					<dd>
+						{info.ip}
+					</dd>
+				</section>
+			{/if}
+
 			{#if infoError}
 				<section class="column">
 					<dt>Error</dt>
