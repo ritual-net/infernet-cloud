@@ -140,7 +140,6 @@
 			</div>
 
 			<Combobox
-				required
 				id="container.image"
 				name="container.image"
 				labelText="Image"
@@ -160,6 +159,7 @@
 						placeholder: `Choose an image...`,
 					}
 				}
+				{...$constraints.container?.image}
 			/>
 		</section>
 
