@@ -64,7 +64,7 @@ export const Container = z
 		'external': z
 			.boolean()
 			.required()
-			.default(false),
+			.default(true),
 
 		'allowed_addresses': z
 			.array(
