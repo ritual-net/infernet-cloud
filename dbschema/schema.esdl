@@ -17,7 +17,9 @@ module default {
 
     access policy only_owner
       allow all
-      using (.id ?= global current_user.id);
+      using (.id ?= global current_user.id) {
+        errmessage := 'You do not have access to this user.'
+      };
 
     access policy signup
       allow insert

@@ -58,28 +58,38 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		return error(400, result);
 	}
 
+	const registerResult = await registerResponse.json() as {
+		code: string,
+		provider: string,
+	}
 
-	// Get the identity from the auth server
-	const client = createClient();
-	const emailFactor = await e
-		.select(e.ext.auth.EmailPasswordFactor, (emailPassword) => ({
-			identity: {
-				id: true,
-			},
-			filter: e.op(emailPassword.email, '=', email),
-		}))
-		.run(client);
-
+	const pkceChallengeId = registerResult.code
+	
 	// Create a new user in the database
-	const user = await e
-		.insert(e.User, {
-			email,
-			name,
-			identity: e.select(e.ext.auth.Identity, () => ({
-				filter_single: { id: emailFactor[0].identity.id },
-			})),
-		})
+	const client = createClient();
+
+	const user = await e.insert(e.User, {
+		email,
+		name,
+		identity: e.assert_single(
+			e.op(
+				'distinct',
+				e.set(
+					e.select(e.ext.auth.PKCEChallenge, () => ({
+						filter_single: { id: pkceChallengeId },
+					})).identity,
+
+					e.select(e.ext.auth.EmailPasswordFactor, (emailPasswordFactor) => ({
+						filter_single: e.op(emailPasswordFactor.email, '=', email),
+					})).identity,					
+				),
+			),
+		),
+	})
 		.run(client);
+	
+	if(!user)
+		return error(500, `Failed to create user.`)
 
 	cookies.set('edgedb-pkce-verifier', pkce.verifier, {
 		httpOnly: true,

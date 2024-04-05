@@ -6,6 +6,7 @@ export namespace std {
     "id": string;
   }
   export interface $Object extends BaseObject {}
+  export type Endian = "Little" | "Big";
   export interface FreeObject extends BaseObject {}
   export type JsonEmpty = "ReturnEmpty" | "ReturnTarget" | "Error" | "UseNull" | "DeleteKey";
   export namespace enc {
@@ -105,6 +106,10 @@ export namespace ext {
     export interface AuthConfig extends cfg.ExtensionConfig {
       "providers": ProviderConfig[];
       "ui"?: UIConfig | null;
+      "app_name"?: string | null;
+      "logo_url"?: string | null;
+      "dark_logo_url"?: string | null;
+      "brand_color"?: string | null;
       "auth_signing_key"?: string | null;
       "token_time_to_live"?: edgedb.Duration | null;
       "allowed_redirect_urls": string[];
@@ -118,6 +123,10 @@ export namespace ext {
       "subject": string;
     }
     export interface ClientTokenIdentity extends Identity {}
+    export interface DiscordOAuthProvider extends OAuthProviderConfig {
+      "name": string;
+      "display_name": string;
+    }
     export interface Factor extends Auditable {
       "identity": LocalIdentity;
     }
@@ -126,6 +135,7 @@ export namespace ext {
       "verified_at"?: Date | null;
     }
     export interface EmailPasswordFactor extends EmailFactor {
+      "email": string;
       "password_hash": string;
     }
     export interface EmailPasswordProviderConfig extends ProviderConfig {
@@ -145,6 +155,13 @@ export namespace ext {
     export interface LocalIdentity extends Identity {
       "subject": string;
     }
+    export interface MagicLinkFactor extends EmailFactor {
+      "email": string;
+    }
+    export interface MagicLinkProviderConfig extends ProviderConfig {
+      "name": string;
+      "token_time_to_live": edgedb.Duration;
+    }
     export interface PKCEChallenge extends Auditable {
       "challenge": string;
       "auth_token"?: string | null;
@@ -163,6 +180,10 @@ export namespace ext {
       "timeout_per_attempt": edgedb.Duration;
     }
     export type SMTPSecurity = "PlainText" | "TLS" | "STARTTLS" | "STARTTLSOrPlainText";
+    export interface SlackOAuthProvider extends OAuthProviderConfig {
+      "name": string;
+      "display_name": string;
+    }
     export interface UIConfig extends cfg.ConfigObject {
       "redirect_to": string;
       "redirect_to_on_signup"?: string | null;
@@ -171,6 +192,25 @@ export namespace ext {
       "logo_url"?: string | null;
       "dark_logo_url"?: string | null;
       "brand_color"?: string | null;
+    }
+    export interface WebAuthnAuthenticationChallenge extends Auditable {
+      "challenge": Uint8Array;
+      "factors": WebAuthnFactor[];
+    }
+    export interface WebAuthnFactor extends EmailFactor {
+      "user_handle": Uint8Array;
+      "credential_id": Uint8Array;
+      "public_key": Uint8Array;
+    }
+    export interface WebAuthnProviderConfig extends ProviderConfig {
+      "name": string;
+      "relying_party_origin": string;
+      "require_verification": boolean;
+    }
+    export interface WebAuthnRegistrationChallenge extends Auditable {
+      "challenge": Uint8Array;
+      "email": string;
+      "user_handle": Uint8Array;
     }
   }
 }
@@ -191,6 +231,8 @@ export namespace cfg {
     "allow_bare_ddl"?: AllowBareDDL | null;
     "apply_access_policies"?: boolean | null;
     "allow_user_specified_id"?: boolean | null;
+    "cors_allow_origins": string[];
+    "auto_rebuild_query_cache"?: boolean | null;
     "shared_buffers"?: edgedb.ConfigMemory | null;
     "query_work_mem"?: edgedb.ConfigMemory | null;
     "maintenance_work_mem"?: edgedb.ConfigMemory | null;
@@ -210,9 +252,10 @@ export namespace cfg {
   export interface AuthMethod extends ConfigObject {
     "transports": ConnectionTransport[];
   }
-  export interface Config extends AbstractConfig {}
-  export type ConnectionTransport = "TCP" | "TCP_PG" | "HTTP" | "SIMPLE_HTTP";
   export interface DatabaseConfig extends AbstractConfig {}
+  export interface BranchConfig extends DatabaseConfig {}
+  export interface Config extends AbstractConfig {}
+  export type ConnectionTransport = "TCP" | "TCP_PG" | "HTTP" | "SIMPLE_HTTP" | "HTTP_METRICS" | "HTTP_HEALTH";
   export interface ExtensionConfig extends ConfigObject {
     "cfg": AbstractConfig;
   }
@@ -227,6 +270,9 @@ export namespace cfg {
     "transports": ConnectionTransport[];
   }
   export interface Trust extends AuthMethod {}
+  export interface mTLS extends AuthMethod {
+    "transports": ConnectionTransport[];
+  }
 }
 export namespace fts {
   export type ElasticLanguage = "ara" | "bul" | "cat" | "ces" | "ckb" | "dan" | "deu" | "ell" | "eng" | "eus" | "fas" | "fin" | "fra" | "gle" | "glg" | "hin" | "hun" | "hye" | "ind" | "ita" | "lav" | "nld" | "nor" | "por" | "ron" | "rus" | "spa" | "swe" | "tha" | "tur" | "zho" | "edb_Brazilian" | "edb_ChineseJapaneseKorean";
@@ -345,6 +391,7 @@ export namespace schema {
     "readonly"?: boolean | null;
     "default"?: string | null;
     "expr"?: string | null;
+    "secret"?: boolean | null;
     "source"?: Source | null;
     "target"?: Type | null;
     "rewrites": Rewrite[];
@@ -461,6 +508,7 @@ export interface types {
   "std": {
     "BaseObject": std.BaseObject;
     "Object": std.$Object;
+    "Endian": std.Endian;
     "FreeObject": std.FreeObject;
     "JsonEmpty": std.JsonEmpty;
     "enc": {
@@ -491,6 +539,7 @@ export interface types {
       "AzureOAuthProvider": ext.auth.AzureOAuthProvider;
       "Identity": ext.auth.Identity;
       "ClientTokenIdentity": ext.auth.ClientTokenIdentity;
+      "DiscordOAuthProvider": ext.auth.DiscordOAuthProvider;
       "Factor": ext.auth.Factor;
       "EmailFactor": ext.auth.EmailFactor;
       "EmailPasswordFactor": ext.auth.EmailPasswordFactor;
@@ -500,10 +549,17 @@ export interface types {
       "GoogleOAuthProvider": ext.auth.GoogleOAuthProvider;
       "JWTAlgo": ext.auth.JWTAlgo;
       "LocalIdentity": ext.auth.LocalIdentity;
+      "MagicLinkFactor": ext.auth.MagicLinkFactor;
+      "MagicLinkProviderConfig": ext.auth.MagicLinkProviderConfig;
       "PKCEChallenge": ext.auth.PKCEChallenge;
       "SMTPConfig": ext.auth.SMTPConfig;
       "SMTPSecurity": ext.auth.SMTPSecurity;
+      "SlackOAuthProvider": ext.auth.SlackOAuthProvider;
       "UIConfig": ext.auth.UIConfig;
+      "WebAuthnAuthenticationChallenge": ext.auth.WebAuthnAuthenticationChallenge;
+      "WebAuthnFactor": ext.auth.WebAuthnFactor;
+      "WebAuthnProviderConfig": ext.auth.WebAuthnProviderConfig;
+      "WebAuthnRegistrationChallenge": ext.auth.WebAuthnRegistrationChallenge;
     };
   };
   "__default": {
@@ -515,15 +571,17 @@ export interface types {
     "AllowBareDDL": cfg.AllowBareDDL;
     "Auth": cfg.Auth;
     "AuthMethod": cfg.AuthMethod;
+    "DatabaseConfig": cfg.DatabaseConfig;
+    "BranchConfig": cfg.BranchConfig;
     "Config": cfg.Config;
     "ConnectionTransport": cfg.ConnectionTransport;
-    "DatabaseConfig": cfg.DatabaseConfig;
     "ExtensionConfig": cfg.ExtensionConfig;
     "InstanceConfig": cfg.InstanceConfig;
     "JWT": cfg.JWT;
     "Password": cfg.Password;
     "SCRAM": cfg.SCRAM;
     "Trust": cfg.Trust;
+    "mTLS": cfg.mTLS;
   };
   "fts": {
     "ElasticLanguage": fts.ElasticLanguage;

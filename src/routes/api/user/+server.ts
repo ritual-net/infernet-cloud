@@ -1,5 +1,5 @@
 import { e } from '$/lib/db'
-import { json } from '@sveltejs/kit'
+import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from '@sveltejs/kit'
 
 /**
@@ -10,12 +10,18 @@ import type { RequestHandler } from '@sveltejs/kit'
 export const GET: RequestHandler = async ({
 	locals: { client },
 }) => {
-	const user = await e
-		.select(e.global.current_user, () => ({
-			name: true,
-			email: true,
-		}))
-		.run(client);
+	try {
+		const user = await e
+			.select(e.global.current_user, () => ({
+				name: true,
+				email: true,
+			}))
+			.run(client);
 
-	return json(user)
+		return json(user)
+	}catch(e){
+		console.error(e)
+
+		return error(500, e.toString())
+	}
 };

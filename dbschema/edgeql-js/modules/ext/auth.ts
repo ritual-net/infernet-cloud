@@ -80,6 +80,10 @@ const Auditable: $.$expr_PathNode<$.TypeSet<$Auditable, $.Cardinality.Many>, nul
 export type $AuthConfigλShape = $.typeutil.flatten<_cfg.$ExtensionConfigλShape & {
   "providers": $.LinkDesc<$ProviderConfig, $.Cardinality.Many, {}, false, false,  false, false>;
   "ui": $.LinkDesc<$UIConfig, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "app_name": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "logo_url": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "dark_logo_url": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "brand_color": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "auth_signing_key": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "token_time_to_live": $.PropertyDesc<_std.$duration, $.Cardinality.AtMostOne, false, false, false, true>;
   "allowed_redirect_urls": $.PropertyDesc<_std.$str, $.Cardinality.Many, false, false, false, false>;
@@ -129,6 +133,18 @@ const $ClientTokenIdentity = $.makeType<$ClientTokenIdentity>(_.spec, "00f11fb6-
 
 const ClientTokenIdentity: $.$expr_PathNode<$.TypeSet<$ClientTokenIdentity, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ClientTokenIdentity, $.Cardinality.Many), null);
 
+export type $DiscordOAuthProviderλShape = $.typeutil.flatten<Omit<$OAuthProviderConfigλShape, "name" | "display_name"> & {
+  "name": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, true, true>;
+  "display_name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, true>;
+}>;
+type $DiscordOAuthProvider = $.ObjectType<"ext::auth::DiscordOAuthProvider", $DiscordOAuthProviderλShape, null, [
+  ...$OAuthProviderConfig['__exclusives__'],
+  {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $DiscordOAuthProvider = $.makeType<$DiscordOAuthProvider>(_.spec, "1211be9e-fb63-560a-be54-e82f7520fc35", _.syntax.literal);
+
+const DiscordOAuthProvider: $.$expr_PathNode<$.TypeSet<$DiscordOAuthProvider, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($DiscordOAuthProvider, $.Cardinality.Many), null);
+
 export type $FactorλShape = $.typeutil.flatten<$AuditableλShape & {
   "identity": $.LinkDesc<$LocalIdentity, $.Cardinality.One, {}, true, false,  false, false>;
 }>;
@@ -141,22 +157,23 @@ const $Factor = $.makeType<$Factor>(_.spec, "5a4c113f-3892-5708-bf83-696857e6430
 const Factor: $.$expr_PathNode<$.TypeSet<$Factor, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Factor, $.Cardinality.Many), null);
 
 export type $EmailFactorλShape = $.typeutil.flatten<$FactorλShape & {
-  "email": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, false, false>;
+  "email": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "verified_at": $.PropertyDesc<_std.$datetime, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $EmailFactor = $.ObjectType<"ext::auth::EmailFactor", $EmailFactorλShape, null, [
   ...$Factor['__exclusives__'],
-  {email: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
 const $EmailFactor = $.makeType<$EmailFactor>(_.spec, "c8e5d5f3-fced-5e92-a040-af0ef7991888", _.syntax.literal);
 
 const EmailFactor: $.$expr_PathNode<$.TypeSet<$EmailFactor, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($EmailFactor, $.Cardinality.Many), null);
 
-export type $EmailPasswordFactorλShape = $.typeutil.flatten<$EmailFactorλShape & {
+export type $EmailPasswordFactorλShape = $.typeutil.flatten<Omit<$EmailFactorλShape, "email"> & {
+  "email": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, false, false>;
   "password_hash": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
 }>;
 type $EmailPasswordFactor = $.ObjectType<"ext::auth::EmailPasswordFactor", $EmailPasswordFactorλShape, null, [
   ...$EmailFactor['__exclusives__'],
+  {email: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
 const $EmailPasswordFactor = $.makeType<$EmailPasswordFactor>(_.spec, "177397b5-4749-5b76-8062-813313551a8f", _.syntax.literal);
 
@@ -203,6 +220,8 @@ export type $LocalIdentityλShape = $.typeutil.flatten<Omit<$IdentityλShape, "s
   "<identity[is ext::auth::Factor]": $.LinkDesc<$Factor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
   "<identity[is ext::auth::EmailFactor]": $.LinkDesc<$EmailFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
   "<identity[is ext::auth::EmailPasswordFactor]": $.LinkDesc<$EmailPasswordFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
+  "<identity[is ext::auth::MagicLinkFactor]": $.LinkDesc<$MagicLinkFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
+  "<identity[is ext::auth::WebAuthnFactor]": $.LinkDesc<$WebAuthnFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
   "<identity": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $LocalIdentity = $.ObjectType<"ext::auth::LocalIdentity", $LocalIdentityλShape, null, [
@@ -211,6 +230,29 @@ type $LocalIdentity = $.ObjectType<"ext::auth::LocalIdentity", $LocalIdentityλS
 const $LocalIdentity = $.makeType<$LocalIdentity>(_.spec, "78ff164d-0c30-56a8-8baa-73824f6d68c6", _.syntax.literal);
 
 const LocalIdentity: $.$expr_PathNode<$.TypeSet<$LocalIdentity, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($LocalIdentity, $.Cardinality.Many), null);
+
+export type $MagicLinkFactorλShape = $.typeutil.flatten<Omit<$EmailFactorλShape, "email"> & {
+  "email": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, false, false>;
+}>;
+type $MagicLinkFactor = $.ObjectType<"ext::auth::MagicLinkFactor", $MagicLinkFactorλShape, null, [
+  ...$EmailFactor['__exclusives__'],
+  {email: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $MagicLinkFactor = $.makeType<$MagicLinkFactor>(_.spec, "2e73616f-1385-54a2-9105-0381fedd24c6", _.syntax.literal);
+
+const MagicLinkFactor: $.$expr_PathNode<$.TypeSet<$MagicLinkFactor, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($MagicLinkFactor, $.Cardinality.Many), null);
+
+export type $MagicLinkProviderConfigλShape = $.typeutil.flatten<Omit<$ProviderConfigλShape, "name"> & {
+  "name": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, true, true>;
+  "token_time_to_live": $.PropertyDesc<_std.$duration, $.Cardinality.One, false, false, false, true>;
+}>;
+type $MagicLinkProviderConfig = $.ObjectType<"ext::auth::MagicLinkProviderConfig", $MagicLinkProviderConfigλShape, null, [
+  ...$ProviderConfig['__exclusives__'],
+  {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $MagicLinkProviderConfig = $.makeType<$MagicLinkProviderConfig>(_.spec, "94669beb-b17f-5923-b1ce-42cdbaba861b", _.syntax.literal);
+
+const MagicLinkProviderConfig: $.$expr_PathNode<$.TypeSet<$MagicLinkProviderConfig, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($MagicLinkProviderConfig, $.Cardinality.Many), null);
 
 export type $PKCEChallengeλShape = $.typeutil.flatten<$AuditableλShape & {
   "challenge": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, false, false>;
@@ -244,6 +286,18 @@ const $SMTPConfig = $.makeType<$SMTPConfig>(_.spec, "ac309d52-5057-5d9f-8d0a-1a4
 
 const SMTPConfig: $.$expr_PathNode<$.TypeSet<$SMTPConfig, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SMTPConfig, $.Cardinality.Many), null);
 
+export type $SlackOAuthProviderλShape = $.typeutil.flatten<Omit<$OAuthProviderConfigλShape, "name" | "display_name"> & {
+  "name": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, true, true>;
+  "display_name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, true>;
+}>;
+type $SlackOAuthProvider = $.ObjectType<"ext::auth::SlackOAuthProvider", $SlackOAuthProviderλShape, null, [
+  ...$OAuthProviderConfig['__exclusives__'],
+  {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $SlackOAuthProvider = $.makeType<$SlackOAuthProvider>(_.spec, "9952c73b-751a-59ae-b367-753d9e9ee215", _.syntax.literal);
+
+const SlackOAuthProvider: $.$expr_PathNode<$.TypeSet<$SlackOAuthProvider, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SlackOAuthProvider, $.Cardinality.Many), null);
+
 export type $UIConfigλShape = $.typeutil.flatten<_cfg.$ConfigObjectλShape & {
   "redirect_to": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "redirect_to_on_signup": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -261,6 +315,62 @@ type $UIConfig = $.ObjectType<"ext::auth::UIConfig", $UIConfigλShape, null, [
 const $UIConfig = $.makeType<$UIConfig>(_.spec, "594c2313-d943-51c0-a6bb-d9d367926838", _.syntax.literal);
 
 const UIConfig: $.$expr_PathNode<$.TypeSet<$UIConfig, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($UIConfig, $.Cardinality.Many), null);
+
+export type $WebAuthnAuthenticationChallengeλShape = $.typeutil.flatten<$AuditableλShape & {
+  "challenge": $.PropertyDesc<_std.$bytes, $.Cardinality.One, true, false, false, false>;
+  "factors": $.LinkDesc<$WebAuthnFactor, $.Cardinality.AtLeastOne, {}, true, false,  false, false>;
+}>;
+type $WebAuthnAuthenticationChallenge = $.ObjectType<"ext::auth::WebAuthnAuthenticationChallenge", $WebAuthnAuthenticationChallengeλShape, null, [
+  ...$Auditable['__exclusives__'],
+  {factors: {__element__: $WebAuthnFactor, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+  {challenge: {__element__: _std.$bytes, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $WebAuthnAuthenticationChallenge = $.makeType<$WebAuthnAuthenticationChallenge>(_.spec, "ffb4afce-f9e9-5494-83e4-d9ab262ad48e", _.syntax.literal);
+
+const WebAuthnAuthenticationChallenge: $.$expr_PathNode<$.TypeSet<$WebAuthnAuthenticationChallenge, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($WebAuthnAuthenticationChallenge, $.Cardinality.Many), null);
+
+export type $WebAuthnFactorλShape = $.typeutil.flatten<$EmailFactorλShape & {
+  "user_handle": $.PropertyDesc<_std.$bytes, $.Cardinality.One, false, false, false, false>;
+  "credential_id": $.PropertyDesc<_std.$bytes, $.Cardinality.One, true, false, false, false>;
+  "public_key": $.PropertyDesc<_std.$bytes, $.Cardinality.One, true, false, false, false>;
+  "<factors[is ext::auth::WebAuthnAuthenticationChallenge]": $.LinkDesc<$WebAuthnAuthenticationChallenge, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "<factors": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+}>;
+type $WebAuthnFactor = $.ObjectType<"ext::auth::WebAuthnFactor", $WebAuthnFactorλShape, null, [
+  ...$EmailFactor['__exclusives__'],
+  {public_key: {__element__: _std.$bytes, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+  {credential_id: {__element__: _std.$bytes, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $WebAuthnFactor = $.makeType<$WebAuthnFactor>(_.spec, "565eca61-74f2-562e-ab89-733402d7ed0f", _.syntax.literal);
+
+const WebAuthnFactor: $.$expr_PathNode<$.TypeSet<$WebAuthnFactor, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($WebAuthnFactor, $.Cardinality.Many), null);
+
+export type $WebAuthnProviderConfigλShape = $.typeutil.flatten<Omit<$ProviderConfigλShape, "name"> & {
+  "name": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, true, true>;
+  "relying_party_origin": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "require_verification": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
+}>;
+type $WebAuthnProviderConfig = $.ObjectType<"ext::auth::WebAuthnProviderConfig", $WebAuthnProviderConfigλShape, null, [
+  ...$ProviderConfig['__exclusives__'],
+  {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $WebAuthnProviderConfig = $.makeType<$WebAuthnProviderConfig>(_.spec, "0e105468-3e50-5c03-881d-4c2446b93ee1", _.syntax.literal);
+
+const WebAuthnProviderConfig: $.$expr_PathNode<$.TypeSet<$WebAuthnProviderConfig, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($WebAuthnProviderConfig, $.Cardinality.Many), null);
+
+export type $WebAuthnRegistrationChallengeλShape = $.typeutil.flatten<$AuditableλShape & {
+  "challenge": $.PropertyDesc<_std.$bytes, $.Cardinality.One, true, false, false, false>;
+  "email": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "user_handle": $.PropertyDesc<_std.$bytes, $.Cardinality.One, false, false, false, false>;
+}>;
+type $WebAuthnRegistrationChallenge = $.ObjectType<"ext::auth::WebAuthnRegistrationChallenge", $WebAuthnRegistrationChallengeλShape, null, [
+  ...$Auditable['__exclusives__'],
+  {user_handle: {__element__: _std.$bytes, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },email: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },challenge: {__element__: _std.$bytes, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+  {challenge: {__element__: _std.$bytes, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $WebAuthnRegistrationChallenge = $.makeType<$WebAuthnRegistrationChallenge>(_.spec, "e6627c40-57e9-5dc8-9612-7d983ec18e2a", _.syntax.literal);
+
+const WebAuthnRegistrationChallenge: $.$expr_PathNode<$.TypeSet<$WebAuthnRegistrationChallenge, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($WebAuthnRegistrationChallenge, $.Cardinality.Many), null);
 
 type signing_key_existsλFuncExpr = $.$expr_Function<
   _std.$bool, $.Cardinality.One
@@ -367,7 +477,7 @@ function jwt_verify_75faa5ad758d5502bb04da9b92b99f58(...args: any[]) {
 const $ext_auth__globals: {  ClientTokenIdentity: _.syntax.$expr_Global<
               // "ext::auth::ClientTokenIdentity",
               $ClientTokenIdentity,
-              $.Cardinality.Many
+              $.Cardinality.AtMostOne
               >,  client_token: _.syntax.$expr_Global<
               // "ext::auth::client_token",
               _std.$str,
@@ -375,14 +485,14 @@ const $ext_auth__globals: {  ClientTokenIdentity: _.syntax.$expr_Global<
               >} = {  ClientTokenIdentity: _.syntax.makeGlobal(
               "ext::auth::ClientTokenIdentity",
               $.makeType(_.spec, "00f11fb6-7aba-5a64-8e54-a0500877b6c7", _.syntax.literal),
-              $.Cardinality.Many) as any,  client_token: _.syntax.makeGlobal(
+              $.Cardinality.AtMostOne) as any,  client_token: _.syntax.makeGlobal(
               "ext::auth::client_token",
               $.makeType(_.spec, "00000000-0000-0000-0000-000000000101", _.syntax.literal),
               $.Cardinality.AtMostOne) as any};
 
 
 
-export { FlowType, JWTAlgo, SMTPSecurity, $ProviderConfig, ProviderConfig, $OAuthProviderConfig, OAuthProviderConfig, $AppleOAuthProvider, AppleOAuthProvider, $Auditable, Auditable, $AuthConfig, AuthConfig, $AzureOAuthProvider, AzureOAuthProvider, $Identity, Identity, $ClientTokenIdentity, ClientTokenIdentity, $Factor, Factor, $EmailFactor, EmailFactor, $EmailPasswordFactor, EmailPasswordFactor, $EmailPasswordProviderConfig, EmailPasswordProviderConfig, $GitHubOAuthProvider, GitHubOAuthProvider, $GoogleOAuthProvider, GoogleOAuthProvider, $LocalIdentity, LocalIdentity, $PKCEChallenge, PKCEChallenge, $SMTPConfig, SMTPConfig, $UIConfig, UIConfig };
+export { FlowType, JWTAlgo, SMTPSecurity, $ProviderConfig, ProviderConfig, $OAuthProviderConfig, OAuthProviderConfig, $AppleOAuthProvider, AppleOAuthProvider, $Auditable, Auditable, $AuthConfig, AuthConfig, $AzureOAuthProvider, AzureOAuthProvider, $Identity, Identity, $ClientTokenIdentity, ClientTokenIdentity, $DiscordOAuthProvider, DiscordOAuthProvider, $Factor, Factor, $EmailFactor, EmailFactor, $EmailPasswordFactor, EmailPasswordFactor, $EmailPasswordProviderConfig, EmailPasswordProviderConfig, $GitHubOAuthProvider, GitHubOAuthProvider, $GoogleOAuthProvider, GoogleOAuthProvider, $LocalIdentity, LocalIdentity, $MagicLinkFactor, MagicLinkFactor, $MagicLinkProviderConfig, MagicLinkProviderConfig, $PKCEChallenge, PKCEChallenge, $SMTPConfig, SMTPConfig, $SlackOAuthProvider, SlackOAuthProvider, $UIConfig, UIConfig, $WebAuthnAuthenticationChallenge, WebAuthnAuthenticationChallenge, $WebAuthnFactor, WebAuthnFactor, $WebAuthnProviderConfig, WebAuthnProviderConfig, $WebAuthnRegistrationChallenge, WebAuthnRegistrationChallenge };
 
 type __defaultExports = {
   "FlowType": typeof FlowType;
@@ -396,6 +506,7 @@ type __defaultExports = {
   "AzureOAuthProvider": typeof AzureOAuthProvider;
   "Identity": typeof Identity;
   "ClientTokenIdentity": typeof ClientTokenIdentity;
+  "DiscordOAuthProvider": typeof DiscordOAuthProvider;
   "Factor": typeof Factor;
   "EmailFactor": typeof EmailFactor;
   "EmailPasswordFactor": typeof EmailPasswordFactor;
@@ -403,9 +514,16 @@ type __defaultExports = {
   "GitHubOAuthProvider": typeof GitHubOAuthProvider;
   "GoogleOAuthProvider": typeof GoogleOAuthProvider;
   "LocalIdentity": typeof LocalIdentity;
+  "MagicLinkFactor": typeof MagicLinkFactor;
+  "MagicLinkProviderConfig": typeof MagicLinkProviderConfig;
   "PKCEChallenge": typeof PKCEChallenge;
   "SMTPConfig": typeof SMTPConfig;
+  "SlackOAuthProvider": typeof SlackOAuthProvider;
   "UIConfig": typeof UIConfig;
+  "WebAuthnAuthenticationChallenge": typeof WebAuthnAuthenticationChallenge;
+  "WebAuthnFactor": typeof WebAuthnFactor;
+  "WebAuthnProviderConfig": typeof WebAuthnProviderConfig;
+  "WebAuthnRegistrationChallenge": typeof WebAuthnRegistrationChallenge;
   "signing_key_exists": typeof signing_key_exists;
   "_jwt_check_signature": typeof jwt_check_signature_afb44ddf133051a39d0871812371dd10;
   "_jwt_parse": typeof jwt_parse_08a86a788cea56a9b555b4a881b5e569;
@@ -424,6 +542,7 @@ const __defaultExports: __defaultExports = {
   "AzureOAuthProvider": AzureOAuthProvider,
   "Identity": Identity,
   "ClientTokenIdentity": ClientTokenIdentity,
+  "DiscordOAuthProvider": DiscordOAuthProvider,
   "Factor": Factor,
   "EmailFactor": EmailFactor,
   "EmailPasswordFactor": EmailPasswordFactor,
@@ -431,9 +550,16 @@ const __defaultExports: __defaultExports = {
   "GitHubOAuthProvider": GitHubOAuthProvider,
   "GoogleOAuthProvider": GoogleOAuthProvider,
   "LocalIdentity": LocalIdentity,
+  "MagicLinkFactor": MagicLinkFactor,
+  "MagicLinkProviderConfig": MagicLinkProviderConfig,
   "PKCEChallenge": PKCEChallenge,
   "SMTPConfig": SMTPConfig,
+  "SlackOAuthProvider": SlackOAuthProvider,
   "UIConfig": UIConfig,
+  "WebAuthnAuthenticationChallenge": WebAuthnAuthenticationChallenge,
+  "WebAuthnFactor": WebAuthnFactor,
+  "WebAuthnProviderConfig": WebAuthnProviderConfig,
+  "WebAuthnRegistrationChallenge": WebAuthnRegistrationChallenge,
   "signing_key_exists": signing_key_exists,
   "_jwt_check_signature": jwt_check_signature_afb44ddf133051a39d0871812371dd10,
   "_jwt_parse": jwt_parse_08a86a788cea56a9b555b4a881b5e569,
