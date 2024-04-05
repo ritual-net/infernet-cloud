@@ -760,6 +760,8 @@
 
 									<a
 										href="/clusters/create/container"
+										data-sveltekit-preload-code="eager"
+
 										on:click={async (e) => {
 											e.preventDefault()
 
