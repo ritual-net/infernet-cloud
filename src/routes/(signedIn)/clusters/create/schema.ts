@@ -88,11 +88,11 @@ export const Container = z
 
 		'command': z
 			.string()
-			.required(),
+			.optional(),
 
 		'env': z
 			.string()
-			.required(),
+			.optional(),
 
 		'gpu': z
 			.boolean()

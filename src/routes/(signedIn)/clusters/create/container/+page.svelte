@@ -293,6 +293,8 @@
 					<label for="container.command">
 						Start Command
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>Enter the start command for this container below.</p>
@@ -303,7 +305,7 @@
 				name="container.command"
 				bind:value={$form.container.command}
 				rows="1"
-				placeholder={`Enter start command here...`}
+				placeholder={`--flag-1=hello --flag-2=world`}
 				{...$constraints.container?.command}
 				class="code"
 			/>
@@ -315,6 +317,8 @@
 					<label for="container.env">
 						Environment Variables
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>Please enter the contents of the .env file for this container.</p>
@@ -324,7 +328,7 @@
 				id="container.env"
 				name="container.env"
 				rows="2"
-				placeholder={`Add environment variables here...`}
+				placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
 				bind:value={$form.container.env}
 				{...$constraints.container?.env}
 				class="code"
