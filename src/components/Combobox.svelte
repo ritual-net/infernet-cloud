@@ -119,9 +119,10 @@
 			))
 	) as MenuItems<Value>
 
-	$: filteredItems = $touchedInput
-		? filterItems(items, inputValue)
-		: items
+	$: filteredItems = filterItems(items, inputValue)
+	// $: filteredItems = $touchedInput
+	// 	? filterItems(items, inputValue)
+	// 	: items
 </script>
 
 
