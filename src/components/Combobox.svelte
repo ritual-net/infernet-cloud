@@ -8,6 +8,7 @@
 
 	// Inputs
 	export let value: Value | undefined
+	export let inputValue: string = ''
 	export let items: MenuItems<Value>
 
 	export let labelText: string | undefined
@@ -47,10 +48,14 @@
 
 	const {
 		open,
-		inputValue,
 		touchedInput,
 		selected,
 	} = states
+
+	$: createSync(states).inputValue(
+		inputValue,
+		_ => { inputValue = _ },
+	)
 
 	$: createSync(states).selected(
 		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
@@ -68,7 +73,8 @@
 	)
 
 	$: if (!$open) {
-		$inputValue = (Array.isArray($selected) ? $selected[0] : $selected)?.label ?? ''
+		const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
+		inputValue = selectedItem ? selectedItem.value : ''
 	}
 
 	// (Computed)
@@ -111,7 +117,7 @@
 	) as MenuItems<Value>
 
 	$: filteredItems = $touchedInput
-		? filterItems(items, $inputValue)
+		? filterItems(items, inputValue)
 		: items
 </script>
 
