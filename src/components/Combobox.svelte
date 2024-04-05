@@ -44,6 +44,14 @@
 			fitViewport: true,
 			boundary: document.getElementsByTagName('main')[0],
 		},
+
+		onSelectedChange: ({ curr, next }) => {
+			if(curr === undefined && next === undefined) return
+
+			const selectedItem = Array.isArray(next) ? next[0] : next
+			inputValue = selectedItem ? selectedItem.value : ''
+			return next
+		},
 	})
 
 	const {
@@ -71,11 +79,6 @@
 		disabled,
 		_ => { disabled = _ },
 	)
-
-	$: if (!$open) {
-		const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
-		inputValue = selectedItem ? selectedItem.value : ''
-	}
 
 	// (Computed)
 	const itemMatchesInput = (
