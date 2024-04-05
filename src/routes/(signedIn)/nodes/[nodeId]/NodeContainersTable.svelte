@@ -84,11 +84,11 @@
 			accessor: container => container.gpu,
 		},
 	]}
-	getRowLink={container => (
-		resolveRoute(`/service-accounts/[containerId]`, {
+>
+	<!-- getRowLink={container => (
+		resolveRoute(`/container/[containerId]`, {
 			containerId: container.id,
 		})
-	)}
->
+	)} -->
 	<p>No containers configured.</p>
 </Table>
