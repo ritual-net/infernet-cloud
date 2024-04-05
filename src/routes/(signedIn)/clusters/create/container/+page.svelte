@@ -23,43 +23,6 @@
 	import type { DockerHubClient } from '$/lib/docker/docker'
 
 
-	// Internal state
-	let images: string[] | undefined
-	$: (async () => { images = await imagesPromise })()
-
-	import { createQuery } from '@tanstack/svelte-query'
-
-	let dockerImagesQueryValue: string
-
-	$: dockerImagesQuery = createQuery({
-		queryKey: ['dockerImages', {
-			query: dockerImagesQueryValue,
-		}] as const,
-
-		queryFn: async ({
-			queryKey: [_, {
-				query,
-			}],
-		}) => (
-			await fetch(
-				resolveRoute(`/api/images/search/[query]`, {
-					query,
-				})
-			)
-				.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
-		),
-
-		select: result => (
-			result.results.map(item => ({
-				value: item.slug,
-				label: item.slug,
-			}))
-		),
-	})
-
-	$: dockerImages = $dockerImagesQuery.data
-
-
 	// Schema
 	import { FormData } from './schema'
 
@@ -98,6 +61,42 @@
 	let allowIps: 'all' | 'restricted' = 'all'
 
 	let startingConfig: typeof form
+
+	// (Images)
+	let images: string[] | undefined
+	$: (async () => { images = await imagesPromise })()
+
+	import { createQuery } from '@tanstack/svelte-query'
+
+	let dockerImagesQueryValue: string = $form.container.image
+
+	$: dockerImagesQuery = createQuery({
+		queryKey: ['dockerImages', {
+			query: dockerImagesQueryValue,
+		}] as const,
+
+		queryFn: async ({
+			queryKey: [_, {
+				query,
+			}],
+		}) => (
+			await fetch(
+				resolveRoute(`/api/images/search/[query]`, {
+					query,
+				})
+			)
+				.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
+		),
+
+		select: result => (
+			result.results.map(item => ({
+				value: item.slug,
+				label: item.slug,
+			}))
+		),
+	})
+
+	$: dockerImages = $dockerImagesQuery.data
 
 
 	// Events
