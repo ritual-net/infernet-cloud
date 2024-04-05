@@ -169,6 +169,8 @@
 					<label for="container.description">
 						Description
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>Add a description for this container.</p>

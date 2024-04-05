@@ -59,7 +59,7 @@ export const Container = z
 
 		'description': z
 			.string()
-			.required(),
+			.optional(),
 
 		'external': z
 			.boolean()
