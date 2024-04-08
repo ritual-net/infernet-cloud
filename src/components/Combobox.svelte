@@ -137,6 +137,7 @@
 			type="text"
 			use:melt={$input}
 			{placeholder}
+			{name}
 		/>
 	</div>
 </div>
