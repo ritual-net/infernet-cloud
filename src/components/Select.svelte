@@ -67,10 +67,10 @@
 
 <div class="stack">
 	<input
-		type="text"
 		{id}
 		use:melt={$hiddenInput}
 		on:focus={() => triggerElement.click()}
+		type="text"
 	/>
 
 	{#if labelText}
