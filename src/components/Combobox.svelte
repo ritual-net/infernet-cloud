@@ -134,6 +134,7 @@
 
 	<div class="stack">
 		<input
+			type="text"
 			use:melt={$input}
 			{placeholder}
 		/>
