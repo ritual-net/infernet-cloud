@@ -59,7 +59,8 @@ export const Container = z
 
 		'description': z
 			.string()
-			.optional(),
+			.optional()
+			.default(''),
 
 		'external': z
 			.boolean()
@@ -88,11 +89,13 @@ export const Container = z
 
 		'command': z
 			.string()
-			.optional(),
+			.optional()
+			.default(''),
 
 		'env': z
 			.string()
-			.optional(),
+			.optional()
+			.default(''),
 
 		'gpu': z
 			.boolean()
