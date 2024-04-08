@@ -28,7 +28,7 @@
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
-	import NodeContainersTable from './NodeContainersTable.svelte'
+	// import NodesContainersTable from './NodesContainersTable.svelte'
 </script>
 
 
@@ -329,9 +329,5 @@
 			margin-right: 0.33em;
 			color: var(--status-color);
 		}
-	}
-
-	.secured {
-		-webkit-text-security: circle;
 	}
 </style>
