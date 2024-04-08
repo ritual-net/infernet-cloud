@@ -45,14 +45,15 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
+		SPA: true,
 
-		onSubmit: ({ cancel }) => {
+		onUpdate: ({ form, result, cancel }) => {
 			if(mode === 'create')
 				$form.container.container_id = crypto.randomUUID()
 
-			onSubmit?.($form)
-
-			cancel()
+			if(result.type === 'success'){
+				onSubmit?.($form)
+			}
 		},
 	})
 
