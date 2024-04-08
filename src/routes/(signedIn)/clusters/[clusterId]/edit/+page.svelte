@@ -229,6 +229,7 @@
 		<button
 			type="submit"
 			class="primary"
+			disabled={$submitting}
 		>
 			Save and Apply Changes
 		</button>
