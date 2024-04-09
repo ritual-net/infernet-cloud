@@ -124,4 +124,33 @@ export class DockerHubClient {
 		const ritualRepos = await this.getRepos('ritualnetwork');
 		return ritualRepos;
 	}
+
+	/**
+	 * Search for public image names from Docker Hub.
+	 */
+	public async searchImages(query: string) {
+		return (
+			await fetch(
+				`https://hub.docker.com/api/search/v3/catalog/search?${new URLSearchParams({
+					query,
+					source: 'community',
+					type: 'image',
+					from: '0',
+					size: '20',
+				})}`
+			)
+				.then(response => response.json())
+		) as {
+			total: number,
+			results: {
+				id: string,
+				name: string,
+				slug: string,
+				publisher: {
+					id: string,
+					name: string,
+				},
+			}[]
+		}
+	}
 }

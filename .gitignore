@@ -10,4 +10,11 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 tmp
 tests
+
+# Docker › EdgeDB
 edgedb-data/
+
+# Docker › Caddy
+caddy
+caddy_data
+caddy_config

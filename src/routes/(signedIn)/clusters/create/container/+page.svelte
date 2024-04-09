@@ -18,9 +18,9 @@
 	export let submitLabel = 'Add Container'
 
 
-	// Internal state
-	let images: string[] | undefined
-	$: (async () => { images = await imagesPromise })()
+	// API
+	import { resolveRoute } from '$app/paths'
+	import type { DockerHubClient } from '$/lib/docker/docker'
 
 
 	// Schema
@@ -45,14 +45,15 @@
 		dataType: 'json',
 		customValidity: true,
 		validators: yupClient(FormData),
+		SPA: true,
 
-		onSubmit: ({ cancel }) => {
+		onUpdate: ({ form, result, cancel }) => {
 			if(mode === 'create')
 				$form.container.container_id = crypto.randomUUID()
 
-			onSubmit?.($form)
-
-			cancel()
+			if(result.type === 'success'){
+				onSubmit?.($form)
+			}
 		},
 	})
 
@@ -61,6 +62,42 @@
 	let allowIps: 'all' | 'restricted' = 'all'
 
 	let startingConfig: typeof form
+
+	// (Images)
+	let images: string[] | undefined
+	$: (async () => { images = await imagesPromise })()
+
+	import { createQuery } from '@tanstack/svelte-query'
+
+	let dockerImagesQueryValue: string = $form.container.image
+
+	$: dockerImagesQuery = createQuery({
+		queryKey: ['dockerImages', {
+			query: dockerImagesQueryValue,
+		}] as const,
+
+		queryFn: async ({
+			queryKey: [_, {
+				query,
+			}],
+		}) => (
+			await fetch(
+				resolveRoute(`/api/images/search/[query]`, {
+					query,
+				})
+			)
+				.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
+		),
+
+		select: result => (
+			result.results.map(item => ({
+				value: item.slug,
+				label: item.slug,
+			}))
+		),
+	})
+
+	$: dockerImages = $dockerImagesQuery.data
 
 
 	// Events
@@ -140,26 +177,40 @@
 			</div>
 
 			<Combobox
-				required
 				id="container.image"
 				name="container.image"
 				labelText="Image"
 				bind:value={$form.container.image}
-				{...!images
-					? {
-						items: [],
-						placeholder: `Loading images...`,
-						disabled: true,
-					}
-					: {
-						items: images
-							.map(image => ({
-								value: image,
-								label: image,
-							})),
-						placeholder: `Choose an image...`,
-					}
-				}
+				bind:inputValue={dockerImagesQueryValue}
+				items={(
+					[
+						{
+							value: 'ritualnetwork',
+							label: 'Ritual',
+							items: images
+								?.map(image => ({
+									value: image,
+									label: image,
+								}))
+								?? [],
+						},
+						{
+							value: 'docker',
+							label: 'Docker Hub Community',
+							items: dockerImages ?? [],
+						},
+						dockerImagesQueryValue && {
+							value: 'input',
+							label: 'Custom',
+							items: [{
+								value: dockerImagesQueryValue,
+								label: dockerImagesQueryValue,
+							}],
+						},
+					].filter(Boolean)
+				)}
+				placeholder={`Choose or search for an image...`}
+				{...$constraints.container?.image}
 			/>
 		</section>
 
@@ -169,6 +220,8 @@
 					<label for="container.description">
 						Description
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>Add a description for this container.</p>
@@ -293,6 +346,8 @@
 					<label for="container.command">
 						Start Command
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>Enter the start command for this container below.</p>
@@ -303,7 +358,7 @@
 				name="container.command"
 				bind:value={$form.container.command}
 				rows="1"
-				placeholder={`Enter start command here...`}
+				placeholder={`--flag-1=hello --flag-2=world`}
 				{...$constraints.container?.command}
 				class="code"
 			/>
@@ -315,6 +370,8 @@
 					<label for="container.env">
 						Environment Variables
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>Please enter the contents of the .env file for this container.</p>
@@ -324,7 +381,7 @@
 				id="container.env"
 				name="container.env"
 				rows="2"
-				placeholder={`Add environment variables here...`}
+				placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
 				bind:value={$form.container.env}
 				{...$constraints.container?.env}
 				class="code"

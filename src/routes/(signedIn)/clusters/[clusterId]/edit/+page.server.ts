@@ -54,7 +54,6 @@ export const actions: Actions = {
 		// 	formData,
 		// 	{
 		// 		title: `Updated cluster configuration.`,
-		// 		description: result,
 		// 	},
 		// )
 
@@ -65,7 +64,6 @@ export const actions: Actions = {
 				type: 'success',
 				message: {
 					title: `Updated cluster configuration.`,
-					description: result,
 				},
 			},
 			cookies,

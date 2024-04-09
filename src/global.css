@@ -287,4 +287,5 @@ fieldset {
 code, .code {
 	font-family: monospace;
 	font-size-adjust: from-font;
+	font-size: 0.9em;
 }

@@ -8,6 +8,7 @@
 
 	// Inputs
 	export let value: Value | undefined
+	export let inputValue: string = ''
 	export let items: MenuItems<Value>
 
 	export let labelText: string | undefined
@@ -43,28 +44,41 @@
 			fitViewport: true,
 			boundary: document.getElementsByTagName('main')[0],
 		},
+
+		onSelectedChange: ({ curr, next }) => {
+			if(curr === undefined && next === undefined) return
+
+			const selectedItem = Array.isArray(next) ? next[0] : next
+			inputValue = selectedItem ? selectedItem.value : ''
+			return next
+		},
 	})
 
 	const {
 		open,
-		inputValue,
 		touchedInput,
 		selected,
 	} = states
+
+	$: createSync(states).inputValue(
+		inputValue,
+		_ => { inputValue = _ },
+	)
 
 	$: createSync(states).selected(
 		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
 		selected => { value = selected?.value as Value },
 	)
 
+	$: createSync(options).required(
+		required,
+		_ => { required = _ },
+	)
+
 	$: createSync(options).disabled(
 		disabled,
 		_ => { disabled = _ },
 	)
-
-	$: if (!$open) {
-		$inputValue = (Array.isArray($selected) ? $selected[0] : $selected)?.label ?? ''
-	}
 
 	// (Computed)
 	const itemMatchesInput = (
@@ -105,9 +119,10 @@
 			))
 	) as MenuItems<Value>
 
-	$: filteredItems = $touchedInput
-		? filterItems(items, $inputValue)
-		: items
+	$: filteredItems = filterItems(items, inputValue)
+	// $: filteredItems = $touchedInput
+	// 	? filterItems(items, inputValue)
+	// 	: items
 </script>
 
 
@@ -119,8 +134,10 @@
 
 	<div class="stack">
 		<input
+			type="text"
 			use:melt={$input}
 			{placeholder}
+			{name}
 		/>
 	</div>
 </div>

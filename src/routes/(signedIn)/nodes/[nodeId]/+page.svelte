@@ -28,7 +28,7 @@
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
-	import NodeContainersTable from './NodeContainersTable.svelte'
+	// import NodesContainersTable from './NodesContainersTable.svelte'
 </script>
 
 
@@ -233,6 +233,16 @@
 				</dd>
 			</section>
 
+			{#if info?.ip}
+				<section class="row">
+					<dt>IP</dt>
+
+					<dd>
+						{info.ip}
+					</dd>
+				</section>
+			{/if}
+
 			{#if infoError}
 				<section class="column">
 					<dt>Error</dt>
@@ -319,9 +329,5 @@
 			margin-right: 0.33em;
 			color: var(--status-color);
 		}
-	}
-
-	.secured {
-		-webkit-text-security: circle;
 	}
 </style>

@@ -334,7 +334,6 @@
 											</div>
 
 											<Combobox
-												required
 												id="config.region"
 												name="config.region"
 												labelText="Region"
@@ -374,6 +373,7 @@
 														),
 													}
 												}
+												{...$constraints.config?.region}
 											/>
 										</section>
 
@@ -389,7 +389,6 @@
 											</div>
 
 											<Combobox
-												required
 												id="config.zone"
 												name="config.zone"
 												labelText="Zone"
@@ -417,6 +416,7 @@
 														),
 													}
 												}
+												{...$constraints.config?.zone}
 											/>
 										</section>
 
@@ -432,7 +432,6 @@
 											</div>
 
 											<Combobox
-												required
 												id="config.machine_type"
 												name="config.machine_type"
 												labelText="Machine Type"
@@ -460,6 +459,7 @@
 														),
 													}
 												}
+												{...$constraints.config?.machine_type}
 											/>
 										</section>
 									</fieldset>
@@ -760,6 +760,8 @@
 
 									<a
 										href="/clusters/create/container"
+										data-sveltekit-preload-code="eager"
+
 										on:click={async (e) => {
 											e.preventDefault()
 

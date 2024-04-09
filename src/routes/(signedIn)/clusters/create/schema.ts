@@ -59,12 +59,13 @@ export const Container = z
 
 		'description': z
 			.string()
-			.required(),
+			.optional()
+			.default(''),
 
 		'external': z
 			.boolean()
 			.required()
-			.default(false),
+			.default(true),
 
 		'allowed_addresses': z
 			.array(
@@ -88,11 +89,13 @@ export const Container = z
 
 		'command': z
 			.string()
-			.required(),
+			.optional()
+			.default(''),
 
 		'env': z
 			.string()
-			.required(),
+			.optional()
+			.default(''),
 
 		'gpu': z
 			.boolean()
