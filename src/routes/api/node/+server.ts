@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Data and cluster id are required');
 	}
 
-	const cluster = await getClusterById(client, clusterId, true);
+	const cluster = await getClusterById(client, clusterId, { includeServiceAccountCredentials: true, includeNodeDetails: true });
 	if (!cluster) {
 		return error(400, `Cluster ID ${clusterId} does not exist`);
 	}

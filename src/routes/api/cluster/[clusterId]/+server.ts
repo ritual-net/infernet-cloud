@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 		return error(400, 'Cluster id is required');
 	}
 
-	return json(await getClusterById(client, id, false));
+	return json(await getClusterById(client, id, { includeServiceAccountCredentials: false, includeNodeDetails: false }));
 };
 
 /**
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ locals: { client }, params }) => {
 	if(!success)
 		return error(500, errorMessage)
 
-	return json(await getClusterById(client, clusterId, false));
+	return json(await getClusterById(client, clusterId, { includeServiceAccountCredentials: false, includeNodeDetails: false }));
 };
 
 /**
