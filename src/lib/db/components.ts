@@ -68,8 +68,7 @@ export const insertNodeQuery = (
 
 /**
  * Generic params for selecting a Cluster
- *
- * @param creds Whether to include sensitive Service Account credentials
+ * 
  * @returns The select params
  */
 export const getClusterSelectParams = (
@@ -78,7 +77,14 @@ export const getClusterSelectParams = (
 		includeServiceAccountCredentials = false,
 		includeNodeDetails = true,
 	}: {
+		/**
+		 * Whether to include sensitive Service Account credentials
+		 */
 		includeServiceAccountCredentials?: boolean,
+
+		/**
+		 * Whether to include Node and Container details
+		 */
 		includeNodeDetails?: boolean,
 	}
 ) => {

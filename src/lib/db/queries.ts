@@ -68,22 +68,34 @@ export const getServiceAccountById = async (
 
 /**
  * Get cluster data by id
- *
- * @param client The database client
- * @param id of Cluster
- * @param creds whether to include sensitive Service Account credentials
+ * 
  * @returns ProviderCluster if found
  */
 export const getClusterById = async (
+	/**
+	 * The database client
+	 */
 	client: Client,
+
+	/**
+	 * Cluster ID
+	 */
 	id: string,
+
 	{
 		includeServiceAccountCredentials,
 		includeNodeDetails,
 	}: {
+		/**
+		 * Whether to include sensitive Service Account credentials
+		 */
 		includeServiceAccountCredentials: boolean,
+
+		/**
+		 * Whether to include Node and Container details
+		 */
 		includeNodeDetails: boolean,
-	}
+	},
 ): Promise<ProviderCluster | null> => {
 	// Get cloud provider from generic cluster
 	const generic = await e
