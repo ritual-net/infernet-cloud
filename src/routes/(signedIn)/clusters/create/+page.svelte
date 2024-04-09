@@ -189,7 +189,7 @@
 							<div class="column inline">
 								<h3>
 									<label for="serviceAccountId">
-										Service Account
+										Cloud Account
 									</label>
 								</h3>
 
@@ -200,7 +200,7 @@
 								required
 								id="serviceAccountId"
 								name="serviceAccountId"
-								labelText="Service Account"
+								labelText="Cloud Account"
 								bind:value={$form.serviceAccountId}
 								items={serviceAccounts.map(serviceAccount => ({
 									icon: providers[serviceAccount.provider].icon,

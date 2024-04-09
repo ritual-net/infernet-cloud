@@ -136,7 +136,7 @@
 
 		<dl class="card column">
 			<section class="row">
-				<dt>Service Account</dt>
+				<dt>Cloud Account</dt>
 
 				<dd>
 					<a

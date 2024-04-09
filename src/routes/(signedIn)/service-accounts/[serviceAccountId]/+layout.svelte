@@ -4,7 +4,7 @@
 		class="row inline"
 	>
 		<span>←</span>
-		<span>Service Accounts</span>
+		<span>Cloud Accounts</span>
 	</a>
 </nav>
 

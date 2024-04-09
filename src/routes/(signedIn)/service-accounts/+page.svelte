@@ -12,12 +12,12 @@
 
 <section class="column">
 	<header class="row">
-		<h2>Service Accounts</h2>
+		<h2>Cloud Accounts</h2>
 
 		<a
 			class="button primary"
 			href="/service-accounts/create"
-		>Connect Service Account</a>
+		>Connect Cloud Account</a>
 	</header>
 
 	<ServiceAccountsTable

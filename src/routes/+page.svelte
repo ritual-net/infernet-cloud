@@ -75,7 +75,7 @@
 			class="button"
 			href="/service-accounts"
 		>
-			Connect Service Account
+			Connect Cloud Account
 		</a>
 
 		<a
