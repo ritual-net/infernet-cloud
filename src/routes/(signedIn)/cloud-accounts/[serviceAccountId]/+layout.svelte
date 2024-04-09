@@ -1,10 +1,10 @@
 <nav class="breadcrumb">
 	<a
-		href="/service-accounts"
+		href="/cloud-accounts"
 		class="row inline"
 	>
 		<span>←</span>
-		<span>Service Accounts</span>
+		<span>Cloud Accounts</span>
 	</a>
 </nav>
 

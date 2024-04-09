@@ -12,7 +12,7 @@
 
 	$: navItems = [
 		{
-			href: '/service-accounts',
+			href: '/cloud-accounts',
 			label: 'Accounts',
 		},
 		{

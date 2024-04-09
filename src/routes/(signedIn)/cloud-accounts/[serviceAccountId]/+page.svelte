@@ -36,7 +36,7 @@
 					{serviceAccount.name || serviceAccount.id}
 				</h2>
 
-				<p>Service Account</p>
+				<p>Cloud Account</p>
 			</div>
 		</div>
 

@@ -40,7 +40,7 @@
 			accessor: cluster => cluster.name,
 		},
 		{
-			header: 'Service Account',
+			header: 'Cloud Account',
 			accessor: cluster => cluster,
 			cell: ({ value: cluster }) => (
 				createRender(ClustersTableCell, {

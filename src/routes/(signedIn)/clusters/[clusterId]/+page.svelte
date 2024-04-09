@@ -136,11 +136,11 @@
 
 		<dl class="card column">
 			<section class="row">
-				<dt>Service Account</dt>
+				<dt>Cloud Account</dt>
 
 				<dd>
 					<a
-						href={resolveRoute(`/service-accounts/[serviceAccountId]`, {
+						href={resolveRoute(`/cloud-accounts/[serviceAccountId]`, {
 							serviceAccountId: cluster.service_account.id,
 						})}
 						class="row"

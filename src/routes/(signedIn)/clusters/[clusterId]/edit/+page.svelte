@@ -85,7 +85,7 @@
 	<div class="card column">
 		<section class="row wrap">
 			<h3>
-				Service Account
+				Cloud Account
 			</h3>
 
 			<div class="row">
