@@ -61,16 +61,14 @@
 		selected,
 	} = states
 
+	$: createSync(states).selected(
+		items && findItem(items, value),
+		selected => { value = selected?.value as Value },
+	)
+
 	$: createSync(states).inputValue(
 		inputValue,
 		_ => { inputValue = _ },
-	)
-
-	$: createSync(states).selected(
-		value,
-		_ => { value = _ },
-		// items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
-		// selected => { value = selected?.value as Value },
 	)
 
 	$: createSync(options).required(
@@ -94,6 +92,25 @@
 			String(item.value).toLowerCase().includes(normalizedInput)
 			|| item.label.toLowerCase().includes(normalizedInput)
 		)
+	}
+
+	const findItem = <Value>(
+		items: MenuItems<Value>,
+		value: Value,
+	): MenuItem<Value> | undefined => {
+		let found: MenuItem<Value> | undefined
+
+		for(const itemOrGroup of items){
+			if('items' in itemOrGroup){
+				if(found = findItem(itemOrGroup.items, value))
+					return found
+			}else if('value' in itemOrGroup){
+				if(itemOrGroup.value === value)
+					return itemOrGroup
+			}
+		}
+
+		return undefined
 	}
 
 	const filterItems = (
