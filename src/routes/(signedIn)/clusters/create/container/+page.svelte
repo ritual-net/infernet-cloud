@@ -71,33 +71,31 @@
 
 	let dockerImagesQueryValue: string = $form.container.image
 
-	$: dockerImagesQuery = createQuery({
-		queryKey: ['dockerImages', {
-			query: dockerImagesQueryValue,
-		}] as const,
+	$: dockerImagesQuery = dockerImagesQueryValue
+		? createQuery({
+			queryKey: ['dockerImages', {
+				query: dockerImagesQueryValue,
+			}] as const,
 
-		queryFn: async ({
-			queryKey: [_, {
-				query,
-			}],
-		}) => (
-			await fetch(
-				resolveRoute(`/api/images/search/[query]`, {
+			queryFn: async ({
+				queryKey: [_, {
 					query,
-				})
-			)
-				.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
-		),
+				}],
+			}) => (
+				await fetch(`/api/images/search?${new URLSearchParams({ query })}`)
+					.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
+			),
 
-		select: result => (
-			result.results.map(item => ({
-				value: item.slug,
-				label: item.slug,
-			}))
-		),
-	})
+			select: result => (
+				result.results.map(item => ({
+					value: item.slug,
+					label: item.slug,
+				}))
+			),
+		})
+		: undefined
 
-	$: dockerImages = $dockerImagesQuery.data
+	$: dockerImages = dockerImagesQuery && $dockerImagesQuery!.data
 
 
 	// Events
@@ -199,15 +197,21 @@
 							label: 'Docker Hub Community',
 							items: dockerImages ?? [],
 						},
-						dockerImagesQueryValue && {
-							value: 'input',
+						{
+							value: 'custom',
 							label: 'Custom',
-							items: [{
-								value: dockerImagesQueryValue,
-								label: dockerImagesQueryValue,
-							}],
+							items: [
+								(
+									dockerImagesQueryValue?.trim()
+									&& !images?.some(value => value === dockerImagesQueryValue.trim())
+									&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim())
+								) && {
+									value: dockerImagesQueryValue.trim(),
+									label: dockerImagesQueryValue.trim(),
+								}
+							].filter(Boolean),
 						},
-					].filter(Boolean)
+					]
 				)}
 				placeholder={`Choose or search for an image...`}
 				{...$constraints.container?.image}

@@ -21,6 +21,7 @@
 	export let multiple: boolean = false
 
 	// (View options)
+	export let visuallyDisabled = false
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
 
@@ -45,11 +46,12 @@
 			boundary: document.getElementsByTagName('main')[0],
 		},
 
-		onSelectedChange: ({ curr, next }) => {
-			if(curr === undefined && next === undefined) return
+		onOpenChange: ({ curr, next }) => {
+			const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
 
-			const selectedItem = Array.isArray(next) ? next[0] : next
-			inputValue = selectedItem ? selectedItem.value : ''
+			if(!next)
+				inputValue = selectedItem ? selectedItem.value : ''
+
 			return next
 		},
 	})
@@ -60,14 +62,14 @@
 		selected,
 	} = states
 
+	$: createSync(states).selected(
+		items && findItem(items, value),
+		selected => { value = selected?.value as Value },
+	)
+
 	$: createSync(states).inputValue(
 		inputValue,
 		_ => { inputValue = _ },
-	)
-
-	$: createSync(states).selected(
-		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
-		selected => { value = selected?.value as Value },
 	)
 
 	$: createSync(options).required(
@@ -85,12 +87,31 @@
 		item: MenuItem<Value>,
 		input: string,
 	) => {
-		const normalizedInput = input.toLowerCase()
+		const normalizedInput = input.toLowerCase().trim()
 
 		return (
 			String(item.value).toLowerCase().includes(normalizedInput)
 			|| item.label.toLowerCase().includes(normalizedInput)
 		)
+	}
+
+	const findItem = <Value>(
+		items: MenuItems<Value>,
+		value: Value,
+	): MenuItem<Value> | undefined => {
+		let found: MenuItem<Value> | undefined
+
+		for(const itemOrGroup of items){
+			if('items' in itemOrGroup){
+				if(found = findItem(itemOrGroup.items, value))
+					return found
+			}else if('value' in itemOrGroup){
+				if(itemOrGroup.value === value)
+					return itemOrGroup
+			}
+		}
+
+		return undefined
 	}
 
 	const filterItems = (
@@ -135,6 +156,7 @@
 	<div class="stack">
 		<input
 			type="text"
+			aria-disabled={visuallyDisabled ? true : undefined}
 			use:melt={$input}
 			{placeholder}
 			{name}

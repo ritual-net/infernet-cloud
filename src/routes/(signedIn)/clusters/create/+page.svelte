@@ -320,7 +320,7 @@
 								<div class="stack">
 									<fieldset
 										class="column"
-										disabled={!$providerConfigsQuery.isSuccess}
+										aria-disabled={!$providerConfigsQuery.isSuccess}
 									>
 										<section class="row wrap">
 											<div class="column inline">
@@ -347,7 +347,7 @@
 																label: $form.config.region,
 															}
 														].filter(Boolean),
-														disabled: true,
+														visuallyDisabled: true,
 													}
 													: {
 														placeholder: 'Choose region...',
@@ -402,7 +402,7 @@
 																label: $form.config.zone,
 															}
 														].filter(Boolean),
-														disabled: true,
+														visuallyDisabled: true,
 													}
 													: {
 														placeholder: 'Choose zone...',
@@ -445,7 +445,7 @@
 																label: $form.config.machine_type,
 															}
 														].filter(Boolean),
-														disabled: true,
+														visuallyDisabled: true,
 													}
 													: {
 														placeholder: 'Choose machine type...',
