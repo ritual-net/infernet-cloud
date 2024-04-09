@@ -81,11 +81,7 @@
 				query,
 			}],
 		}) => (
-			await fetch(
-				resolveRoute(`/api/images/search/[query]`, {
-					query,
-				})
-			)
+			await fetch(`/api/images/search?${new URLSearchParams({ query })}`)
 				.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
 		),
 
