@@ -42,5 +42,5 @@
 		})
 	)}
 >
-	<p>No service accounts configured.</p>
+	<p>No cloud accounts configured.</p>
 </Table>

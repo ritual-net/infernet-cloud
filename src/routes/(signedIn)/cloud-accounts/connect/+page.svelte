@@ -54,7 +54,7 @@
 		delayedToast = addToast({
 			data: {
 				type: 'default',
-				title: `Connecting service account...`,
+				title: `Connecting cloud account...`,
 			},
 		})
 	}else{

@@ -46,7 +46,7 @@ export const actions: Actions = {
 			return message(
 				formData,
 				{
-					title: `Couldn't connect service account.`,
+					title: `Couldn't connect cloud account.`,
 					description: result.message,
 				},
 				{
@@ -60,7 +60,7 @@ export const actions: Actions = {
 		// return message(
 		// 	formData,
 		// 	{
-		// 		title: `Connected service account.`,
+		// 		title: `Connected cloud account.`,
 		// 		description: `"${formData.data.name}" is set up to deploy clusters on ${providers[formData.data.provider].name}.`,
 		// 	},
 		// )
@@ -71,7 +71,7 @@ export const actions: Actions = {
 			{
 				type: 'success',
 				message: {
-					title: `Connected service account.`,
+					title: `Connected cloud account.`,
 					description: `"${formData.data.name}" is set up to deploy clusters on ${providers[formData.data.provider].name}.`,
 				},
 			},
