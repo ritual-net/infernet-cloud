@@ -93,9 +93,9 @@ export const Container = z
 			.default(''),
 
 		'env': z
-			.string()
+			.object()
 			.optional()
-			.default(''),
+			.default({}),
 
 		'gpu': z
 			.boolean()
