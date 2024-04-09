@@ -67,8 +67,10 @@
 	)
 
 	$: createSync(states).selected(
-		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
-		selected => { value = selected?.value as Value },
+		value,
+		_ => { value = _ },
+		// items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
+		// selected => { value = selected?.value as Value },
 	)
 
 	$: createSync(options).required(
