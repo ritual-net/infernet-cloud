@@ -170,7 +170,7 @@
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								value={$form.config.ip_allow_http.join(', ')}
-								on:input={e => {
+								on:blur={e => {
 									$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
 								}}
 								{...$constraints.config?.ip_allow_http}
@@ -184,7 +184,7 @@
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								value={$form.config.ip_allow_http.join(', ')}
-								on:input={e => {
+								on:blur={e => {
 									$form.config.ip_allow_ssh = e.target.value.split(',').map(ip => ip.trim())
 								}}
 								{...$constraints.config?.ip_allow_ssh}
