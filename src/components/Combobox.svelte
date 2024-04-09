@@ -21,6 +21,7 @@
 	export let multiple: boolean = false
 
 	// (View options)
+	export let visuallyDisabled = false
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
 
@@ -135,6 +136,7 @@
 	<div class="stack">
 		<input
 			type="text"
+			aria-disabled={visuallyDisabled ? true : undefined}
 			use:melt={$input}
 			{placeholder}
 			{name}
