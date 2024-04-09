@@ -16,7 +16,7 @@
 
 		<a
 			class="button primary"
-			href="/service-accounts/create"
+			href="/cloud-accounts/create"
 		>Connect Cloud Account</a>
 	</header>
 

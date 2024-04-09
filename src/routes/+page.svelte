@@ -73,7 +73,7 @@
 	{:else}
 		<a
 			class="button"
-			href="/service-accounts"
+			href="/cloud-accounts"
 		>
 			Connect Cloud Account
 		</a>

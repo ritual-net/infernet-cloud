@@ -37,7 +37,7 @@
 		},
 	]}
 	getRowLink={serviceAccount => (
-		resolveRoute(`/service-accounts/[serviceAccountId]`, {
+		resolveRoute(`/cloud-accounts/[serviceAccountId]`, {
 			serviceAccountId: serviceAccount.id,
 		})
 	)}

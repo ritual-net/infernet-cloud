@@ -1,6 +1,6 @@
 <nav class="breadcrumb">
 	<a
-		href="/service-accounts"
+		href="/cloud-accounts"
 		class="row inline"
 	>
 		<span>←</span>

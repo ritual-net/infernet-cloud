@@ -67,7 +67,7 @@ export const actions: Actions = {
 
 		return flashRedirect(
 			303,
-			resolveRoute('/service-accounts/[serviceAccountId]', { serviceAccountId: newServiceAccount.id }),
+			resolveRoute('/cloud-accounts/[serviceAccountId]', { serviceAccountId: newServiceAccount.id }),
 			{
 				type: 'success',
 				message: {
