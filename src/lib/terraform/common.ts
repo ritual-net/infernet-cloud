@@ -17,7 +17,7 @@ import { TFAction } from '$/types/terraform';
  * @returns An object with the success status and (optional) error message
  */
 export const clusterAction = async (client: Client, clusterId: string, action: TFAction) => {
-	const cluster = await getClusterById(client, clusterId, true);
+	const cluster = await getClusterById(client, clusterId, { includeServiceAccountCredentials: true, includeNodeDetails: true });
 	if (!cluster) {
 		return { error: 'Cluster not found.', success: false };
 	}

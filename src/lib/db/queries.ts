@@ -77,7 +77,13 @@ export const getServiceAccountById = async (
 export const getClusterById = async (
 	client: Client,
 	id: string,
-	creds: boolean
+	{
+		includeServiceAccountCredentials,
+		includeNodeDetails,
+	}: {
+		includeServiceAccountCredentials: boolean,
+		includeNodeDetails: boolean,
+	}
 ): Promise<ProviderCluster | null> => {
 	// Get cloud provider from generic cluster
 	const generic = await e
@@ -97,7 +103,7 @@ export const getClusterById = async (
 	// Get cluster with provider-specific data
 	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
-			...getClusterSelectParams(creds, provider),
+			...getClusterSelectParams(provider, { includeServiceAccountCredentials, includeNodeDetails }),
 			filter_single: { id },
 		}))
 		.run(client);
@@ -117,7 +123,7 @@ export const getClusterById = async (
 export const getClusterByNodeIds = async (
 	client: Client,
 	ids: string[],
-	creds = false
+	includeServiceAccountCredentials = false
 ): Promise<ProviderCluster | null> => {
 	const genericQuery = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.Cluster, (cluster) => ({
@@ -145,7 +151,7 @@ export const getClusterByNodeIds = async (
 	// Get cluster with provider-specific data
 	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
-			...getClusterSelectParams(creds, provider),
+			...getClusterSelectParams(provider, { includeServiceAccountCredentials }),
 			filter_single: { id: clusterId },
 		}))
 		.run(client);
@@ -164,7 +170,7 @@ export const getClusterByNodeIds = async (
 export const getClusterByRouterId = async (
 	client: Client,
 	id: string,
-	creds = false
+	includeServiceAccountCredentials = false
 ): Promise<ProviderCluster | null> => {
 	const generic = await e
 		.select(e.Cluster, (cluster) => ({
@@ -185,7 +191,7 @@ export const getClusterByRouterId = async (
 	// Get cluster with provider-specific data
 	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
-			...getClusterSelectParams(creds, provider),
+			...getClusterSelectParams(provider, { includeServiceAccountCredentials }),
 			filter_single: { id: clusterId },
 		}))
 		.run(client);

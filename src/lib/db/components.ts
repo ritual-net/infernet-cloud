@@ -72,7 +72,16 @@ export const insertNodeQuery = (
  * @param creds Whether to include sensitive Service Account credentials
  * @returns The select params
  */
-export const getClusterSelectParams = (creds: boolean, provider: CloudProvider) => {
+export const getClusterSelectParams = (
+	provider: CloudProvider,
+	{
+		includeServiceAccountCredentials = false,
+		includeNodeDetails = true,
+	}: {
+		includeServiceAccountCredentials?: boolean,
+		includeNodeDetails?: boolean,
+	}
+) => {
 	return {
 		service_account: {
 			user: {
@@ -82,15 +91,22 @@ export const getClusterSelectParams = (creds: boolean, provider: CloudProvider) 
 				...e.User['*'],
 			},
 			...e.ServiceAccount['*'],
-			...(creds ? { ...e.is(ServiceAccountTypeByProvider[provider], { creds }) } : {}),
+			...(includeServiceAccountCredentials && {
+				...e.is(ServiceAccountTypeByProvider[provider], { creds: true })
+			}),
 		},
-		nodes: {
-			id: true,
-			// ...e.InfernetNode['*'],
-			// containers: {
-			// 	...e.Container['*'],
-			// },
-		},
+		nodes: (
+			includeNodeDetails
+				? {
+					...e.InfernetNode['*'],
+					containers: {
+						...e.Container['*'],
+					},
+				}
+				: {
+					id: true,
+				}
+		),
 		...e.Cluster['*'],
 		...ClusterSpreadParamsByProvider[provider],
 	};
