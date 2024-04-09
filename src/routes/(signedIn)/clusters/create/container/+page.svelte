@@ -71,29 +71,31 @@
 
 	let dockerImagesQueryValue: string = $form.container.image
 
-	$: dockerImagesQuery = createQuery({
-		queryKey: ['dockerImages', {
-			query: dockerImagesQueryValue,
-		}] as const,
+	$: dockerImagesQuery = dockerImagesQueryValue
+		? createQuery({
+			queryKey: ['dockerImages', {
+				query: dockerImagesQueryValue,
+			}] as const,
 
-		queryFn: async ({
-			queryKey: [_, {
-				query,
-			}],
-		}) => (
-			await fetch(`/api/images/search?${new URLSearchParams({ query })}`)
-				.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
-		),
+			queryFn: async ({
+				queryKey: [_, {
+					query,
+				}],
+			}) => (
+				await fetch(`/api/images/search?${new URLSearchParams({ query })}`)
+					.then(response => response.json()) as Awaited<ReturnType<DockerHubClient['searchImages']>>
+			),
 
-		select: result => (
-			result.results.map(item => ({
-				value: item.slug,
-				label: item.slug,
-			}))
-		),
-	})
+			select: result => (
+				result.results.map(item => ({
+					value: item.slug,
+					label: item.slug,
+				}))
+			),
+		})
+		: undefined
 
-	$: dockerImages = $dockerImagesQuery.data
+	$: dockerImages = dockerImagesQuery && $dockerImagesQuery!.data
 
 
 	// Events
