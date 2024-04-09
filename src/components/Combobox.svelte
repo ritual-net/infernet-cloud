@@ -46,11 +46,12 @@
 			boundary: document.getElementsByTagName('main')[0],
 		},
 
-		onSelectedChange: ({ curr, next }) => {
-			if(curr === undefined && next === undefined) return
+		onOpenChange: ({ curr, next }) => {
+			const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
 
-			const selectedItem = Array.isArray(next) ? next[0] : next
-			inputValue = selectedItem ? selectedItem.value : ''
+			if(!next)
+				inputValue = selectedItem ? selectedItem.value : ''
+
 			return next
 		},
 	})
