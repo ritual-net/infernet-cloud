@@ -88,7 +88,7 @@
 		item: MenuItem<Value>,
 		input: string,
 	) => {
-		const normalizedInput = input.toLowerCase()
+		const normalizedInput = input.toLowerCase().trim()
 
 		return (
 			String(item.value).toLowerCase().includes(normalizedInput)
