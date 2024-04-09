@@ -199,15 +199,21 @@
 							label: 'Docker Hub Community',
 							items: dockerImages ?? [],
 						},
-						dockerImagesQueryValue && {
-							value: 'input',
+						{
+							value: 'custom',
 							label: 'Custom',
-							items: [{
-								value: dockerImagesQueryValue,
-								label: dockerImagesQueryValue,
-							}],
+							items: [
+								(
+									dockerImagesQueryValue?.trim()
+									&& !images?.some(value => value === dockerImagesQueryValue.trim())
+									&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim())
+								) && {
+									value: dockerImagesQueryValue.trim(),
+									label: dockerImagesQueryValue.trim(),
+								}
+							].filter(Boolean),
 						},
-					].filter(Boolean)
+					]
 				)}
 				placeholder={`Choose or search for an image...`}
 				{...$constraints.container?.image}
