@@ -131,6 +131,17 @@
 		</div>
 	</header>
 
+	<section>
+		<h3>Nodes</h3>
+
+		<!-- <NodesTable
+			nodes={cluster.nodes}
+		/> -->
+		<NodesTable
+			{nodesWithInfo}
+		/>
+	</section>
+
 	<section class="column">
 		<h3>Details</h3>
 
@@ -259,17 +270,6 @@
 				</section>
 			{/if}
 		</dl>
-	</section>
-
-	<section>
-		<h3>Nodes</h3>
-
-		<!-- <NodesTable
-			nodes={cluster.nodes}
-		/> -->
-		<NodesTable
-			{nodesWithInfo}
-		/>
 	</section>
 </div>
 
