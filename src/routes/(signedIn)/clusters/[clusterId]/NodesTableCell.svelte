@@ -8,22 +8,20 @@
 
 <script lang="ts">
 	// Types/constants
-	import type { InfernetNode } from '$schema/interfaces'
-	import type { NodeInfo } from '$/types/provider'
+	import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
 	// Inputs
-	export let node: InfernetNode
-	export let nodeInfo: NodeInfo | undefined
+	export let nodeWithInfo: InfernetNodeWithInfo
 	export let cellType: CellType
 </script>
 
 
 {#if cellType === CellType.ID}
-	<span class="node-id">{node.id}</span>
+	<span class="node-id">{nodeWithInfo.node.id}</span>
 
 {:else if cellType === CellType.Status}
-	{@const nodeStatus = nodeInfo?.status ?? 'unknown'}
+	{@const nodeStatus = nodeWithInfo.info?.status ?? 'unknown'}
 
 	<div class="row">
 		<div
