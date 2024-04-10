@@ -61,6 +61,11 @@ export interface ContainerTemplate extends Container {
   "user": User;
   "name": string;
 }
+export interface DockerAccount extends std.$Object {
+  "user": User;
+  "username": string;
+  "password": string;
+}
 export interface GCPCluster extends Cluster {
   "machine_type": string;
   "region": string;
@@ -523,6 +528,7 @@ export interface types {
     "CloudProvider": CloudProvider;
     "Container": Container;
     "ContainerTemplate": ContainerTemplate;
+    "DockerAccount": DockerAccount;
     "GCPCluster": GCPCluster;
     "GCPServiceAccount": GCPServiceAccount;
     "InfernetNode": InfernetNode;
