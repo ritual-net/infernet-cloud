@@ -26,6 +26,7 @@
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
+	import { parseCommaSeparated, serializeCommaSeparated } from '$/lib/utils/commaSeparated'
 
 
 	// Actions
@@ -290,7 +291,7 @@
 														name="config.ip_allow_http"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={$form.config.ip_allow_http.join(', ')}
+														value={serializeCommaSeparated($form.config.ip_allow_http)}
 														on:blur={e => {
 															$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
 														}}
@@ -304,9 +305,9 @@
 														name="config.ip_allow_ssh"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={$form.config.ip_allow_http.join(', ')}
+														value={$form.config.ip_allow_ssh.join(', ')}
 														on:blur={e => {
-															$form.config.ip_allow_ssh = e.target.value.split(',').map(ip => ip.trim())
+															$form.config.ip_allow_ssh = parseCommaSeparated(e.target.value)
 														}}
 														{...$constraints.config?.ip_allow_ssh}
 														disabled={allowIps === 'all'}
