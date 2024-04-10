@@ -126,6 +126,8 @@ export type $DockerAccountλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa
   "user": $.LinkDesc<$User, $.Cardinality.One, {}, false, false,  true, false>;
   "username": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "password": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "<docker_account[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<docker_account": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $DockerAccount = $.ObjectType<"default::DockerAccount", $DockerAccountλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
@@ -168,6 +170,7 @@ export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5
   "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "rpc_url": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, true>;
   "trail_head_blocks": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, true>;
+  "docker_account": $.LinkDesc<$DockerAccount, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;

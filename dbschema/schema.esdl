@@ -159,6 +159,8 @@ module default {
 
     provider_id: str;
 
+    docker_account: DockerAccount;
+
     multi containers: Container {
       constraint exclusive;
       on source delete delete target;

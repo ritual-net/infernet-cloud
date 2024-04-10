@@ -85,6 +85,7 @@ export interface InfernetNode extends std.$Object {
   "provider_id"?: string | null;
   "rpc_url"?: string | null;
   "trail_head_blocks"?: number | null;
+  "docker_account"?: DockerAccount | null;
 }
 export interface current_user extends User {}
 export namespace ext {
