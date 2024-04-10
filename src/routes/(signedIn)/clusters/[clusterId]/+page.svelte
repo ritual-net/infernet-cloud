@@ -206,6 +206,20 @@
 			</section>
 
 			<section class="row">
+				<dt>IPs Allowed (SSH)</dt>
+
+				{#if cluster.ip_allow_ssh?.length}
+					<dd class="column inline">
+						{#each cluster.ip_allow_ssh as ip}
+							{ip}
+						{/each}
+					</dd>
+				{:else}
+					<dd>All</dd>
+				{/if}
+			</section>
+
+			<section class="row">
 				<dt>Has Deployed Router?</dt>
 
 				<dd>
