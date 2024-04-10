@@ -28,7 +28,7 @@
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
-	// import NodesContainersTable from './NodesContainersTable.svelte'
+	import NodeContainersTable from './NodeContainersTable.svelte'
 </script>
 
 
