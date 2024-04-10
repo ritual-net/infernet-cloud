@@ -29,6 +29,7 @@
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
+	import Status from '$/views/Status.svelte'
 </script>
 
 
@@ -56,15 +57,9 @@
 				<div class="row">
 					<dt>Status</dt>
 					<dd>
-						<div
-							class="status"
-							data-status={nodeStatus}
-						>{{
-							'unknown': 'Unknown',
-							'healthy': 'Healthy',
-							'updating': 'Updating',
-							'unhealthy': 'Unhealthy',
-						}[nodeStatus]}</div>
+						<Status
+							status={nodeStatus}
+						/>
 					</dd>
 				</div>
 			</dl>
@@ -221,15 +216,9 @@
 				<dt>Status</dt>
 
 				<dd>
-					<div
-						class="status"
-						data-status={nodeStatus}
-					>{{
-						'unknown': 'Unknown',
-						'healthy': 'Healthy',
-						'updating': 'Updating',
-						'unhealthy': 'Unhealthy',
-					}[nodeStatus]}</div>
+					<Status
+						status={nodeStatus}
+					/>
 				</dd>
 			</section>
 
@@ -304,30 +293,6 @@
 				white-space: pre-wrap;
 				word-break: break-word;
 			}
-		}
-	}
-
-	.status {
-		&[data-status="healthy"] {
-			--status-color: #16B371;
-		}
-
-		&[data-status="updating"] {
-			--status-color: #b3a316;
-		}
-
-		&[data-status="unhealthy"] {
-			--status-color: #b33d16;
-		}
-
-		&[data-status="unknown"] {
-			--status-color: gray;
-		}
-
-		&:before {
-			content: '⏺';
-			margin-right: 0.33em;
-			color: var(--status-color);
 		}
 	}
 </style>

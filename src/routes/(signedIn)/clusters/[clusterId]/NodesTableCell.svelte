@@ -14,6 +14,10 @@
 	// Inputs
 	export let nodeWithInfo: InfernetNodeWithInfo
 	export let cellType: CellType
+
+
+	// Components
+	import Status from '$/views/Status.svelte'
 </script>
 
 
@@ -21,21 +25,12 @@
 	<span class="node-id">{nodeWithInfo.node.id}</span>
 
 {:else if cellType === CellType.Status}
-	{@const nodeStatus = nodeWithInfo.info?.status ?? 'unknown'}
-
 	<div class="row">
-		<div
-			class="status"
-			data-status={nodeStatus}
-		>{{
-			'unknown': 'Unknown',
-			'healthy': 'Healthy',
-			'updating': 'Updating',
-			'unhealthy': 'Unhealthy',
-		}[nodeStatus]}</div>
-	</div>
-{:else}
 
+		<Status
+			status={nodeWithInfo.info?.status ?? 'unknown'}
+		/>
+	</div>
 {/if}
 
 
@@ -51,29 +46,5 @@
 	img {
 		width: 1.5em;
 		height: 1.5em;
-	}
-
-	.status {
-		&[data-status="healthy"] {
-			--status-color: #16B371;
-		}
-
-		&[data-status="updating"] {
-			--status-color: #b3a316;
-		}
-
-		&[data-status="unhealthy"] {
-			--status-color: #b33d16;
-		}
-
-		&[data-status="unknown"] {
-			--status-color: gray;
-		}
-
-		&:before {
-			content: '⏺';
-			margin-right: 0.33em;
-			color: var(--status-color);
-		}
 	}
 </style>

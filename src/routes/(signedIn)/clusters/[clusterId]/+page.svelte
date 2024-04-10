@@ -14,7 +14,13 @@
 
 
 	// Internal state
-	$: clusterStatus = cluster.locked ? 'updating' : cluster.healthy ? 'healthy' : 'unhealthy'
+	$: clusterStatus = (
+		cluster.locked
+			? 'updating'
+			: cluster.healthy
+				? 'healthy'
+				: 'unhealthy'
+	)
 
 
 	// Functions
@@ -31,6 +37,7 @@
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodesTable from './NodesTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import Status from '$/views/Status.svelte'
 </script>
 
 
@@ -58,16 +65,9 @@
 				<div class="row">
 					<dt>Status</dt>
 					<dd>
-						<div
-							class="status"
-							data-status={clusterStatus}
-						>
-							{{
-								'healthy': 'Healthy',
-								'updating': 'Updating',
-								'unhealthy': 'Unhealthy',
-							}[clusterStatus]}
-						</div>
+						<Status
+							status={clusterStatus}
+						/>
 					</dd>
 				</div>
 			</dl>
@@ -233,16 +233,9 @@
 				<dt>Status</dt>
 
 				<dd>
-					<div
-						class="status"
-						data-status={clusterStatus}
-					>
-						{{
-							'healthy': 'Healthy',
-							'updating': 'Updating',
-							'unhealthy': 'Unhealthy',
-						}[clusterStatus]}
-					</div>
+					<Status
+						status={clusterStatus}
+					/>
 				</dd>
 			</section>
 
@@ -312,26 +305,6 @@
 				white-space: pre-wrap;
 				word-break: break-word;
 			}
-		}
-	}
-
-	.status {
-		&[data-status="healthy"] {
-			--status-color: #16B371;
-		}
-
-		&[data-status="updating"] {
-			--status-color: #b3a316;
-		}
-
-		&[data-status="unhealthy"] {
-			--status-color: #b33d16;
-		}
-
-		&:before {
-			content: '⏺';
-			margin-right: 0.33em;
-			color: var(--status-color)
 		}
 	}
 </style>
