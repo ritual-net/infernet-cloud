@@ -498,45 +498,6 @@
 								</header>
 							</svelte:fragment>
 
-							<!-- <section class="column wrap">
-								<div class="column inline">
-									<h3>
-										Docker Credentials
-										<span class="annotation">Optional</span>
-									</h3>
-
-									<p>Sign into your Docker account for simple container management.</p>
-								</div>
-
-								<div class="row equal">
-									<div class="column">
-										<label for="docker.username">Username</label>
-
-										<input
-											type="text"
-											id="config.name"
-											name="config.name"
-											placeholder="Enter Docker username..."
-											bind:value={$form.docker.username}
-											{...$constraints.docker?.username}
-										/>
-									</div>
-
-									<div class="column">
-										<label for="docker.access_token">Private Access Token</label>
-
-										<input
-											type="text"
-											name="docker.access_token"
-											placeholder="Enter Docker access token..."
-											bind:value={$form.docker.access_token}
-											{...$constraints.docker?.access_token}
-											class="code"
-										/>
-									</div>
-								</div>
-							</section> -->
-
 							<section class="row wrap">
 								<div class="column inline">
 									<h3>
