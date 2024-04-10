@@ -23,6 +23,10 @@
 	import type { DockerHubClient } from '$/lib/docker/docker'
 
 
+	// Functions
+	import { serializeEnvObject, parseEnvString } from '$/lib/utils/env'
+
+
 	// Schema
 	import { FormData } from './schema'
 
@@ -386,7 +390,10 @@
 				name="container.env"
 				rows="2"
 				placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
-				bind:value={$form.container.env}
+				value={serializeEnvObject($form.container.env)}
+				on:blur={e => {
+					$form.container.env = parseEnvString(e.target.value)
+				}}
 				{...$constraints.container?.env}
 				class="code"
 			/>
