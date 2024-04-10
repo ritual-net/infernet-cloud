@@ -41,10 +41,11 @@
 		{
 			header: 'Status',
 			accessor: ({ node }) => node,
-			cell: ({ value: { node } }) => (
+			cell: ({ value: { node, nodeInfo } }) => (
 				createRender(NodesTableCell, {
 					cellType: CellType.Status,
 					node,
+					nodeInfo,
 				})
 			),
 		},
