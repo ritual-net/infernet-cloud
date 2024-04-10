@@ -19,21 +19,18 @@
 
 
 {#if cellType === CellType.Status}
-	{@const nodeStatus = nodeInfo?.status ?? 'Unknown'}
+	{@const nodeStatus = nodeInfo?.status ?? 'unknown'}
 
 	<div class="row">
-		{nodeStatus}
-
-		<!-- <div
+		<div
 			class="status"
 			data-status={nodeStatus}
-		>
-			{{
-				'healthy': 'Healthy',
-				'updating': 'Updating',
-				'unhealthy': 'Unhealthy',
-			}[nodeStatus]}
-		</div> -->
+		>{{
+			'unknown': 'Unknown',
+			'healthy': 'Healthy',
+			'updating': 'Updating',
+			'unhealthy': 'Unhealthy',
+		}[nodeStatus]}</div>
 	</div>
 {:else}
 
@@ -48,5 +45,29 @@
 	img {
 		width: 1.5em;
 		height: 1.5em;
+	}
+
+	.status {
+		&[data-status="healthy"] {
+			--status-color: #16B371;
+		}
+
+		&[data-status="updating"] {
+			--status-color: #b3a316;
+		}
+
+		&[data-status="unhealthy"] {
+			--status-color: #b33d16;
+		}
+
+		&[data-status="unknown"] {
+			--status-color: gray;
+		}
+
+		&:before {
+			content: '⏺';
+			margin-right: 0.33em;
+			color: var(--status-color);
+		}
 	}
 </style>

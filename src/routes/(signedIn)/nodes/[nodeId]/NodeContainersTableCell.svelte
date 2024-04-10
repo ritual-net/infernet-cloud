@@ -19,6 +19,7 @@
 
 {#if cellType === CellType.ID}
 	<span class="container-id">{container.container_id}</span>
+
 {:else if cellType === CellType.Status}
 	<div class="row">
 		<!-- {} -->
