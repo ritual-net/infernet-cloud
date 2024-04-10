@@ -23,19 +23,17 @@
 	columns={[
 		{
 			header: 'ID',
-			accessor: container => container.container_id,
+			accessor: container => container,
+			cell: ({ value: container }) => (
+				createRender(NodeContainersTableCell, {
+					cellType: CellType.ID,
+					container,
+				})
+			),
 		},
-		// {
-		// 	header: 'Image',
-		// 	accessor: container => container.image,
-		// },
 		// {
 		// 	header: 'Allowed IPs',
 		// 	accessor: container => container.allowed_ips.length ? container.allowed_ips.join(', ') : 'All',
-		// },
-		// {
-		// 	header: 'Allowed ',
-		// 	accessor: container => container.gpu
 		// },
 		// {
 		// 	header: 'Cloud Provider',
@@ -71,10 +69,10 @@
 		// 	header: 'Allowed IPs',
 		// 	accessor: container => container.allowed_ips,
 		// },
-		{
-			header: 'Command',
-			accessor: container => container.command,
-		},
+		// {
+		// 	header: 'Command',
+		// 	accessor: container => container.command,
+		// },
 		// {
 		// 	header: 'Env',
 		// 	accessor: container => container.env,
