@@ -111,6 +111,12 @@ const formatNodeConfig = (node: InfernetNode) => {
 			gpu: container.gpu,
 			port: port--,
 		})),
+		...(node.docker_account && {
+			docker: {
+				username: node.docker_account.username,
+				password: node.docker_account.password,
+			},
+		}),
 		// defaulted
 		log_path: 'infernet_node.log',
 		server: {
