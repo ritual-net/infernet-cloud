@@ -46,7 +46,7 @@ export const actions: Actions = {
 			return message(
 				formData,
 				{
-					title: `Couldn't connect cloud account.`,
+					title: `Couldn't connect Docker account.`,
 					description: error.message,
 				},
 				{
