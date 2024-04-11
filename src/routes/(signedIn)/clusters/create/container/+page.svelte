@@ -6,6 +6,8 @@
 	const {
 		formData,
 		imagesPromise, // Promise<string[]> | string[]
+		dockerAccountUsername,
+		dockerUserImages,
 	} = data
 
 	let configurations = []
@@ -186,6 +188,12 @@
 				bind:inputValue={dockerImagesQueryValue}
 				items={(
 					[
+						dockerUserImages && {
+							value: 'docker',
+							label: `Docker Hub › ${dockerAccountUsername}`,
+							items: dockerUserImages,
+						},
+
 						images && {
 							value: 'ritualnetwork',
 							label: 'Ritual',

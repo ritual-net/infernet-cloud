@@ -539,6 +539,13 @@
 
 				{:else if item.id === Fieldset.AddNodes}
 					{#each $form.nodes as node, i (node.id)}
+						{@const containerCreateRoute = new URL(
+							`/clusters/create/container?${new URLSearchParams({
+								dockerAccountUsername: node.dockerAccountUsername,
+							})}`,
+							$page.url
+						).toString()}
+
 						<article
 							class="card column"
 							transition:scale={{ start: 0.8 }}
@@ -773,7 +780,7 @@
 									</div>
 
 									<a
-										href="/clusters/create/container"
+										href={containerCreateRoute}
 										data-sveltekit-preload-code="eager"
 
 										on:click={async (e) => {
@@ -787,7 +794,7 @@
 												pushState('#/container/create', {
 													showContainerForm: 'create',
 													nodeId: node.id,
-													containerFormData: {
+													pageData: {
 														...result.data,
 														imagesPromise: await result.data.imagesPromise,
 													},
@@ -808,25 +815,22 @@
 								<NodeContainersTable
 									bind:containers={node.containers}
 									onEdit={async container => {
-										const href = `/clusters/create/container`
+										const href = containerCreateRoute
 
-										const result = {
-											type: 'loaded',
-											status: 200,
-											data: {
-												formData: {
-													container,
-												},
-												imagesPromise: await imagesPromise,
-											},
-										}
+										const result = await preloadData(href)
 
 										if (result.type === 'loaded' && result.status === 200) {
 											pushState('#/container/edit', {
 												showContainerForm: 'edit',
 												nodeId: node.id,
 												containerId: container.container_id,
-												containerFormData: result.data,
+												pageData: {
+													...result.data,
+													imagesPromise: await result.data.imagesPromise,
+													formData: {
+														container,
+													},
+												},
 											})
 										} else {
 											console.error(`Failed to preload shallow route: ${href}`)
@@ -844,7 +848,7 @@
 								>
 								
 									<ContainerForm
-										data={$page.state.containerFormData}
+										data={$page.state.pageData}
 										mode={$page.state.showContainerForm}
 										{...(
 											$page.state.showContainerForm === 'create' ?
