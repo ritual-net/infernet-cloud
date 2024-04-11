@@ -98,7 +98,7 @@
 
 					<a
 						class="button small"
-						href="https://aws.amazon.com/cli"
+						href="https://hub.docker.com/settings/security"
 						target="_blank"
 					>
 						Create Access Token
