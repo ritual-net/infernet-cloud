@@ -62,7 +62,7 @@ export const actions: Actions = {
 				type: 'success',
 				message: {
 					title: `Connected Docker account.`,
-					description: `Infernet nodes may now run Docker images only accessible to Docker Hub user "${formData.data.username}."`,
+					description: `Infernet nodes may now run Docker images accessible to Docker Hub user "${formData.data.username}."`,
 				},
 			},
 			cookies,
