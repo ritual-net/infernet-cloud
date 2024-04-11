@@ -1,12 +1,23 @@
 import type { PageLoad } from './$types'
 
 export const load: PageLoad = async ({
+	data,
 	fetch,
+	parent,
 }) => {
-	const serviceAccounts = await fetch(`/api/service_account`)
-		.then(response => response.json())
+	const [
+		parentData,
+		serviceAccounts,
+	] = await Promise.all([
+		parent(),
+
+		fetch(`/api/service_account`)
+			.then(response => response.json())
+	])
 
 	return {
-		serviceAccounts
+		...parentData,
+		...data,
+		serviceAccounts,
 	}
 }

@@ -21,6 +21,7 @@
 		formData,
 		serviceAccounts,
 		imagesPromise,
+		dockerAccounts,
 	} = $page.data as PageData
 
 
@@ -498,45 +499,6 @@
 								</header>
 							</svelte:fragment>
 
-							<!-- <section class="column wrap">
-								<div class="column inline">
-									<h3>
-										Docker Credentials
-										<span class="annotation">Optional</span>
-									</h3>
-
-									<p>Sign into your Docker account for simple container management.</p>
-								</div>
-
-								<div class="row equal">
-									<div class="column">
-										<label for="docker.username">Username</label>
-
-										<input
-											type="text"
-											id="config.name"
-											name="config.name"
-											placeholder="Enter Docker username..."
-											bind:value={$form.docker.username}
-											{...$constraints.docker?.username}
-										/>
-									</div>
-
-									<div class="column">
-										<label for="docker.access_token">Private Access Token</label>
-
-										<input
-											type="text"
-											name="docker.access_token"
-											placeholder="Enter Docker access token..."
-											bind:value={$form.docker.access_token}
-											{...$constraints.docker?.access_token}
-											class="code"
-										/>
-									</div>
-								</div>
-							</section> -->
-
 							<section class="row wrap">
 								<div class="column inline">
 									<h3>
@@ -577,6 +539,13 @@
 
 				{:else if item.id === Fieldset.AddNodes}
 					{#each $form.nodes as node, i (node.id)}
+						{@const containerCreateRoute = new URL(
+							`/clusters/create/container?${new URLSearchParams({
+								dockerAccountUsername: node.dockerAccountUsername,
+							})}`,
+							$page.url
+						).toString()}
+
 						<article
 							class="card column"
 							transition:scale={{ start: 0.8 }}
@@ -749,6 +718,57 @@
 								/>
 							</section>
 
+							<section class="row wrap">
+								<div class="column inline">
+									<h3 class="row inline">
+										<label for="nodes.{i}.config.forward_stats">
+											Docker Hub Account
+										</label>
+
+										<span class="annotation">Optional</span>
+									</h3>
+
+									<p><a href="/cloud-accounts/docker/connect">Connect your Docker Hub account</a> to allow the node to access private Docker images.</p>
+								</div>
+
+								<Select
+									id="nodes.{i}.dockerAccountUsername"
+									name="nodes.{i}.dockerAccountUsername"
+									labelText="Docker Hub Username"
+									bind:value={node.dockerAccountUsername}
+									{...!dockerAccounts
+										? {
+											placeholder: 'Loading...',
+											items: [
+												{
+													value: '',
+													label: 'None'
+												},
+												node.dockerAccountUsername && {
+													value: node.dockerAccountUsername,
+													label: node.dockerAccountUsername,
+												}
+											].filter(Boolean),
+											visuallyDisabled: true,
+										}
+										: {
+											placeholder: 'Choose Docker Hub user...',
+											items: [
+												{
+													value: '',
+													label: 'None'
+												},
+												...dockerAccounts.map(dockerAccount => ({
+													value: dockerAccount.username,
+													label: dockerAccount.username,
+												}))
+											],
+										}
+									}
+									{...$constraints.nodes?.dockerAccountUsername}
+								/>
+							</section>
+
 							<section class="column">
 								<div class="row">
 									<div class="column inline">
@@ -760,7 +780,7 @@
 									</div>
 
 									<a
-										href="/clusters/create/container"
+										href={containerCreateRoute}
 										data-sveltekit-preload-code="eager"
 
 										on:click={async (e) => {
@@ -774,7 +794,7 @@
 												pushState('#/container/create', {
 													showContainerForm: 'create',
 													nodeId: node.id,
-													containerFormData: {
+													pageData: {
 														...result.data,
 														imagesPromise: await result.data.imagesPromise,
 													},
@@ -795,25 +815,22 @@
 								<NodeContainersTable
 									bind:containers={node.containers}
 									onEdit={async container => {
-										const href = `/clusters/create/container`
+										const href = containerCreateRoute
 
-										const result = {
-											type: 'loaded',
-											status: 200,
-											data: {
-												formData: {
-													container,
-												},
-												imagesPromise: await imagesPromise,
-											},
-										}
+										const result = await preloadData(href)
 
 										if (result.type === 'loaded' && result.status === 200) {
 											pushState('#/container/edit', {
 												showContainerForm: 'edit',
 												nodeId: node.id,
 												containerId: container.container_id,
-												containerFormData: result.data,
+												pageData: {
+													...result.data,
+													imagesPromise: await result.data.imagesPromise,
+													formData: {
+														container,
+													},
+												},
 											})
 										} else {
 											console.error(`Failed to preload shallow route: ${href}`)
@@ -831,7 +848,7 @@
 								>
 								
 									<ContainerForm
-										data={$page.state.containerFormData}
+										data={$page.state.pageData}
 										mode={$page.state.showContainerForm}
 										{...(
 											$page.state.showContainerForm === 'create' ?

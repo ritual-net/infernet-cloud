@@ -28,7 +28,7 @@ declare global {
 			showContainerForm: 'create' | 'edit',
 			nodeId: string,
 			containerId?: string,
-			containerFormData?: ContainerForm['$$prop_def']['data'],
+			pageData?: ContainerForm['$$prop_def']['data'],
 		}
 
 		// interface Platform {}

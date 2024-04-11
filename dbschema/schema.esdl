@@ -25,6 +25,21 @@ module default {
       allow insert
   }
 
+  type DockerAccount {
+    constraint exclusive on ((.username, .user));
+
+    required username: str;
+    required password: str;
+
+    required user: User {
+      readonly := true;
+    };
+
+    access policy only_owner
+      allow all
+      using (.user ?= global current_user);
+  }
+
   abstract type ServiceAccount {
     required name: str;
     required user: User {
@@ -143,6 +158,8 @@ module default {
     }
 
     provider_id: str;
+
+    docker_account: DockerAccount;
 
     multi containers: Container {
       constraint exclusive;

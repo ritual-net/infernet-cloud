@@ -6,6 +6,8 @@
 	const {
 		formData,
 		imagesPromise, // Promise<string[]> | string[]
+		dockerAccountUsername,
+		dockerUserImages,
 	} = data
 
 	let configurations = []
@@ -186,36 +188,42 @@
 				bind:inputValue={dockerImagesQueryValue}
 				items={(
 					[
-						{
+						dockerUserImages && {
+							value: 'docker',
+							label: `Docker Hub › ${dockerAccountUsername}`,
+							items: dockerUserImages,
+						},
+
+						images && {
 							value: 'ritualnetwork',
 							label: 'Ritual',
-							items: images
-								?.map(image => ({
-									value: image,
-									label: image,
-								}))
-								?? [],
+							items: images.map(image => ({
+								value: image,
+								label: image,
+							})),
 						},
-						{
+
+						dockerImages && {
 							value: 'docker',
-							label: 'Docker Hub Community',
-							items: dockerImages ?? [],
+							label: 'Docker Hub › Community',
+							items: dockerImages,
 						},
-						{
+
+						(
+							dockerImagesQueryValue?.trim()
+							&& !images?.some(value => value === dockerImagesQueryValue.trim())
+							&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim())
+						) && {
 							value: 'custom',
 							label: 'Custom',
 							items: [
-								(
-									dockerImagesQueryValue?.trim()
-									&& !images?.some(value => value === dockerImagesQueryValue.trim())
-									&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim())
-								) && {
+								{
 									value: dockerImagesQueryValue.trim(),
 									label: dockerImagesQueryValue.trim(),
 								}
 							].filter(Boolean),
 						},
-					]
+					].filter(Boolean)
 				)}
 				placeholder={`Choose or search for an image...`}
 				{...$constraints.container?.image}

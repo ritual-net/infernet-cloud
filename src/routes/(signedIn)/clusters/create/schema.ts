@@ -190,6 +190,11 @@ export const Node = z
 
 		'config': NodeConfig,
 
+		'dockerAccountUsername': z
+			.string()
+			.default('')
+			.optional(),
+
 		'containers': z
 			.array(
 				Container
