@@ -10,21 +10,36 @@ import type { QueriedServiceAccount } from '$/routes/api/service_account/+server
 
 // Data
 import type { PageServerLoad } from './$types'
+import { e } from '$/lib/db'
 
 export const load: PageServerLoad = async ({
 	parent,
 	fetch,
+	locals: { client },
 }) => {
-	const parentData = await parent()
+	const [
+		parentData,
+		serviceAccounts,
+		dockerAccounts,
+		formData,
+	] = await Promise.all([
+		parent(),
 
-	const serviceAccounts = await fetch(`/api/service_account`)
-		.then<QueriedServiceAccount[]>(response => response.json())
+		fetch(`/api/service_account`)
+			.then<QueriedServiceAccount[]>(response => response.json()),
 
-	const formData = await superValidate(yup(FormData))
+		e.select(e.DockerAccount, () => ({
+			username: true,
+		}))
+			.run(client),
+		
+		superValidate(yup(FormData)),
+	])
 
 	return {
-		imagesPromise: parentData.imagesPromise,
+		...parentData,
 		serviceAccounts,
+		dockerAccounts,
 		formData,
 	}
 }
