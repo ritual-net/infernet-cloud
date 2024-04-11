@@ -16,6 +16,9 @@ export const getNodesByIds = async (client: Client, nodeIds: string[]): Promise<
 		.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 			e.select(e.InfernetNode, (node) => ({
 				...e.InfernetNode['*'],
+				docker_account: {
+					username: true,
+				},
 				containers: {
 					...e.Container['*'],
 				},

@@ -152,6 +152,16 @@
 					{node.chain_enabled ? 'Yes' : 'No'}
 				</dd>
 			</section>
+
+			{#if node.docker_account}
+				<section class="row">
+					<dt>Docker Hub Account</dt>
+
+					<dd>
+						{node.docker_account.username}
+					</dd>
+				</section>
+			{/if}
 		</dl>
 	</section>
 
