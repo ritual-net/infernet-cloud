@@ -1,5 +1,10 @@
+// Types
+import type { ProviderCluster } from '$/types/provider'
+
+
 // Actions
 import { type Actions } from '@sveltejs/kit'
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 import { resolveRoute } from '$app/paths'
 import { message } from 'sveltekit-superforms/server'
 
@@ -22,7 +27,7 @@ export const actions: Actions = {
 				{},
 				{
 					title: `Couldn't apply changes to cluster.`,
-					description: result.errorMessage,
+					description: result,
 				},
 				{
 					status: response.status,
@@ -30,13 +35,12 @@ export const actions: Actions = {
 			)
 		}
 
-		const result = await response.json()
+		const updatedCluster = await response.json() as ProviderCluster
 
 		return message(
 			{},
 			{
-				title: `Applied changes to cluster.`,
-				description: result,
+				title: `Applied changes to cluster "${updatedCluster.name}".`,
 			},
 			{
 				status: response.status,
@@ -62,7 +66,7 @@ export const actions: Actions = {
 				{},
 				{
 					title: `Couldn't delete cluster.`,
-					description: result,
+					description: result.message,
 				},
 				{
 					status: response.status,
@@ -72,15 +76,16 @@ export const actions: Actions = {
 
 		const result = await response.json()
 
-		return message(
-			{},
+		return flashRedirect(
+			303,
+			`/clusters`,
 			{
-				title: `Deleted cluster.`,
-				description: result,
+				type: 'success',
+				message: {
+					title: `Cluster deleted.`,
+				},
 			},
-			{
-				status: response.status,
-			}
+			cookies,
 		)
 	},
 }

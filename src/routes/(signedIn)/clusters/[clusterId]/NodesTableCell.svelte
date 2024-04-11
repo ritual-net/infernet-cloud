@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
 	export enum CellType {
+		ID,
 		Status,
 	}
 </script>
@@ -7,25 +8,37 @@
 
 <script lang="ts">
 	// Types/constants
-	import type { InfernetNode } from '$schema/interfaces'
+	import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
 	// Inputs
-	export let node: InfernetNode
+	export let nodeWithInfo: InfernetNodeWithInfo
 	export let cellType: CellType
+
+
+	// Components
+	import Status from '$/views/Status.svelte'
 </script>
 
 
-{#if cellType === CellType.Status}
-	<div class="row">
-		<!-- {} -->
-	</div>
-{:else}
+{#if cellType === CellType.ID}
+	<span class="node-id">{nodeWithInfo.node.id}</span>
 
+{:else if cellType === CellType.Status}
+	<div class="row">
+
+		<Status
+			status={nodeWithInfo.info?.status ?? 'unknown'}
+		/>
+	</div>
 {/if}
 
 
 <style>
+	.node-id {
+		font-size: 0.8em;
+	}
+
 	.row {
 		justify-content: start;
 	}

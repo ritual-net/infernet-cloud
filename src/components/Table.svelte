@@ -191,6 +191,7 @@
 
 	thead {
 		font-size: 0.85em;
+		text-wrap: nowrap;
 
 		& th {
 			opacity: 0.5;

@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
 	export enum CellType {
+		ID,
 		Status,
 	}
 </script>
@@ -16,16 +17,21 @@
 </script>
 
 
-{#if cellType === CellType.Status}
+{#if cellType === CellType.ID}
+	<span class="container-id">{container.container_id}</span>
+
+{:else if cellType === CellType.Status}
 	<div class="row">
 		<!-- {} -->
 	</div>
-{:else}
-
 {/if}
 
 
 <style>
+	.container-id {
+		font-size: 0.8em;
+	}
+
 	.row {
 		justify-content: start;
 	}

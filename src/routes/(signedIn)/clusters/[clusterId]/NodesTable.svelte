@@ -36,15 +36,21 @@
 	columns={[
 		{
 			header: 'Name',
-			accessor: ({ node }) => node.id,
+			accessor: nodeWithInfo => nodeWithInfo,
+			cell: ({ value: nodeWithInfo }) => (
+				createRender(NodesTableCell, {
+					cellType: CellType.ID,
+					nodeWithInfo,
+				})
+			),
 		},
 		{
 			header: 'Status',
-			accessor: ({ node }) => node,
-			cell: ({ value: { node } }) => (
+			accessor: nodeWithInfo => nodeWithInfo,
+			cell: ({ value: nodeWithInfo }) => (
 				createRender(NodesTableCell, {
 					cellType: CellType.Status,
-					node,
+					nodeWithInfo,
 				})
 			),
 		},
