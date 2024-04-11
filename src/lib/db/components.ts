@@ -16,6 +16,7 @@ export const createNodeParams = e.tuple({
 		private_key: e.str,
 		forward_stats: e.bool,
 	}),
+	dockerAccountUsername: e.str,
 	containers: e.array(
 		e.tuple({
 			image: e.str,
@@ -49,6 +50,12 @@ export const insertNodeQuery = (
 		max_gas_limit: node.config.max_gas_limit,
 		private_key: node.config.private_key,
 		forward_stats: node.config.forward_stats,
+		docker_account: e.select(e.DockerAccount, () => ({
+			filter_single: {
+				user: e.global.current_user,
+				username: node.dockerAccountUsername,
+			},
+		})),
 		containers: e.for(e.array_unpack(node.containers), (container) =>
 			e.insert(e.Container, {
 				image: container.image,

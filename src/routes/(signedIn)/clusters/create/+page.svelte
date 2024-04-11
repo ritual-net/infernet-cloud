@@ -21,6 +21,7 @@
 		formData,
 		serviceAccounts,
 		imagesPromise,
+		dockerAccounts,
 	} = $page.data as PageData
 
 
@@ -707,6 +708,57 @@
 									name="nodes.{i}.config.forward_stats"
 									bind:checked={node.config.forward_stats}
 									labelText="Forward Stats?"
+								/>
+							</section>
+
+							<section class="row wrap">
+								<div class="column inline">
+									<h3 class="row inline">
+										<label for="nodes.{i}.config.forward_stats">
+											Docker Hub Account
+										</label>
+
+										<span class="annotation">Optional</span>
+									</h3>
+
+									<p><a href="/cloud-accounts/docker/connect">Connect your Docker Hub account</a> to allow the node to access private Docker images.</p>
+								</div>
+
+								<Select
+									id="nodes.{i}.dockerAccountUsername"
+									name="nodes.{i}.dockerAccountUsername"
+									labelText="Docker Hub Username"
+									bind:value={node.dockerAccountUsername}
+									{...!dockerAccounts
+										? {
+											placeholder: 'Loading...',
+											items: [
+												{
+													value: '',
+													label: 'None'
+												},
+												node.dockerAccountUsername && {
+													value: node.dockerAccountUsername,
+													label: node.dockerAccountUsername,
+												}
+											].filter(Boolean),
+											visuallyDisabled: true,
+										}
+										: {
+											placeholder: 'Choose Docker Hub user...',
+											items: [
+												{
+													value: '',
+													label: 'None'
+												},
+												...dockerAccounts.map(dockerAccount => ({
+													value: dockerAccount.username,
+													label: dockerAccount.username,
+												}))
+											],
+										}
+									}
+									{...$constraints.nodes?.dockerAccountUsername}
 								/>
 							</section>
 
