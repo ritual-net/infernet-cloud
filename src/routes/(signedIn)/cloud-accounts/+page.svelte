@@ -29,6 +29,8 @@
 	/>
 </section>
 
+<hr>
+
 <section class="column">
 	<header class="row">
 		<h2>Docker Accounts</h2>

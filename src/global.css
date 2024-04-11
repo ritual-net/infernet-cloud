@@ -291,3 +291,7 @@ code, .code {
 	font-size-adjust: from-font;
 	font-size: 0.9em;
 }
+
+hr {
+	border-top: solid var(--borderWidth) var(--borderColor);
+}
