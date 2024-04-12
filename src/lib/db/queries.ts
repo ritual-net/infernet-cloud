@@ -88,6 +88,7 @@ export const getClusterById = async (
 	{
 		includeServiceAccountCredentials,
 		includeNodeDetails,
+		includeDockerAccountCredentials,
 	}: {
 		/**
 		 * Whether to include sensitive Service Account credentials
@@ -98,6 +99,11 @@ export const getClusterById = async (
 		 * Whether to include Node and Container details
 		 */
 		includeNodeDetails: boolean,
+
+		/**
+		 * Whether to include Docker Credentials from Nodes
+		 */
+		includeDockerAccountCredentials?: boolean,
 	},
 ): Promise<ProviderCluster | null> => {
 	// Get cloud provider from generic cluster
@@ -118,7 +124,11 @@ export const getClusterById = async (
 	// Get cluster with provider-specific data
 	const cluster = await e
 		.select(ClusterTypeByProvider[provider], () => ({
-			...getClusterSelectParams(provider, { includeServiceAccountCredentials, includeNodeDetails }),
+			...getClusterSelectParams(provider, {
+				includeServiceAccountCredentials,
+				includeNodeDetails,
+				includeDockerAccountCredentials,
+			}),
 			filter_single: { id },
 		}))
 		.run(client);

@@ -83,6 +83,7 @@ export const getClusterSelectParams = (
 	{
 		includeServiceAccountCredentials = false,
 		includeNodeDetails = true,
+		includeDockerAccountCredentials = false,
 	}: {
 		/**
 		 * Whether to include sensitive Service Account credentials
@@ -93,6 +94,11 @@ export const getClusterSelectParams = (
 		 * Whether to include Node and Container details
 		 */
 		includeNodeDetails?: boolean,
+
+		/**
+		 * Whether to include Docker Credentials from Nodes
+		 */
+		includeDockerAccountCredentials?: boolean,
 	}
 ) => {
 	return {
@@ -112,6 +118,12 @@ export const getClusterSelectParams = (
 			includeNodeDetails
 				? {
 					...e.InfernetNode['*'],
+					...(includeDockerAccountCredentials && {
+						dockerAccount: {
+							username: true,
+							password: true,
+						},
+					}),
 					containers: {
 						...e.Container['*'],
 					},
