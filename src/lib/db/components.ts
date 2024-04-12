@@ -119,7 +119,7 @@ export const getClusterSelectParams = (
 				? {
 					...e.InfernetNode['*'],
 					...(includeDockerAccountCredentials && {
-						dockerAccount: {
+						docker_account: {
 							username: true,
 							password: true,
 						},
