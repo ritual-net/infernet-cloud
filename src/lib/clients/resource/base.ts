@@ -29,12 +29,12 @@ export abstract class BaseResourceClient {
 	abstract getZones(region: string): Promise<string[]>;
 
 	/**
-	 * Get the list of machine types in a region.
+	 * Get the list of machine types in a zone.
 	 *
-	 * @param region The name of the region.
-	 * @returns Flat array of all machine types in the region.
+	 * @param region The name of the zone.
+	 * @returns Flat array of all machine types in a zone.
 	 */
-	abstract getMachines(region: string): Promise<Machine[]>;
+	abstract getMachines(zone: string): Promise<Machine[]>;
 
 	/**
 	 * End to end method to get all provider info (regions, zones, machines).
@@ -49,22 +49,21 @@ export abstract class BaseResourceClient {
 
 		return await Promise.all(
 			regionIds.map(async (regionId) => {
-				const [
-					machines,
-					zones,
-				] = await Promise.all([
-					this.getMachines(regionId),
-					this.getZones(regionId),
-				])
+				const zones = await this.getZones(regionId);
 
 				return {
 					region: {
 						id: regionId,
 					},
-					zones: zones.map((zone) => ({
-						name: zone,
-						machines,
-					} as ZoneInfo)),
+					zones: await Promise.all(
+						zones.map(
+							async (zone) =>
+								({
+									name: zone,
+									machines: await this.getMachines(zone),
+								}) as ZoneInfo
+						)
+					),
 				} as ProviderInfo;
 			})
 		);

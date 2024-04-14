@@ -77,9 +77,9 @@ export class GCPResourceClient extends BaseResourceClient {
 	}
 
 	/**
-	 * Returns a list of all machine types in a given region.
+	 * Returns a list of all machine types in a given zone.
 	 *
-	 * @param region - GCP region name
+	 * @param zone - GCP zone name
 	 * @returns A flat array of machine types.
 	 * Example return value: [
 	 *   {
@@ -89,27 +89,21 @@ export class GCPResourceClient extends BaseResourceClient {
 	 *     "link": "https://www.googleapis.com/compute/v1/projects/project/zones/us-west4-c/machineTypes/t2d-standard-48"
 	 *   }, ...]
 	 */
-	async getMachines(region: string): Promise<Machine[]> {
-		const zones = await this.getZones(region);
-		const machines = await Promise.all(
-			zones.flatMap(async (zone) => {
-				const response = await this.googleCompute.machineTypes.list({
-					project: this.projectId,
-					zone: zone,
-				});
-				return (
-					response.data.items?.map(
-						(machine: compute_v1.Schema$MachineType) =>
-							({
-								id: machine.id,
-								name: machine.name,
-								description: machine.description,
-								link: machine.selfLink,
-							}) as Machine
-					) ?? []
-				);
-			})
+	async getMachines(zone: string): Promise<Machine[]> {
+		const response = await this.googleCompute.machineTypes.list({
+			project: this.projectId,
+			zone: zone,
+		});
+		return (
+			response.data.items?.map(
+				(machine: compute_v1.Schema$MachineType) =>
+					({
+						id: machine.id,
+						name: machine.name,
+						description: machine.description,
+						link: machine.selfLink,
+					}) as Machine
+			) ?? []
 		);
-		return machines.flat();
 	}
 }

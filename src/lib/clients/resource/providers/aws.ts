@@ -79,9 +79,9 @@ export class AWSResourceClient extends BaseResourceClient {
 	}
 
 	/**
-	 * Returns a list of all machine types in a given region.
+	 * Returns a list of all machine types in a given zone.
 	 *
-	 * @param region - AWS region name
+	 * @param zone - AWS zone name
 	 * @returns A flat array of machine types.
 	 * Example return value: [
 	 *   {
@@ -91,8 +91,8 @@ export class AWSResourceClient extends BaseResourceClient {
 	 *     "link": "https://aws.amazon.com/ec2/instance-types/"
 	 *   }, ...]
 	 */
-	async getMachines(region: string): Promise<Machine[]> {
-		this.amazonCompute = await this.createInstance(region);
+	async getMachines(zone: string): Promise<Machine[]> {
+		this.amazonCompute = await this.createInstance(zone.slice(0, -1)); // AWS api uses region name
 		const command = new DescribeInstanceTypeOfferingsCommand({});
 		const response = await this.amazonCompute.send(command);
 		return (

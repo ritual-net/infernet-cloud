@@ -33,7 +33,7 @@ export type ProviderInfo = {
 
 export type ZoneInfo = {
 	name: string;
-	machines: Machine[]; // all machines available in region not zone
+	machines: Machine[];
 };
 
 // Node client types
