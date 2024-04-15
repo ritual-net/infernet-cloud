@@ -28,6 +28,7 @@
 
 
 	// Components
+	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import ClustersTable from './ClustersTable.svelte'
 </script>
 
@@ -36,12 +37,27 @@
 	<header class="row">
 		<h2>Clusters</h2>
 
-		<a
-			class="button primary"
-			href="/clusters/create"
-		>
-			Create Cluster
-		</a>
+		<div class="row">
+			<a
+				class="button primary"
+				href="/clusters/create"
+			>
+				Create Cluster
+			</a>
+
+			<DropdownMenu
+				labelText="Actions"
+				items={[
+					{
+						value: 'refresh',
+						label: 'Refresh',
+						onClick: () => {
+							invalidate(`/api/clusters`)
+						},
+					},
+				]}
+			/>
+		</div>
 	</header>
 
 	<section>
