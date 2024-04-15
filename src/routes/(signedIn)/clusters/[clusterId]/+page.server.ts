@@ -51,6 +51,7 @@ export const actions: Actions = {
 	delete: async ({
 		fetch,
 		params: { clusterId },
+		cookies,
 	}) => {
 		const response = await fetch(
 			resolveRoute('/api/cluster/[clusterId]', { clusterId }),
