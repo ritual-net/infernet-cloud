@@ -1,7 +1,11 @@
 <script lang="ts">
 	// Context
 	import { page } from '$app/stores'
-	
+
+	let {
+		node
+	} = $page.data
+
 	
 	// Actions
 	import { invalidate } from '$app/navigation'
@@ -31,4 +35,23 @@
 </script>
 
 
+<nav class="breadcrumb">
+	<a
+		href={resolveRoute(`/clusters/[clusterId]`, { clusterId: node.cluster.id })}
+		class="row inline"
+	>
+		<span>←</span>
+		<span>{node.cluster.name}</span>
+	</a>
+</nav>
+
 <slot />
+
+
+<style>
+	nav {
+		& a {
+			opacity: 0.5;
+		}
+	}
+</style>
