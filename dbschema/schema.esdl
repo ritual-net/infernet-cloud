@@ -161,6 +161,8 @@ module default {
 
     docker_account: DockerAccount;
 
+    cluster := .<nodes[is Cluster];
+
     multi containers: Container {
       constraint exclusive;
       on source delete delete target;
