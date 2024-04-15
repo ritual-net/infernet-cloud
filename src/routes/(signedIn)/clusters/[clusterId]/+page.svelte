@@ -94,6 +94,8 @@
 								},
 							})
 
+							invalidate($page.url)
+
 							return async ({ result }) => {
 								await applyAction(result)
 
