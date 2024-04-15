@@ -90,7 +90,7 @@
 							const toast = addToast({
 								data: {
 									type: 'default',
-									title: 'Applying changes to cluster...',
+									title: `Applying changes to cluster "${cluster.name}"...`,
 								},
 							})
 
@@ -112,7 +112,7 @@
 							const toast = addToast({
 								data: {
 									type: 'default',
-									title: 'Deleting cluster...',
+									title: `Deleting cluster "${cluster.name}"...`,
 								},
 							})
 
