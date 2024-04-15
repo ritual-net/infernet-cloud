@@ -83,6 +83,13 @@
 				labelText="Cluster Actions"
 				items={[
 					{
+						value: 'refresh',
+						label: 'Refresh',
+						onClick: () => {
+							invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+						},
+					},
+					{
 						value: 'apply',
 						label: 'Apply Changes',
 						formAction: `?/apply`,
