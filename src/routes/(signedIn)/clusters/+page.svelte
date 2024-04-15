@@ -8,6 +8,7 @@
 	// Actions
 	import { onMount } from 'svelte'
 	import { invalidate } from '$app/navigation'
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
 
 	onMount(() => {
 		let isMounted = true
@@ -51,8 +52,17 @@
 					{
 						value: 'refresh',
 						label: 'Refresh',
-						onClick: () => {
-							invalidate(`/api/clusters`)
+						onClick: async () => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: `Refreshing data...`,
+								},
+							})
+
+							await invalidate(`/api/clusters`)
+
+							removeToast(toast.id)
 						},
 					},
 				]}

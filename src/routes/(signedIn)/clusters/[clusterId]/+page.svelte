@@ -85,8 +85,17 @@
 					{
 						value: 'refresh',
 						label: 'Refresh',
-						onClick: () => {
-							invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+						onClick: async () => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: `Refreshing data...`,
+								},
+							})
+
+							await invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+
+							removeToast(toast.id)
 						},
 					},
 					{
