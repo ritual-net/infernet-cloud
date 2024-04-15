@@ -55,7 +55,7 @@
 		},
 		{
 			header: 'Status',
-			accessor: cluster => cluster.healthy,
+			accessor: cluster => cluster,
 			cell: ({ value: cluster }) => (
 				createRender(ClustersTableCell, {
 					cellType: CellType.Status,
