@@ -47,13 +47,13 @@ export const POST: RequestHandler = async ({ locals: { client }, params }) => {
 	} catch (e) {
 		console.error(e)
 
-		return error(500, JSON.stringify(e))
+		return error(500, e)
 	}
 
-	const { success, error: errorMessage } = result
+	const { success, error: _error } = result
 
 	if(!success)
-		return error(500, errorMessage)
+		return error(500, _error)
 
 	return json(await getClusterById(client, clusterId, { includeServiceAccountCredentials: false, includeNodeDetails: false }));
 };
