@@ -94,13 +94,15 @@
 								},
 							})
 
-							invalidate($page.url)
+							setTimeout(() => {
+								invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+							}, 500)
 
 							return async ({ result }) => {
 								await applyAction(result)
 
 								if(result.type === 'success')
-									await invalidate($page.url)
+									invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
 
 								removeToast(toast.id)
 							}
@@ -120,9 +122,6 @@
 
 							return async ({ result }) => {
 								await applyAction(result)
-
-								if(result.type === 'success')
-									await invalidate($page.url)
 
 								removeToast(toast.id)
 							}

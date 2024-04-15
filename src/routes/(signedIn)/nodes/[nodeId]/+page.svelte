@@ -23,6 +23,7 @@
 
 	// Functions
 	import { formatNumberCompact } from '$/lib/format'
+	import { resolveRoute } from '$app/paths'
 
 
 	// Actions
@@ -92,14 +93,16 @@
 									title: 'Starting node...',
 								},
 							})
-		
-							invalidate($page.url)
+
+							setTimeout(() => {
+								invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
+							}, 500)
 		
 							return async ({ result }) => {
 								await applyAction(result)
 		
 								if(result.type === 'success')
-									await invalidate($page.url)
+									invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
 		
 								removeToast(toast.id)
 							}
@@ -116,14 +119,16 @@
 									title: 'Stopping node...',
 								},
 							})
-		
-							invalidate($page.url)
+
+							setTimeout(() => {
+								invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
+							}, 500)
 		
 							return async ({ result }) => {
 								await applyAction(result)
 		
 								if(result.type === 'success')
-									await invalidate($page.url)
+									invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
 		
 								removeToast(toast.id)
 							}

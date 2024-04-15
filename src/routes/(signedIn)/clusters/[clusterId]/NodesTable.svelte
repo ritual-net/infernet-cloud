@@ -96,13 +96,15 @@
 						},
 					})
 
-					invalidate($page.url)
+					setTimeout(() => {
+						invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+					}, 500)
 
 					return async ({ result }) => {
 						await applyAction(result)
 
 						if(result.type === 'success')
-							await invalidate($page.url)
+							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
 
 						removeToast(toast.id)
 					}
@@ -120,13 +122,15 @@
 						},
 					})
 
-					invalidate($page.url)
+					setTimeout(() => {
+						invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+					}, 500)
 
 					return async ({ result }) => {
 						await applyAction(result)
 
 						if(result.type === 'success')
-							await invalidate($page.url)
+							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
 
 						removeToast(toast.id)
 					}
