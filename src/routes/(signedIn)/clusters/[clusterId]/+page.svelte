@@ -90,9 +90,11 @@
 							const toast = addToast({
 								data: {
 									type: 'default',
-									title: 'Applying changes to cluster...',
+									title: `Applying changes to cluster "${cluster.name}"...`,
 								},
 							})
+
+							invalidate($page.url)
 
 							return async ({ result }) => {
 								await applyAction(result)
@@ -112,7 +114,7 @@
 							const toast = addToast({
 								data: {
 									type: 'default',
-									title: 'Deleting cluster...',
+									title: `Deleting cluster "${cluster.name}"...`,
 								},
 							})
 

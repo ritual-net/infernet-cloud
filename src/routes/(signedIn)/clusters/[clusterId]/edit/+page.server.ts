@@ -29,7 +29,7 @@ export const actions: Actions = {
 			resolveRoute('/api/cluster/[clusterId]', { clusterId }),
 			{
 				method: 'PATCH',
-				body: JSON.stringify(formData.data),
+				body: JSON.stringify(formData.data.config),
 			}
 		)
 
@@ -39,7 +39,7 @@ export const actions: Actions = {
 			return message(
 				formData,
 				{
-					title: `Couldn't update cluster configuration.`,
+					title: `Couldn't update configuration for cluster "${formData.data.config.name}".`,
 					description: result,
 				},
 				{
@@ -50,20 +50,13 @@ export const actions: Actions = {
 
 		const result = await response.json()
 
-		// return message(
-		// 	formData,
-		// 	{
-		// 		title: `Updated cluster configuration.`,
-		// 	},
-		// )
-
 		return flashRedirect(
 			303,
 			resolveRoute('/clusters/[clusterId]', { clusterId }),
 			{
 				type: 'success',
 				message: {
-					title: `Updated cluster configuration.`,
+					title: `Updated configuration for cluster "${formData.data.config.name}".`,
 				},
 			},
 			cookies,

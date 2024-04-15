@@ -27,7 +27,7 @@ export const actions: Actions = {
 				{},
 				{
 					title: `Couldn't apply changes to cluster.`,
-					description: result,
+					description: result.message,
 				},
 				{
 					status: response.status,
@@ -51,6 +51,7 @@ export const actions: Actions = {
 	delete: async ({
 		fetch,
 		params: { clusterId },
+		cookies,
 	}) => {
 		const response = await fetch(
 			resolveRoute('/api/cluster/[clusterId]', { clusterId }),

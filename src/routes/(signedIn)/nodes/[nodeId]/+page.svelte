@@ -12,7 +12,13 @@
 
 	// Internal state
 	// (Computed)
-	$: nodeStatus = info?.status ?? 'unknown'
+	$: nodeStatus = (
+		info?.status
+			? {
+				'RUNNING': 'healthy',
+			}[info.status] || info.status
+			: 'unknown'
+	)
 
 
 	// Functions

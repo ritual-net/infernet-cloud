@@ -55,7 +55,7 @@
 		},
 		{
 			header: 'Status',
-			accessor: cluster => cluster.healthy,
+			accessor: cluster => cluster,
 			cell: ({ value: cluster }) => (
 				createRender(ClustersTableCell, {
 					cellType: CellType.Status,
@@ -81,6 +81,30 @@
 				},
 			},
 			{
+				value: 'apply',
+				label: 'Apply Changes',
+				formAction: `${clusterRoute}?/apply`,
+				formSubmit: async (e) => {
+					const toast = addToast({
+						data: {
+							type: 'default',
+							title: `Applying changes to cluster "${cluster.name}"...`,
+						},
+					})
+
+					invalidate($page.url)
+
+					return async ({ result }) => {
+						await applyAction(result)
+
+						if(result.type === 'success')
+							await invalidate($page.url)
+
+						removeToast(toast.id)
+					}
+				},
+			},
+			{
 				value: 'delete',
 				label: 'Delete Cluster',
 				formAction: `${clusterRoute}?/delete`,
@@ -88,7 +112,7 @@
 					const toast = addToast({
 						data: {
 							type: 'default',
-							title: 'Deleting cluster...',
+							title: `Deleting cluster "${cluster.name}"...`,
 						},
 					})
 
