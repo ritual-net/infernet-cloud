@@ -83,6 +83,22 @@
 				labelText="Node Actions"
 				items={[
 					{
+						value: 'refresh',
+						label: 'Refresh',
+						onClick: async () => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: `Refreshing data...`,
+								},
+							})
+
+							await invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
+
+							removeToast(toast.id)
+						},
+					},
+					{
 						value: 'start',
 						label: 'Start Node',
 						formAction: `?/start`,
