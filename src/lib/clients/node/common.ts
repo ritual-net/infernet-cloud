@@ -26,6 +26,11 @@ export const nodeAction = async <
 	client: Client,
 	nodeIds: string[],
 	action: _NodeAction,
+	{
+		includeClusterBacklink = false,
+	}: {
+		includeClusterBacklink?: boolean,
+	} = {}
 ): Promise<
 	_NodeAction extends NodeAction.info
 		? {
@@ -34,7 +39,7 @@ export const nodeAction = async <
 		}
 		: undefined
 > => {
-	const nodes = await getNodesByIds(client, nodeIds);
+	const nodes = await getNodesByIds(client, nodeIds, { includeClusterBacklink });
 	if (nodes.length === 0) {
 		throw Error('Nodes could not be retrieved.');
 	}
