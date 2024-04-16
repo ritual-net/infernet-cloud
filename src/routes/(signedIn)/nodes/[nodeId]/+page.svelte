@@ -23,6 +23,7 @@
 
 	// Functions
 	import { formatNumberCompact } from '$/lib/format'
+	import { resolveRoute } from '$app/paths'
 
 
 	// Actions
@@ -82,6 +83,22 @@
 				labelText="Node Actions"
 				items={[
 					{
+						value: 'refresh',
+						label: 'Refresh',
+						onClick: async () => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: `Refreshing data...`,
+								},
+							})
+
+							await invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
+
+							removeToast(toast.id)
+						},
+					},
+					{
 						value: 'start',
 						label: 'Start Node',
 						formAction: `?/start`,
@@ -92,14 +109,16 @@
 									title: 'Starting node...',
 								},
 							})
-		
-							invalidate($page.url)
+
+							setTimeout(() => {
+								invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
+							}, 500)
 		
 							return async ({ result }) => {
 								await applyAction(result)
 		
 								if(result.type === 'success')
-									await invalidate($page.url)
+									invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
 		
 								removeToast(toast.id)
 							}
@@ -116,14 +135,16 @@
 									title: 'Stopping node...',
 								},
 							})
-		
-							invalidate($page.url)
+
+							setTimeout(() => {
+								invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
+							}, 500)
 		
 							return async ({ result }) => {
 								await applyAction(result)
 		
 								if(result.type === 'success')
-									await invalidate($page.url)
+									invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: $page.params.nodeId }))
 		
 								removeToast(toast.id)
 							}

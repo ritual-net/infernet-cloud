@@ -56,7 +56,7 @@
 						await applyAction(result)
 
 						if(result.type === 'success')
-							await invalidate($page.url)
+							invalidate($page.url)
 
 						removeToast(toast.id)
 					}

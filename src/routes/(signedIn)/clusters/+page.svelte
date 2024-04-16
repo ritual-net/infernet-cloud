@@ -8,6 +8,7 @@
 	// Actions
 	import { onMount } from 'svelte'
 	import { invalidate } from '$app/navigation'
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
 
 	onMount(() => {
 		let isMounted = true
@@ -28,6 +29,7 @@
 
 
 	// Components
+	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import ClustersTable from './ClustersTable.svelte'
 </script>
 
@@ -36,12 +38,36 @@
 	<header class="row">
 		<h2>Clusters</h2>
 
-		<a
-			class="button primary"
-			href="/clusters/create"
-		>
-			Create Cluster
-		</a>
+		<div class="row">
+			<a
+				class="button primary"
+				href="/clusters/create"
+			>
+				Create Cluster
+			</a>
+
+			<DropdownMenu
+				labelText="Actions"
+				items={[
+					{
+						value: 'refresh',
+						label: 'Refresh',
+						onClick: async () => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: `Refreshing data...`,
+								},
+							})
+
+							await invalidate(`/api/clusters`)
+
+							removeToast(toast.id)
+						},
+					},
+				]}
+			/>
+		</div>
 	</header>
 
 	<section>

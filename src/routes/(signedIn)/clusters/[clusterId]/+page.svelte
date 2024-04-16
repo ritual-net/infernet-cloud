@@ -83,6 +83,22 @@
 				labelText="Cluster Actions"
 				items={[
 					{
+						value: 'refresh',
+						label: 'Refresh',
+						onClick: async () => {
+							const toast = addToast({
+								data: {
+									type: 'default',
+									title: `Refreshing data...`,
+								},
+							})
+
+							await invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+
+							removeToast(toast.id)
+						},
+					},
+					{
 						value: 'apply',
 						label: 'Apply Changes',
 						formAction: `?/apply`,
@@ -94,13 +110,15 @@
 								},
 							})
 
-							invalidate($page.url)
+							setTimeout(() => {
+								invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+							}, 500)
 
 							return async ({ result }) => {
 								await applyAction(result)
 
 								if(result.type === 'success')
-									await invalidate($page.url)
+									invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
 
 								removeToast(toast.id)
 							}
@@ -120,9 +138,6 @@
 
 							return async ({ result }) => {
 								await applyAction(result)
-
-								if(result.type === 'success')
-									await invalidate($page.url)
 
 								removeToast(toast.id)
 							}

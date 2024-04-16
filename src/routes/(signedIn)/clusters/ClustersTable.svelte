@@ -92,13 +92,15 @@
 						},
 					})
 
-					invalidate($page.url)
+					setTimeout(() => {
+						invalidate(`/api/cluster`)
+					}, 500)
 
 					return async ({ result }) => {
 						await applyAction(result)
 
 						if(result.type === 'success')
-							await invalidate($page.url)
+							invalidate(`/api/cluster`)
 
 						removeToast(toast.id)
 					}
@@ -120,7 +122,7 @@
 						await applyAction(result)
 
 						if(result.type === 'success')
-							await invalidate($page.url)
+							invalidate(`/api/cluster`)
 
 						removeToast(toast.id)
 					}
