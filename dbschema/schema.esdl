@@ -166,6 +166,8 @@ module default {
       batch_size: int16
     >;
 
+    cluster := .<nodes[is Cluster];
+
     multi containers: Container {
       constraint exclusive;
       on source delete delete target;
