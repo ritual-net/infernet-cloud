@@ -696,57 +696,6 @@
 											class="code"
 										/>
 									</section>
-
-									<section class="column">
-										<div class="column inline">
-											<h3 class="row inline">
-												<span>
-													Snapshot Syncing
-												</span>
-		
-												<span class="annotation">Optional</span>
-											</h3>
-		
-											<p>Control rate limiting parameters for RPC communication.</p>
-										</div>
-		
-										<div class="row equal">
-											<div class="column">
-												<div class="column inline">
-													<label for="nodes.{i}.config.snapshot_sync">Sleep Duration</label>
-		
-													<p>Number of seconds to sleep between snapshots.</p>
-												</div>
-								
-												<input
-													type="number"
-													placeholder="1.0"
-													id="nodes.{i}.snapshot_sync.sleep"
-													name="nodes.{i}.snapshot_sync.sleep"
-													bind:value={node.snapshot_sync.sleep}
-													step="0.1"
-													{...$constraints.nodes?.snapshot_sync?.sleep ?? {}}
-												/>
-											</div>
-		
-											<div class="column">
-												<div class="column inline">
-													<label for="nodes.{i}.snapshot_sync.batch_size">Batch Size</label>
-		
-													<p>Number of subscriptions to sync per batch.</p>
-												</div>
-								
-												<input
-													type="number"
-													placeholder="200"
-													id="nodes.{i}.snapshot_sync.batch_size"
-													name="nodes.{i}.snapshot_sync.batch_size"
-													bind:value={node.snapshot_sync.batch_size}
-													{...$constraints.nodes?.snapshot_sync?.batch_size ?? {}}
-												/>
-											</div>
-										</div>
-									</section>
 								</fieldset>
 							</Collapsible>
 
@@ -772,7 +721,7 @@
 							<section class="row wrap">
 								<div class="column inline">
 									<h3 class="row inline">
-										<label for="nodes.{i}.dockerAccountUsername">
+										<label for="nodes.{i}.config.forward_stats">
 											Docker Hub Account
 										</label>
 

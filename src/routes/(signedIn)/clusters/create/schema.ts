@@ -112,7 +112,6 @@ export const NodeConfig = z
 
 		'trail_head_blocks': z
 			.number()
-			.positive()
 			.default(5)
 			.when(
 				'chain_enabled',
@@ -195,18 +194,6 @@ export const Node = z
 			.string()
 			.default('')
 			.optional(),
-		
-		'snapshot_sync': z.
-			object({
-				'sleep': z.
-					number()
-					.positive(),
-				
-				'batch_size': z
-					.number()
-					.positive()
-					.integer(),
-			}),
 
 		'containers': z
 			.array(

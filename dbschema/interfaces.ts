@@ -87,7 +87,6 @@ export interface InfernetNode extends std.$Object {
   "trail_head_blocks"?: number | null;
   "docker_account"?: DockerAccount | null;
   "cluster"?: Cluster | null;
-  "snapshot_sync"?: {sleep: number, batch_size: number} | null;
 }
 export interface current_user extends User {}
 export namespace ext {

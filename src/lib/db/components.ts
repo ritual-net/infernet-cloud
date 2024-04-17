@@ -17,10 +17,6 @@ export const createNodeParams = e.tuple({
 		forward_stats: e.bool,
 	}),
 	dockerAccountUsername: e.str,
-	snapshot_sync: e.tuple({
-		sleep: e.float32,
-		batch_size: e.int16,
-	}),
 	containers: e.array(
 		e.tuple({
 			image: e.str,
@@ -60,7 +56,6 @@ export const insertNodeQuery = (
 				username: node.dockerAccountUsername,
 			},
 		})),
-		snapshot_sync: node.snapshot_sync,
 		containers: e.for(e.array_unpack(node.containers), (container) =>
 			e.insert(e.Container, {
 				image: container.image,
