@@ -18,8 +18,8 @@ export const createNodeParams = e.tuple({
 	}),
 	dockerAccountUsername: e.str,
 	snapshot_sync: e.tuple({
-		sleep: e.float32,
-		batch_size: e.int16,
+		sleep: e.optional(e.float32),
+		batch_size: e.optional(e.int16),
 	}),
 	containers: e.array(
 		e.tuple({
