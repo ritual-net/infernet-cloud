@@ -117,6 +117,12 @@ const formatNodeConfig = (node: InfernetNode) => {
 				password: node.docker_account.password,
 			},
 		}),
+		...(node.snapshot_sync && {
+			snapshot_sync: {
+				sleep: node.snapshot_sync.sleep,
+				batch_size: node.snapshot_sync.batch_size,
+			},
+		}),
 		// defaulted
 		log_path: 'infernet_node.log',
 		server: {

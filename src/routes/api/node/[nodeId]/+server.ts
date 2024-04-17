@@ -14,14 +14,16 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns NodeInfo object.
  */
-export const GET: RequestHandler = async ({ locals: { client }, params }) => {
+export const GET: RequestHandler = async ({ locals: { client }, params, url }) => {
 	const id = params.nodeId;
+
+	const includeClusterBacklink = url.searchParams.has('includeClusterBacklink')
 
 	if (!id) {
 		return error(400, 'Node id is required');
 	}
 	try {
-		const result = await nodeAction(client, [id], NodeAction.info);
+		const result = await nodeAction(client, [id], NodeAction.info, { includeClusterBacklink });
 
 		return json({
 			node: result.nodes[0].node,

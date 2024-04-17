@@ -11,11 +11,25 @@ import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
  * @param nodeIds of nodes
  * @returns InfernetNodes array
  */
-export const getNodesByIds = async (client: Client, nodeIds: string[]): Promise<InfernetNode[]> => {
+export const getNodesByIds = async (
+	client: Client,
+	nodeIds: string[],
+	{
+		includeClusterBacklink = false,
+	}: {
+		includeClusterBacklink?: boolean,
+	} = {}
+) => {
 	return await e
 		.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 			e.select(e.InfernetNode, (node) => ({
 				...e.InfernetNode['*'],
+				...includeClusterBacklink && {
+					cluster: {
+						id: true,
+						name: true,
+					},
+				},
 				docker_account: {
 					username: true,
 				},

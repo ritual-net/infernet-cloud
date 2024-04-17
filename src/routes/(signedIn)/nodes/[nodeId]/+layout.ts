@@ -21,9 +21,9 @@ export const load: LayoutLoad = async ({
 
 		(async () => {
 			const response = await fetch(
-				resolveRoute('/api/node/[nodeId]', {
+				`${resolveRoute('/api/node/[nodeId]', {
 					nodeId,
-				})
+				})}?${new URLSearchParams({ includeClusterBacklink: 'true' })}`
 			)
 
 			if(!response.ok){
