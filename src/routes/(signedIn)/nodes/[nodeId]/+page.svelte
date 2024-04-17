@@ -227,7 +227,7 @@
 
 						<dd>
 							<p>{node.snapshot_sync.sleep} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync.sleep)]} between snapshots</p>
-							<p>{node.snapshot_sync.batch_size} subscriptions per batch</p>
+							<p>{node.snapshot_sync.batch_size} {({ 'one': 'subscription', 'other': 'subscriptions'})[new Intl.PluralRules('en-US').select(node.snapshot_sync.batch_size)]} per batch</p>
 						</dd>
 					</section>
 				{/if}
