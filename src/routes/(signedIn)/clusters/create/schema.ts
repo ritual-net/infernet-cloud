@@ -194,6 +194,16 @@ export const Node = z
 			.string()
 			.default('')
 			.optional(),
+		
+		'snapshot_sync': z.
+			object({
+				'sleep': z.
+					number(),
+				
+				'batch_size': z
+					.number()
+					.integer(),
+			}),
 
 		'containers': z
 			.array(
