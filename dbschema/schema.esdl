@@ -161,6 +161,11 @@ module default {
 
     docker_account: DockerAccount;
 
+    snapshot_sync: tuple<
+      sleep: float32,
+      batch_size: int16
+    >;
+
     multi containers: Container {
       constraint exclusive;
       on source delete delete target;
