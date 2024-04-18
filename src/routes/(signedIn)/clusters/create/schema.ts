@@ -200,11 +200,13 @@ export const Node = z
 			object({
 				'sleep': z.
 					number()
+					.default(1)
 					.positive(),
 				
 				'batch_size': z
 					.number()
 					.positive()
+					.default(200)
 					.integer(),
 			}),
 
