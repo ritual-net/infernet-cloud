@@ -1,11 +1,18 @@
-import { error, json } from '@sveltejs/kit';
-import { ClusterTypeByProvider, e } from '$/lib/db';
-import { clusterAction } from '$/lib/terraform/common';
-import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
-import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
+// Types
+import z from 'yup';
+import type { FormData as CreateClusterFormData } from '$/routes/(signedIn)/clusters/create/schema';
 import { TFAction } from '$/types/terraform';
 import type { Cluster } from '$schema/interfaces';
 import type { RequestHandler } from '@sveltejs/kit';
+
+
+// Functions
+import { error, json } from '@sveltejs/kit';
+import { e, ClusterTypeByProvider } from '$/lib/db';
+import { clusterAction } from '$/lib/terraform/common';
+import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
+import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
+
 
 /**
  * Fetch all clusters for a user.
@@ -28,7 +35,7 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
  * @returns Cluster ID, success boolean, and Terraform message.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
-	const { serviceAccountId, config, nodes } = await request.json();
+	const { serviceAccountId, config, nodes } = await request.json() as z.InferType<typeof CreateClusterFormData>;
 
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
