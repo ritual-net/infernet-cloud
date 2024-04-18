@@ -41,6 +41,14 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account and at least one node are required');
 	}
 
+	// EdgeDB doesn't yet allow optional values within tuples.
+	// https://github.com/edgedb/rfcs/blob/master/text/1022-freetypes.rst
+	// Manually initialize nested undefined keys that were omitted from JSON serialization
+	for(const node of nodes){
+		node.snapshot_sync.sleep ??= 1.0
+		node.snapshot_sync.batch_size ??= 200
+	}
+
 	// Get provider of service account
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
 	if (!serviceAccount) {
