@@ -1,10 +1,17 @@
+// Types
+import z from 'yup';
+import type { Node } from '$/routes/(signedIn)/clusters/create/schema';
+import { TFAction } from '$/types/terraform';
+import type { RequestHandler } from '@sveltejs/kit';
+
+
+// Functions
 import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
 import { getClusterById } from '$/lib/db/queries';
 import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
 import { e } from '$/lib/db';
-import { TFAction } from '$/types/terraform';
-import type { RequestHandler } from '@sveltejs/kit';
+
 
 /**
  * Add a node to a cluster.
@@ -14,7 +21,11 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @returns - Updated cluster ID.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
-	const { node, cluster_id: clusterId } = await request.json();
+	const { node, cluster_id: clusterId } = await request.json() as {
+		node: z.InferType<typeof Node>,
+		cluster_id: string,
+	};
+
 	if (!node || !clusterId) {
 		return error(400, 'Data and cluster id are required');
 	}
