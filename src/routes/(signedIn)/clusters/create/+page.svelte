@@ -594,27 +594,6 @@
 								>
 									<section class="row wrap">
 										<div class="column inline">
-											<h3>
-												<label for="nodes.{i}.config.trail_head_blocks">
-													Trail Head Blocks
-												</label>
-											</h3>
-
-											<p>The number of blocks.</p>
-										</div>
-
-										<input
-											type="number"
-											placeholder="5"
-											id="nodes.{i}.config.trail_head_blocks"
-											name="nodes.{i}.config.trail_head_blocks"
-											bind:value={node.config.trail_head_blocks}
-											{...$constraints.nodes?.config?.trail_head_blocks ?? {}}
-										/>
-									</section>
-
-									<section class="row wrap">
-										<div class="column inline">
 											<h3 class="row inline">
 												<label for="nodes.{i}.config.rpc_url">
 													RPC URL
@@ -652,6 +631,27 @@
 											name="nodes.{i}.config.coordinator_address"
 											bind:value={node.config.coordinator_address}
 											{...$constraints.nodes?.config?.coordinator_address ?? {}}
+										/>
+									</section>
+
+									<section class="row wrap">
+										<div class="column inline">
+											<h3>
+												<label for="nodes.{i}.config.trail_head_blocks">
+													Trail Head Blocks
+												</label>
+											</h3>
+
+											<p>The number of blocks.</p>
+										</div>
+
+										<input
+											type="number"
+											placeholder="5"
+											id="nodes.{i}.config.trail_head_blocks"
+											name="nodes.{i}.config.trail_head_blocks"
+											bind:value={node.config.trail_head_blocks}
+											{...$constraints.nodes?.config?.trail_head_blocks ?? {}}
 										/>
 									</section>
 

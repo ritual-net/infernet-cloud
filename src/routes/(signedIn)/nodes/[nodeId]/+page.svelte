@@ -192,16 +192,6 @@
 			<h3>Onchain Details</h3>
 
 			<dl class="card column">
-				{#if node.trail_head_blocks}
-					<section class="row">
-						<dt>Trail Head Blocks</dt>
-
-						<dd>
-							{node.trail_head_blocks}
-						</dd>
-					</section>
-				{/if}
-
 				{#if node.rpc_url}
 					<section class="row">
 						<dt>RPC URL</dt>
@@ -218,6 +208,16 @@
 
 						<dd>
 							{node.coordinator_address}
+						</dd>
+					</section>
+				{/if}
+
+				{#if node.trail_head_blocks}
+					<section class="row">
+						<dt>Trail Head Blocks</dt>
+
+						<dd>
+							{node.trail_head_blocks}
 						</dd>
 					</section>
 				{/if}
