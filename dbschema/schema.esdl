@@ -164,7 +164,12 @@ module default {
     snapshot_sync: tuple<
       sleep: float32,
       batch_size: int16
-    >;
+    > {
+      default := (
+        1.0,
+        200
+      )
+    };
 
     cluster := .<nodes[is Cluster];
 
