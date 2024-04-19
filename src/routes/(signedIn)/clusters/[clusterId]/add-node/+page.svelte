@@ -75,7 +75,7 @@
 	>
 		<NodeFormFields
 			bind:node={$form.node}
-			constraints={$constraints}
+			constraints={$constraints.node}
 			{dockerAccounts}
 		/>
 	</article>
