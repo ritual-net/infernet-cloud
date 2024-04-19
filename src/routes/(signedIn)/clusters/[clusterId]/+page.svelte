@@ -149,7 +149,18 @@
 	</header>
 
 	<section>
-		<h3>Nodes</h3>
+		<div class="row">
+			<h3>Nodes</h3>
+
+			<a
+				href={resolveRoute(`/clusters/[clusterId]/add-node`, {
+					clusterId: $page.params.clusterId,
+				})}
+				class="button"
+			>
+				Add Node
+			</a>
+		</div>
 
 		<!-- <NodesTable
 			nodes={cluster.nodes}
