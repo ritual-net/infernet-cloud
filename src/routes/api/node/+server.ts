@@ -61,25 +61,28 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, (e as Error).message);
 	}
 
-	let result: Awaited<ReturnType<typeof clusterAction>>
+	// Apply Terraform changes to created cluster
+	// (Run in background - don't block API response)
+	(async () => {
+		let result: Awaited<ReturnType<typeof clusterAction>>
 
-	try {
-		// Apply Terraform changes to cluster
-		result = await clusterAction(
-			client,
-			cluster.id,
-			TFAction.Apply
-		);
-	} catch (e) {
-		console.error(e)
+		try {
+			result = await clusterAction(
+				client,
+				cluster.id,
+				TFAction.Apply
+			);
+		} catch (e) {
+			console.error(e)
 
-		return error(500, JSON.stringify(e))
-	}
+			// return error(500, JSON.stringify(e))
+		}
 
-	const { success, error: errorMessage } = result
+		// const { success, error: errorMessage } = result
 
-	if(!success)
-		return error(500, errorMessage)
+		// if(!success)
+		// 	return error(500, errorMessage)
+	})();
 
 	return json({
 		cluster: updatedCluster,
