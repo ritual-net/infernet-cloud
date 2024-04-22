@@ -242,13 +242,13 @@
 					</section>
 				{/if}
 
-				{#if node.snapshot_sync}
+				{#if node.snapshot_sync_sleep || node.snapshot_sync_batch_size}
 					<section class="row">
 						<dt>Snapshot Syncing</dt>
 
 						<dd>
-							<p>{node.snapshot_sync.sleep} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync.sleep)]} between snapshots</p>
-							<p>{node.snapshot_sync.batch_size} {({ 'one': 'subscription', 'other': 'subscriptions'})[new Intl.PluralRules('en-US').select(node.snapshot_sync.batch_size)]} per batch</p>
+							<p>{node.snapshot_sync_sleep} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sleep)]} between snapshots</p>
+							<p>{node.snapshot_sync_batch_size} {({ 'one': 'subscription', 'other': 'subscriptions'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_batch_size)]} per batch</p>
 						</dd>
 					</section>
 				{/if}

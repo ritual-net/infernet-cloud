@@ -721,11 +721,11 @@
 												<input
 													type="number"
 													placeholder="1.0"
-													id="nodes.{i}.snapshot_sync.sleep"
-													name="nodes.{i}.snapshot_sync.sleep"
-													bind:value={node.snapshot_sync.sleep}
+													id="nodes.{i}.config.snapshot_sync_sleep"
+													name="nodes.{i}.config.snapshot_sync_sleep"
+													bind:value={node.config.snapshot_sync_sleep}
 													step="0.1"
-													{...$constraints.nodes?.snapshot_sync?.sleep ?? {}}
+													{...$constraints.nodes?.config?.snapshot_sync_sleep ?? {}}
 												/>
 											</div>
 		
@@ -739,10 +739,10 @@
 												<input
 													type="number"
 													placeholder="200"
-													id="nodes.{i}.snapshot_sync.batch_size"
-													name="nodes.{i}.snapshot_sync.batch_size"
-													bind:value={node.snapshot_sync.batch_size}
-													{...$constraints.nodes?.snapshot_sync?.batch_size ?? {}}
+													id="nodes.{i}.config.snapshot_sync_batch_size"
+													name="nodes.{i}.config.snapshot_sync_batch_size"
+													bind:value={node.config.snapshot_sync_batch_size}
+													{...$constraints.nodes?.config?.snapshot_sync_batch_size ?? {}}
 												/>
 											</div>
 										</div>

@@ -30,12 +30,6 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Data and cluster id are required');
 	}
 
-	// EdgeDB doesn't yet allow optional values within tuples.
-	// https://github.com/edgedb/rfcs/blob/master/text/1022-freetypes.rst
-	// Manually initialize nested undefined keys that were omitted from JSON serialization
-	node.snapshot_sync.sleep ??= 1.0
-	node.snapshot_sync.batch_size ??= 200
-
 	const cluster = await getClusterById(client, clusterId, { includeServiceAccountCredentials: true, includeNodeDetails: true });
 	if (!cluster) {
 		return error(400, `Cluster ID ${clusterId} does not exist`);
