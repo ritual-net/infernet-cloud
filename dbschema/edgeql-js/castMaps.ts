@@ -58,6 +58,7 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _auth.$FlowType ? _auth.$FlowType : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
   T extends _cfg.$memory ? _cfg.$memory : 
+  T extends _cfg.$QueryCacheMode ? _cfg.$QueryCacheMode : 
   T extends _cfg.$ConnectionTransport ? _cfg.$ConnectionTransport : 
   T extends _cfg.$AllowBareDDL ? _cfg.$AllowBareDDL : 
   T extends _cal.$relative_duration ? _cal.$relative_durationλIAssignableBy : 
@@ -113,6 +114,7 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _auth.$FlowType ? _auth.$FlowType : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
   T extends _cfg.$memory ? _cfg.$memory : 
+  T extends _cfg.$QueryCacheMode ? _cfg.$QueryCacheMode : 
   T extends _cfg.$ConnectionTransport ? _cfg.$ConnectionTransport : 
   T extends _cfg.$AllowBareDDL ? _cfg.$AllowBareDDL : 
   T extends _cal.$relative_duration ? _cal.$relative_durationλICastableTo : 
@@ -395,6 +397,12 @@ type getSharedParentScalar<A, B> =
   :
   A extends _cfg.$memory ?
     B extends _cfg.$memory ?
+    B
+    :
+    never
+  :
+  A extends _cfg.$QueryCacheMode ?
+    B extends _cfg.$QueryCacheMode ?
     B
     :
     never
@@ -730,6 +738,12 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
   if (a.__name__ === "cfg::memory") {
     if(b.__name__ === "cfg::memory") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "cfg::QueryCacheMode") {
+    if(b.__name__ === "cfg::QueryCacheMode") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);

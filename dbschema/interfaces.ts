@@ -87,7 +87,8 @@ export interface InfernetNode extends std.$Object {
   "trail_head_blocks"?: number | null;
   "docker_account"?: DockerAccount | null;
   "cluster"?: Cluster | null;
-  "snapshot_sync"?: {sleep: number, batch_size: number} | null;
+  "snapshot_sync_batch_size"?: number | null;
+  "snapshot_sync_sleep"?: number | null;
 }
 export interface current_user extends User {}
 export namespace ext {
@@ -240,6 +241,7 @@ export namespace cfg {
     "allow_user_specified_id"?: boolean | null;
     "cors_allow_origins": string[];
     "auto_rebuild_query_cache"?: boolean | null;
+    "query_cache_mode"?: QueryCacheMode | null;
     "shared_buffers"?: edgedb.ConfigMemory | null;
     "query_work_mem"?: edgedb.ConfigMemory | null;
     "maintenance_work_mem"?: edgedb.ConfigMemory | null;
@@ -273,6 +275,7 @@ export namespace cfg {
   export interface Password extends AuthMethod {
     "transports": ConnectionTransport[];
   }
+  export type QueryCacheMode = "InMemory" | "RegInline" | "PgFunc" | "Default";
   export interface SCRAM extends AuthMethod {
     "transports": ConnectionTransport[];
   }
@@ -587,6 +590,7 @@ export interface types {
     "InstanceConfig": cfg.InstanceConfig;
     "JWT": cfg.JWT;
     "Password": cfg.Password;
+    "QueryCacheMode": cfg.QueryCacheMode;
     "SCRAM": cfg.SCRAM;
     "Trust": cfg.Trust;
     "mTLS": cfg.mTLS;

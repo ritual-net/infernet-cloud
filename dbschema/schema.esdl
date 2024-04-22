@@ -159,17 +159,11 @@ module default {
 
     provider_id: str;
 
-    docker_account: DockerAccount;
+    snapshot_sync_sleep: float32;
 
-    snapshot_sync: tuple<
-      sleep: float32,
-      batch_size: int16
-    > {
-      default := (
-        1.0,
-        200
-      )
-    };
+    snapshot_sync_batch_size: int16;
+
+    docker_account: DockerAccount;
 
     cluster := .<nodes[is Cluster];
 
