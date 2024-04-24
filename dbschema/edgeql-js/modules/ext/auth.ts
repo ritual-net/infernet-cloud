@@ -217,8 +217,8 @@ const GoogleOAuthProvider: $.$expr_PathNode<$.TypeSet<$GoogleOAuthProvider, $.Ca
 
 export type $LocalIdentityλShape = $.typeutil.flatten<Omit<$IdentityλShape, "subject" | "<identity"> & {
   "subject": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "<identity[is ext::auth::Factor]": $.LinkDesc<$Factor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
   "<identity[is ext::auth::EmailFactor]": $.LinkDesc<$EmailFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
+  "<identity[is ext::auth::Factor]": $.LinkDesc<$Factor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
   "<identity[is ext::auth::EmailPasswordFactor]": $.LinkDesc<$EmailPasswordFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
   "<identity[is ext::auth::MagicLinkFactor]": $.LinkDesc<$MagicLinkFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;
   "<identity[is ext::auth::WebAuthnFactor]": $.LinkDesc<$WebAuthnFactor, $.Cardinality.AtMostOne, {}, true, false,  false, false>;

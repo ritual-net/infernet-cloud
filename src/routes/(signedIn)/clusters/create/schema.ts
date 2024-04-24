@@ -178,6 +178,15 @@ export const NodeConfig = z
 			.boolean()
 			.required()
 			.default(false),
+		
+		'snapshot_sync_sleep': z.
+			number()
+			.positive(),
+				
+		'snapshot_sync_batch_size': z
+			.number()
+			.positive()
+			.integer(),
 	})
 
 export const Node = z
@@ -195,18 +204,6 @@ export const Node = z
 			.string()
 			.default('')
 			.optional(),
-		
-		'snapshot_sync': z.
-			object({
-				'sleep': z.
-					number()
-					.positive(),
-				
-				'batch_size': z
-					.number()
-					.positive()
-					.integer(),
-			}),
 
 		'containers': z
 			.array(

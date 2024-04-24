@@ -15,12 +15,10 @@ export const createNodeParams = e.tuple({
 		max_gas_limit: e.int64,
 		private_key: e.str,
 		forward_stats: e.bool,
+		snapshot_sync_sleep: e.float32,
+		snapshot_sync_batch_size: e.int16,
 	}),
 	dockerAccountUsername: e.str,
-	snapshot_sync: e.tuple({
-		sleep: e.float32,
-		batch_size: e.int16,
-	}),
 	containers: e.array(
 		e.tuple({
 			image: e.str,
@@ -54,13 +52,14 @@ export const insertNodeQuery = (
 		max_gas_limit: node.config.max_gas_limit,
 		private_key: node.config.private_key,
 		forward_stats: node.config.forward_stats,
+		snapshot_sync_batch_size: node.config.snapshot_sync_batch_size,
+		snapshot_sync_sleep: node.config.snapshot_sync_sleep,
 		docker_account: e.select(e.DockerAccount, () => ({
 			filter_single: {
 				user: e.global.current_user,
 				username: node.dockerAccountUsername,
 			},
 		})),
-		snapshot_sync: node.snapshot_sync,
 		containers: e.for(e.array_unpack(node.containers), (container) =>
 			e.insert(e.Container, {
 				image: container.image,

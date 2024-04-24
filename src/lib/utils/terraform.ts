@@ -117,10 +117,14 @@ const formatNodeConfig = (node: InfernetNode) => {
 				password: node.docker_account.password,
 			},
 		}),
-		...(node.snapshot_sync && {
+		...((node.snapshot_sync_batch_size || node.snapshot_sync_sleep) && {
 			snapshot_sync: {
-				sleep: node.snapshot_sync.sleep,
-				batch_size: node.snapshot_sync.batch_size,
+				...(node.snapshot_sync_batch_size && {
+					batch_size: node.snapshot_sync_batch_size,
+				}),
+				...(node.snapshot_sync_sleep && {
+					sleep: node.snapshot_sync_sleep,
+				}),
 			},
 		}),
 		// defaulted
