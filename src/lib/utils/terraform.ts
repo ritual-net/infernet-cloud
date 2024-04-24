@@ -120,7 +120,7 @@ const formatNodeConfig = (node: InfernetNode) => {
 		...((node.snapshot_sync_batch_size || node.snapshot_sync_sleep) && {
 			snapshot_sync: {
 				...(node.snapshot_sync_batch_size && {
-					sleep: node.snapshot_sync_batch_size,
+					batch_size: node.snapshot_sync_batch_size,
 				}),
 				...(node.snapshot_sync_sleep && {
 					sleep: node.snapshot_sync_sleep,
