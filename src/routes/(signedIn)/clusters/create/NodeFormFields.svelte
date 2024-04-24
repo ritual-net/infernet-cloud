@@ -200,9 +200,9 @@
 						placeholder="1.0"
 						id="{namePrefix}.snapshot_sync.sleep"
 						name="{namePrefix}.snapshot_sync.sleep"
-						bind:value={node.snapshot_sync.sleep}
+						bind:value={node.config.snapshot_sync_sleep}
 						step="0.1"
-						{...constraints?.snapshot_sync?.sleep}
+						{...constraints?.config?.snapshot_sync_sleep}
 					/>
 				</div>
 
@@ -218,8 +218,8 @@
 						placeholder="200"
 						id="{namePrefix}.snapshot_sync.batch_size"
 						name="{namePrefix}.snapshot_sync.batch_size"
-						bind:value={node.snapshot_sync.batch_size}
-						{...constraints?.snapshot_sync?.batch_size}
+						bind:value={node.config.snapshot_sync_batch_size}
+						{...constraints?.config?.snapshot_sync_batch_size}
 					/>
 				</div>
 			</div>
