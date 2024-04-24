@@ -32,6 +32,29 @@
 	import { applyAction } from '$app/forms'
 	import { invalidate } from '$app/navigation'
 
+	import { onMount } from 'svelte'
+
+	onMount(() => {
+		let isMounted = true
+
+		;(async () => {
+			while(isMounted) {
+				await new Promise(resolve => setTimeout(resolve, 5000))
+				if(!isMounted) return
+
+				await invalidate(
+					resolveRoute('/api/cluster/[clusterId]', {
+						clusterId: $page.params.clusterId
+					})
+				)
+			}
+		})()
+
+		return () => {
+			isMounted = false
+		}
+	})
+
 
 	// Components
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
