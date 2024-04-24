@@ -3,12 +3,12 @@
 	import type { PageData } from './$types'
 
 	export let data: PageData
-	$: ({
+	const {
 		formData,
 		imagesPromise, // Promise<string[]> | string[]
 		dockerAccountUsername,
 		dockerUserImages,
-	} = data)
+	} = data
 
 	let configurations = []
 
