@@ -190,7 +190,7 @@
 			<div class="row equal">
 				<div class="column">
 					<div class="column inline">
-						<label for="{namePrefix}.config.snapshot_sync">Sleep Duration</label>
+						<label for="{namePrefix}.config.snapshot_sync_sleep">Sleep Duration</label>
 
 						<p>Number of seconds to sleep between snapshots.</p>
 					</div>
@@ -198,8 +198,8 @@
 					<input
 						type="number"
 						placeholder="1.0"
-						id="{namePrefix}.snapshot_sync.sleep"
-						name="{namePrefix}.snapshot_sync.sleep"
+						id="{namePrefix}.config.snapshot_sync_sleep"
+						name="{namePrefix}.config.snapshot_sync_sleep"
 						bind:value={node.config.snapshot_sync_sleep}
 						step="0.1"
 						{...constraints?.config?.snapshot_sync_sleep}
@@ -208,7 +208,7 @@
 
 				<div class="column">
 					<div class="column inline">
-						<label for="{namePrefix}.snapshot_sync.batch_size">Batch Size</label>
+						<label for="{namePrefix}.config.snapshot_sync_batch_size">Batch Size</label>
 
 						<p>Number of subscriptions to sync per batch.</p>
 					</div>
@@ -216,8 +216,8 @@
 					<input
 						type="number"
 						placeholder="200"
-						id="{namePrefix}.snapshot_sync.batch_size"
-						name="{namePrefix}.snapshot_sync.batch_size"
+						id="{namePrefix}.config.snapshot_sync_batch_size"
+						name="{namePrefix}.config.snapshot_sync_batch_size"
 						bind:value={node.config.snapshot_sync_batch_size}
 						{...constraints?.config?.snapshot_sync_batch_size}
 					/>
