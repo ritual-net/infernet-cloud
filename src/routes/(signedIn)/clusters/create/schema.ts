@@ -245,4 +245,5 @@ export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
 	node.config.forward_stats ??= false
 	node.config.snapshot_sync_sleep ??= 1.0
 	node.config.snapshot_sync_batch_size ??= 200
+	node.dockerAccountUsername ??= ''
 }
