@@ -113,10 +113,12 @@
 
 		<section class="row wrap">
 			<div class="column inline">
-				<h3>
+				<h3 class="row inline">
 					<label for="{namePrefix}.config.trail_head_blocks">
 						Trail Head Blocks
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>The number of blocks.</p>
@@ -124,7 +126,7 @@
 
 			<input
 				type="number"
-				placeholder="5"
+				placeholder="{5}"
 				id="{namePrefix}.config.trail_head_blocks"
 				name="{namePrefix}.config.trail_head_blocks"
 				bind:value={node.config.trail_head_blocks}
@@ -134,10 +136,12 @@
 
 		<section class="row wrap">
 			<div class="column inline">
-				<h3>
+				<h3 class="row inline">
 					<label for="{namePrefix}.config.max_gas_limit">
 						Max Gas Limit
 					</label>
+
+					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>The threshold to trigger an Ethereum transaction in gwei.</p>
@@ -145,6 +149,7 @@
 
 			<input
 				type="number"
+				placeholder="{5000000}"
 				id="{namePrefix}.config.max_gas_limit"
 				name="{namePrefix}.config.max_gas_limit"
 				bind:value={node.config.max_gas_limit}

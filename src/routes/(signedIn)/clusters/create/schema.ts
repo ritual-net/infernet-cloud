@@ -113,14 +113,7 @@ export const NodeConfig = z
 		'trail_head_blocks': z
 			.number()
 			.positive()
-			.when(
-				'chain_enabled',
-				([chain_enabled], _) => (
-					chain_enabled
-						? _.required()
-						: _.notRequired()
-				),
-			),
+			.optional(),
 
 		'rpc_url': z
 			.string()
@@ -151,14 +144,7 @@ export const NodeConfig = z
 			.number()
 			.integer()
 			.positive()
-			.when(
-				'chain_enabled',
-				([chain_enabled], _) => (
-					chain_enabled
-						? _.required()
-						: _.notRequired()
-				),
-			),
+			.optional(),
 
 		'private_key': z
 			.string()
