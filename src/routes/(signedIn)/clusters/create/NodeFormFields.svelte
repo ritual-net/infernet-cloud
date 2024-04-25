@@ -181,12 +181,10 @@
 
 		<section class="column">
 			<div class="column inline">
-				<h3 class="row inline">
+				<h3>
 					<span>
 						Snapshot Syncing
 					</span>
-
-					<span class="annotation">Optional</span>
 				</h3>
 
 				<p>Control rate limiting parameters for RPC communication.</p>
@@ -195,7 +193,11 @@
 			<div class="row equal">
 				<div class="column">
 					<div class="column inline">
-						<label for="{namePrefix}.config.snapshot_sync_sleep">Sleep Duration</label>
+						<div class="row inline">
+							<label for="{namePrefix}.config.snapshot_sync_sleep">Sleep Duration</label>
+
+							<span class="annotation">Optional</span>
+						</div>
 
 						<p>Number of seconds to sleep between snapshots.</p>
 					</div>
@@ -213,7 +215,11 @@
 
 				<div class="column">
 					<div class="column inline">
-						<label for="{namePrefix}.config.snapshot_sync_batch_size">Batch Size</label>
+						<div class="row inline">
+							<label for="{namePrefix}.config.snapshot_sync_batch_size">Batch Size</label>
+
+							<span class="annotation">Optional</span>
+						</div>
 
 						<p>Number of subscriptions to sync per batch.</p>
 					</div>
