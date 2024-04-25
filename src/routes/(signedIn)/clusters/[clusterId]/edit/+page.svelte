@@ -57,7 +57,11 @@
 			removeToast(delayedToast.id)
 	}
 
-	let allowIps: 'all' | 'restricted' = 'all'
+	let allowIps: 'all' | 'restricted' = (
+		$form.config.ip_allow_http?.length || $form.config.ip_allow_ssh?.length
+			? 'restricted'
+			: 'all'
+	)
 
 
 	// Functions
