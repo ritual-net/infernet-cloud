@@ -87,7 +87,7 @@ export const actions: Actions = {
 			{
 				type: 'success',
 				message: {
-					title: `Added node to cluster "${formData.data.config.name} with ${formData.data.node.containers.length} containers.`,
+					title: `Added node to cluster with ${formData.data.node.containers.length} containers.`,
 					description: result.message,
 				},
 			},
