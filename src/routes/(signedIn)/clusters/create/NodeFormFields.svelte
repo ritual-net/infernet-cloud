@@ -319,6 +319,7 @@
 		</div>
 
 		<a
+			class="button primary"
 			href={containerCreateRoute}
 			data-sveltekit-preload-code="eager"
 
@@ -344,10 +345,7 @@
 				}
 			}}
 		>
-			<button
-				type="button"
-				class="primary"
-			>Add Container</button>
+			Add Container
 		</a>
 	</div>
 
