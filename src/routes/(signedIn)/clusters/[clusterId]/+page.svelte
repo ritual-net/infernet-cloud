@@ -248,7 +248,7 @@
 				{#if cluster.ip_allow_http?.length}
 					<dd class="column inline">
 						{#each cluster.ip_allow_http as ip}
-							{ip}
+							<p>{ip}</p>
 						{/each}
 					</dd>
 				{:else}
@@ -262,7 +262,7 @@
 				{#if cluster.ip_allow_ssh?.length}
 					<dd class="column inline">
 						{#each cluster.ip_allow_ssh as ip}
-							{ip}
+							<p>{ip}</p>
 						{/each}
 					</dd>
 				{:else}
