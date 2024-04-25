@@ -113,7 +113,6 @@ export const NodeConfig = z
 		'trail_head_blocks': z
 			.number()
 			.positive()
-			.default(5)
 			.when(
 				'chain_enabled',
 				([chain_enabled], _) => (
@@ -152,7 +151,6 @@ export const NodeConfig = z
 			.number()
 			.integer()
 			.positive()
-			.default(5000000)
 			.when(
 				'chain_enabled',
 				([chain_enabled], _) => (
@@ -232,3 +230,19 @@ export const FormData = z
 				]
 			)),
 	})
+
+
+// EdgeDB doesn't yet allow optional values within tuples.
+// https://github.com/edgedb/edgedb/issues/5778
+// https://github.com/edgedb/rfcs/blob/master/text/1022-freetypes.rst
+// Manually initialize nested undefined keys that were omitted from JSON serialization
+export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
+	node.config.trail_head_blocks ??= 5
+	node.config.rpc_url ??= ''
+	node.config.coordinator_address ??= ''
+	node.config.max_gas_limit ??= 5000000
+	node.config.private_key ??= ''
+	node.config.forward_stats ??= false
+	node.config.snapshot_sync_sleep ??= 1.0
+	node.config.snapshot_sync_batch_size ??= 200
+}

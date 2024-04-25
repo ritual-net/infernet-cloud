@@ -12,3 +12,6 @@ export const FormData = z
 		'node': Node
 			.required(),
     })
+
+
+export { setDefaultNodeValues } from '$/routes/(signedIn)/clusters/create/schema'

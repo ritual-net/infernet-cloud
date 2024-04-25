@@ -2,7 +2,10 @@
 import z from 'yup';
 import { TFAction } from '$/types/terraform';
 import type { RequestHandler } from '@sveltejs/kit';
-import type { FormData } from '$/routes/(signedIn)/clusters/[clusterId]/add-node/schema';
+
+
+// Schema
+import { type FormData, setDefaultNodeValues } from '$/routes/(signedIn)/clusters/[clusterId]/add-node/schema';
 
 
 // Functions
@@ -25,6 +28,8 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	if (!node || !clusterId) {
 		return error(400, 'Data and cluster id are required');
 	}
+
+	setDefaultNodeValues(node);
 
 	const cluster = await getClusterById(client, clusterId, { includeServiceAccountCredentials: true, includeNodeDetails: true });
 	if (!cluster) {
