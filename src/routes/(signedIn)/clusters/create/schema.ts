@@ -221,7 +221,8 @@ export const FormData = z
 // EdgeDB doesn't yet allow optional values within tuples.
 // https://github.com/edgedb/edgedb/issues/5778
 // https://github.com/edgedb/rfcs/blob/master/text/1022-freetypes.rst
-// Manually initialize nested undefined keys that were omitted from JSON serialization
+// Manually initialize `undefined` keys omitted from JSON serialization
+// to satisfy `e.tuple`s within `e.params()`
 export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
 	node.config.trail_head_blocks ??= 5
 	node.config.rpc_url ??= ''
