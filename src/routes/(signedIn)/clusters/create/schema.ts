@@ -64,18 +64,21 @@ export const Container = z
 			.array(
 				Address
 			)
+			.optional()
 			.default([]),
 
 		'allowed_delegate_addresses': z
 			.array(
 				Address
 			)
+			.optional()
 			.default([]),
 
 		'allowed_ips': z
 			.array(
 				Ip
 			)
+			.optional()
 			.default([]),
 
 		'command': z
