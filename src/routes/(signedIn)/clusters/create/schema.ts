@@ -1,5 +1,5 @@
 import * as z from 'yup'
-import { Ip, IpWithAddressMask } from '$/types/stringFormats'
+import { Ip, IpWithAddressMask, Address } from '$/types/stringFormats'
 
 export const Config = z
 	.object({
@@ -62,15 +62,13 @@ export const Container = z
 
 		'allowed_addresses': z
 			.array(
-				z
-					.string()
+				Address
 			)
 			.default([]),
 
 		'allowed_delegate_addresses': z
 			.array(
-				z
-					.string()
+				Address
 			)
 			.default([]),
 
@@ -121,9 +119,8 @@ export const NodeConfig = z
 				),
 			),
 
-		'coordinator_address': z
-			.string()
-			.default('')
+		'coordinator_address':
+			Address
 			.when(
 				'chain_enabled',
 				([chain_enabled], _) => (
