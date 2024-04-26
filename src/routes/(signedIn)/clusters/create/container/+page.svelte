@@ -74,10 +74,15 @@
 	// (Firewall)
 	let hasFirewall = (
 		Boolean($form.container.allowed_ips.length)
+		|| Boolean($form.container.allowed_addresses.length || $form.container.allowed_delegate_addresses.length)
 	)
 
+	let allowed_addresses = $form.container.allowed_addresses ?? []
+	let allowed_delegate_addresses = $form.container.allowed_delegate_addresses ?? []
 	let allowed_ips = $form.container.allowed_ips ?? []
 
+	$: $form.container.allowed_addresses = hasFirewall ? allowed_addresses : []
+	$: $form.container.allowed_delegate_addresses = hasFirewall ? allowed_delegate_addresses : []
 	$: $form.container.allowed_ips = hasFirewall ? allowed_ips : []
 
 
@@ -368,7 +373,8 @@
 								name="container.allowed_addresses"
 								rows="2"
 								placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
-								bind:value={$form.container.allowed_addresses}
+								value={serializeCommaSeparated(allowed_addresses)}
+								on:blur={e => { allowed_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_addresses}
 								disabled={!hasFirewall}
 							/>
@@ -379,7 +385,8 @@
 								name="container.allowed_delegate_addresses"
 								rows="2"
 								placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
-								bind:value={$form.container.allowed_delegate_addresses}
+								value={serializeCommaSeparated(allowed_delegate_addresses)}
+								on:blur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_delegate_addresses}
 								disabled={!hasFirewall}
 							/>
