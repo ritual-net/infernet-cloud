@@ -377,7 +377,7 @@
 								id="container.allowed_ips"
 								name="container.allowed_ips"
 								rows="2"
-								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.1, 0.0.0.2`}
 								value={serializeCommaSeparated(allowed_ips)}
 								on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_ips}
@@ -389,7 +389,7 @@
 								id="container.allowed_addresses"
 								name="container.allowed_addresses"
 								rows="2"
-								placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
+								placeholder={`Enter a comma-separated list of EVM addresses...\n0xabcd...6789, 0x1234...cdef`}
 								value={serializeCommaSeparated(allowed_addresses)}
 								on:blur={e => { allowed_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_addresses}
@@ -401,7 +401,7 @@
 								id="container.allowed_delegate_addresses"
 								name="container.allowed_delegate_addresses"
 								rows="2"
-								placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
+								placeholder={`Enter a comma-separated list of EVM addresses...\n0xabcd...6789, 0x1234...cdef`}
 								value={serializeCommaSeparated(allowed_delegate_addresses)}
 								on:blur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_delegate_addresses}
