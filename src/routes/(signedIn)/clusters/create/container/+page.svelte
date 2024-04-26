@@ -356,11 +356,15 @@
 					items={[
 						{
 							id: 0,
-							label: 'HTTP',
+							label: 'IPs',
 						},
 						{
 							id: 1,
-							label: 'SSH',
+							label: 'Addresses',
+						},
+						{
+							id: 2,
+							label: 'Delegate Addresses',
 						},
 					]}
 				>
@@ -368,6 +372,18 @@
 						let:item
 					>
 						{#if item.id === 0}
+							<textarea
+								id="container.allowed_ips"
+								name="container.allowed_ips"
+								rows="2"
+								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+								value={serializeCommaSeparated(allowed_ips)}
+								on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
+								{...$constraints.container?.allowed_ips}
+								disabled={!hasFirewall}
+							/>
+
+						{:else if item.id === 1}
 							<textarea
 								id="container.allowed_addresses"
 								name="container.allowed_addresses"
@@ -379,7 +395,7 @@
 								disabled={!hasFirewall}
 							/>
 
-						{:else if item.id === 1}
+						{:else if item.id === 2}
 							<textarea
 								id="container.allowed_delegate_addresses"
 								name="container.allowed_delegate_addresses"
@@ -388,18 +404,6 @@
 								value={serializeCommaSeparated(allowed_delegate_addresses)}
 								on:blur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_delegate_addresses}
-								disabled={!hasFirewall}
-							/>
-
-						{:else if item.id === 2}
-							<textarea
-								id="container.allowed_ips"
-								name="container.allowed_ips"
-								rows="2"
-								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								value={serializeCommaSeparated(allowed_ips)}
-								on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
-								{...$constraints.container?.allowed_ips}
 								disabled={!hasFirewall}
 							/>
 						{/if}
