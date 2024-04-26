@@ -78,16 +78,14 @@
 
 
 	// (Firewall)
-	let allowIps: 'all' | 'restricted' = (
-		$form.config.ip_allow_http?.length || $form.config.ip_allow_ssh?.length
-			? 'restricted'
-			: 'all'
+	let hasFirewall = (
+		Boolean($form.config.ip_allow_http?.length || $form.config.ip_allow_ssh?.length)
 	)
 	let ip_allow_http = $form.config.ip_allow_http ?? []
 	let ip_allow_ssh = $form.config.ip_allow_ssh ?? []
 
-	$: $form.config.ip_allow_http = allowIps ? ip_allow_http : []
-	$: $form.config.ip_allow_ssh = allowIps ? ip_allow_ssh : []
+	$: $form.config.ip_allow_http = hasFirewall ? ip_allow_http : []
+	$: $form.config.ip_allow_ssh = hasFirewall ? ip_allow_ssh : []
 
 
 	// (Service account)
@@ -250,7 +248,7 @@
 									<div class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="allowIps">
+												<label for="hasFirewall">
 													Firewall
 												</label>
 											</h3>
@@ -260,24 +258,24 @@
 
 										<Select
 											required
-											id="allowIps"
-											name="allowIps"
+											id="hasFirewall"
+											name="hasFirewall"
 											labelText="Firewall"
-											bind:value={allowIps}
+											bind:value={hasFirewall}
 											items={[
 												{
-													value: 'all',
+													value: false,
 													label: 'All IPs',
 												},
 												{
-													value: 'restricted',
+													value: true,
 													label: 'Only allowed IPs',
 												}
 											]}
 										/>
 									</div>
 
-									{#if allowIps !== 'all'}
+									{#if hasFirewall}
 										<Tabs
 											value={0}
 											items={[
@@ -303,7 +301,7 @@
 														value={serializeCommaSeparated(ip_allow_http)}
 														on:blur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
 														{...$constraints.config?.ip_allow_http}
-														disabled={allowIps === 'all'}
+														disabled={!hasFirewall}
 													/>
 						
 												{:else}
@@ -315,7 +313,7 @@
 														value={serializeCommaSeparated(ip_allow_ssh)}
 														on:blur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
 														{...$constraints.config?.ip_allow_ssh}
-														disabled={allowIps === 'all'}
+														disabled={!hasFirewall}
 													/>
 												{/if}
 											</svelte:fragment>

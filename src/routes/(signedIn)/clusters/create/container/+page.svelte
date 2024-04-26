@@ -72,15 +72,13 @@
 
 
 	// (Firewall)
-	let allowIps: 'all' | 'restricted' = (
-		$form.container.allowed_ips.length
-			? 'restricted'
-			: 'all'
+	let hasFirewall = (
+		Boolean($form.container.allowed_ips.length)
 	)
 
 	let allowed_ips = $form.container.allowed_ips ?? []
 
-	$: $form.container.allowed_ips = allowIps ? allowed_ips : []
+	$: $form.container.allowed_ips = hasFirewall ? allowed_ips : []
 
 
 	// (Images)
@@ -316,7 +314,7 @@
 			/>
 		</section>
 
-		{#if allowIps !== 'all'}
+		{#if hasFirewall}
 			<Tabs
 				value={0}
 				items={[
@@ -341,7 +339,7 @@
 							placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
 							bind:value={$form.container.allowed_addresses}
 							{...$constraints.container?.allowed_addresses}
-							disabled={allowIps === 'all'}
+							disabled={!hasFirewall}
 						/>
 
 					{:else if item.id === 1}
@@ -352,7 +350,7 @@
 							placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
 							bind:value={$form.container.allowed_delegate_addresses}
 							{...$constraints.container?.allowed_delegate_addresses}
-							disabled={allowIps === 'all'}
+							disabled={!hasFirewall}
 						/>
 
 					{:else if item.id === 2}
@@ -364,7 +362,7 @@
 							value={serializeCommaSeparated(allowed_ips)}
 							on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
 							{...$constraints.container?.allowed_ips}
-							disabled={allowIps === 'all'}
+							disabled={!hasFirewall}
 						/>
 					{/if}
 				</svelte:fragment>
