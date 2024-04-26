@@ -329,7 +329,7 @@
 						</label>
 					</h3>
 
-					<p>Specify which IP addresses and onchain addresses can request execution of this container.</p>
+					<p>Specify which IP addresses{isOnchain ? ' and onchain addresses' : ''} can request execution of this container.</p>
 				</div>
 
 				<Select
