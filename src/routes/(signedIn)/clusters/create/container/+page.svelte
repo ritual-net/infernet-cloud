@@ -27,6 +27,7 @@
 
 	// Functions
 	import { serializeEnvObject, parseEnvString } from '$/lib/utils/env'
+	import { parseCommaSeparated, serializeCommaSeparated } from '$/lib/utils/commaSeparated'
 
 
 	// Schema
@@ -65,9 +66,22 @@
 
 	export const snapshot = { capture, restore }
 
-	let allowIps: 'all' | 'restricted' = 'all'
 
+	// (Templates)
 	let startingConfig: typeof form
+
+
+	// (Firewall)
+	let allowIps: 'all' | 'restricted' = (
+		$form.container.allowed_ips.length
+			? 'restricted'
+			: 'all'
+	)
+
+	let allowed_ips = $form.container.allowed_ips ?? []
+
+	$: $form.container.allowed_ips = allowIps ? allowed_ips : []
+
 
 	// (Images)
 	let images: string[] | undefined
@@ -347,7 +361,8 @@
 							name="container.allowed_ips"
 							rows="2"
 							placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-							bind:value={$form.container.allowed_ips}
+							value={serializeCommaSeparated(allowed_ips)}
+							on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
 							{...$constraints.container?.allowed_ips}
 							disabled={allowIps === 'all'}
 						/>

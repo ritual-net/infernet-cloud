@@ -57,11 +57,18 @@
 			removeToast(delayedToast.id)
 	}
 
+
+	// (Firewall)
 	let allowIps: 'all' | 'restricted' = (
 		$form.config.ip_allow_http?.length || $form.config.ip_allow_ssh?.length
 			? 'restricted'
 			: 'all'
 	)
+	let ip_allow_http = $form.config.ip_allow_http ?? []
+	let ip_allow_ssh = $form.config.ip_allow_ssh ?? []
+
+	$: $form.config.ip_allow_http = allowIps ? ip_allow_http : []
+	$: $form.config.ip_allow_ssh = allowIps ? ip_allow_ssh : []
 
 
 	// Functions
@@ -174,10 +181,8 @@
 								name="config.ip_allow_http"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								value={serializeCommaSeparated($form.config.ip_allow_http)}
-								on:blur={e => {
-									$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
-								}}
+								value={serializeCommaSeparated(ip_allow_http)}
+								on:blur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.config?.ip_allow_http}
 								disabled={allowIps === 'all'}
 							/>
@@ -188,10 +193,8 @@
 								name="config.ip_allow_ssh"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								value={$form.config.ip_allow_ssh.join(', ')}
-								on:blur={e => {
-									$form.config.ip_allow_ssh = parseCommaSeparated(e.target.value)
-								}}
+								value={serializeCommaSeparated(ip_allow_ssh)}
+								on:blur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.config?.ip_allow_ssh}
 								disabled={allowIps === 'all'}
 							/>
