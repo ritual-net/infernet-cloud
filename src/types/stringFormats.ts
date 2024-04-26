@@ -1,7 +1,7 @@
 import * as z from 'yup'
 
 export const Ip = z
-	.string<`${number}.${number}.${number}.${number}/${number}`>()
+	.string<`${number}.${number}.${number}.${number}`>()
 	.matches(/^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/)
 	.defined()
 
