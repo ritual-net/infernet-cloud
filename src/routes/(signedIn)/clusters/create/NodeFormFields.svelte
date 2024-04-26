@@ -25,7 +25,12 @@
 	// Internal state
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
-			dockerAccountUsername: node.dockerAccountUsername,
+			...node.dockerAccountUsername && {
+				dockerAccountUsername: node.dockerAccountUsername,
+			},
+			...node.config.chain_enabled && {
+				isOnchain: 'true',
+			},
 		})}`,
 		$page.url
 	).toString()

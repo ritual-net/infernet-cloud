@@ -15,6 +15,7 @@ export const load: PageServerLoad = async ({
 	fetch,
 }) => {
 	const dockerAccountUsername = url.searchParams.get('dockerAccountUsername')
+	const isOnchain = url.searchParams.has('isOnchain')
 
 	const [
 		formData,
@@ -64,6 +65,7 @@ export const load: PageServerLoad = async ({
 		formData,
 		dockerAccountUsername,
 		dockerUserImages,
+		isOnchain,
 	}
 }
 

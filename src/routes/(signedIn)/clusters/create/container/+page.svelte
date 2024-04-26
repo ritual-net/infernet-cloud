@@ -8,6 +8,7 @@
 		imagesPromise, // Promise<string[]> | string[]
 		dockerAccountUsername,
 		dockerUserImages,
+		isOnchain,
 	} = data
 
 	let configurations = []
@@ -74,16 +75,16 @@
 	// (Firewall)
 	let hasFirewall = (
 		Boolean($form.container.allowed_ips.length)
-		|| Boolean($form.container.allowed_addresses.length || $form.container.allowed_delegate_addresses.length)
+		|| (isOnchain && Boolean($form.container.allowed_addresses.length || $form.container.allowed_delegate_addresses.length))
 	)
 
+	let allowed_ips = $form.container.allowed_ips ?? []
 	let allowed_addresses = $form.container.allowed_addresses ?? []
 	let allowed_delegate_addresses = $form.container.allowed_delegate_addresses ?? []
-	let allowed_ips = $form.container.allowed_ips ?? []
 
+	$: $form.container.allowed_ips = hasFirewall ? allowed_ips : []
 	$: $form.container.allowed_addresses = hasFirewall ? allowed_addresses : []
 	$: $form.container.allowed_delegate_addresses = hasFirewall ? allowed_delegate_addresses : []
-	$: $form.container.allowed_ips = hasFirewall ? allowed_ips : []
 
 
 	// (Images)
@@ -340,11 +341,11 @@
 					items={[
 						{
 							value: false,
-							label: 'All IPs and addresses',
+							label: isOnchain ? 'All IPs and addresses' : 'All IPs',
 						},
 						{
 							value: true,
-							label: 'Only allowed IPs and addresses',
+							label: isOnchain ? 'Only allowed IPs and addresses' : 'Only allowed IPs',
 						}
 					]}
 				/>
@@ -392,7 +393,7 @@
 								value={serializeCommaSeparated(allowed_addresses)}
 								on:blur={e => { allowed_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_addresses}
-								disabled={!hasFirewall}
+								disabled={!(hasFirewall && isOnchain)}
 							/>
 
 						{:else if item.id === 2}
@@ -404,7 +405,7 @@
 								value={serializeCommaSeparated(allowed_delegate_addresses)}
 								on:blur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_delegate_addresses}
-								disabled={!hasFirewall}
+								disabled={!(hasFirewall && isOnchain)}
 							/>
 						{/if}
 					</svelte:fragment>
