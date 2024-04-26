@@ -2,7 +2,7 @@ import * as z from 'yup'
 
 export const Ip = z
 	.string<`${number}.${number}.${number}.${number}/${number}`>()
-	.matches(/^\d+\.\d+\.\d+\.\d+\$/)
+	.matches(/^\d+\.\d+\.\d+\.\d+$/)
 	.defined()
 
 export const IpWithAddressMask = z
