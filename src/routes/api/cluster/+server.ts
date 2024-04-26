@@ -1,9 +1,12 @@
 // Types
-import z from 'yup';
-import type { FormData as CreateClusterFormData } from '$/routes/(signedIn)/clusters/create/schema';
 import { TFAction } from '$/types/terraform';
-import type { Cluster } from '$schema/interfaces';
 import type { RequestHandler } from '@sveltejs/kit';
+
+
+// Schema
+import type { Cluster } from '$schema/interfaces';
+import z from 'yup';
+import { setDefaultNodeValues, type FormData as CreateClusterFormData } from '$/routes/(signedIn)/clusters/create/schema';
 
 
 // Functions
@@ -40,6 +43,8 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
 	}
+
+	nodes.forEach(setDefaultNodeValues)
 
 	// Get provider of service account
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);

@@ -11,19 +11,15 @@ import { e } from '$/lib/db'
 
 export const load: PageServerLoad = async ({
 	url,
-	parent,
 	locals: { client },
 	fetch,
 }) => {
 	const dockerAccountUsername = url.searchParams.get('dockerAccountUsername')
 
 	const [
-		parentData,
 		formData,
 		dockerUserImages,
 	] = await Promise.all([
-		parent(),
-
 		superValidate(yup(FormData)),
 
 		dockerAccountUsername
@@ -65,7 +61,6 @@ export const load: PageServerLoad = async ({
 	])
 
 	return {
-		...parentData,
 		formData,
 		dockerAccountUsername,
 		dockerUserImages,
