@@ -314,60 +314,92 @@
 			/>
 		</section>
 
-		{#if hasFirewall}
-			<Tabs
-				value={0}
-				items={[
-					{
-						id: 0,
-						label: 'HTTP',
-					},
-					{
-						id: 1,
-						label: 'SSH',
-					},
-				]}
-			>
-				<svelte:fragment slot="content"
-					let:item
+		<section class="column wrap">
+			<div class="row wrap">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="hasFirewall">
+							Firewall
+						</label>
+					</h3>
+
+					<p>Specify which IP addresses and onchain addresses can request execution of this container.</p>
+				</div>
+
+				<Select
+					required
+					id="hasFirewall"
+					name="hasFirewall"
+					labelText="Firewall"
+					bind:value={hasFirewall}
+					items={[
+						{
+							value: false,
+							label: 'All IPs and addresses',
+						},
+						{
+							value: true,
+							label: 'Only allowed IPs and addresses',
+						}
+					]}
+				/>
+			</div>
+
+			{#if hasFirewall}
+				<Tabs
+					value={0}
+					items={[
+						{
+							id: 0,
+							label: 'HTTP',
+						},
+						{
+							id: 1,
+							label: 'SSH',
+						},
+					]}
 				>
-					{#if item.id === 0}
-						<textarea
-							id="container.allowed_addresses"
-							name="container.allowed_addresses"
-							rows="2"
-							placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
-							bind:value={$form.container.allowed_addresses}
-							{...$constraints.container?.allowed_addresses}
-							disabled={!hasFirewall}
-						/>
+					<svelte:fragment slot="content"
+						let:item
+					>
+						{#if item.id === 0}
+							<textarea
+								id="container.allowed_addresses"
+								name="container.allowed_addresses"
+								rows="2"
+								placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
+								bind:value={$form.container.allowed_addresses}
+								{...$constraints.container?.allowed_addresses}
+								disabled={!hasFirewall}
+							/>
 
-					{:else if item.id === 1}
-						<textarea
-							id="container.allowed_delegate_addresses"
-							name="container.allowed_delegate_addresses"
-							rows="2"
-							placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
-							bind:value={$form.container.allowed_delegate_addresses}
-							{...$constraints.container?.allowed_delegate_addresses}
-							disabled={!hasFirewall}
-						/>
+						{:else if item.id === 1}
+							<textarea
+								id="container.allowed_delegate_addresses"
+								name="container.allowed_delegate_addresses"
+								rows="2"
+								placeholder={`Enter a comma-separated list of Ethereum addresses...\n0xabcd...6789`}
+								bind:value={$form.container.allowed_delegate_addresses}
+								{...$constraints.container?.allowed_delegate_addresses}
+								disabled={!hasFirewall}
+							/>
 
-					{:else if item.id === 2}
-						<textarea
-							id="container.allowed_ips"
-							name="container.allowed_ips"
-							rows="2"
-							placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-							value={serializeCommaSeparated(allowed_ips)}
-							on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
-							{...$constraints.container?.allowed_ips}
-							disabled={!hasFirewall}
-						/>
-					{/if}
-				</svelte:fragment>
-			</Tabs>
-		{/if}
+						{:else if item.id === 2}
+							<textarea
+								id="container.allowed_ips"
+								name="container.allowed_ips"
+								rows="2"
+								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+								value={serializeCommaSeparated(allowed_ips)}
+								on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
+								{...$constraints.container?.allowed_ips}
+								disabled={!hasFirewall}
+							/>
+						{/if}
+					</svelte:fragment>
+				</Tabs>
+			{/if}
+		</section>
 
 		<section class="row wrap">
 			<div class="column inline">
