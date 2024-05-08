@@ -252,6 +252,27 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
+					<label for="container.container_id">
+						Service ID
+					</label>
+				</h3>
+
+				<p>Set an ID representing this container's intended workflow service. May be shared across similarly configured containers.</p>
+			</div>
+
+			<input
+				type="text"
+				id="container.container_id"
+				name="container.container_id"
+				bind:value={$form.container.container_id}
+				placeholder={`organization-toolkit-model-version`}
+				{...$constraints.container?.container_id ?? {}}
+			/>
+		</section>
+
+		<section class="row wrap">
+			<div class="column inline">
+				<h3 class="row inline">
 					<label for="container.description">
 						Description
 					</label>
