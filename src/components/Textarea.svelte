@@ -6,6 +6,10 @@
 
 	// Events
 	export let onblur: (e: Event) => void = () => {}
+
+
+	// Internal state
+	let textareaElement: HTMLTextAreaElement
 </script>
 
 
@@ -14,10 +18,12 @@
 		bind:value
 		{name}
 		{...$$restProps}
+		on:focus={() => textareaElement?.focus()}
 		type="text"
 	/>
 
 	<textarea
+		bind:this={textareaElement}
 		bind:value
 		{...$$restProps}
 		on:blur={onblur}
