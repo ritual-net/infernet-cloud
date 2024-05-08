@@ -19,7 +19,7 @@
 
 <Table
 	data={containers}
-	getId={container => container.container_id}
+	getId={container => container.id}
 	columns={[
 		// {
 		// 	header: 'Name',
@@ -80,7 +80,7 @@
 				containers = containers.toSpliced(
 					containers.indexOf(container) + 1,
 					0,
-					Object.assign({}, container, { container_id: crypto.randomUUID() }),
+					Object.assign({}, container, { id: crypto.randomUUID() }),
 				)
 			},
 		},

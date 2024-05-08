@@ -365,7 +365,7 @@
 				pushState('#/container/edit', {
 					showContainerForm: 'edit',
 					nodeId: node.id,
-					containerId: container.container_id,
+					containerId: container.id,
 					pageData: {
 						...result.data,
 						imagesPromise: await result.data.imagesPromise,
@@ -411,7 +411,7 @@
 
 						onSubmit: ({ container }) => {
 							node.containers[
-								node.containers.findIndex(container => container.container_id === $page.state.containerId)
+								node.containers.findIndex(container => container.id === $page.state.containerId)
 							] = container
 							node.containers = node.containers
 

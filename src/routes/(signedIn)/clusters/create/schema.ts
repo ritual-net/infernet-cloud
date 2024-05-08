@@ -39,16 +39,20 @@ export const Config = z
 
 export const Container = z
 	.object({
+		'id': z
+			.string()
+			.optional()
+			.default(() => (
+				crypto.randomUUID()
+			)),
+
 		'image': z
 			.string()
 			.required(),
 
 		'container_id': z
 			.string()
-			.required()
-			.default(() => (
-				crypto.randomUUID()
-			)),
+			.required(),
 
 		'description': z
 			.string()

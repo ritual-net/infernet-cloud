@@ -57,7 +57,7 @@
 
 		onUpdate: ({ form, result, cancel }) => {
 			if(mode === 'create')
-				$form.container.container_id = crypto.randomUUID()
+				$form.container.id ||= crypto.randomUUID()
 
 			if(result.type === 'success'){
 				onSubmit?.($form)
