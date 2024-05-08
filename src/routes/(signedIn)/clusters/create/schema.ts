@@ -1,12 +1,5 @@
 import * as z from 'yup'
-
-export const Ip = z
-	.string<`${number}.${number}.${number}.${number}/${number}`>()
-	.matches(/^\d+\.\d+\.\d+\.\d+\$/g)
-
-export const IpWithAddressMask = z
-	.string<`${number}.${number}.${number}.${number}/${number}`>()
-	.matches(/^\d+\.\d+\.\d+\.\d+\/\d+$/g)
+import { Ip, IpWithAddressMask, Address } from '$/types/stringFormats'
 
 export const Config = z
 	.object({
@@ -69,22 +62,23 @@ export const Container = z
 
 		'allowed_addresses': z
 			.array(
-				z
-					.string()
+				Address
 			)
+			.optional()
 			.default([]),
 
 		'allowed_delegate_addresses': z
 			.array(
-				z
-					.string()
+				Address
 			)
+			.optional()
 			.default([]),
 
 		'allowed_ips': z
 			.array(
 				Ip
 			)
+			.optional()
 			.default([]),
 
 		'command': z
@@ -128,9 +122,8 @@ export const NodeConfig = z
 				),
 			),
 
-		'coordinator_address': z
-			.string()
-			.default('')
+		'coordinator_address':
+			Address
 			.when(
 				'chain_enabled',
 				([chain_enabled], _) => (

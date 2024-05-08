@@ -1,8 +1,5 @@
 import * as z from 'yup'
-
-export const IpWithAddressMask = z
-	.string<`${number}.${number}.${number}.${number}/${number}`>()
-	.matches(/^\d+\.\d+\.\d+\.\d+\/\d+$/g)
+import { IpWithAddressMask } from '$/types/stringFormats'
 
 export const Config = z
 	.object({

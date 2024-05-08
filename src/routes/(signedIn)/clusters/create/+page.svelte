@@ -76,11 +76,23 @@
 	// (UI state)
 	let currentFieldset = Fieldset.CreateCluster
 
-	let allowIps: 'all' | 'restricted' = 'all'
 
-	// (Computed)
+	// (Firewall)
+	let hasFirewall = (
+		Boolean($form.config.ip_allow_http?.length || $form.config.ip_allow_ssh?.length)
+	)
+	let ip_allow_http = $form.config.ip_allow_http ?? []
+	let ip_allow_ssh = $form.config.ip_allow_ssh ?? []
+
+	$: $form.config.ip_allow_http = hasFirewall ? ip_allow_http : []
+	$: $form.config.ip_allow_ssh = hasFirewall ? ip_allow_ssh : []
+
+
+	// (Service account)
 	$: serviceAccount = serviceAccounts.find(serviceAccount => serviceAccount.id === $form.serviceAccountId)
 
+
+	// (Provider)
 	$: providerConfigsQuery = createQuery({
 		queryKey: ['providerConfig', {
 			serviceAccountId: $form.serviceAccountId as string,
@@ -138,6 +150,7 @@
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
+	import Textarea from '$/components/Textarea.svelte'
 	import NodeFormFields from './NodeFormFields.svelte'
 
 
@@ -236,7 +249,7 @@
 									<div class="row wrap">
 										<div class="column inline">
 											<h3 class="row inline">
-												<label for="allowIps">
+												<label for="hasFirewall">
 													Firewall
 												</label>
 											</h3>
@@ -246,24 +259,24 @@
 
 										<Select
 											required
-											id="allowIps"
-											name="allowIps"
+											id="hasFirewall"
+											name="hasFirewall"
 											labelText="Firewall"
-											bind:value={allowIps}
+											bind:value={hasFirewall}
 											items={[
 												{
-													value: 'all',
+													value: false,
 													label: 'All IPs',
 												},
 												{
-													value: 'restricted',
+													value: true,
 													label: 'Only allowed IPs',
 												}
 											]}
 										/>
 									</div>
 
-									{#if allowIps !== 'all'}
+									{#if hasFirewall}
 										<Tabs
 											value={0}
 											items={[
@@ -281,31 +294,27 @@
 												let:item
 											>
 												{#if item.id === 0}
-													<textarea
+													<Textarea
 														id="config.ip_allow_http"
 														name="config.ip_allow_http"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={serializeCommaSeparated($form.config.ip_allow_http)}
-														on:blur={e => {
-															$form.config.ip_allow_http = e.target.value.split(',').map(ip => ip.trim())
-														}}
+														value={serializeCommaSeparated(ip_allow_http)}
+														onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
 														{...$constraints.config?.ip_allow_http}
-														disabled={allowIps === 'all'}
+														disabled={!hasFirewall}
 													/>
 						
 												{:else}
-													<textarea
+													<Textarea
 														id="config.ip_allow_ssh"
 														name="config.ip_allow_ssh"
 														rows="2"
 														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={$form.config.ip_allow_ssh.join(', ')}
-														on:blur={e => {
-															$form.config.ip_allow_ssh = parseCommaSeparated(e.target.value)
-														}}
+														value={serializeCommaSeparated(ip_allow_ssh)}
+														onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
 														{...$constraints.config?.ip_allow_ssh}
-														disabled={allowIps === 'all'}
+														disabled={!hasFirewall}
 													/>
 												{/if}
 											</svelte:fragment>

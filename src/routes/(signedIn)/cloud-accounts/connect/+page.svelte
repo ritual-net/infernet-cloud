@@ -68,6 +68,7 @@
 	// Components
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
+	import Textarea from '$/components/Textarea.svelte'
 
 
 	// Transitions/animations
@@ -389,7 +390,7 @@
 
 									<!-- {:else} -->
 										<div class="stack">
-											<textarea
+											<Textarea
 												name="credentials"
 												rows="13"
 												placeholder={
@@ -411,9 +412,9 @@
 														)
 														: ''
 												}
-												on:input={(e) => {
+												onblur={(e) => {
 													try {
-														$form.credentials = JSON.parse(e.target.value)
+														$form.credentials = JSON.parse(e.currentTarget.value)
 													}catch(e){}
 												}}
 												{...$constraints.credentials}
