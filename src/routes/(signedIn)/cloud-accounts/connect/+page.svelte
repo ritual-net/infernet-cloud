@@ -412,9 +412,9 @@
 														)
 														: ''
 												}
-												oninput={(e) => {
+												onblur={(e) => {
 													try {
-														$form.credentials = JSON.parse(e.target.value)
+														$form.credentials = JSON.parse(e.currentTarget.value)
 													}catch(e){}
 												}}
 												{...$constraints.credentials}
