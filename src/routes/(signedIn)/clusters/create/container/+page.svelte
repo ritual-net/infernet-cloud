@@ -257,7 +257,7 @@
 					</label>
 				</h3>
 
-				<p>Set an ID representing this container's intended workflow service. May be shared across similarly configured containers.</p>
+				<p>Set an ID to represent this container's intended workflow. <br>May be shared across similarly configured containers.</p>
 			</div>
 
 			<input
