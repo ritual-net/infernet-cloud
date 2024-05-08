@@ -5,7 +5,7 @@
 
 
 	// Events
-	export let onblur: (e: Event) => void = () => {}
+	export let onblur: (_: FocusEvent & { currentTarget: EventTarget & HTMLTextAreaElement }) => void
 
 
 	// Internal state
