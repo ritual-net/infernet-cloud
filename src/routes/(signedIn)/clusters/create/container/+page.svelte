@@ -139,6 +139,7 @@
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
+	import Textarea from '$/components/Textarea.svelte'
 </script>
 
 
@@ -373,37 +374,37 @@
 						let:item
 					>
 						{#if item.id === 0}
-							<textarea
+							<Textarea
 								id="container.allowed_ips"
 								name="container.allowed_ips"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.1, 0.0.0.2`}
 								value={serializeCommaSeparated(allowed_ips)}
-								on:blur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
+								onblur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_ips}
 								disabled={!hasFirewall}
 							/>
 
 						{:else if item.id === 1}
-							<textarea
+							<Textarea
 								id="container.allowed_addresses"
 								name="container.allowed_addresses"
 								rows="2"
 								placeholder={`Enter a comma-separated list of EVM addresses...\n0xabcd...6789, 0x1234...cdef`}
 								value={serializeCommaSeparated(allowed_addresses)}
-								on:blur={e => { allowed_addresses = parseCommaSeparated(e.currentTarget.value) }}
+								onblur={e => { allowed_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_addresses}
 								disabled={!(hasFirewall && isOnchain)}
 							/>
 
 						{:else if item.id === 2}
-							<textarea
+							<Textarea
 								id="container.allowed_delegate_addresses"
 								name="container.allowed_delegate_addresses"
 								rows="2"
 								placeholder={`Enter a comma-separated list of EVM addresses...\n0xabcd...6789, 0x1234...cdef`}
 								value={serializeCommaSeparated(allowed_delegate_addresses)}
-								on:blur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
+								onblur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.container?.allowed_delegate_addresses}
 								disabled={!(hasFirewall && isOnchain)}
 							/>
@@ -426,7 +427,7 @@
 				<p>Enter the start command for this container below.</p>
 			</div>
 
-			<textarea
+			<Textarea
 				id="container.command"
 				name="container.command"
 				bind:value={$form.container.command}
@@ -450,15 +451,13 @@
 				<p>Please enter the contents of the .env file for this container.</p>
 			</div>
 
-			<textarea
+			<Textarea
 				id="container.env"
 				name="container.env"
 				rows="2"
 				placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
 				value={serializeEnvObject($form.container.env)}
-				on:blur={e => {
-					$form.container.env = parseEnvString(e.target.value)
-				}}
+				onblur={e => { $form.container.env = parseEnvString(e.currentTarget.value) }}
 				{...$constraints.container?.env}
 				class="code"
 			/>

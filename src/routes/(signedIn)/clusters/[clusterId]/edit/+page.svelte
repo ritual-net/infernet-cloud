@@ -78,6 +78,7 @@
 	import Tabs from '$/components/Tabs.svelte'
 	import Select from '$/components/Select.svelte'
 	import Switch from '$/components/Switch.svelte'
+	import Textarea from '$/components/Textarea.svelte'
 </script>
 
 
@@ -174,25 +175,25 @@
 						let:item
 					>
 						{#if item.id === 0}
-							<textarea
+							<Textarea
 								id="config.ip_allow_http"
 								name="config.ip_allow_http"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								value={serializeCommaSeparated(ip_allow_http)}
-								on:blur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
+								onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.config?.ip_allow_http}
 								disabled={!hasFirewall}
 							/>
 
 						{:else}
-							<textarea
+							<Textarea
 								id="config.ip_allow_ssh"
 								name="config.ip_allow_ssh"
 								rows="2"
 								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
 								value={serializeCommaSeparated(ip_allow_ssh)}
-								on:blur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
+								onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
 								{...$constraints.config?.ip_allow_ssh}
 								disabled={!hasFirewall}
 							/>
