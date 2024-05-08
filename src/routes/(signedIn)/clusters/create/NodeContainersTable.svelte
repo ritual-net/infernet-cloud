@@ -21,13 +21,13 @@
 	data={containers}
 	getId={container => container.id}
 	columns={[
-		// {
-		// 	header: 'Name',
-		// 	accessor: container => container.name,
-		// },
 		{
 			header: 'Image',
 			accessor: container => container.image,
+		},
+		{
+			header: 'Service ID',
+			accessor: container => container.container_id,
 		},
 		{
 			header: 'Description',
@@ -37,29 +37,13 @@
 			header: 'Visibility',
 			accessor: container => container.external ? 'External' : 'Internal',
 		},
-		// {
-		// 	header: 'Allowed Addresses',
-		// 	accessor: container => container.allowed_addresses,
-		// },
-		// {
-		// 	header: 'Allowed Delegate Addresses',
-		// 	accessor: container => container.allowed_delegate_addresses,
-		// },
-		// {
-		// 	header: 'Allowed IPs',
-		// 	accessor: container => container.allowed_ips,
-		// },
-		{
-			header: 'Command',
-			accessor: container => container.command,
-		},
-		// {
-		// 	header: 'Env',
-		// 	accessor: container => container.env,
-		// },
 		{
 			header: 'GPU?',
 			accessor: container => container.gpu,
+		},
+		{
+			header: 'Firewall?',
+			accessor: container => container.allowed_ips.length || container.allowed_addresses.length || container.allowed_delegate_addresses.length ? 'Yes' : 'No',
 		},
 	]}
 	onRowClick={container => {
