@@ -58,6 +58,9 @@ export const actions: Actions = {
 
 		delete formData.data.node.id
 
+		for(const container of formData.data.node.containers)
+			delete container.id
+
 		const response = await fetch('/api/node', {
 			method: 'POST',
 			body: JSON.stringify(formData.data),

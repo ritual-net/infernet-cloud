@@ -57,7 +57,7 @@
 
 		onUpdate: ({ form, result, cancel }) => {
 			if(mode === 'create')
-				$form.container.container_id = crypto.randomUUID()
+				$form.container.id ||= crypto.randomUUID()
 
 			if(result.type === 'success'){
 				onSubmit?.($form)
@@ -246,6 +246,27 @@
 				)}
 				placeholder={`Choose or search for an image...`}
 				{...$constraints.container?.image}
+			/>
+		</section>
+
+		<section class="row wrap">
+			<div class="column inline">
+				<h3 class="row inline">
+					<label for="container.container_id">
+						Service ID
+					</label>
+				</h3>
+
+				<p>Set an ID to represent this container's intended workflow. <br>May be shared across similarly configured containers.</p>
+			</div>
+
+			<input
+				type="text"
+				id="container.container_id"
+				name="container.container_id"
+				bind:value={$form.container.container_id}
+				placeholder={`organization-toolkit-model-version`}
+				{...$constraints.container?.container_id ?? {}}
 			/>
 		</section>
 

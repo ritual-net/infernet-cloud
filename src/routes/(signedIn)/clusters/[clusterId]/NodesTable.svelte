@@ -4,17 +4,12 @@
 	import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
-	// Context
-	import { page } from '$app/stores'
-
-
 	// Inputs
 	// export let nodes: InfernetNode[]
 	export let nodesWithInfo: InfernetNodeWithInfo[]
 
 
 	// Functions
-	import { formatNumberCompact } from '$/lib/format'
 	import { resolveRoute } from '$app/paths'
 
 
@@ -59,14 +54,8 @@
 			accessor: ({ info }) => info?.ip ?? '–',
 		},
 		{
-			header: 'Coordinator Address',
-			accessor: ({ node }) => node.coordinator_address,
-		},
-		{
-			header: 'Gas Limit',
-			accessor: ({ node }) => (
-				typeof node.max_gas_limit === 'number' && formatNumberCompact(node.max_gas_limit)
-			),
+			header: 'Chain Enabled?',
+			accessor: ({ node }) => node.chain_enabled ? 'Yes' : 'No',
 		},
 		{
 			header: 'Containers',
