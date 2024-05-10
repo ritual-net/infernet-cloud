@@ -30,8 +30,8 @@
 
 	// (Firewall)
 	let hasFirewall = (
-		Boolean(container.allowed_ips.length)
-		|| (isOnchain && Boolean(container.allowed_addresses.length || container.allowed_delegate_addresses.length))
+		Boolean(container.allowed_ips?.length)
+		|| (isOnchain && Boolean(container.allowed_addresses?.length || container.allowed_delegate_addresses?.length))
 	)
 
 	let allowed_ips = container.allowed_ips ?? []
