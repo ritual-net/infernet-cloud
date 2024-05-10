@@ -22,7 +22,7 @@
 	data={containers}
 	columns={[
 		{
-			header: 'ID',
+			header: 'Service ID',
 			accessor: container => container,
 			cell: ({ value: container }) => (
 				createRender(NodeContainersTableCell, {
