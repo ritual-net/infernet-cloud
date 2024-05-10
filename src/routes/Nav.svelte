@@ -16,6 +16,10 @@
 			label: 'Accounts',
 		},
 		{
+			href: '/templates',
+			label: 'Templates',
+		},
+		{
 			href: '/clusters',
 			label: 'Clusters',
 		},

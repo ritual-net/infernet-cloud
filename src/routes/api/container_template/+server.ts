@@ -11,8 +11,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 export const GET: RequestHandler = async ({ locals: { client } }) => {
 	const result = await e
 		.select(e.ContainerTemplate, () => ({
-			id: true,
-			name: true,
+			...e.Container['*'],
 		}))
 		.run(client);
 
