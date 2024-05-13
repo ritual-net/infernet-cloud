@@ -22,10 +22,6 @@
 
 
 <style>
-	.container-id {
-		font-size: 0.8em;
-	}
-
 	.row {
 		justify-content: start;
 	}
