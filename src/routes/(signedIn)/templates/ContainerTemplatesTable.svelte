@@ -102,13 +102,6 @@
 
 		return [
 			{
-				value: 'edit',
-				label: 'Edit Container Template',
-				onClick: () => {
-					goto(`${containerTemplateRoute}/edit`)
-				},
-			},
-			{
 				value: 'delete',
 				label: 'Delete Container Template',
 				formAction: `${containerTemplateRoute}?/delete`,
