@@ -104,7 +104,8 @@
 			{
 				value: 'delete',
 				label: 'Delete Container Template',
-				formAction: `${containerTemplateRoute}?/delete`,
+				formAction: `/api/container_template/${containerTemplate.id}`,
+				formMethod: 'DELETE',
 				formSubmit: async (e) => {
 					const toast = addToast({
 						data: {
