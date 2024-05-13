@@ -7,6 +7,7 @@ export type MenuItem<Value> = {
 	icon?: string,
 	onClick?: (item: MenuItem<Value>) => void,
 	formAction?: string,
+	formMethod?: 'POST' | 'PATCH' | 'PUT' | 'DELETE',
 	formSubmit?: SubmitFunction,
 }
 

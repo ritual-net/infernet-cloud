@@ -56,7 +56,7 @@
 				{:else}
 					{#if _subitem.formAction}
 						<form
-							method="POST"
+							method={_subitem.formMethod ?? 'POST'}
 							action={_subitem.formAction}
 							use:enhance={_subitem?.formSubmit}
 						>
@@ -84,7 +84,7 @@
 		{:else}
 			{#if subitem.formAction}
 				<form
-					method="POST"
+					method={subitem.formMethod ?? 'POST'}
 					action={subitem.formAction}
 					use:enhance={subitem?.formSubmit}
 				>
