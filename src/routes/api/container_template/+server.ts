@@ -1,6 +1,8 @@
 import { e } from '$/lib/db';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
+import * as z from 'yup';
+import type { FormData } from '$/routes/(signedIn)/templates/create/schema'
 
 /**
  * Retrieve all container templates for the current user.
@@ -26,15 +28,17 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
  * @returns Newly created ContainerTemplate object.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
-	const containerData = await request.json();
-
-	const query = e.insert(e.ContainerTemplate, {
-		...containerData,
-		user: e.global.current_user,
-	});
+	const {
+		containerTemplate,
+	} = await request.json() as z.InferType<typeof FormData>;
 
 	try {
-		const template = await query.run(client);
+		const template = await e
+			.insert(e.ContainerTemplate, {
+				...containerTemplate,
+				user: e.global.current_user,
+			})
+			.run(client);
 		return json(template);
 	} catch (e) {
 		return error(400, (e as Error).message);

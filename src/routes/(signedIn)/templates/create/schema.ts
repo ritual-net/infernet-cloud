@@ -1,6 +1,14 @@
 import { Container } from '../../clusters/create/schema'
 import * as z from 'yup'
 
+export const ContainerTemplate = Container.concat(
+	z.object({
+		'name': z
+			.string()
+			.required(),
+	})
+)
+
 export const FormData = z
 	.object({
 		'chain_enabled': z
@@ -9,7 +17,9 @@ export const FormData = z
 
 		'dockerAccountUsername': z
 			.string()
+			.default('')
 			.optional(),
 
-		'container': Container,
+		'containerTemplate': ContainerTemplate
+			.required(),
 	})
