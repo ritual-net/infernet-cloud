@@ -43,7 +43,7 @@
 		positioning: {
 			placement,
 			fitViewport: true,
-			boundary: document.getElementsByTagName('main')[0],
+			// boundary: document.getElementsByTagName('main')[0],
 		},
 
 		onOpenChange: ({ curr, next }) => {
