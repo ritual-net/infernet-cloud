@@ -59,6 +59,11 @@
 		selected => { value = selected?.value as Value },
 	)
 
+	$: createSync(options).required(
+		required,
+		_ => { required = _ },
+	)
+
 	$: createSync(options).disabled(
 		disabled,
 		_ => { disabled = _ },
