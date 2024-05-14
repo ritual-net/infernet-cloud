@@ -121,8 +121,8 @@
 			</div>
 		
 			<input
-				id="name"
-				name="name"
+				id="containerTemplate.name"
+				name="containerTemplate.name"
 				type="text"
 				placeholder="My Container Template"
 				bind:value={$form.containerTemplate.name}
@@ -139,7 +139,7 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3>
-					<label for="chain_enabled">
+					<label for="containerTemplate.chain_enabled">
 						Onchain?
 					</label>
 				</h3>
@@ -148,9 +148,9 @@
 			</div>
 		
 			<Switch
-				id="chain_enabled"
-				name="chain_enabled"
-				bind:checked={$form.chain_enabled}
+				id="containerTemplate.chain_enabled"
+				name="containerTemplate.chain_enabled"
+				bind:checked={$form.containerTemplate.chain_enabled}
 				labelText="Onchain?"
 			/>
 		</section>

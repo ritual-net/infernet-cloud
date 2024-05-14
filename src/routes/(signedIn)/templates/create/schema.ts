@@ -6,15 +6,15 @@ export const ContainerTemplate = Container.concat(
 		'name': z
 			.string()
 			.required(),
+
+		'chain_enabled': z
+			.boolean()
+			.default(false),
 	})
 )
 
 export const FormData = z
 	.object({
-		'chain_enabled': z
-			.boolean()
-			.default(false),
-
 		'dockerAccountUsername': z
 			.string()
 			.default('')
