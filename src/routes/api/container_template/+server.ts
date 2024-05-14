@@ -13,7 +13,7 @@ import type { FormData } from '$/routes/(signedIn)/templates/create/schema'
 export const GET: RequestHandler = async ({ locals: { client } }) => {
 	const result = await e
 		.select(e.ContainerTemplate, () => ({
-			...e.Container['*'],
+			...e.ContainerTemplate['*'],
 		}))
 		.run(client);
 
