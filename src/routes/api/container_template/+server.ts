@@ -29,6 +29,7 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	const {
+		dockerAccountUsername,
 		containerTemplate,
 	} = await request.json() as z.InferType<typeof FormData>;
 
@@ -37,6 +38,12 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			.insert(e.ContainerTemplate, {
 				...containerTemplate,
 				user: e.global.current_user,
+				docker_account: e.select(e.DockerAccount, () => ({
+					filter_single: {
+						user: e.global.current_user,
+						username: dockerAccountUsername,
+					},
+				})),
 			})
 			.run(client);
 		return json(template);
