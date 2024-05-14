@@ -122,6 +122,8 @@
 		_ => { inputValue = _ },
 	)
 
+	$: inputValue = Array.isArray($selected) ? $selected[0]?.value : $selected?.value
+
 	$: createSync(options).required(
 		required,
 		_ => { required = _ },
