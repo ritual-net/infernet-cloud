@@ -99,145 +99,151 @@
 </script>
 
 
-<form
-	class="column"
-	method="POST"
-	use:enhance
->
-	<div class="card">
-		<header>
-			Container template
-		</header>
+<div class="container column">
+	<header>
+		<h2>New container template</h2>
+	</header>
 
-		<section class="row wrap">
-			<div class="column inline">
-				<h3>
-					<label for="name">
-						Name
-					</label>
-				</h3>
-		
-				<p>A unique name for the container template.</p>
-			</div>
-		
-			<input
-				id="containerTemplate.name"
-				name="containerTemplate.name"
-				type="text"
-				placeholder="My Container Template"
-				bind:value={$form.containerTemplate.name}
-				{...$constraints?.containerTemplate?.name}
-			/>
-		</section>
-	</div>
-
-	<div class="card column">
-		<header>
-			Node configuration
-		</header>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3>
-					<label for="containerTemplate.chain_enabled">
-						Onchain?
-					</label>
-				</h3>
-		
-				<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
-			</div>
-		
-			<Switch
-				id="containerTemplate.chain_enabled"
-				name="containerTemplate.chain_enabled"
-				bind:checked={$form.containerTemplate.chain_enabled}
-				labelText="Onchain?"
-			/>
-		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="dockerAccountUsername">
-						Docker Hub Account
-					</label>
-		
-					<span class="annotation">Optional</span>
-				</h3>
-		
-				<p><a href="/cloud-accounts/docker/connect">Connect your Docker Hub account</a> to allow the node to access private Docker images.</p>
-			</div>
-		
-			<Select
-				id="dockerAccountUsername"
-				name="dockerAccountUsername"
-				labelText="Docker Hub Username"
-				bind:value={$form.dockerAccountUsername}
-				{...!dockerAccounts
-					? {
-						placeholder: 'Loading...',
-						items: [
-							{
-								value: '',
-								label: 'None'
-							},
-							$form.dockerAccountUsername && {
-								value: $form.dockerAccountUsername,
-								label: $form.dockerAccountUsername,
-							}
-						].filter(Boolean),
-						visuallyDisabled: true,
-					}
-					: {
-						placeholder: 'Choose Docker Hub user...',
-						items: [
-							{
-								value: '',
-								label: 'None'
-							},
-							...dockerAccounts.map(dockerAccount => ({
-								value: dockerAccount.username,
-								label: dockerAccount.username,
-							}))
-						],
-					}
-				}
-				{...$constraints?.dockerAccountUsername}
-			/>
-		</section>
-	</div>
-
-	<ContainerFormFields
-		bind:container={$form.containerTemplate}
-		constraints={$constraints.containerTemplate}
-		{images}
-		{dockerUserImages}
-		isOnchain={$form.chain_enabled}
-		dockerAccountUsername={$form.dockerAccountUsername}
+	<form
+		class="column"
+		method="POST"
+		use:enhance
 	>
-		<svelte:fragment slot="title">
-			Container configuration
-		</svelte:fragment>
-	</ContainerFormFields>
+		<div class="card">
+			<header>
+				Container template
+			</header>
 
-	<footer class="row">
-		<div class="row">
-			<a
-				class="button"
-				href="."
-			>
-				Cancel
-			</a>
+			<section class="row wrap">
+				<div class="column inline">
+					<h3>
+						<label for="name">
+							Name
+						</label>
+					</h3>
+			
+					<p>A unique name for the container template.</p>
+				</div>
+			
+				<input
+					id="containerTemplate.name"
+					name="containerTemplate.name"
+					type="text"
+					placeholder="My Container Template"
+					bind:value={$form.containerTemplate.name}
+					{...$constraints?.containerTemplate?.name}
+				/>
+			</section>
 		</div>
 
-		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting}
-			>
-				Add Container Template
-			</button>
+		<div class="card column">
+			<header>
+				Node configuration
+			</header>
+
+			<section class="row wrap">
+				<div class="column inline">
+					<h3>
+						<label for="containerTemplate.chain_enabled">
+							Onchain?
+						</label>
+					</h3>
+			
+					<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
+				</div>
+			
+				<Switch
+					id="containerTemplate.chain_enabled"
+					name="containerTemplate.chain_enabled"
+					bind:checked={$form.containerTemplate.chain_enabled}
+					labelText="Onchain?"
+				/>
+			</section>
+
+			<section class="row wrap">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="dockerAccountUsername">
+							Docker Hub Account
+						</label>
+			
+						<span class="annotation">Optional</span>
+					</h3>
+			
+					<p><a href="/cloud-accounts/docker/connect">Connect your Docker Hub account</a> to allow the node to access private Docker images.</p>
+				</div>
+			
+				<Select
+					id="dockerAccountUsername"
+					name="dockerAccountUsername"
+					labelText="Docker Hub Username"
+					bind:value={$form.dockerAccountUsername}
+					{...!dockerAccounts
+						? {
+							placeholder: 'Loading...',
+							items: [
+								{
+									value: '',
+									label: 'None'
+								},
+								$form.dockerAccountUsername && {
+									value: $form.dockerAccountUsername,
+									label: $form.dockerAccountUsername,
+								}
+							].filter(Boolean),
+							visuallyDisabled: true,
+						}
+						: {
+							placeholder: 'Choose Docker Hub user...',
+							items: [
+								{
+									value: '',
+									label: 'None'
+								},
+								...dockerAccounts.map(dockerAccount => ({
+									value: dockerAccount.username,
+									label: dockerAccount.username,
+								}))
+							],
+						}
+					}
+					{...$constraints?.dockerAccountUsername}
+				/>
+			</section>
 		</div>
-	</footer>
-</form>
+
+		<ContainerFormFields
+			bind:container={$form.containerTemplate}
+			constraints={$constraints.containerTemplate}
+			{images}
+			{dockerUserImages}
+			isOnchain={$form.chain_enabled}
+			dockerAccountUsername={$form.dockerAccountUsername}
+		>
+			<svelte:fragment slot="title">
+				Container configuration
+			</svelte:fragment>
+		</ContainerFormFields>
+
+		<footer class="row">
+			<div class="row">
+				<a
+					class="button"
+					href="."
+				>
+					Cancel
+				</a>
+			</div>
+
+			<div class="row">
+				<button
+					type="submit"
+					class="primary"
+					disabled={$submitting}
+				>
+					Add Container Template
+				</button>
+			</div>
+		</footer>
+	</form>
+</div>
