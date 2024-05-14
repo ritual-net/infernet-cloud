@@ -1,11 +1,16 @@
 <script lang="ts">
+	// Schema
+	import type { ContainerTemplate } from '$schema/interfaces'
+
+
 	// Context
 	import type { PageData } from './$types'
 
 	export let data: PageData
 	const {
 		formData,
-		imagesPromise, // Promise<string[]> | string[]
+		containerTemplatesPromise,
+		imagesPromise,
 		dockerAccountUsername,
 		dockerUserImages,
 		isOnchain,
@@ -59,7 +64,8 @@
 
 
 	// (Templates)
-	let startingConfig: typeof form
+	let containerTemplates: ContainerTemplate[] | undefined
+	$: if(containerTemplatesPromise) (async () => { containerTemplates = await containerTemplatesPromise })()
 
 
 	// (Images)

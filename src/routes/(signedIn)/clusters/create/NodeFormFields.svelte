@@ -342,6 +342,7 @@
 						pageData: {
 							...result.data,
 							imagesPromise: await result.data.imagesPromise,
+							containerTemplatesPromise: await result.data.containerTemplatesPromise,
 						},
 					})
 				} else {
@@ -369,6 +370,7 @@
 					pageData: {
 						...result.data,
 						imagesPromise: await result.data.imagesPromise,
+						containerTemplatesPromise: await result.data.containerTemplatesPromise,
 						formData: {
 							container,
 						},
