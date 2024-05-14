@@ -30,13 +30,21 @@
 
 	const itemMatchesInput = (
 		item: MenuItem<Value>,
-		input: string,
+		input: string | undefined,
 	) => {
-		const normalizedInput = input.toLowerCase().trim()
+		const normalizedInput = input?.toLowerCase().trim()
 
 		return (
-			String(item.value).toLowerCase().includes(normalizedInput)
-			|| item.label.toLowerCase().includes(normalizedInput)
+			(
+				typeof item.value === 'string' && typeof normalizedInput === 'string' ?
+					String(item.value).toLowerCase().includes(normalizedInput)
+					: item.value === normalizedInput
+			)
+			|| (
+				typeof item.label === 'string' && typeof normalizedInput === 'string' ?
+					item.label.toLowerCase().includes(normalizedInput)
+					: false
+			)
 		)
 	}
 
@@ -125,7 +133,10 @@
 	)
 
 	// (Computed)
-	$: filteredItems = filterItems(items, inputValue)
+	$: filteredItems =
+		inputValue !== undefined
+			? filterItems(items, inputValue)
+			: items
 	// $: filteredItems = $touchedInput
 	// 	? filterItems(items, inputValue)
 	// 	: items
