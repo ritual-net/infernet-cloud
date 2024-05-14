@@ -23,6 +23,9 @@
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
 
+	// Functions
+	import { findMenuItem } from '$lib/menus'
+
 
 	// Internal state
 	import { melt, createSelect, createSync } from '@melt-ui/svelte'
@@ -52,7 +55,7 @@
 	} = states
 
 	$: createSync(states).selected(
-		items.flatMap(itemOrGroup => 'items' in itemOrGroup ? itemOrGroup.items : itemOrGroup).find(item => 'value' in item && item.value === value),
+		items && findMenuItem(items, value),
 		selected => { value = selected?.value as Value },
 	)
 
