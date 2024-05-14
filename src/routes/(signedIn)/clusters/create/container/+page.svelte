@@ -67,6 +67,20 @@
 	let containerTemplates: ContainerTemplate[] | undefined
 	$: if(containerTemplatesPromise) (async () => { containerTemplates = await containerTemplatesPromise })()
 
+	let containerTemplateId: string
+
+	$: if(containerTemplates && containerTemplateId){
+		const containerTemplate = containerTemplates.find(containerTemplate => containerTemplate.id === containerTemplateId)
+
+		if(containerTemplate && globalThis?.confirm(`Start from template "${containerTemplate.name}"?`)){
+			const newContainer = globalThis.structuredClone(containerTemplate)
+			delete newContainer.id
+			$form.container = newContainer
+		}else{
+			containerTemplateId = undefined
+		}
+	}
+
 
 	// (Images)
 	let images: string[] | undefined
@@ -105,18 +119,20 @@
 	{#if mode === 'create'}
 		<fieldset class="card column">
 			<header>
-				Start from existing
+				Start from template
 			</header>
 
 			<section class="row wrap">
 				<div class="column inline">
 					<h3>
 						<label for="startingConfig">
-							Starting configuration
+							Container template
 						</label>
+
+						<span class="annotation">Optional</span>
 					</h3>
 
-					<p>Choose an existing container to pre-fill variables from.</p>
+					<p>Choose a <a href="/templates">container template</a> to pre-fill variables from.</p>
 				</div>
 
 				<Select
@@ -124,8 +140,23 @@
 					name="startingConfig"
 					labelText="Starting Configuration"
 					placeholder={configurations.length ? `Select container config...` : `No existing containers found`}
-					bind:value={startingConfig}
-					items={configurations}
+					bind:value={containerTemplateId}
+					items={
+						containerTemplates
+							? Array.from(
+								Map.groupBy(containerTemplates, containerTemplate => containerTemplate.container_id)
+									.entries(),
+								([containerId, containerTemplates]) => ({
+									value: containerId,
+									label: containerId,
+									items: containerTemplates.map(containerTemplate => ({
+										value: containerTemplate.id,
+										label: containerTemplate.name,
+									}))
+								}),
+							)
+							: []
+					}
 				/>
 			</section>
 		</fieldset>
