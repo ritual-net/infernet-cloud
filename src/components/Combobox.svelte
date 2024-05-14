@@ -25,6 +25,48 @@
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
 
+	// Functions
+	import { findMenuItem } from '$lib/menus'
+
+	const itemMatchesInput = (
+		item: MenuItem<Value>,
+		input: string,
+	) => {
+		const normalizedInput = input.toLowerCase().trim()
+
+		return (
+			String(item.value).toLowerCase().includes(normalizedInput)
+			|| item.label.toLowerCase().includes(normalizedInput)
+		)
+	}
+
+	const filterItems = (
+		items: MenuItems<Value>,
+		input: string,
+	): MenuItems<Value> => (
+		items
+			.map(item => (
+				'items' in item ?
+					{
+						...item,
+						items: filterItems(item.items, input),
+					}
+				: itemMatchesInput(item, input) ?
+					item
+				:
+					undefined
+			))
+			.filter(item => (
+				!item ?
+					false
+				: 'items' in item ?
+					item.items.length > 0
+				:
+					true
+			))
+	) as MenuItems<Value>
+
+
 	// Internal state
 	import { melt, createCombobox, createSync } from '@melt-ui/svelte'
 
@@ -63,7 +105,7 @@
 	} = states
 
 	$: createSync(states).selected(
-		items && findItem(items, value),
+		items && findMenuItem(items, value),
 		selected => { value = selected?.value as Value },
 	)
 
@@ -83,63 +125,6 @@
 	)
 
 	// (Computed)
-	const itemMatchesInput = (
-		item: MenuItem<Value>,
-		input: string,
-	) => {
-		const normalizedInput = input.toLowerCase().trim()
-
-		return (
-			String(item.value).toLowerCase().includes(normalizedInput)
-			|| item.label.toLowerCase().includes(normalizedInput)
-		)
-	}
-
-	const findItem = <Value>(
-		items: MenuItems<Value>,
-		value: Value,
-	): MenuItem<Value> | undefined => {
-		let found: MenuItem<Value> | undefined
-
-		for(const itemOrGroup of items){
-			if('items' in itemOrGroup){
-				if(found = findItem(itemOrGroup.items, value))
-					return found
-			}else if('value' in itemOrGroup){
-				if(itemOrGroup.value === value)
-					return itemOrGroup
-			}
-		}
-
-		return undefined
-	}
-
-	const filterItems = (
-		items: MenuItems<Value>,
-		input: string,
-	): MenuItems<Value> => (
-		items
-			.map(item => (
-				'items' in item ?
-					{
-						...item,
-						items: filterItems(item.items, input),
-					}
-				: itemMatchesInput(item, input) ?
-					item
-				:
-					undefined
-			))
-			.filter(item => (
-				!item ?
-					false
-				: 'items' in item ?
-					item.items.length > 0
-				:
-					true
-			))
-	) as MenuItems<Value>
-
 	$: filteredItems = filterItems(items, inputValue)
 	// $: filteredItems = $touchedInput
 	// 	? filterItems(items, inputValue)

@@ -1,3 +1,4 @@
+// Types
 import type { SubmitFunction } from '@sveltejs/kit'
 
 export type MenuItem<Value> = {
@@ -20,3 +21,24 @@ export type MenuItemGroup<Value> = {
 }
 
 export type MenuItems<Value> = (MenuItem<Value> | MenuItemGroup<Value>)[]
+
+
+// Functions
+export const findMenuItem = <Value>(
+	items: MenuItems<Value>,
+	value: Value,
+): MenuItem<Value> | undefined => {
+	let found: MenuItem<Value> | undefined
+
+	for(const itemOrGroup of items){
+		if('items' in itemOrGroup){
+			if(found = findMenuItem(itemOrGroup.items, value))
+				return found
+		}else if('value' in itemOrGroup){
+			if(itemOrGroup.value === value)
+				return itemOrGroup
+		}
+	}
+
+	return undefined
+}
