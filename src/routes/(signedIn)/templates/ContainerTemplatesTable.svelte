@@ -96,11 +96,14 @@
 		resolveRoute(`/templates/[containerTemplateId]`, { containerTemplateId: containerTemplate.id })
 	)}
 	contextMenu={containerTemplate => {
-		const containerTemplateRoute = resolveRoute(`/templates/[containerTemplateId]`, {
-			containerTemplateId: containerTemplate.id,
-		})
-
 		return [
+			{
+				value: 'duplicate',
+				label: 'Duplicate Container Template',
+				onClick: () => {
+					goto(`/templates/create?fromContainerTemplate=${containerTemplate.id}`)
+				},
+			},
 			{
 				value: 'delete',
 				label: 'Delete Container Template',

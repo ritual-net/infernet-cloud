@@ -11,7 +11,18 @@ import { e } from '$/lib/db'
 export const load: PageServerLoad = async ({
 	locals: { client },
 	fetch,
+	url,
 }) => {
+	const fromContainerTemplate = url.searchParams.has('fromContainerTemplate')
+		? await e.select(e.ContainerTemplate, () => ({
+			...e.ContainerTemplate['*'],
+			filter_single: {
+				id: url.searchParams.get('fromContainerTemplate')!,
+			},
+		}))
+			.run(client)
+		: undefined
+		
 	const [
 		dockerAccounts,
 		formData,
@@ -21,7 +32,11 @@ export const load: PageServerLoad = async ({
 		}))
 			.run(client),
 
-		superValidate(yup(FormData)),
+		fromContainerTemplate
+			? superValidate({
+				containerTemplate: fromContainerTemplate,
+			}, yup(FormData))
+			: superValidate(yup(FormData))
 	])
 
 	const imagesPromise = fetch(`/api/images/ritual`)
