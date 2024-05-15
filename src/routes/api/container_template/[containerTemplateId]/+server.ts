@@ -19,6 +19,9 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const result = await e
 		.select(e.ContainerTemplate, () => ({
 			...e.ContainerTemplate['*'],
+			docker_account: {
+				username: true,
+			},
 			filter_single: { id },
 		}))
 		.run(client);
