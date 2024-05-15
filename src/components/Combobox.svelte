@@ -122,7 +122,11 @@
 		_ => { inputValue = _ },
 	)
 
-	$: inputValue = Array.isArray($selected) ? $selected[0]?.value : $selected?.value
+	$: if(!$touchedInput){
+		const selectedValue = Array.isArray($selected) ? $selected[0]?.value : $selected?.value
+
+		inputValue = selectedValue ? selectedValue.toString() : ''
+	}
 
 	$: createSync(options).required(
 		required,
@@ -156,6 +160,7 @@
 			type="text"
 			aria-disabled={visuallyDisabled ? true : undefined}
 			use:melt={$input}
+			value={inputValue}
 			{placeholder}
 			{name}
 		/>
