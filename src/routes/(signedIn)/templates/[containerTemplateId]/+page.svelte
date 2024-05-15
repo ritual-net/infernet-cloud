@@ -101,13 +101,15 @@
 				</dd>
 			</section>
 
-			<section class="row">
-				<dt>Description</dt>
+			{#if containerTemplate.description}
+				<section class="row">
+					<dt>Description</dt>
 
-				<dd>
-					{containerTemplate.description}
-				</dd>
-			</section>
+					<dd>
+						{containerTemplate.description}
+					</dd>
+				</section>
+			{/if}
 
 			<section class="row">
 				<dt>Visibility</dt>
