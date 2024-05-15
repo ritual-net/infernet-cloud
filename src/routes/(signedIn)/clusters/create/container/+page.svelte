@@ -75,6 +75,7 @@
 		if(containerTemplate && globalThis?.confirm(`Start from template "${containerTemplate.name}"?`)){
 			const {
 				id,
+				name,
 				docker_account,
 				chain_enabled,
 				...newContainer
