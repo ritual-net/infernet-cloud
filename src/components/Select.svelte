@@ -258,6 +258,10 @@
 
 		transition: 0.1s;
 
+		&[data-disabled] {
+			pointer-events: not-allowed;
+		}
+
 		&:is(:hover, [data-highlighted]) {
 			background-color: var(--select-item-selected-backgroundColor);
 		}
