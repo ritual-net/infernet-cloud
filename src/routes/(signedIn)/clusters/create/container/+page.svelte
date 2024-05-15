@@ -158,12 +158,7 @@
 									items: containerTemplates.map(containerTemplate => ({
 										value: containerTemplate.id,
 										label: containerTemplate.name,
-										disabled: (
-											(
-												containerTemplate.docker_account && dockerAccountUsername
-												&& containerTemplate.docker_account.username !== dockerAccountUsername
-											)
-										),
+										disabled: containerTemplate.docker_account && containerTemplate.docker_account.username !== dockerAccountUsername,
 									}))
 								}),
 							)
