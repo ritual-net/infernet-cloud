@@ -73,11 +73,14 @@
 		const containerTemplate = containerTemplates.find(containerTemplate => containerTemplate.id === containerTemplateId)
 
 		if(containerTemplate && globalThis?.confirm(`Start from template "${containerTemplate.name}"?`)){
-			const newContainer = globalThis.structuredClone(containerTemplate)
-			delete newContainer.id
-			delete newContainer.docker_account
-			delete newContainer.chain_enabled
-			$form.container = newContainer
+			const {
+				id,
+				docker_account,
+				chain_enabled,
+				...newContainer
+			} = globalThis.structuredClone(containerTemplate)
+
+			$form.container = newContainer as Omit<Container, 'id'>
 		}else{
 			containerTemplateId = undefined
 		}
