@@ -327,6 +327,7 @@
 			class="button primary"
 			href={containerCreateRoute}
 			data-sveltekit-preload-code="eager"
+			data-sveltekit-preload-data="hover"
 
 			on:click={async (e) => {
 				e.preventDefault()
