@@ -36,6 +36,10 @@
 	).toString()
 
 
+	// Actions
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
+
+
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Dialog from '$/components/Dialog.svelte'
@@ -340,6 +344,12 @@
 
 				currentTarget.setAttribute('aria-disabled', 'true')
 
+				const loadingToast = addToast({
+					data: {
+						title: 'Loading container form...',
+					},
+				})
+
 				const result = await preloadData(href)
 
 				currentTarget.removeAttribute('aria-disabled')
@@ -358,6 +368,8 @@
 					console.error(`Failed to preload shallow route: ${href}`)
 					goto(href)
 				}
+
+				removeToast(loadingToast.id)
 			}}
 		>
 			Add Container
