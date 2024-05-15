@@ -332,9 +332,17 @@
 			on:click={async (e) => {
 				e.preventDefault()
 
-				const { href } = e.currentTarget
+				const { currentTarget } = e
+
+				if(currentTarget.getAttribute('aria-disabled') === 'true') return
+
+				const { href } = currentTarget
+
+				currentTarget.setAttribute('aria-disabled', 'true')
 
 				const result = await preloadData(href)
+
+				currentTarget.removeAttribute('aria-disabled')
 
 				if (result.type === 'loaded' && result.status === 200) {
 					pushState('#/container/create', {

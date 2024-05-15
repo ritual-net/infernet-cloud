@@ -86,6 +86,10 @@ a {
 	p &:not(.button) {
 		text-decoration: underline;
 	}
+
+	&[aria-disabled="true"]  {
+		pointer-events: none;
+	}
 }
 
 ol, ul {
