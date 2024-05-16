@@ -131,7 +131,7 @@
 			<section class="row wrap">
 				<div class="column inline">
 					<h3>
-						<label for="startingConfig">
+						<label for="containerTemplateId">
 							Container template
 						</label>
 
@@ -142,10 +142,10 @@
 				</div>
 
 				<Select
-					id="startingConfig"
-					name="startingConfig"
-					labelText="Starting Configuration"
-					placeholder={configurations.length ? `Select container config...` : `No existing containers found`}
+					id="containerTemplateId"
+					name="containerTemplateId"
+					labelText="Container template"
+					placeholder={configurations.length ? `Select templates...` : `No templates found`}
 					bind:value={containerTemplateId}
 					items={
 						containerTemplates
