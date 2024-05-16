@@ -96,6 +96,10 @@
 		resolveRoute(`/templates/[containerTemplateId]`, { containerTemplateId: containerTemplate.id })
 	)}
 	contextMenu={containerTemplate => {
+		const containerTemplateRoute = resolveRoute(`/templates/[containerTemplateId]`, {
+			containerTemplateId: containerTemplate.id,
+		})
+
 		return [
 			{
 				value: 'duplicate',
@@ -107,8 +111,7 @@
 			{
 				value: 'delete',
 				label: 'Delete Container Template',
-				formAction: `/api/container_template/${containerTemplate.id}`,
-				formMethod: 'DELETE',
+				formAction: `${containerTemplateRoute}?/delete`,
 				formSubmit: async (e) => {
 					const toast = addToast({
 						data: {
