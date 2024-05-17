@@ -108,6 +108,10 @@
 
 				position: relative;
 
+				& [data-melt-toast-description] {
+					word-break: break-word;
+				}
+
 				& .card {
 					--card-backgroundColor: var(--toast-backgroundColor);
 					--card-borderColor: var(--toast-borderColor);
