@@ -41,10 +41,28 @@ export const executeCommands = async (directory: string, command: string): Promi
 	return new Promise((resolve, reject) => {
 		exec(command, { cwd: directory }, (error, stdout, stderr) => {
 			if (error) {
-				reject({ error, stderr });
+				reject({
+					error,
+					stderr: removeAnsiEscapeCodes(stderr),
+				});
 			} else {
-				resolve(stdout);
+				resolve(removeAnsiEscapeCodes(stdout));
 			}
 		});
 	});
 };
+
+// https://github.com/chalk/ansi-regex/blob/main/index.js
+export const removeAnsiEscapeCodes = (string: string): string => (
+	string
+		.replace(
+			new RegExp(
+				[
+					'[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+					'(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))'
+				].join('|'),
+				'g'
+			),
+			''
+		)
+);
