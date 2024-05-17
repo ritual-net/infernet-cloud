@@ -26,6 +26,18 @@
 	export const removeToast = helpers.removeToast
 
 
+	// Functions
+	const format = (string: string) => (
+		string
+			.replace(/</g, '&lt;')
+			.replaceAll(
+				/(https?:\/\/[^\s]+)/g,
+				url => `<a href="${url}" target="_blank">${url}</a>`
+			)
+			.replaceAll(/\{.+\}/g, m => `<code>${m}</code>`)
+	)
+
+
 	// Transitions/animations
 	import { flip } from 'svelte/animate'
 	import { fly } from 'svelte/transition'
@@ -59,7 +71,7 @@
 
 					{#if data.description}
 						<div use:melt={$description(id)}>
-							<p>{@html String(data.description).replace(/</g, '&lt;').replaceAll(/\{.+\}/g, m => `<code>${m}</code>`)}</p>
+							<p>{@html format(String(data.description))}</p>
 						</div>
 					{/if}
 				</div>
