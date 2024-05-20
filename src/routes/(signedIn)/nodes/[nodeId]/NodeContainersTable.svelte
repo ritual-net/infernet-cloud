@@ -51,7 +51,13 @@
 		},
 		{
 			header: 'Description',
-			accessor: container => container.description,
+			accessor: container => container,
+			cell: ({ value: container }) => (
+				createRender(NodeContainersTableCell, {
+					cellType: CellType.Description,
+					container,
+				})
+			)
 		},
 		{
 			header: 'Visibility',

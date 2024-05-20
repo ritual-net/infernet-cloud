@@ -104,7 +104,7 @@
 				<section class="row">
 					<dt>Description</dt>
 
-					<dd>
+					<dd class="description">
 						{containerTemplate.description}
 					</dd>
 				</section>
@@ -248,5 +248,10 @@
 				word-break: break-word;
 			}
 		}
+	}
+
+	.description {
+		overflow: auto;
+		max-height: 6lh;
 	}
 </style>
