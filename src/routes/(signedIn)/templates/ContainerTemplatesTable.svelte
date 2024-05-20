@@ -61,7 +61,13 @@
 		},
 		{
 			header: 'Description',
-			accessor: container => container.description,
+			accessor: container => container,
+			cell: ({ value: container }) => (
+				createRender(ContainerTemplatesTableCell, {
+					cellType: CellType.Description,
+					container,
+				})
+			)
 		},
 		{
 			header: 'Visibility',
