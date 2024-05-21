@@ -11,8 +11,7 @@ import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
 export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	const { email } = (await request.json()) as { email: string };
 
-	// TODO: Needs to change
-	const reset_url = `${SERVER_HOST}/auth/ui/reset-password`;
+	const reset_url = `${SERVER_HOST}/auth/reset-password`;
 	const provider = 'builtin::local_emailpassword';
 	const pkce = generatePKCE();
 
