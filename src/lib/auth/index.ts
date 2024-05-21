@@ -20,6 +20,11 @@ export const SERVER_AUTH_CALLBACK_URLS = {
 	VERIFY: `${SERVER_HOST}/auth/verify`,
 }
 
+export enum EDGEDB_AUTH_COOKIES {
+	AUTH_TOKEN = 'edgedb-auth-token',
+	PKCE_VERIFIER = 'edgedb-pkce-verifier',
+}
+
 
 /**
  * Generate a random Base64 url-encoded string, and derive a "challenge"

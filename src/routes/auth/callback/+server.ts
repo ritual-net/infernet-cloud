@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_URLS } from '$/lib/auth';
+import { EDGEDB_AUTH_URLS, EDGEDB_AUTH_COOKIES } from '$/lib/auth';
 
 /**
  * Handles the PKCE callback and exchanges the `code` and `verifier
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({
 		);
 	}
 
-	const verifier = cookies.get('edgedb-pkce-verifier');
+	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER);
 	if (!verifier) {
 		return error(
 			400,
@@ -54,11 +54,15 @@ export const GET: RequestHandler = async ({
 
 	const { auth_token } = await codeExchangeResponse.json();
 
-	cookies.set('edgedb-auth-token', auth_token, {
-		path: '/',
-		httpOnly: true,
-		maxAge: 24 * 60 * 60,
-	});
+	cookies.set(
+		EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
+		auth_token,
+		{
+			path: '/',
+			httpOnly: true,
+			maxAge: 24 * 60 * 60,
+		}
+	);
 
 	return new Response(null, { status: 204 });
 };

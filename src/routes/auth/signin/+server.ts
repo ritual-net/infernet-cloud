@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_URLS, generatePKCE } from '$/lib/auth';
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS, generatePKCE } from '$/lib/auth';
 
 /**
  * Handles sign in with email and password.
@@ -90,13 +90,17 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 	try {
 		const { auth_token } = JSON.parse(result) as { auth_token: string };
 
-		cookies.set('edgedb-auth-token', auth_token, {
-			httpOnly: true,
-			path: '/',
-			secure: true,
-			sameSite: 'strict',
-			maxAge: 24 * 60 * 60,
-		});
+		cookies.set(
+			EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
+			auth_token,
+			{
+				httpOnly: true,
+				path: '/',
+				secure: true,
+				sameSite: 'strict',
+				maxAge: 24 * 60 * 60,
+			}
+		);
 
 		return new Response(null, { status: 204 });
 	} catch (e) {

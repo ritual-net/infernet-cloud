@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_URLS } from '$lib/auth';
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS } from '$lib/auth';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 /**
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({
 		)
 	}
 
-	const verifier = cookies.get('edgedb-pkce-verifier');
+	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER);
 	if (!verifier) {
 		// return error(
 		// 	400,
@@ -124,13 +124,17 @@ export const GET: RequestHandler = async ({
 
 	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
 
-	cookies.set('edgedb-auth-token', auth_token, {
-		httpOnly: true,
-		path: '/',
-		secure: true,
-		sameSite: 'strict',
-		maxAge: 24 * 60 * 60,
-	});
+	cookies.set(
+		EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
+		auth_token,
+		{
+			httpOnly: true,
+			path: '/',
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 24 * 60 * 60,
+		}
+	);
 
 	// return new Response(null, { status: 204 });
 

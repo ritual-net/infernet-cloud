@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_URLS, SERVER_AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS, SERVER_AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
 
 /**
  * Request a password reset for an email.
@@ -49,13 +49,17 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 
 	const { email_sent } = await sendResetResponse.json();
 
-	cookies.set('edgedb-pkce-verifier', pkce.verifier, {
-		httpOnly: true,
-		path: '/',
-		secure: true,
-		sameSite: 'strict',
-		maxAge: 24 * 60 * 60,
-	});
+	cookies.set(
+		EDGEDB_AUTH_COOKIES.PKCE_VERIFIER,
+		pkce.verifier,
+		{
+			httpOnly: true,
+			path: '/',
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 24 * 60 * 60,
+		}
+	);
 
 	return new Response(`Reset email sent to '${email_sent}'`);
 };
