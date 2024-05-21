@@ -93,17 +93,17 @@ export const POST: RequestHandler = async ({
 		return error(500, result);
 	}
 
-	const { auth_token } = await tokenResponse.json();
+	// const { auth_token } = await tokenResponse.json();
 
-	cookies.set(
-		EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
-		auth_token,
-		{
-			path: '/',
-			httpOnly: true,
-			maxAge: 24 * 60 * 60,
-		}
-	);
+	// cookies.set(
+	// 	EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
+	// 	auth_token,
+	// 	{
+	// 		path: '/',
+	// 		httpOnly: true,
+	// 		maxAge: 24 * 60 * 60,
+	// 	}
+	// );
 
 	return new Response(null, { status: 204 });
 };
