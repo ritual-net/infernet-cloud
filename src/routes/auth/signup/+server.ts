@@ -1,6 +1,6 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { createClient, e } from '$/lib/db';
-import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
+import { EDGEDB_AUTH_URLS, SERVER_AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
 
 /**
  * Handles sign up with email and password.
@@ -26,20 +26,22 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		);
 	}
 
-	const registerUrl = new URL('register', EDGEDB_AUTH_BASE_URL);
-	const registerResponse = await fetch(registerUrl.href, {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			challenge: pkce.challenge,
-			email,
-			password,
-			provider,
-			verify_url: `${SERVER_HOST}/auth/verify`,
-		}),
-	});
+	const registerResponse = await fetch(
+		EDGEDB_AUTH_URLS.REGISTER,
+		{
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				challenge: pkce.challenge,
+				email,
+				password,
+				provider,
+				verify_url: SERVER_AUTH_CALLBACK_URLS.VERIFY,
+			}),
+		}
+	);
 
 	if (!registerResponse.ok) {
 		const result = await registerResponse

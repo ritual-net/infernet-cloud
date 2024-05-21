@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
+import { EDGEDB_AUTH_URLS } from '$/lib/auth';
 
 /**
  * Handles the PKCE callback and exchanges the `code` and `verifier
@@ -33,12 +33,15 @@ export const GET: RequestHandler = async ({
 		);
 	}
 
-	const codeExchangeUrl = new URL('token', EDGEDB_AUTH_BASE_URL);
-	codeExchangeUrl.searchParams.set('code', code);
-	codeExchangeUrl.searchParams.set('verifier', verifier);
-	const codeExchangeResponse = await fetch(codeExchangeUrl.href, {
-		method: 'GET',
-	});
+	const codeExchangeResponse = await fetch(
+		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
+			code,
+			verifier,
+		})}`,
+		{
+			method: 'get',
+		}
+	);
 
 	if (!codeExchangeResponse.ok) {
 		const result = await codeExchangeResponse.text();

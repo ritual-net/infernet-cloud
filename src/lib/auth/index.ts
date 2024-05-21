@@ -4,9 +4,22 @@ import { EDGEDB_AUTH_BASE_URL, SERVER_HOST } from '$env/static/private';
 /**
  * You can get EDGEDB_AUTH_BASE_URL by running `edgedb instance credentials`.
  * Value should be:
- * `${protocol}://${host}:${port}/db/${database}/ext/auth/
+ * `${protocol}://${host}:${port}/db/${database}/ext/auth
  */
-export { EDGEDB_AUTH_BASE_URL, SERVER_HOST };
+export const EDGEDB_AUTH_URLS = {
+	GET_TOKEN: `${EDGEDB_AUTH_BASE_URL}/token`,
+	REGISTER: `${EDGEDB_AUTH_BASE_URL}/register`,
+	VERIFY: `${EDGEDB_AUTH_BASE_URL}/verify`,
+	SIGN_IN: `${EDGEDB_AUTH_BASE_URL}/authenticate`,
+	RESET_PASSWORD: `${EDGEDB_AUTH_BASE_URL}/reset-password`,
+	SEND_RESET_PASSWORD_EMAIL: `${EDGEDB_AUTH_BASE_URL}/send-reset-email`,
+}
+
+export const SERVER_AUTH_CALLBACK_URLS = {
+	RESET_PASSWORD: `${SERVER_HOST}/auth/reset-password`,
+	VERIFY: `${SERVER_HOST}/auth/verify`,
+}
+
 
 /**
  * Generate a random Base64 url-encoded string, and derive a "challenge"
@@ -21,4 +34,4 @@ export const generatePKCE = () => {
 	const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
 
 	return { verifier, challenge };
-};
+}

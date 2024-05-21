@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
+import { EDGEDB_AUTH_URLS } from '$/lib/auth';
 
 /**
  * Send new password with reset token to EdgeDB Auth.
@@ -35,18 +35,20 @@ export const POST: RequestHandler = async ({
 		);
 	}
 
-	const resetUrl = new URL('reset-password', EDGEDB_AUTH_BASE_URL);
-	const resetResponse = await fetch(resetUrl.href, {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			reset_token,
-			provider,
-			password,
-		}),
-	});
+	const resetResponse = await fetch(
+		EDGEDB_AUTH_URLS.RESET_PASSWORD,
+		{
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				reset_token,
+				provider,
+				password,
+			}),
+		}
+	);
 
 	if (!resetResponse.ok) {
 		const result = await resetResponse
@@ -66,12 +68,16 @@ export const POST: RequestHandler = async ({
 	}
 
 	const { code } = await resetResponse.json();
-	const tokenUrl = new URL('token', EDGEDB_AUTH_BASE_URL);
-	tokenUrl.searchParams.set('code', code);
-	tokenUrl.searchParams.set('verifier', verifier);
-	const tokenResponse = await fetch(tokenUrl.href, {
-		method: 'get',
-	});
+
+	const tokenResponse = await fetch(
+		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
+			code,
+			verifier,
+		})}`,
+		{
+			method: 'get',
+		}
+	);
 
 	if (!tokenResponse.ok) {
 		const result = await tokenResponse
