@@ -15,7 +15,7 @@ export const EDGEDB_AUTH_URLS = {
 	SEND_RESET_PASSWORD_EMAIL: `${EDGEDB_BASE_URL}/ext/auth/send-reset-email`,
 }
 
-export const SERVER_AUTH_CALLBACK_URLS = {
+export const AUTH_CALLBACK_URLS = {
 	RESET_PASSWORD: `${SERVER_HOST}/auth/reset-password`,
 	VERIFY: `${SERVER_HOST}/auth/verify`,
 }

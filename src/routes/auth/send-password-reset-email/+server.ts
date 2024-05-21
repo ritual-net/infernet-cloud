@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS, SERVER_AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS, AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
 
 /**
  * Request a password reset for an email.
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 			body: JSON.stringify({
 				email,
 				provider,
-				reset_url: SERVER_AUTH_CALLBACK_URLS.RESET_PASSWORD,
+				reset_url: AUTH_CALLBACK_URLS.RESET_PASSWORD,
 				challenge: pkce.challenge,
 			}),
 		}

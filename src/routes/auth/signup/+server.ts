@@ -1,6 +1,6 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { createClient, e } from '$/lib/db';
-import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS, SERVER_AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS, AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
 
 /**
  * Handles sign up with email and password.
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 				email,
 				password,
 				provider,
-				verify_url: SERVER_AUTH_CALLBACK_URLS.VERIFY,
+				verify_url: AUTH_CALLBACK_URLS.VERIFY,
 			}),
 		}
 	);
