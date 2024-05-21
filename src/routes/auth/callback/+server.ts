@@ -10,18 +10,17 @@ import { EDGEDB_AUTH_URLS } from '$/lib/auth';
  * @param request - The request object containing 'code'.
  */
 export const GET: RequestHandler = async ({
+	url,
 	cookies,
 	fetch,
-	request,
 }) => {
-	const url = new URL(request.url);
-
 	const code = url.searchParams.get('code');
 	if (!code) {
-		const e = url.searchParams.get('error');
+		const _error = url.searchParams.get('error');
+
 		return error(
 			400,
-			`OAuth callback is missing 'code'. OAuth provider responded with error: ${e}`
+			`OAuth callback is missing 'code'. OAuth provider responded with error: ${_error}`
 		);
 	}
 

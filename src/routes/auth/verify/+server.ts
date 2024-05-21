@@ -10,8 +10,11 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
  * @param request - The request object containing 'verification_token'.
  * @returns The response object.
  */
-export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
-	const url = new URL(request.url);
+export const GET: RequestHandler = async ({
+	url,
+	cookies,
+	fetch,
+}) => {
 	const verification_token = url.searchParams.get('verification_token');
 	if (!verification_token) {
 		// return error(
