@@ -36,10 +36,7 @@ export const GET: RequestHandler = async ({
 		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
 			code,
 			verifier,
-		})}`,
-		{
-			method: 'get',
-		}
+		})}`
 	);
 
 	if (!codeExchangeResponse.ok) {

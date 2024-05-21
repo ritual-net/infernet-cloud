@@ -62,10 +62,7 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
 			code,
 			verifier: pkce.verifier,
-		})}`,
-		{
-			method: 'get',
-		}
+		})}`
 	);
 
 	if (!tokenResponse.ok) {
