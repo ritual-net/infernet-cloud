@@ -4,7 +4,7 @@ import { EDGEDB_BASE_URL, SERVER_HOST } from '$env/static/private';
 /**
  * You can get EDGEDB_BASE_URL by running `edgedb instance credentials`.
  * Value should be:
- * `${protocol}://${host}:${port}/db/${database}
+ * `${protocol}://${host}:${port}/db/${database}`
  */
 export const EDGEDB_AUTH_URLS = {
 	GET_TOKEN: `${EDGEDB_BASE_URL}/ext/auth/token`,
