@@ -16,7 +16,7 @@ export const EDGEDB_AUTH_URLS = {
 }
 
 export const AUTH_CALLBACK_URLS = {
-	RESET_PASSWORD: `${SERVER_HOST}/auth/reset-password`,
+	RESET_PASSWORD: `${SERVER_HOST}/reset-password`,
 	VERIFY: `${SERVER_HOST}/auth/verify`,
 }
 
