@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({
 			secure: true,
 			sameSite: 'strict',
 			maxAge: 24 * 60 * 60,
-		}
+		},
 	);
 
 	// return new Response(null, { status: 204 });

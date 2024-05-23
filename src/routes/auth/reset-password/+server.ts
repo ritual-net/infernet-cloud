@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({
 	// 		path: '/',
 	// 		httpOnly: true,
 	// 		maxAge: 24 * 60 * 60,
-	// 	}
+	// 	},
 	// );
 
 	return new Response(null, { status: 204 });

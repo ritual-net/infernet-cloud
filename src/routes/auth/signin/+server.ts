@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 				secure: true,
 				sameSite: 'strict',
 				maxAge: 24 * 60 * 60,
-			}
+			},
 		);
 
 		return new Response(null, { status: 204 });
