@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL } from '$lib/auth';
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS } from '$lib/auth';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 /**
@@ -10,8 +10,11 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
  * @param request - The request object containing 'verification_token'.
  * @returns The response object.
  */
-export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
-	const url = new URL(request.url);
+export const GET: RequestHandler = async ({
+	url,
+	cookies,
+	fetch,
+}) => {
 	const verification_token = url.searchParams.get('verification_token');
 	if (!verification_token) {
 		// return error(
@@ -33,7 +36,7 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		)
 	}
 
-	const verifier = cookies.get('edgedb-pkce-verifier');
+	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER);
 	if (!verifier) {
 		// return error(
 		// 	400,
@@ -54,18 +57,20 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 		)
 	}
 
-	const verifyUrl = new URL('verify', EDGEDB_AUTH_BASE_URL);
-	const verifyResponse = await fetch(verifyUrl.href, {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/json',
+	const verifyResponse = await fetch(
+		EDGEDB_AUTH_URLS.VERIFY,
+		{
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				verification_token,
+				verifier,
+				provider: 'builtin::local_emailpassword',
+			}),
 		},
-		body: JSON.stringify({
-			verification_token,
-			verifier,
-			provider: 'builtin::local_emailpassword',
-		}),
-	});
+	);
 
 	if (!verifyResponse.ok) {
 		const result = await verifyResponse.text();
@@ -88,12 +93,12 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 
 	const { code } = (await verifyResponse.json()) as { code: string };
 
-	const tokenUrl = new URL('token', EDGEDB_AUTH_BASE_URL);
-	tokenUrl.searchParams.set('code', code);
-	tokenUrl.searchParams.set('verifier', verifier);
-	const tokenResponse = await fetch(tokenUrl.href, {
-		method: 'get',
-	});
+	const tokenResponse = await fetch(
+		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
+			code,
+			verifier,
+		})}`
+	);
 
 	if (!tokenResponse.ok) {
 		const result = await tokenResponse.text();
@@ -116,13 +121,17 @@ export const GET: RequestHandler = async ({ cookies, fetch, request }) => {
 
 	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
 
-	cookies.set('edgedb-auth-token', auth_token, {
-		httpOnly: true,
-		path: '/',
-		secure: true,
-		sameSite: 'strict',
-		maxAge: 24 * 60 * 60,
-	});
+	cookies.set(
+		EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
+		auth_token,
+		{
+			httpOnly: true,
+			path: '/',
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 24 * 60 * 60,
+		},
+	);
 
 	// return new Response(null, { status: 204 });
 

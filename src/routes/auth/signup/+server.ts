@@ -1,6 +1,6 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { createClient, e } from '$/lib/db';
-import { EDGEDB_AUTH_BASE_URL, SERVER_HOST, generatePKCE } from '$/lib/auth';
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS, AUTH_CALLBACK_URLS, generatePKCE } from '$/lib/auth';
 
 /**
  * Handles sign up with email and password.
@@ -26,20 +26,22 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		);
 	}
 
-	const registerUrl = new URL('register', EDGEDB_AUTH_BASE_URL);
-	const registerResponse = await fetch(registerUrl.href, {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			challenge: pkce.challenge,
-			email,
-			password,
-			provider,
-			verify_url: `${SERVER_HOST}/auth/verify`,
-		}),
-	});
+	const registerResponse = await fetch(
+		EDGEDB_AUTH_URLS.REGISTER,
+		{
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				challenge: pkce.challenge,
+				email,
+				password,
+				provider,
+				verify_url: AUTH_CALLBACK_URLS.VERIFY,
+			}),
+		}
+	);
 
 	if (!registerResponse.ok) {
 		const result = await registerResponse
@@ -91,13 +93,17 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 	if(!user)
 		return error(500, `Failed to create user.`)
 
-	cookies.set('edgedb-pkce-verifier', pkce.verifier, {
-		httpOnly: true,
-		path: '/',
-		secure: true,
-		sameSite: 'strict',
-		maxAge: 24 * 60 * 60,
-	});
+	cookies.set(
+		EDGEDB_AUTH_COOKIES.PKCE_VERIFIER,
+		pkce.verifier,
+		{
+			httpOnly: true,
+			path: '/',
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 24 * 60 * 60,
+		},
+	);
 
 	return json({
 		user

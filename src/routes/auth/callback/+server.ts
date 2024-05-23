@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
+import { EDGEDB_AUTH_URLS, EDGEDB_AUTH_COOKIES } from '$/lib/auth';
 
 /**
  * Handles the PKCE callback and exchanges the `code` and `verifier
@@ -10,22 +10,21 @@ import { EDGEDB_AUTH_BASE_URL } from '$/lib/auth';
  * @param request - The request object containing 'code'.
  */
 export const GET: RequestHandler = async ({
+	url,
 	cookies,
 	fetch,
-	request,
 }) => {
-	const url = new URL(request.url);
-
 	const code = url.searchParams.get('code');
 	if (!code) {
-		const e = url.searchParams.get('error');
+		const _error = url.searchParams.get('error');
+
 		return error(
 			400,
-			`OAuth callback is missing 'code'. OAuth provider responded with error: ${e}`
+			`OAuth callback is missing 'code'. OAuth provider responded with error: ${_error}`
 		);
 	}
 
-	const verifier = cookies.get('edgedb-pkce-verifier');
+	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER);
 	if (!verifier) {
 		return error(
 			400,
@@ -33,12 +32,12 @@ export const GET: RequestHandler = async ({
 		);
 	}
 
-	const codeExchangeUrl = new URL('token', EDGEDB_AUTH_BASE_URL);
-	codeExchangeUrl.searchParams.set('code', code);
-	codeExchangeUrl.searchParams.set('verifier', verifier);
-	const codeExchangeResponse = await fetch(codeExchangeUrl.href, {
-		method: 'GET',
-	});
+	const codeExchangeResponse = await fetch(
+		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
+			code,
+			verifier,
+		})}`
+	);
 
 	if (!codeExchangeResponse.ok) {
 		const result = await codeExchangeResponse.text();
@@ -52,11 +51,15 @@ export const GET: RequestHandler = async ({
 
 	const { auth_token } = await codeExchangeResponse.json();
 
-	cookies.set('edgedb-auth-token', auth_token, {
-		path: '/',
-		httpOnly: true,
-		maxAge: 24 * 60 * 60,
-	});
+	cookies.set(
+		EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
+		auth_token,
+		{
+			path: '/',
+			httpOnly: true,
+			maxAge: 24 * 60 * 60,
+		},
+	);
 
 	return new Response(null, { status: 204 });
 };

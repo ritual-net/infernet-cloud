@@ -1,4 +1,5 @@
 // Data
+import { EDGEDB_AUTH_COOKIES } from '$/lib/auth'
 import type { ServerLoad } from '@sveltejs/kit'
 
 export const load: ServerLoad = async ({
@@ -19,7 +20,12 @@ export const actions: Actions = {
 	signOut: async ({
 		cookies,
 	}) => {
-		cookies.delete('edgedb-auth-token', { path: '/' })
+		cookies.delete(
+			EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
+			{
+				path: '/',
+			}
+		)
 
 		return flashRedirect(
 			303,
