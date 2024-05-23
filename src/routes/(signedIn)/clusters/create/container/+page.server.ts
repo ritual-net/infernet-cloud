@@ -7,15 +7,17 @@ import { FormData } from './schema'
 // Data
 import type { Actions, PageServerLoad } from './$types'
 import { redirect } from '@sveltejs/kit'
-import { e } from '$/lib/db'
+import { resolveRoute } from '$app/paths'
 
 export const load: PageServerLoad = async ({
 	url,
-	locals: { client },
 	fetch,
 }) => {
 	const dockerAccountUsername = url.searchParams.get('dockerAccountUsername')
 	const isOnchain = url.searchParams.has('isOnchain')
+
+	const containerTemplatesPromise = fetch(`/api/container_template${dockerAccountUsername ? `?${new URLSearchParams({ dockerAccountUsername })}` : ''}`)
+		.then(response => response.json())
 
 	const [
 		formData,
@@ -23,46 +25,21 @@ export const load: PageServerLoad = async ({
 	] = await Promise.all([
 		superValidate(yup(FormData)),
 
-		dockerAccountUsername
-			? (
-				e.select(e.DockerAccount, () => ({
-					username: true,
-					password: true,
-					filter_single: {
-						user: e.global.current_user,
-						username: dockerAccountUsername,
-					},
-				}))
-					.run(client)
-					.then(dockerAccount => (
-						dockerAccount
-							? (
-								fetch('/api/images/user', {
-									headers: {
-										user: dockerAccount.username,
-										pat: dockerAccount.password,
-									}
-								})
-									.then(response => response.json())
-									.catch(e => {
-										console.error(`Error fetching Docker images for user "${dockerAccount.username}":`, e)
-										return undefined
-									})
-							)
-							: undefined
-					))
-					.then(results => (
-						results.map(slug => ({
-							value: slug,
-							label: slug,
-						}))
-					))
-			)
-			: undefined,
+		dockerAccountUsername && (
+			fetch(resolveRoute('/api/docker_images/[dockerAccountUsername]', { dockerAccountUsername }))
+				.then(response => response.json())
+				.then(results => (
+					results.map(slug => ({
+						value: slug,
+						label: slug,
+					}))
+				))
+		),
 	])
 
 	return {
 		formData,
+		containerTemplatesPromise,
 		dockerAccountUsername,
 		dockerUserImages,
 		isOnchain,

@@ -19,19 +19,12 @@
 
 {#if cellType === CellType.ID}
 	<span class="container-id">{container.container_id}</span>
-
 {:else if cellType === CellType.Description}
-	<p class="description">
-		{container.description}
-	</p>
+	<p class="description">{container.description}</p>
 {/if}
 
 
 <style>
-	.container-id {
-		font-size: 0.8em;
-	}
-
 	.row {
 		justify-content: start;
 	}

@@ -127,6 +127,9 @@ module default {
       readonly := true;
     };
 
+    chain_enabled: bool;
+    docker_account: DockerAccount;
+
     constraint exclusive on ((.name, .user));
     access policy only_template_owner
       allow all

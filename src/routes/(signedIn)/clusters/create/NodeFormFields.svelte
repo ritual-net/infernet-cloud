@@ -36,6 +36,10 @@
 	).toString()
 
 
+	// Actions
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
+
+
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Dialog from '$/components/Dialog.svelte'
@@ -327,13 +331,28 @@
 			class="button primary"
 			href={containerCreateRoute}
 			data-sveltekit-preload-code="eager"
+			data-sveltekit-preload-data="hover"
 
 			on:click={async (e) => {
 				e.preventDefault()
 
-				const { href } = e.currentTarget
+				const { currentTarget } = e
+
+				if(currentTarget.getAttribute('aria-disabled') === 'true') return
+
+				const { href } = currentTarget
+
+				currentTarget.setAttribute('aria-disabled', 'true')
+
+				const loadingToast = addToast({
+					data: {
+						title: 'Loading container form...',
+					},
+				})
 
 				const result = await preloadData(href)
+
+				currentTarget.removeAttribute('aria-disabled')
 
 				if (result.type === 'loaded' && result.status === 200) {
 					pushState('#/container/create', {
@@ -342,12 +361,15 @@
 						pageData: {
 							...result.data,
 							imagesPromise: await result.data.imagesPromise,
+							containerTemplatesPromise: await result.data.containerTemplatesPromise,
 						},
 					})
 				} else {
 					console.error(`Failed to preload shallow route: ${href}`)
 					goto(href)
 				}
+
+				removeToast(loadingToast.id)
 			}}
 		>
 			Add Container
@@ -369,6 +391,7 @@
 					pageData: {
 						...result.data,
 						imagesPromise: await result.data.imagesPromise,
+						containerTemplatesPromise: await result.data.containerTemplatesPromise,
 						formData: {
 							container,
 						},

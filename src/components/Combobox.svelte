@@ -25,93 +25,27 @@
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
 
-	// Internal state
-	import { melt, createCombobox, createSync } from '@melt-ui/svelte'
+	// Functions
+	import { findMenuItem } from '$lib/menus'
 
-	const {
-		elements: { input, menu, option, group, groupLabel, label, hiddenInput },
-		states,
-		options,
-		helpers: { isSelected },
-	} = createCombobox<Value>({
-		name,
-		required,
-		disabled,
-		multiple,
-
-		forceVisible: true,
-		positioning: {
-			placement,
-			fitViewport: true,
-			boundary: document.getElementsByTagName('main')[0],
-		},
-
-		onOpenChange: ({ curr, next }) => {
-			const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
-
-			if(!next)
-				inputValue = selectedItem ? selectedItem.value : ''
-
-			return next
-		},
-	})
-
-	const {
-		open,
-		touchedInput,
-		selected,
-	} = states
-
-	$: createSync(states).selected(
-		items && findItem(items, value),
-		selected => { value = selected?.value as Value },
-	)
-
-	$: createSync(states).inputValue(
-		inputValue,
-		_ => { inputValue = _ },
-	)
-
-	$: createSync(options).required(
-		required,
-		_ => { required = _ },
-	)
-
-	$: createSync(options).disabled(
-		disabled,
-		_ => { disabled = _ },
-	)
-
-	// (Computed)
 	const itemMatchesInput = (
 		item: MenuItem<Value>,
-		input: string,
+		input: string | undefined,
 	) => {
-		const normalizedInput = input.toLowerCase().trim()
+		const normalizedInput = input?.toLowerCase().trim()
 
 		return (
-			String(item.value).toLowerCase().includes(normalizedInput)
-			|| item.label.toLowerCase().includes(normalizedInput)
+			(
+				typeof item.value === 'string' && typeof normalizedInput === 'string' ?
+					String(item.value).toLowerCase().includes(normalizedInput)
+					: item.value === normalizedInput
+			)
+			|| (
+				typeof item.label === 'string' && typeof normalizedInput === 'string' ?
+					item.label.toLowerCase().includes(normalizedInput)
+					: false
+			)
 		)
-	}
-
-	const findItem = <Value>(
-		items: MenuItems<Value>,
-		value: Value,
-	): MenuItem<Value> | undefined => {
-		let found: MenuItem<Value> | undefined
-
-		for(const itemOrGroup of items){
-			if('items' in itemOrGroup){
-				if(found = findItem(itemOrGroup.items, value))
-					return found
-			}else if('value' in itemOrGroup){
-				if(itemOrGroup.value === value)
-					return itemOrGroup
-			}
-		}
-
-		return undefined
 	}
 
 	const filterItems = (
@@ -140,7 +74,75 @@
 			))
 	) as MenuItems<Value>
 
-	$: filteredItems = filterItems(items, inputValue)
+
+	// Internal state
+	import { melt, createCombobox, createSync } from '@melt-ui/svelte'
+
+	const {
+		elements: { input, menu, option, group, groupLabel, label, hiddenInput },
+		states,
+		options,
+		helpers: { isSelected },
+	} = createCombobox<Value>({
+		name,
+		required,
+		disabled,
+		multiple,
+
+		forceVisible: true,
+		positioning: {
+			placement,
+			fitViewport: true,
+			// boundary: document.getElementsByTagName('main')[0],
+		},
+
+		onOpenChange: ({ curr, next }) => {
+			const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
+
+			if(!next)
+				inputValue = selectedItem ? selectedItem.value : ''
+
+			return next
+		},
+	})
+
+	const {
+		open,
+		touchedInput,
+		selected,
+	} = states
+
+	$: createSync(states).selected(
+		items && findMenuItem(items, value),
+		selected => { value = selected?.value as Value },
+	)
+
+	$: createSync(states).inputValue(
+		inputValue,
+		_ => { inputValue = _ },
+	)
+
+	$: if(!$touchedInput){
+		const selectedValue = Array.isArray($selected) ? $selected[0]?.value : $selected?.value
+
+		inputValue = selectedValue ? selectedValue.toString() : ''
+	}
+
+	$: createSync(options).required(
+		required,
+		_ => { required = _ },
+	)
+
+	$: createSync(options).disabled(
+		disabled,
+		_ => { disabled = _ },
+	)
+
+	// (Computed)
+	$: filteredItems =
+		inputValue !== undefined
+			? filterItems(items, inputValue)
+			: items
 	// $: filteredItems = $touchedInput
 	// 	? filterItems(items, inputValue)
 	// 	: items
@@ -158,6 +160,7 @@
 			type="text"
 			aria-disabled={visuallyDisabled ? true : undefined}
 			use:melt={$input}
+			value={inputValue}
 			{placeholder}
 			{name}
 		/>
@@ -337,6 +340,10 @@
 		cursor: pointer;
 
 		transition: 0.1s;
+
+		&[data-disabled] {
+			pointer-events: not-allowed;
+		}
 
 		&:is(:hover, [data-highlighted]) {
 			background-color: var(--combobox-item-selected-backgroundColor);
