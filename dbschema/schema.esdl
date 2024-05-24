@@ -201,6 +201,7 @@ module default {
       default := false;
     }
     tfstate: str;
+    multi terraform_logs: json;
     router: tuple<id: str, ip: str>;
     error: str;
 
