@@ -35,7 +35,7 @@
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh data',
+						label: 'Refresh Data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
