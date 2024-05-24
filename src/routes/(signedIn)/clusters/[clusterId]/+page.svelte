@@ -316,6 +316,25 @@
 				</section>
 			{/if}
 
+			{#if cluster.terraform_logs?.length}
+				<section class="column">
+					<dt>Terraform Logs</dt>
+	
+					<dd>
+						{#each cluster.terraform_logs as log}
+							<output
+								class="log"
+								data-type={log['type']} 
+								data-level={log['@level']}
+								data-module={log['@module']}
+							>
+								<pre><date date={log['@timestamp']}>{log['@timestamp']}</date> <code>{log['type']}</code> <code>{log['@message']}</code> {#if log['@hook']}<code>{JSON.stringify(log['hook'])}</code>{/if}</pre>
+							</output>
+						{/each}
+					</dd>
+				</section>
+			{/if}
+
 			{#if cluster.error}
 				<section class="column">
 					<dt>Error</dt>
