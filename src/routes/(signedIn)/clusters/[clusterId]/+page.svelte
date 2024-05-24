@@ -123,7 +123,7 @@
 					},
 					{
 						value: 'apply',
-						label: 'Apply Changes',
+						label: 'Trigger Update',
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
 							const toast = addToast({

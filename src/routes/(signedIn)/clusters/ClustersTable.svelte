@@ -82,7 +82,7 @@
 			},
 			{
 				value: 'apply',
-				label: 'Apply Changes',
+				label: 'Trigger Update',
 				formAction: `${clusterRoute}?/apply`,
 				formSubmit: async (e) => {
 					const toast = addToast({
