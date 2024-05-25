@@ -16,6 +16,7 @@
 		info?.status
 			? {
 				'RUNNING': 'healthy',
+				'TERMINATED': 'terminated',
 			}[info.status] || info.status
 			: 'unknown'
 	)
