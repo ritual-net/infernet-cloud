@@ -19,7 +19,8 @@
 		"edgedb:migrate": "edgedb migration create; edgedb migrate; npm run edgedb:generate",
 		"edgedb:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js --target ts",
 		"edgedb:destroy": "edgedb instance destroy -I infernet_cloud --force",
-		"edgedb:cli": "edgedb"
+		"edgedb:cli": "edgedb",
+		"edgedb:docker:cli": "source .env && docker compose exec edgedb edgedb --dsn ${EDGEDB_DSN} --tls-security insecure"
 	},
 	"devDependencies": {
 		"@edgedb/generate": "^0.4.1",
