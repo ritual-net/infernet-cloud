@@ -41,7 +41,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		}))
 		.run(client);
 
-	const { error, state, success } = await ProviderTerraform[
+	const { error, state, success, logs } = await ProviderTerraform[
 		cluster.service_account.provider
 	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
 
@@ -58,6 +58,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 					ip: state?.outputs?.router?.value?.ip ?? '',
 				},
 				tfstate: JSON.stringify(state),
+				terraform_logs: logs,
 			},
 		}))
 		.run(client);

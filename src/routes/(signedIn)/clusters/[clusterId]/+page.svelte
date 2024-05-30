@@ -107,7 +107,7 @@
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh',
+						label: 'Refresh Data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -123,7 +123,7 @@
 					},
 					{
 						value: 'apply',
-						label: 'Apply Changes',
+						label: 'Trigger Update',
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -312,6 +312,25 @@
 						<output>
 							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
 						</output>
+					</dd>
+				</section>
+			{/if}
+
+			{#if cluster.terraform_logs?.length}
+				<section class="column">
+					<dt>Terraform Logs</dt>
+	
+					<dd>
+						{#each cluster.terraform_logs as log}
+							<output
+								class="log"
+								data-type={log['type']} 
+								data-level={log['@level']}
+								data-module={log['@module']}
+							>
+								<pre><date date={log['@timestamp']}>{log['@timestamp']}</date> <code>{log['type']}</code> <code>{log['@message']}</code> {#if log['@hook']}<code>{JSON.stringify(log['hook'])}</code>{/if}</pre>
+							</output>
+						{/each}
 					</dd>
 				</section>
 			{/if}

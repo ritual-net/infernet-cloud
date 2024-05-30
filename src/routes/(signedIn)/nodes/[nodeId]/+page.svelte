@@ -16,6 +16,7 @@
 		info?.status
 			? {
 				'RUNNING': 'healthy',
+				'TERMINATED': 'terminated',
 			}[info.status] || info.status
 			: 'unknown'
 	)
@@ -84,7 +85,7 @@
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh',
+						label: 'Refresh Data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {

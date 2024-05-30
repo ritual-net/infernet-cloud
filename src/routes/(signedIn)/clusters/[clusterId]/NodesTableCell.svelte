@@ -31,6 +31,7 @@
 				nodeWithInfo.info?.status
 					? {
 						'RUNNING': 'healthy',
+						'TERMINATED': 'terminated',
 					}[nodeWithInfo.info.status] || nodeWithInfo.info.status
 					: 'unknown'
 			}
