@@ -5,7 +5,7 @@
 
 
 	// Context
-	import { page } from '$app/stores'
+	import { navigating, page } from '$app/stores'
 	import { browser } from '$app/environment'
 
 	import { getFlash } from 'sveltekit-flash-message'
@@ -25,7 +25,7 @@
 
 
 	// Actions
-	import { addToast } from '$/components/Toaster.svelte'
+	import { addToast, removeToast, type Toast } from '$/components/Toaster.svelte'
 
 	$: if($page.form?.form?.message){
 		const {
@@ -53,6 +53,26 @@
 				description: $flash.message.description,
 			},
 		})
+	}
+
+	let navigatingToast: Toast | undefined
+
+	$: if($navigating){
+		setTimeout(() => {
+			if($navigating){
+				navigatingToast ||= addToast({
+					data: {
+						type: 'default',
+						title: 'Loading...',
+					},
+				})
+			}
+		}, 1000)
+	}else{
+		if(navigatingToast){
+			removeToast(navigatingToast.id)
+			navigatingToast = undefined
+		}
 	}
 
 

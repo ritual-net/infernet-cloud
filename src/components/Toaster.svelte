@@ -121,6 +121,9 @@
 				position: relative;
 
 				& [data-melt-toast-description] {
+					overflow-y: auto;
+					max-height: 16lh;
+					white-space: pre-wrap;
 					word-break: break-word;
 				}
 
