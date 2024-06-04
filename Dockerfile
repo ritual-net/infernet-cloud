@@ -28,7 +28,7 @@ COPY --from=builder /app/.env .env
 COPY --from=builder /app/src/lib/deploy src/lib/deploy
 
 # Install Terraform
-ENV TERRAFORM_VERSION=1.7.0
+ENV TERRAFORM_VERSION=1.8.4
 
 RUN apk add --update curl unzip
 RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip \
