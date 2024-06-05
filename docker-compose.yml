@@ -48,6 +48,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+    restart: unless-stopped
     depends_on:
       - smtp
 
@@ -59,6 +60,7 @@ services:
       SMARTHOST_USER: apikey
       SMARTHOST_PASSWORD: ${SENDGRID_KEY}
       SMARTHOST_ALIASES: '*.sendgrid.net'
+    restart: unless-stopped
     expose:
       - '25'
 
