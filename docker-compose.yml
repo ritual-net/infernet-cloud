@@ -1,5 +1,7 @@
 services:
   caddy:
+    depends_on:
+      - server
     image: caddy:latest
     restart: unless-stopped
     ports:
@@ -10,8 +12,6 @@ services:
       - ./caddy:/etc/caddy
       - ./caddy_data:/data
       - ./caddy_config:/config
-    depends_on:
-      - server
 
   server:
     container_name: server
@@ -28,6 +28,8 @@ services:
         condition: service_healthy
 
   edgedb:
+    depends_on:
+      - smtp
     container_name: edgedb
     build:
       context: .
@@ -49,8 +51,6 @@ services:
       timeout: 10s
       retries: 5
     restart: unless-stopped
-    depends_on:
-      - smtp
 
   smtp:
     image: ixdotai/smtp:latest
