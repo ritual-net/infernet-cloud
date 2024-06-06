@@ -64,7 +64,7 @@ export abstract class BaseTerraform {
 
 			// Copy the provider-specific Terraform files
 			await fs.cp(
-				`${cwd}/src/lib/deploy/${this.type.toLowerCase()}`,
+				`${cwd}/infernet-deploy/procure/${this.type.toLowerCase()}`,
 				tempDir,
 				{
 					'recursive': true,
@@ -72,7 +72,7 @@ export abstract class BaseTerraform {
 			);
 
 			// Copy the Docker Compose files
-			await fs.copyFile(`${cwd}/src/lib/deploy/compose.tar.gz`, `${tempDir}/deploy.tar.gz`);
+			await fs.copyFile(`${cwd}/infernet-deploy/deploy.tar.gz`, `${tempDir}/`);
 
 			// Create terraform files
 			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
