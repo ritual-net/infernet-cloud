@@ -3,7 +3,7 @@ import tar from 'tar';
 import { promises as fs } from 'fs';
 import { TFAction, type TFState } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
-import * as TerraformUtils from '$/lib/utils/terraform';
+import { createTempDir, createNodeConfigFiles } from '$/lib/terraform/utils';
 import type { CommandExecutionError } from '$/types/error';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
 
@@ -57,7 +57,7 @@ export abstract class BaseTerraform {
 	) {
 		try {
 			// Create fresh temporary directory
-			const tempDir = await TerraformUtils.createTempDir();
+			const tempDir = await createTempDir();
 
 			// Untar the provider-specific Terraform files
 			const provider = this.type
@@ -76,7 +76,7 @@ export abstract class BaseTerraform {
 			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
 
 			// Create node config files under configs/
-			await TerraformUtils.createNodeConfigFiles(tempDir, cluster.nodes);
+			await createNodeConfigFiles(tempDir, cluster.nodes);
 
 			// If state file exist in db, write it to file
 			if (cluster?.tfstate) {

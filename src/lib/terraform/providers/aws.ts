@@ -1,6 +1,6 @@
-import { BaseTerraform } from '$/lib/terraform/base';
 import { ProviderTypeEnum } from '$/types/provider';
-import * as TerraformUtils from '$/lib/utils/terraform';
+import { BaseTerraform } from '$/lib/terraform/base';
+import { createTerraformVarsFile } from '$/lib/terraform/utils';
 import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 
 export class AWSTerraform extends BaseTerraform {
@@ -23,7 +23,7 @@ export class AWSTerraform extends BaseTerraform {
 		// Format nodes as a map of node id to node name
 		const nodes = Object.fromEntries(cluster.nodes.map((node) => [node.id, node.id]));
 
-		await TerraformUtils.createTerraformVarsFile(tempDir, {
+		await createTerraformVarsFile(tempDir, {
 			nodes,
 			name: cluster.id,
 			deploy_router: cluster.deploy_router,
