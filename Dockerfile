@@ -1,5 +1,6 @@
 FROM node:21-alpine AS base
 
+
 FROM base AS deps
 WORKDIR /app
 COPY package.json ./
@@ -7,6 +8,7 @@ COPY package.json ./
 # Clean install all modules
 RUN npm install -g pnpm
 RUN pnpm i
+
 
 FROM deps AS builder
 COPY . .
@@ -18,6 +20,7 @@ RUN pnpm build
 
 # Remove dev dependencies
 RUN pnpm prune
+
 
 FROM base AS runtime
 WORKDIR /app
@@ -38,6 +41,7 @@ ENV TERRAFORM_VERSION=1.8.5
 RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip \
     && unzip terraform.zip -d /usr/local/bin/ \
     && rm -f terraform.zip
+
 
 # Entry point for the app
 ENV NODE_ENV=production
