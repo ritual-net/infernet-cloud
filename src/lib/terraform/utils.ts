@@ -1,5 +1,4 @@
 import { promises as fs } from 'fs';
-import path from 'path';
 import type { InfernetNode } from '$schema/interfaces';
 
 const BASE_TEMP_DIR = `${process.cwd()}/tmp/`;
@@ -19,44 +18,6 @@ export const createTempDir = async (): Promise<string> => {
 };
 
 /**
- * Creates a terraform.tfvars file from an object.
- *
- * @param tempDir The path to the temporary directory.
- * @param tfVars The object to write to the file.
- */
-export const createTerraformVarsFile = async (
-	tempDir: string,
-	tfVars: Record<string, string[] | string | number | boolean | Record<string, string>>
-): Promise<void> => {
-	const varsFile = path.join(tempDir, 'terraform.tfvars');
-	const varsString = formatTfVars(tfVars);
-	await fs.writeFile(varsFile, varsString);
-};
-
-/**
- * Creates node config files from an array of InfernetNode objects.
- *
- * @param tempDir The path to the temporary directory.
- * @param nodes The array of InfernetNode objects.
- */
-export const createNodeConfigFiles = async (
-	tempDir: string,
-	nodes: InfernetNode[]
-): Promise<void> => {
-	// Create configs/ directory
-	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true });
-
-	// Create node config files under configs/
-	for (const node of nodes) {
-		const jsonConfig = formatNodeConfig(node);
-		await fs.writeFile(
-			path.join(tempDir, `configs/${node.id}.json`),
-			JSON.stringify(jsonConfig, null, 2)
-		);
-	}
-};
-
-/**
  * Format an InfernetNode object into a JSON object that can be used as a
  * config.json file for an Infernet Node deployment.
  *
@@ -67,7 +28,7 @@ export const createNodeConfigFiles = async (
  * @param node An InfernetNode object.
  * @returns The formatted JSON object to be used as a config.json file.
  */
-const formatNodeConfig = (node: InfernetNode) => {
+export const formatNodeConfig = (node: InfernetNode) => {
 	// Auto-assign container ports in reverse order
 	let port = 4999;
 
@@ -133,7 +94,7 @@ const formatNodeConfig = (node: InfernetNode) => {
  * @returns Terraform variables file as a formatted string.
  */
 
-const formatTfVars = (
+export const formatTfVars = (
 	config: Record<string, string[] | string | number | boolean | Record<string, unknown>>
 ): string => {
 	const formatValue = (value: unknown): string => {

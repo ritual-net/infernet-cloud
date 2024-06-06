@@ -1,8 +1,7 @@
 import path from 'path';
-import { BaseTerraform } from '$/lib/terraform/base';
+import { BaseTerraform, createTerraformVarsFile } from '$/lib/terraform/base';
 import { ProviderTypeEnum } from '$/types/provider';
 import * as SystemUtils from '$/lib/utils/system';
-import { createTerraformVarsFile } from '$/lib/terraform/utils';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 
 export class GCPTerraform extends BaseTerraform {

@@ -1,6 +1,5 @@
 import { ProviderTypeEnum } from '$/types/provider';
-import { BaseTerraform } from '$/lib/terraform/base';
-import { createTerraformVarsFile } from '$/lib/terraform/utils';
+import { BaseTerraform, createTerraformVarsFile } from '$/lib/terraform/base';
 import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 
 export class AWSTerraform extends BaseTerraform {
