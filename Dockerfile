@@ -27,10 +27,14 @@ COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/.env .env
 COPY --from=builder /app/src/lib/deploy src/lib/deploy
 
+# Install curl and unzip
+RUN apk add --update curl unzip
+
+# Install dotenvx
+RUN curl -fsS https://dotenvx.sh/ | sh
+
 # Install Terraform
 ENV TERRAFORM_VERSION=1.8.4
-
-RUN apk add --update curl unzip
 RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip \
     && unzip terraform.zip \
     && mv terraform /usr/local/bin/ \
@@ -38,4 +42,4 @@ RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/ter
 
 # Entry point for the app
 ENV NODE_ENV=production
-CMD ["node", "-r", "dotenv/config", "build"]
+CMD ["dotenvx", "run", "--", "node", "build"]
