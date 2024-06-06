@@ -36,8 +36,7 @@ RUN curl -fsS https://dotenvx.sh/ | sh
 # Install Terraform
 ENV TERRAFORM_VERSION=1.8.4
 RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip \
-    && unzip terraform.zip \
-    && mv terraform /usr/local/bin/ \
+    && unzip terraform.zip -d /usr/local/bin/ \
     && rm -f terraform.zip
 
 # Entry point for the app
