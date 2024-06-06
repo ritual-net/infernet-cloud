@@ -55,9 +55,11 @@ export abstract class BaseTerraform {
 		serviceAccount: ProviderServiceAccount,
 		action: TFAction
 	) {
+		let tempDir: string | undefined = undefined
+
 		try {
 			// Create fresh temporary directory
-			const tempDir = await createTempDir();
+			tempDir = await createTempDir();
 
 			// Untar the provider-specific Terraform files
 			const provider = this.type
@@ -110,12 +112,13 @@ export abstract class BaseTerraform {
 				path.join(tempDir, 'terraform.tfstate')
 			)) as TFState;
 
-			// Remove temporary directory
-			SystemUtils.removeDir(tempDir);
-
 			return { success: error ? false : true, error, state, logs };
 		}catch(error){
 			return { success: false, error: JSON.stringify(error) };
+		}finally{
+			// Remove temporary directory
+			if(tempDir)
+				SystemUtils.removeDir(tempDir);
 		}
 	}
 }
