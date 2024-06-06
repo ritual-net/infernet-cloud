@@ -1,4 +1,6 @@
 import path from 'path';
+import tar from 'tar';
+import { promises as fs } from 'fs';
 import { TFAction, type TFState } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
 import * as TerraformUtils from '$/lib/utils/terraform';
@@ -55,7 +57,20 @@ export abstract class BaseTerraform {
 	) {
 		try {
 			// Create fresh temporary directory
-			const tempDir = await TerraformUtils.createTempDir(this.type);
+			const tempDir = await TerraformUtils.createTempDir();
+
+			// Untar the provider-specific Terraform files
+			const provider = this.type
+
+			const srcDir = `${process.cwd()}/src/lib/deploy`;
+
+			await tar.x({
+				file: `${srcDir}/${provider.toLowerCase()}.tar.gz`,
+				C: tempDir,
+			});
+			
+			// Copy the provider-specific Terraform files
+			await fs.copyFile(`${srcDir}/compose.tar.gz`, `${tempDir}/deploy.tar.gz`);
 
 			// Create terraform files
 			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
