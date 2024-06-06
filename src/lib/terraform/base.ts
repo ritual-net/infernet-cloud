@@ -61,17 +61,15 @@ export abstract class BaseTerraform {
 			// Create fresh temporary directory
 			tempDir = await createTempDir();
 
-			// Untar the provider-specific Terraform files
+			// Untar and copy the provider-specific Terraform files
 			const provider = this.type
-
 			const srcDir = `${process.cwd()}/src/lib/deploy`;
-
 			await tar.x({
 				file: `${srcDir}/${provider.toLowerCase()}.tar.gz`,
 				C: tempDir,
 			});
-			
-			// Copy the provider-specific Terraform files
+
+			// Copy the Docker Compose files
 			await fs.copyFile(`${srcDir}/compose.tar.gz`, `${tempDir}/deploy.tar.gz`);
 
 			// Create terraform files
