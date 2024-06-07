@@ -74,7 +74,7 @@ export abstract class BaseTerraform {
 			);
 
 			// Copy the Docker Compose files
-			await fs.copyFile(`${cwd}/infernet-deploy/deploy.tar.gz`, `${tempDir}/`);
+			await fs.copyFile(`${cwd}/infernet-deploy/deploy.tar.gz`, `${tempDir}/deploy.tar.gz`);
 
 			// Create terraform files
 			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
