@@ -38,6 +38,9 @@ export const writeJsonToFile = async (filePath: string, data: object): Promise<v
  * @returns The stdout of the command.
  */
 export const executeCommands = async (directory: string, command: string): Promise<string> => {
+	console.log(`Executing command in directory "${directory}":`);
+	console.log(command);
+
 	return new Promise((resolve, reject) => {
 		exec(command, { cwd: directory }, (error, stdout, stderr) => {
 			if (error) {

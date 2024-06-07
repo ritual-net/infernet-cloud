@@ -90,6 +90,8 @@ export abstract class BaseTerraform {
 
 			// If state file exist in db, write it to file
 			if (cluster?.tfstate) {
+				console.log(`Found existing Terraform state in database. Writing JSON to "./terraform.tfstate"...`);
+
 				await SystemUtils.writeJsonToFile(
 					path.join(tempDir, 'terraform.tfstate'),
 					JSON.parse(cluster.tfstate)
@@ -98,7 +100,6 @@ export abstract class BaseTerraform {
 
 			// Initialize terraform
 			console.log(`Initializing Terraform project...`, tempDir);
-			console.log(`terraform init`);
 			await SystemUtils.executeCommands(tempDir, 'terraform init');
 			if (!tempDir) {
 				return { success: false, error: 'Cluster could not be updated.' };
@@ -108,7 +109,6 @@ export abstract class BaseTerraform {
 			let error: string | undefined;
 			try {
 				console.log(`Running Terraform action "${action}"...`);
-				console.log(`terraform ${action} -auto-approve -json -no-color`);
 
 				const stdout = await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve -json -no-color`);
 				logs = JSON.parse(stdout);
