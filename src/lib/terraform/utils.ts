@@ -61,6 +61,18 @@ export const formatNodeConfig = (node: InfernetNode) => {
 					period: container.rate_limit_period,
 				},
 			},
+			...(container.accepted_payments?.length) && {
+				accepted_payments: (
+					Object.fromEntries(
+						container.accepted_payments
+							.map((payment) => [
+								payment.address,
+								payment.amount,
+							])
+					)
+				),
+			},
+			generates_proofs: container.generates_proofs,
 			port: port--,
 		})),
 		...(node.docker_account && {

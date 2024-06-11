@@ -37,6 +37,18 @@ export const Config = z
 			.required(),
 	})
 
+export const ContainerPayment = z
+	.object({
+		'address': Address
+			.required(),
+
+		'amount': z
+			.number()
+			.integer()
+			.positive()
+			.required(),
+	})
+
 export const Container = z
 	.object({
 		'id': z
@@ -99,7 +111,7 @@ export const Container = z
 			.boolean()
 			.required()
 			.default(false),
-		
+
 		'rate_limit_num_requests': z
 			.number()
 			.integer()
@@ -110,6 +122,17 @@ export const Container = z
 			.number()
 			.positive()
 			.optional(),
+
+		'accepted_payments': z
+			.array(
+				ContainerPayment,
+			)
+			.optional(),
+
+		'generates_proofs': z
+			.boolean()
+			.required()
+			.default(false),
 	})
 
 export const NodeConfig = z
@@ -164,6 +187,14 @@ export const NodeConfig = z
 						? _.required()
 						: _.notRequired()
 				),
+			),
+
+		'payment_address': Address,
+
+		'allowed_sim_errors': z
+			.array(
+				z
+					.string()
 			),
 
 		'forward_stats': z

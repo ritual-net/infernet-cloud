@@ -33,6 +33,13 @@ export const createNodeParams = e.tuple({
 			gpu: e.bool,
 			rate_limit_num_requests: e.int64,
 			rate_limit_period: e.float32,
+			accepted_payments: e.array(
+				e.tuple({
+					address: e.Address,
+					amount: e.bigint,
+				})
+			),
+			generates_proofs: e.bool,
 		})
 	),
 });
@@ -76,6 +83,8 @@ export const insertNodeQuery = (
 				gpu: container.gpu,
 				rate_limit_num_requests: container.rate_limit_num_requests,
 				rate_limit_period: container.rate_limit_period,
+				accepted_payments: container.accepted_payments,
+				generates_proofs: container.generates_proofs,
 			})
 		),
 	});

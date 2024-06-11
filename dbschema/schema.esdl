@@ -116,6 +116,10 @@ module default {
     }
     rate_limit_num_requests: int64;
     rate_limit_period: float32;
+    accepted_payments: array<tuple<address: Address, amount: bigint>>;
+    required generates_proofs: bool {
+      default := false;
+    }
 
     access policy only_owner
       allow all
