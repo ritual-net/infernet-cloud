@@ -217,7 +217,7 @@
 			constraints={$constraints.containerTemplate}
 			{images}
 			{dockerUserImages}
-			isOnchain={$form.chain_enabled}
+			isOnchain={$form.containerTemplate.chain_enabled}
 			dockerAccountUsername={$form.dockerAccountUsername}
 		>
 			<svelte:fragment slot="title">
