@@ -10,6 +10,18 @@ module default {
 
   scalar type CloudProvider extending enum<AWS, GCP>;
 
+  scalar type Address extending str {
+    constraint regexp(r'^0x[[:xdigit:]]{40}$');
+  }
+
+  scalar type IpAddress extending str {
+    constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$');
+  }
+
+  scalar type IpWithAddressMask extending str {
+    constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/(3[0-2]|[1-2]?[0-9]))?$');
+  }
+
   type User {
     required name: str;
     required email: str;
@@ -94,21 +106,11 @@ module default {
     required external: bool {
       default := true;
     }
-    required allowed_addresses: array<str> {
-      default := <array<str>>[];
-    }
-    required allowed_delegate_addresses: array<str> {
-      default := <array<str>>[];
-    }
-    required allowed_ips: array<str> {
-      default := <array<str>>[];
-    }
-    required command: str {
-      default := "";
-    }
-    required env: json {
-      default := <json>{};
-    }
+    allowed_addresses: array<Address>;
+    allowed_delegate_addresses: array<Address>;
+    allowed_ips: array<IpAddress>;
+    command: str;
+    env: json;
     required gpu: bool {
       default := false;
     }
@@ -152,9 +154,7 @@ module default {
     rpc_url: str {
       default := "";
     }
-    registry_address: str {
-      default := "";
-    }
+    registry_address: Address;
     max_gas_limit: int64 {
       default := 0;
     }
@@ -190,12 +190,8 @@ module default {
     required deploy_router: bool {
       default := false;
     }
-    required ip_allow_http: array<str> {
-      default := ["0.0.0.0/0"];
-    }
-    required ip_allow_ssh: array<str> {
-      default := ["0.0.0.0/0"];
-    }
+    ip_allow_http: array<IpWithAddressMask>;
+    ip_allow_ssh: array<IpWithAddressMask>;
     required healthy: bool {
       default := true;
     }

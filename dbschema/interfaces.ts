@@ -24,13 +24,13 @@ export interface Cluster extends std.$Object {
   "deploy_router": boolean;
   "error"?: string | null;
   "healthy": boolean;
-  "ip_allow_http": string[];
-  "ip_allow_ssh": string[];
   "locked": boolean;
   "name": string;
   "router"?: {id: string, ip: string} | null;
   "tfstate"?: string | null;
   "terraform_logs": unknown[];
+  "ip_allow_http"?: string[] | null;
+  "ip_allow_ssh"?: string[] | null;
 }
 export interface AWSCluster extends Cluster {
   "machine_type": string;
@@ -47,18 +47,18 @@ export interface AWSServiceAccount extends ServiceAccount {
 }
 export type CloudProvider = "AWS" | "GCP";
 export interface Container extends std.$Object {
-  "allowed_addresses": string[];
-  "allowed_delegate_addresses": string[];
-  "allowed_ips": string[];
-  "command": string;
   "container_id": string;
   "description"?: string | null;
-  "env": unknown;
   "external": boolean;
   "gpu": boolean;
   "image": string;
   "rate_limit_num_requests"?: number | null;
   "rate_limit_period"?: number | null;
+  "allowed_addresses"?: string[] | null;
+  "allowed_delegate_addresses"?: string[] | null;
+  "allowed_ips"?: string[] | null;
+  "command"?: string | null;
+  "env"?: unknown | null;
 }
 export interface ContainerTemplate extends Container {
   "user": User;

@@ -17,7 +17,6 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _sys.$VersionStage ? _sys.$VersionStage : 
   T extends _sys.$TransactionIsolation ? _sys.$TransactionIsolation : 
   T extends _std.$uuid ? _std.$uuid : 
-  T extends _std.$str ? _std.$str : 
   T extends _std.$json ? _std.$json : 
   T extends _std.$int64 ? _std.$int64 : 
   T extends _std.$int32 ? _std.$int32 : 
@@ -56,7 +55,11 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _auth.$SMTPSecurity ? _auth.$SMTPSecurity : 
   T extends _auth.$JWTAlgo ? _auth.$JWTAlgo : 
   T extends _auth.$FlowType ? _auth.$FlowType : 
+  T extends _default.$IpWithAddressMask ? _default.$IpWithAddressMask : 
+  T extends _default.$IpAddress ? _default.$IpAddress : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
+  T extends _default.$Address ? _default.$Address : 
+  T extends _std.$str ? _std.$str : 
   T extends _cfg.$memory ? _cfg.$memory : 
   T extends _cfg.$QueryCacheMode ? _cfg.$QueryCacheMode : 
   T extends _cfg.$ConnectionTransport ? _cfg.$ConnectionTransport : 
@@ -73,7 +76,6 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _sys.$VersionStage ? _sys.$VersionStage : 
   T extends _sys.$TransactionIsolation ? _sys.$TransactionIsolation : 
   T extends _std.$uuid ? _std.$uuid : 
-  T extends _std.$str ? _std.$str : 
   T extends _std.$json ? _std.$json : 
   T extends _std.$int64 ? _std.$int64 : 
   T extends _std.$int32 ? _std.$int32 : 
@@ -112,7 +114,11 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _auth.$SMTPSecurity ? _auth.$SMTPSecurity : 
   T extends _auth.$JWTAlgo ? _auth.$JWTAlgo : 
   T extends _auth.$FlowType ? _auth.$FlowType : 
+  T extends _default.$IpWithAddressMask ? _default.$IpWithAddressMask : 
+  T extends _default.$IpAddress ? _default.$IpAddress : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
+  T extends _default.$Address ? _default.$Address : 
+  T extends _std.$str ? _std.$str : 
   T extends _cfg.$memory ? _cfg.$memory : 
   T extends _cfg.$QueryCacheMode ? _cfg.$QueryCacheMode : 
   T extends _cfg.$ConnectionTransport ? _cfg.$ConnectionTransport : 
@@ -145,12 +151,6 @@ type getSharedParentScalar<A, B> =
   :
   A extends _std.$uuid ?
     B extends _std.$uuid ?
-    B
-    :
-    never
-  :
-  A extends _std.$str ?
-    B extends _std.$str ?
     B
     :
     never
@@ -389,8 +389,32 @@ type getSharedParentScalar<A, B> =
     :
     never
   :
+  A extends _default.$IpWithAddressMask ?
+    B extends _default.$IpWithAddressMask ?
+    B
+    :
+    never
+  :
+  A extends _default.$IpAddress ?
+    B extends _default.$IpAddress ?
+    B
+    :
+    never
+  :
   A extends _default.$CloudProvider ?
     B extends _default.$CloudProvider ?
+    B
+    :
+    never
+  :
+  A extends _default.$Address ?
+    B extends _default.$Address ?
+    B
+    :
+    never
+  :
+  A extends _std.$str ?
+    B extends _std.$str ?
     B
     :
     never
@@ -486,12 +510,6 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
   if (a.__name__ === "std::uuid") {
     if(b.__name__ === "std::uuid") {
-      return b;
-    }
-    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
-    }
-  if (a.__name__ === "std::str") {
-    if(b.__name__ === "std::str") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
@@ -730,8 +748,32 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
     }
+  if (a.__name__ === "default::IpWithAddressMask") {
+    if(b.__name__ === "default::IpWithAddressMask") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "default::IpAddress") {
+    if(b.__name__ === "default::IpAddress") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
   if (a.__name__ === "default::CloudProvider") {
     if(b.__name__ === "default::CloudProvider") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "default::Address") {
+    if(b.__name__ === "default::Address") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "std::str") {
+    if(b.__name__ === "std::str") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
