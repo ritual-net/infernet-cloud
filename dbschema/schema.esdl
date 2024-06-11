@@ -112,6 +112,8 @@ module default {
     required gpu: bool {
       default := false;
     }
+    rate_limit_num_requests: int64;
+    rate_limit_period: float32;
 
     access policy only_owner
       allow all

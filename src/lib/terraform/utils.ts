@@ -55,6 +55,12 @@ export const formatNodeConfig = (node: InfernetNode) => {
 			command: container.command,
 			env: container.env,
 			gpu: container.gpu,
+			...(container.rate_limit_num_requests || container.rate_limit_period) && { 
+				rate_limit: {
+					num_requests: container.rate_limit_num_requests,
+					period: container.rate_limit_period,
+				},
+			},
 			port: port--,
 		})),
 		...(node.docker_account && {

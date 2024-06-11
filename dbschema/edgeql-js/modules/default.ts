@@ -103,6 +103,8 @@ export type $ContainerλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
   "external": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "gpu": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "image": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "rate_limit_num_requests": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
+  "rate_limit_period": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
   "<containers[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<containers": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

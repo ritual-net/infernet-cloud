@@ -99,6 +99,17 @@ export const Container = z
 			.boolean()
 			.required()
 			.default(false),
+		
+		'rate_limit_num_requests': z
+			.number()
+			.integer()
+			.positive()
+			.optional(),
+
+		'rate_limit_period': z
+			.number()
+			.positive()
+			.optional(),
 	})
 
 export const NodeConfig = z

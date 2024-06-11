@@ -31,6 +31,8 @@ export const createNodeParams = e.tuple({
 			command: e.str,
 			env: e.json,
 			gpu: e.bool,
+			rate_limit_num_requests: e.int64,
+			rate_limit_period: e.float32,
 		})
 	),
 });
@@ -72,6 +74,8 @@ export const insertNodeQuery = (
 				command: container.command,
 				env: container.env,
 				gpu: container.gpu,
+				rate_limit_num_requests: container.rate_limit_num_requests,
+				rate_limit_period: container.rate_limit_period,
 			})
 		),
 	});

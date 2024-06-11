@@ -181,6 +181,15 @@
 					</dd>
 				</section>
 			{/if}
+
+			<section class="row">
+				<dt>Rate Limiting</dt>
+
+				<dd>
+					{containerTemplate.rate_limit_num_requests} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests)]}
+					every {containerTemplate.rate_limit_period} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period)]}
+				</dd>
+			</section>
 		</dl>
 	</section>
 

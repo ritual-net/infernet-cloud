@@ -57,6 +57,8 @@ export interface Container extends std.$Object {
   "external": boolean;
   "gpu": boolean;
   "image": string;
+  "rate_limit_num_requests"?: number | null;
+  "rate_limit_period"?: number | null;
 }
 export interface ContainerTemplate extends Container {
   "user": User;

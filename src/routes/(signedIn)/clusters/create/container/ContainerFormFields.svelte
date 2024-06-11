@@ -384,4 +384,61 @@
 			class="code"
 		/>
 	</section>
+
+	<section class="column">
+		<div class="column inline">
+			<h3>
+				<span>
+					Rate Limiting
+				</span>
+			</h3>
+
+			<p>Control rate limiting parameters for the container's REST server.</p>
+		</div>
+
+		<div class="row equal">
+			<div class="column">
+				<div class="column inline">
+					<div class="row inline">
+						<label for="container.rate_limit_num_requests">Number of Requests</label>
+
+						<span class="annotation">Optional</span>
+					</div>
+
+					<p>Number of requests to allow per time period.</p>
+				</div>
+
+				<input
+					type="number"
+					placeholder="60"
+					id="container.rate_limit_num_requests"
+					name="container.rate_limit_num_requests"
+					bind:value={container.rate_limit_num_requests}
+					{...constraints?.rate_limit_num_requests}
+				/>
+			</div>
+
+			<div class="column">
+				<div class="column inline">
+					<div class="row inline">
+						<label for="container.rate_limit_period">Period</label>
+
+						<span class="annotation">Optional</span>
+					</div>
+
+					<p>Number of seconds in a time period.</p>
+				</div>
+
+				<input
+					type="number"
+					placeholder="60.0"
+					id="container.rate_limit_period"
+					name="container.rate_limit_period"
+					bind:value={container.rate_limit_period}
+					step="0.1"
+					{...constraints?.rate_limit_period}
+				/>
+			</div>
+		</div>
+	</section>
 </fieldset>
