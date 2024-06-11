@@ -93,6 +93,7 @@
 			font-family: var(--fontFamily-display);
 
 			& :global(svg) {
+				flex-shrink: 0;
 				height: 1.25em;
 			}
 		}
