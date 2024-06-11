@@ -139,25 +139,22 @@
 
 		backdrop-filter: var(--backdropFilter);
 
-		@media (width <= 40rem) {
+		@media (width <= 45rem) {
 			isolation: isolate;
 			display: grid !important;
+			overflow: hidden;
 
 			&:is(:hover, :focus-within) {
 				height: max-content;
+
+				~ .main-wrapper {
+					filter: blur(8px);
+					pointer-events: none;
+				}
 			}
 
 			backdrop-filter: blur(8px);
 			background-color: rgba(255, 255, 255, 0.85);
-
-			&::after {
-				content: '';
-				position: fixed;
-				z-index: -1;
-				inset: 0;
-				background-color: rgba(0, 0, 0, 0.05);
-				backdrop-filter: blur(8px);
-			}
 		}
 	}
 
