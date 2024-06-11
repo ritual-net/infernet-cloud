@@ -37,7 +37,7 @@ export const formatNodeConfig = (node: InfernetNode) => {
 			enabled: node.chain_enabled,
 			trail_head_blocks: node.trail_head_blocks,
 			rpc_url: node.rpc_url,
-			coordinator_address: node.coordinator_address,
+			registry_address: node.registry_address,
 			wallet: {
 				max_gas_limit: node.max_gas_limit,
 				private_key: node.private_key,

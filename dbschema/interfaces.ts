@@ -81,7 +81,6 @@ export interface GCPServiceAccount extends ServiceAccount {
 export interface InfernetNode extends std.$Object {
   "containers": Container[];
   "chain_enabled": boolean;
-  "coordinator_address"?: string | null;
   "forward_stats": boolean;
   "max_gas_limit"?: number | null;
   "private_key"?: string | null;
@@ -92,6 +91,7 @@ export interface InfernetNode extends std.$Object {
   "cluster"?: Cluster | null;
   "snapshot_sync_batch_size"?: number | null;
   "snapshot_sync_sleep"?: number | null;
+  "registry_address"?: string | null;
 }
 export interface current_user extends User {}
 export namespace ext {

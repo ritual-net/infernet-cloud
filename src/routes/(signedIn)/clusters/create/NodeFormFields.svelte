@@ -102,21 +102,21 @@
 		<section class="row wrap">
 			<div class="column inline">
 				<h3 class="row inline">
-					<label for="{namePrefix}.config.coordinator_address">
-						Coordinator Address
+					<label for="{namePrefix}.config.registry_address">
+						Registry Address
 					</label>
 				</h3>
 
-				<p>The address of the Coordinator smart contract.</p>
+				<p>The address of the Infernet SDK Registry smart contract.</p>
 			</div>
 
 			<input
 				type="text"
 				placeholder="0xabcdef...1234567890"
-				id="{namePrefix}.config.coordinator_address"
-				name="{namePrefix}.config.coordinator_address"
-				bind:value={node.config.coordinator_address}
-				{...constraints?.config?.coordinator_address}
+				id="{namePrefix}.config.registry_address"
+				name="{namePrefix}.config.registry_address"
+				bind:value={node.config.registry_address}
+				{...constraints?.config?.registry_address}
 			/>
 		</section>
 

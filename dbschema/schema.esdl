@@ -150,7 +150,7 @@ module default {
     rpc_url: str {
       default := "";
     }
-    coordinator_address: str {
+    registry_address: str {
       default := "";
     }
     max_gas_limit: int64 {

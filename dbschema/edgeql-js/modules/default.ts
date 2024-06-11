@@ -169,7 +169,6 @@ const GCPServiceAccount: $.$expr_PathNode<$.TypeSet<$GCPServiceAccount, $.Cardin
 export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "containers": $.LinkDesc<$Container, $.Cardinality.Many, {}, true, false,  false, false>;
   "chain_enabled": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
-  "coordinator_address": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, true>;
   "forward_stats": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "max_gas_limit": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, true>;
   "private_key": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, true>;
@@ -180,6 +179,7 @@ export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5
   "cluster": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
   "snapshot_sync_batch_size": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
   "snapshot_sync_sleep": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
+  "registry_address": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, true>;
   "<nodes[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;

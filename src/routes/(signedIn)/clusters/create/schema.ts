@@ -126,7 +126,7 @@ export const NodeConfig = z
 				),
 			),
 
-		'coordinator_address':
+		'registry_address':
 			Address
 			.when(
 				'chain_enabled',
@@ -223,7 +223,7 @@ export const FormData = z
 export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
 	node.config.trail_head_blocks ??= 5
 	node.config.rpc_url ??= ''
-	node.config.coordinator_address ??= ''
+	node.config.registry_address ??= ''
 	node.config.max_gas_limit ??= 5000000
 	node.config.private_key ??= ''
 	node.config.forward_stats ??= false
