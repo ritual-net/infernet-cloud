@@ -66,8 +66,8 @@ export const POST: RequestHandler = async ({ locals: { client }, params }) => {
  * @param request - The request body can contain the following updateable fields:
  * 					- name: string
  * 					- deploy_router: boolean
- * 					- ip_allow_http: string
- * 					- ip_allow_https: string
+ * 					- ip_allow_http: string[]
+ * 					- ip_allow_ssh: string[]
  * @returns Updated cluster ID.
  */
 export const PATCH: RequestHandler = async ({ locals: { client }, params, request }) => {
@@ -85,11 +85,11 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 	const updatedCluster = await e
 		.update(e.Cluster, (c) => ({
 			set: {
-				// Updateable fields, default to current value if not provided
-				name: e.op(body.name, '??', c.name),
-				deploy_router: e.op(body.deploy_router, '??', c.deploy_router),
-				...(body?.ip_allow_http && { ip_allow_http: body.ip_allow_http }),
-				...(body?.ip_allow_https && { ip_allow_https: body.ip_allow_https }),
+				// Updatable fields, default to current value if not provided
+				name: body.name,
+				deploy_router: body.deploy_router,
+				ip_allow_http: body.ip_allow_http,
+				ip_allow_ssh: body.ip_allow_ssh,
 			},
 			filter_single: { id },
 		}))
