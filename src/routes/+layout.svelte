@@ -144,6 +144,12 @@
 			display: grid !important;
 			overflow: hidden;
 
+			backdrop-filter: blur(8px);
+			background-color: rgba(255, 255, 255, 0.85);
+
+			transition-property: height;
+			transition-duration: 0.3s;
+
 			&:is(:hover, :focus-within) {
 				height: max-content;
 
@@ -152,9 +158,6 @@
 					pointer-events: none;
 				}
 			}
-
-			backdrop-filter: blur(8px);
-			background-color: rgba(255, 255, 255, 0.85);
 		}
 	}
 
@@ -164,6 +167,9 @@
 		display: grid;
 		grid-template-rows: subgrid;
 		grid-template-columns: subgrid;
+
+		transition-property: filter;
+		transition-duration: 0.3s;
 	}
 
 	main {

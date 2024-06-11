@@ -8,30 +8,34 @@
 		href: string,
 		label: string,
 		type?: 'link' | 'button',
-	}[]
+	}[][]
 
 	$: navItems = [
-		{
-			href: '/cloud-accounts',
-			label: 'Accounts',
-		},
-		{
-			href: '/templates',
-			label: 'Templates',
-		},
-		{
-			href: '/clusters',
-			label: 'Clusters',
-		},
-		$page.data.user ? {
-			href: '/account',
-			label: $page.data.user.name || $page.data.user.email,
-			type: 'button',
-		} : {
-			href: '/login',
-			label: 'Log In',
-			type: 'button',
-		},
+		[
+			{
+				href: '/cloud-accounts',
+				label: 'Accounts',
+			},
+			{
+				href: '/templates',
+				label: 'Templates',
+			},
+			{
+				href: '/clusters',
+				label: 'Clusters',
+			},
+		],
+		[
+			$page.data.user ? {
+				href: '/account',
+				label: $page.data.user.name || $page.data.user.email,
+				type: 'button',
+			} : {
+				href: '/login',
+				label: 'Log In',
+				type: 'button',
+			},
+		],
 	]
 
 
@@ -54,19 +58,23 @@
 		</h1>
 	</a>
 
-	<ul class="row">
-		{#each navItems as item}
-			<li>
-				<a	
-					href={item.href}
-					aria-current={$page.url.pathname === item.href ? 'page' : undefined}
-					class:button={item.type === 'button'}
-				>
-					{item.label}
-				</a>
-			</li>
+	<div class="row wrap">
+		{#each navItems as items}
+			<ul class="row">
+				{#each items as item}
+					<li>
+						<a	
+							href={item.href}
+							aria-current={$page.url.pathname === item.href ? 'page' : undefined}
+							class:button={item.type === 'button'}
+						>
+							{item.label}
+						</a>
+					</li>
+				{/each}
+			</ul>
 		{/each}
-	</ul>
+	</div>
 </nav>
 
 
@@ -76,6 +84,8 @@
 	}
 
 	ul {
+		padding: 0;
+
 		li {
 			list-style-type: none;
 
