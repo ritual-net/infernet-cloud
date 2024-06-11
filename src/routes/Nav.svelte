@@ -123,7 +123,7 @@
 		}
 	}
 
-	@media (width <= 45rem) {
+	@media (width <= 50rem) {
 		nav {
 			display: grid !important;
 			justify-content: stretch;

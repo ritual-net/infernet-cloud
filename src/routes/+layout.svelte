@@ -139,7 +139,7 @@
 
 		backdrop-filter: var(--backdropFilter);
 
-		@media (width <= 45rem) {
+		@media (width <= 50rem) {
 			isolation: isolate;
 			display: grid !important;
 			overflow: hidden;
