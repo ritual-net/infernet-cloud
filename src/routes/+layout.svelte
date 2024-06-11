@@ -111,7 +111,7 @@
 
 		display: grid !important;
 		grid:
-			'header' auto
+			'header' 4rem
 			'main' 1fr
 			'footer' auto
 			/ minmax(0, 1fr);
@@ -138,6 +138,27 @@
 		top: 0;
 
 		backdrop-filter: var(--backdropFilter);
+
+		@media (width <= 40rem) {
+			isolation: isolate;
+			display: grid !important;
+
+			&:is(:hover, :focus-within) {
+				height: max-content;
+			}
+
+			backdrop-filter: blur(8px);
+			background-color: rgba(255, 255, 255, 0.85);
+
+			&::after {
+				content: '';
+				position: fixed;
+				z-index: -1;
+				inset: 0;
+				background-color: rgba(0, 0, 0, 0.05);
+				backdrop-filter: blur(8px);
+			}
+		}
 	}
 
 	.main-wrapper {

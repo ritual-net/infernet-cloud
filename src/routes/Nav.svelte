@@ -111,4 +111,16 @@
 			filter: opacity(0.7);
 		}
 	}
+
+	@media (width <= 40rem) {
+		nav {
+			display: grid !important;
+			justify-content: stretch;
+			justify-items: start;
+		}
+
+		li {
+			display: grid !important;
+		}
+	}
 </style>
