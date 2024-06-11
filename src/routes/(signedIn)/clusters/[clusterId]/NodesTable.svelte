@@ -30,7 +30,7 @@
 	data={nodesWithInfo}
 	columns={[
 		{
-			header: 'Name',
+			header: 'ID',
 			accessor: nodeWithInfo => nodeWithInfo,
 			cell: ({ value: nodeWithInfo }) => (
 				createRender(NodesTableCell, {
