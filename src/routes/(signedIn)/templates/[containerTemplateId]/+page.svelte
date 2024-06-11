@@ -89,7 +89,7 @@
 		<h3>Details</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Image</dt>
 
 				<dd>
@@ -97,7 +97,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Service ID</dt>
 
 				<dd>
@@ -106,7 +106,7 @@
 			</section>
 
 			{#if containerTemplate.description}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Description</dt>
 
 					<dd class="description">
@@ -115,7 +115,7 @@
 				</section>
 			{/if}
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Visibility</dt>
 
 				<dd>
@@ -123,7 +123,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Has GPU?</dt>
 
 				<dd>
@@ -132,7 +132,7 @@
 			</section>
 
 			{#if containerTemplate.allowed_ips?.length}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Allowed IPs</dt>
 
 					<dd>
@@ -144,7 +144,7 @@
 			{/if}
 
 			{#if containerTemplate.allowed_addresses?.length}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Allowed Addresses</dt>
 
 					<dd>
@@ -156,7 +156,7 @@
 			{/if}
 
 			{#if containerTemplate.allowed_delegate_addresses?.length}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Allowed Delegate Addresses</dt>
 
 					<dd>
@@ -168,7 +168,7 @@
 			{/if}
 
 			{#if containerTemplate.command}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Start Command</dt>
 
 					<dd>
@@ -178,7 +178,7 @@
 			{/if}
 
 			{#if containerTemplate.env && Object.entries(containerTemplate.env).length}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Environment Variables</dt>
 
 					<dd>
@@ -187,7 +187,7 @@
 				</section>
 			{/if}
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Rate Limiting</dt>
 
 				<dd>
@@ -264,7 +264,7 @@
 		<h3>Node Details</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Chain Enabled?</dt>
 
 				<dd>
@@ -294,7 +294,7 @@
 			</section>
 
 			{#if containerTemplate.docker_account}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Docker Hub Account</dt>
 
 					<dd>
