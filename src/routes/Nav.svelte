@@ -105,14 +105,6 @@
 				height: 1.25em;
 			}
 		}
-
-		&:not([aria-current="page"]) {
-			color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
-
-			@supports not (color: hsl(from #000 h s l)) {
-				filter: opacity(0.7);
-			}
-		}
 	}
 
 	ul {
@@ -120,6 +112,14 @@
 
 		li {
 			list-style-type: none;
+
+			&:not([aria-current="page"]) {
+				color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
+
+				@supports not (color: hsl(from #000 h s l)) {
+					filter: opacity(0.7);
+				}
+			}
 		}
 	}
 
