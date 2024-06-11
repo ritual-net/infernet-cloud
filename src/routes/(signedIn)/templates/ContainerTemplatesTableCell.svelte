@@ -1,26 +1,29 @@
 <script context="module" lang="ts">
 	export enum CellType {
 		ID,
-		Description,
+		NameAndDescription,
 	}
 </script>
 
 
 <script lang="ts">
 	// Types/constants
-	import type { Container } from '$schema/interfaces'
+	import type { ContainerTemplate } from '$schema/interfaces'
 
 
 	// Inputs
-	export let container: Container
+	export let container: ContainerTemplate
 	export let cellType: CellType
 </script>
 
 
 {#if cellType === CellType.ID}
 	<span class="container-id">{container.container_id}</span>
-{:else if cellType === CellType.Description}
-	<p class="description">{container.description}</p>
+{:else if cellType === CellType.NameAndDescription}
+	<div class="column inline">
+		<h4>{container.name}</h4>
+		<p class="description">{container.description}</p>
+	</div>
 {/if}
 
 

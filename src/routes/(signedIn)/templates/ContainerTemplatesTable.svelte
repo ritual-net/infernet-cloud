@@ -28,8 +28,14 @@
 	data={containerTemplates}
 	columns={[
 		{
-			header: 'Name',
-			accessor: container => container.name,
+			header: 'Template',
+			accessor: container => container,
+			cell: ({ value: container }) => (
+				createRender(ContainerTemplatesTableCell, {
+					cellType: CellType.NameAndDescription,
+					container,
+				})
+			)
 		},
 		{
 			header: 'Service ID',
@@ -58,16 +64,6 @@
 		{
 			header: 'Image',
 			accessor: container => container.image,
-		},
-		{
-			header: 'Description',
-			accessor: container => container,
-			cell: ({ value: container }) => (
-				createRender(ContainerTemplatesTableCell, {
-					cellType: CellType.Description,
-					container,
-				})
-			)
 		},
 		{
 			header: 'Visibility',
