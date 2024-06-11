@@ -189,13 +189,15 @@ export const NodeConfig = z
 				),
 			),
 
-		'payment_address': Address,
+		'payment_address': Address
+			.optional(),
 
 		'allowed_sim_errors': z
 			.array(
 				z
 					.string()
-			),
+			)
+			.optional(),
 
 		'forward_stats': z
 			.boolean()

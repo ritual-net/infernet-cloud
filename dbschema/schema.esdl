@@ -165,6 +165,8 @@ module default {
     private_key: str {
       default := "";
     }
+    payment_address: Address;
+    allowed_sim_errors: array<str>;
 
     provider_id: str;
 

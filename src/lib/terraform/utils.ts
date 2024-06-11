@@ -38,6 +38,8 @@ export const formatNodeConfig = (node: InfernetNode) => {
 			trail_head_blocks: node.trail_head_blocks,
 			rpc_url: node.rpc_url,
 			registry_address: node.registry_address,
+			allowed_sim_errors: node.allowed_sim_errors,
+			payment_address: node.payment_address,
 			wallet: {
 				max_gas_limit: node.max_gas_limit,
 				private_key: node.private_key,

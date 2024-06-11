@@ -96,6 +96,8 @@ export interface InfernetNode extends std.$Object {
   "snapshot_sync_batch_size"?: number | null;
   "snapshot_sync_sleep"?: number | null;
   "registry_address"?: string | null;
+  "allowed_sim_errors"?: string[] | null;
+  "payment_address"?: string | null;
 }
 export interface current_user extends User {}
 export namespace ext {
