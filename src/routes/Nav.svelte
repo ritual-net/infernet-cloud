@@ -75,40 +75,41 @@
 		--nav-link-default-opacity: 0.7;
 	}
 
-	a {
-		display: inline-flex;
+	ul {
+		li {
+			list-style-type: none;
 
-		transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+			a {
+				display: inline-flex;
 
-		&:active {
-			transition-duration: var(--active-transitionInDuration);
-			opacity: var(--active-opacity);
-			scale: var(--active-scale);
-		}
+				transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 
-		&[href="/"] {
-			font-size: 1.5em;
+				&:active {
+					transition-duration: var(--active-transitionInDuration);
+					opacity: var(--active-opacity);
+					scale: var(--active-scale);
+				}
 
-			gap: 0.33em;
-			font-family: var(--fontFamily-display);
+				&[href="/"] {
+					font-size: 1.5em;
 
-			& :global(svg) {
-				flex-shrink: 0;
-				height: 1.25em;
+					gap: 0.33em;
+					font-family: var(--fontFamily-display);
+
+					& :global(svg) {
+						flex-shrink: 0;
+						height: 1.25em;
+					}
+				}
+
+				&:not([aria-current="page"]) {
+					color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
+
+					@supports not (color: hsl(from #000 h s l)) {
+						filter: opacity(0.7);
+					}
+				}
 			}
-		}
-	}
-
-	li {
-		list-style-type: none;
-	}
-
-	ul a:not([aria-current="page"]) {
-		color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
-	}
-	@supports not (color: hsl(from #000 h s l)) {
-		ul a:not([aria-current="page"]) {
-			filter: opacity(0.7);
 		}
 	}
 
@@ -117,10 +118,10 @@
 			display: grid !important;
 			justify-content: stretch;
 			justify-items: start;
-		}
 
-		li {
-			display: grid !important;
+			li {
+				display: grid !important;
+			}
 		}
 	}
 </style>
