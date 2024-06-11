@@ -178,7 +178,7 @@
 			{/if}
 
 			{#if containerTemplate.env && Object.entries(containerTemplate.env).length}
-				<section class="row wrap">
+				<section class="column">
 					<dt>Environment Variables</dt>
 
 					<dd>
