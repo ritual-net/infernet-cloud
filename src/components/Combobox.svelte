@@ -321,6 +321,10 @@
 		}
 	}
 
+	[data-melt-combobox-input] {
+		width: 100%;
+	}
+
 	[data-melt-combobox-option] {
 		display: flex;
 		align-items: center;
