@@ -46,7 +46,7 @@
 					chainId,
 					inputValue,
 				])]
-					.filter(chainId => chainId && isChainId(chainId) && !(chainId in chainsByChainId))
+					.filter(chainId => chainId && isChainId(chainId) && !chainsByChainId.has(Number(chainId)))
 					.map(chainId => ({
 						value: chainId,
 						label: chainId,
