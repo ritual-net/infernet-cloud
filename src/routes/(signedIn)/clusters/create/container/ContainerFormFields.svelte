@@ -14,7 +14,8 @@
 	export let images: string[] | undefined
 	export let nodeConfiguration: {
 		isOnchain: boolean
-		dockerAccountUsername: string | undefined
+		chainId?: number
+		dockerAccountUsername?: string
 	}
 	export let dockerUserImages: string[] | undefined
 

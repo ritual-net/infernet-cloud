@@ -46,6 +46,7 @@
 			...node.config.chain_enabled && {
 				isOnchain: 'true',
 			},
+			chainId: chainId?.toString(),
 		})}`,
 		$page.url
 	).toString()

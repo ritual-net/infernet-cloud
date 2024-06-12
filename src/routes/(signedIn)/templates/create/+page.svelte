@@ -240,6 +240,7 @@
 			{dockerUserImages}
 			nodeConfiguration={{
 				isOnchain: $form.containerTemplate.chain_enabled,
+				chainId: $form.containerTemplate.chain_id,
 				dockerAccountUsername: $form.dockerAccountUsername,
 			}}
 		>
