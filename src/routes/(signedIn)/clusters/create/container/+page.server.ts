@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({
 	url,
 	fetch,
 }) => {
-	const dockerAccountUsername = url.searchParams.get('dockerAccountUsername')
+	const dockerAccountUsername = url.searchParams.get('dockerAccountUsername') ?? undefined
 	const isOnchain = url.searchParams.has('isOnchain')
 
 	const containerTemplatesPromise = fetch(`/api/container_template${dockerAccountUsername ? `?${new URLSearchParams({ dockerAccountUsername })}` : ''}`)
@@ -40,9 +40,11 @@ export const load: PageServerLoad = async ({
 	return {
 		formData,
 		containerTemplatesPromise,
-		dockerAccountUsername,
+		nodeConfiguration: {
+			dockerAccountUsername,
+			isOnchain,
+		},
 		dockerUserImages,
-		isOnchain,
 	}
 }
 

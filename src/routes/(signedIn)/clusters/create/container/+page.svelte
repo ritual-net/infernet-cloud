@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Schema
-	import type { ContainerTemplate } from '$schema/interfaces'
+	import type { Container, ContainerTemplate } from '$schema/interfaces'
 
 
 	// Context
@@ -11,9 +11,8 @@
 		formData,
 		containerTemplatesPromise,
 		imagesPromise,
-		dockerAccountUsername,
+		nodeConfiguration,
 		dockerUserImages,
-		isOnchain,
 	} = data
 
 	let configurations = []
@@ -158,7 +157,7 @@
 									items: containerTemplates.map(containerTemplate => ({
 										value: containerTemplate.id,
 										label: containerTemplate.name,
-										disabled: containerTemplate.docker_account && containerTemplate.docker_account.username !== dockerAccountUsername,
+										disabled: containerTemplate.docker_account && containerTemplate.docker_account.username !== nodeConfiguration.dockerAccountUsername,
 									}))
 								}),
 							)
@@ -173,10 +172,7 @@
 		bind:container={$form.container}
 		constraints={$constraints.container}
 		{images}
-		nodeConfiguration={{
-			isOnchain,
-			dockerAccountUsername: dockerAccountUsername ?? undefined,
-		}}
+		{nodeConfiguration}
 		{dockerUserImages}
 	/>
 
