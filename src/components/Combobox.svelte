@@ -201,7 +201,7 @@
 								>
 									<div class="row">
 										{#if subitem.icon}
-											<img src={item.icon} />
+											<img src={subitem.icon} />
 										{/if}
 
 										<span>{subitem.label}</span>
