@@ -1,8 +1,7 @@
 import path from 'path';
-import { BaseTerraform } from '$/lib/terraform/base';
+import { BaseTerraform, createTerraformVarsFile } from '$/lib/terraform/base';
 import { ProviderTypeEnum } from '$/types/provider';
 import * as SystemUtils from '$/lib/utils/system';
-import * as TerraformUtils from '$/lib/utils/terraform';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 
 export class GCPTerraform extends BaseTerraform {
@@ -26,7 +25,7 @@ export class GCPTerraform extends BaseTerraform {
 		// Format nodes as a map of node id to node name
 		const nodes = Object.fromEntries(cluster.nodes.map((node) => [node.id, node.id]));
 
-		await TerraformUtils.createTerraformVarsFile(tempDir, {
+		await createTerraformVarsFile(tempDir, {
 			nodes,
 			name: cluster.id,
 			deploy_router: cluster.deploy_router,

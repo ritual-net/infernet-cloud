@@ -1,6 +1,4 @@
 import { promises as fs } from 'fs';
-import path from 'path';
-import tar from 'tar';
 import type { InfernetNode } from '$schema/interfaces';
 
 const BASE_TEMP_DIR = `${process.cwd()}/tmp/`;
@@ -9,66 +7,14 @@ const BASE_TEMP_DIR = `${process.cwd()}/tmp/`;
 await fs.mkdir(BASE_TEMP_DIR, { recursive: true });
 
 /**
- * Creates a temporary directory for deployment files. Copies the deployment files
- * from the src/lib/deploy/ directory, and untars the provider-specific Terraform
- * files.
- *
- * @param provider The cloud provider.
+ * Creates a temporary directory for deployment files.
  * @returns The path to the temporary directory.
  */
-export const createTempDir = async (provider: string): Promise<string> => {
-	const srcDir = `${process.cwd()}/src/lib/deploy`;
-
+export const createTempDir = async (): Promise<string> => {
 	// Create a temporary directory
 	const tempDir = await fs.mkdtemp(BASE_TEMP_DIR);
 
-	// Untar the provider-specific Terraform files
-	await tar.x({
-		file: `${srcDir}/${provider.toLowerCase()}.tar.gz`,
-		C: tempDir,
-	});
-
-	// Copy the deployment tarball
-	await fs.copyFile(`${srcDir}/compose.tar.gz`, `${tempDir}/deploy.tar.gz`);
 	return tempDir;
-};
-
-/**
- * Creates a terraform.tfvars file from an object.
- *
- * @param tempDir The path to the temporary directory.
- * @param tfVars The object to write to the file.
- */
-export const createTerraformVarsFile = async (
-	tempDir: string,
-	tfVars: Record<string, string[] | string | number | boolean | Record<string, string>>
-): Promise<void> => {
-	const varsFile = path.join(tempDir, 'terraform.tfvars');
-	const varsString = formatTfVars(tfVars);
-	await fs.writeFile(varsFile, varsString);
-};
-
-/**
- * Creates node config files from an array of InfernetNode objects.
- *
- * @param tempDir The path to the temporary directory.
- * @param nodes The array of InfernetNode objects.
- */
-export const createNodeConfigFiles = async (
-	tempDir: string,
-	nodes: InfernetNode[]
-): Promise<void> => {
-	// Create configs/ directory
-	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true });
-
-	// Create node config files under configs/
-	for (const node of nodes) {
-		const jsonConfig = formatNodeConfig(node);
-		await fs.writeFile(
-			path.join(tempDir, `configs/${node.id}.json`),
-			JSON.stringify(jsonConfig, null, 2)
-		);
-	}
 };
 
 /**
@@ -82,7 +28,7 @@ export const createNodeConfigFiles = async (
  * @param node An InfernetNode object.
  * @returns The formatted JSON object to be used as a config.json file.
  */
-const formatNodeConfig = (node: InfernetNode) => {
+export const formatNodeConfig = (node: InfernetNode) => {
 	// Auto-assign container ports in reverse order
 	let port = 4999;
 
@@ -148,7 +94,7 @@ const formatNodeConfig = (node: InfernetNode) => {
  * @returns Terraform variables file as a formatted string.
  */
 
-const formatTfVars = (
+export const formatTfVars = (
 	config: Record<string, string[] | string | number | boolean | Record<string, unknown>>
 ): string => {
 	const formatValue = (value: unknown): string => {

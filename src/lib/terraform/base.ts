@@ -1,9 +1,11 @@
 import path from 'path';
+import { promises as fs } from 'fs';
 import { TFAction, type TFState } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
-import * as TerraformUtils from '$/lib/utils/terraform';
+import { createTempDir, formatTfVars, formatNodeConfig } from '$/lib/terraform/utils';
 import type { CommandExecutionError } from '$/types/error';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
+import type { InfernetNode } from "$schema/interfaces";
 
 /**
  * Base class for Terraform deployments.
@@ -53,18 +55,43 @@ export abstract class BaseTerraform {
 		serviceAccount: ProviderServiceAccount,
 		action: TFAction
 	) {
+		let tempDir: string | undefined = undefined
+
 		try {
+			const cwd = process.cwd();
+
 			// Create fresh temporary directory
-			const tempDir = await TerraformUtils.createTempDir(this.type);
+			console.log(`Creating working directory for Terraform...`);
+			tempDir = await createTempDir();
+			console.log(`Created: ${tempDir}`);
+
+			// Copy the provider-specific Terraform files
+			console.log(`Copying Terraform config files for ${this.type}...`, tempDir);
+			console.log(`cp -r "${cwd}/infernet-deploy/procure/${this.type.toLowerCase()}" "${tempDir}"`);
+			await fs.cp(
+				`${cwd}/infernet-deploy/procure/${this.type.toLowerCase()}`,
+				tempDir,
+				{
+					'recursive': true,
+				}
+			);
+
+			// Copy the Docker Compose files
+			console.log(`Copying Docker Compose files...`, tempDir);
+			console.log(`cp "${cwd}/infernet-deploy/deploy.tar.gz" "${tempDir}/deploy.tar.gz"`);
+			await fs.copyFile(`${cwd}/infernet-deploy/deploy.tar.gz`, `${tempDir}/deploy.tar.gz`);
 
 			// Create terraform files
+			console.log(`Writing Terraform files for cluster "${cluster.id}" and service account "${serviceAccount.id}"...`, tempDir);
 			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
 
 			// Create node config files under configs/
-			await TerraformUtils.createNodeConfigFiles(tempDir, cluster.nodes);
+			await createNodeConfigFiles(tempDir, cluster.nodes);
 
 			// If state file exist in db, write it to file
 			if (cluster?.tfstate) {
+				console.log(`Found existing Terraform state in database. Writing JSON to "./terraform.tfstate"...`);
+
 				await SystemUtils.writeJsonToFile(
 					path.join(tempDir, 'terraform.tfstate'),
 					JSON.parse(cluster.tfstate)
@@ -72,6 +99,7 @@ export abstract class BaseTerraform {
 			}
 
 			// Initialize terraform
+			console.log(`Initializing Terraform project...`, tempDir);
 			await SystemUtils.executeCommands(tempDir, 'terraform init');
 			if (!tempDir) {
 				return { success: false, error: 'Cluster could not be updated.' };
@@ -80,6 +108,8 @@ export abstract class BaseTerraform {
 			let logs: any;
 			let error: string | undefined;
 			try {
+				console.log(`Running Terraform action "${action}"...`);
+
 				const stdout = await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve -json -no-color`);
 				logs = JSON.parse(stdout);
 			} catch (e) {
@@ -88,6 +118,9 @@ export abstract class BaseTerraform {
 				// so we want the state file to reflect that.
 				const commandError = e as CommandExecutionError;
 				error = commandError.stderr ?? commandError.error ?? commandError;
+
+				console.error(`Error running Terraform action "${action}":`);
+				console.error(error);
 			}
 
 			// Store state file in db under cluster entry
@@ -95,12 +128,59 @@ export abstract class BaseTerraform {
 				path.join(tempDir, 'terraform.tfstate')
 			)) as TFState;
 
-			// Remove temporary directory
-			SystemUtils.removeDir(tempDir);
-
 			return { success: error ? false : true, error, state, logs };
 		}catch(error){
 			return { success: false, error: JSON.stringify(error) };
+		}finally{
+			// Remove temporary directory
+			if(tempDir){
+				SystemUtils.removeDir(tempDir);
+				console.log(`Removed working directory for Terraform ${tempDir}`); 
+			}
 		}
 	}
 }
+
+/**
+ * Creates a terraform.tfvars file from an object.
+ *
+ * @param tempDir The path to the temporary directory.
+ * @param tfVars The object to write to the file.
+ */
+export const createTerraformVarsFile = async (
+	tempDir: string,
+	tfVars: Record<string, string[] | string | number | boolean | Record<string, string>>
+): Promise<void> => {
+	const varsFile = path.join(tempDir, 'terraform.tfvars');
+	const varsString = formatTfVars(tfVars);
+	await fs.writeFile(varsFile, varsString);
+};
+
+/**
+ * Creates node config files from an array of InfernetNode objects.
+ *
+ * @param tempDir The path to the temporary directory.
+ * @param nodes The array of InfernetNode objects.
+ */
+const createNodeConfigFiles = async (
+	tempDir: string,
+	nodes: InfernetNode[]
+): Promise<void> => {
+	// Create configs/ directory
+	console.log(`Creating node configs...`, tempDir);
+	console.log(`mkdir -p "configs"`);
+	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true });
+
+	// Create node config files under configs/
+	for (const node of nodes) {
+		const jsonConfig = formatNodeConfig(node);
+
+		await fs.writeFile(
+			path.join(tempDir, `configs/${node.id}.json`),
+			JSON.stringify(jsonConfig, null, 2)
+		);
+
+		console.log(`Created: configs/${node.id}.json`);
+	}
+};
+
