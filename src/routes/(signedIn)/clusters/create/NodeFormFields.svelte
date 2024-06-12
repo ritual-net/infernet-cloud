@@ -56,6 +56,7 @@
 
 
 	// Components
+	import ChainCombobox from '$/components/ChainCombobox.svelte'
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Dialog from '$/components/Dialog.svelte'
 	import Switch from '$/components/Switch.svelte'
@@ -93,25 +94,47 @@
 		class="column"
 		disabled={!node.config.chain_enabled}
 	>
-		<section class="row wrap">
+		<section class="column">
 			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.rpc_url">
-						RPC URL
-					</label>
-				</h3>
-
-				<p>HTTP(s) JSON-RPC URL. Must support the <a href="https://ethereum.org/en/developers/docs/apis/json-rpc#eth_newfilter" target="_blank"><code>eth_newFilter</code></a> method.</p>
+				<h3>Chain Configuration</h3>
 			</div>
 
-			<input
-				type="url"
-				placeholder="https://rpc.example.com/rpc"
-				id="{namePrefix}.config.rpc_url"
-				name="{namePrefix}.config.rpc_url"
-				bind:value={node.config.rpc_url}
-				{...constraints?.config?.rpc_url}
-			/>
+			<div class="row equal wrap">
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.rpc_url">JSON-RPC URL</label>
+						</div>
+
+						<p>HTTP(S). Must support the <a href="https://ethereum.org/en/developers/docs/apis/json-rpc#eth_newfilter" target="_blank"><code>eth_newFilter</code></a> method.</p>
+					</div>
+
+					<input
+						type="url"
+						placeholder="https://rpc.example.com/rpc"
+						id="{namePrefix}.config.rpc_url"
+						name="{namePrefix}.config.rpc_url"
+						bind:value={node.config.rpc_url}
+						{...constraints?.config?.rpc_url}
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}|chainId">Chain ID</label>
+						</div>
+
+						<p>The chain ID of the EVM-based network to connect to.</p>
+					</div>
+	
+					<ChainCombobox
+						id="{namePrefix}|chain_id"
+						name="{namePrefix}|chain_id"
+						bind:chainId
+					/>
+				</div>
+			</div>
 		</section>
 
 		<section class="row wrap">
