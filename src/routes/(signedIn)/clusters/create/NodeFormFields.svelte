@@ -79,7 +79,7 @@
 			</label>
 		</h3>
 
-		<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
+		<p>Whether this node will listen and respond to onchain events, and optionally accept payments from subscriptions.</p>
 	</div>
 
 	<Switch
@@ -123,7 +123,9 @@
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
-							<label for="{namePrefix}|chainId">Chain ID</label>
+							<label for="{namePrefix}|chainId">
+								Chain ID
+							</label>
 						</div>
 
 						<p>The chain ID of the EVM-based network to connect to.</p>
@@ -190,7 +192,7 @@
 					<span class="annotation">Optional</span>
 				</h3>
 
-				<p>Maximum gas units to spend when sending transactions from the node wallet.</p>
+				<p>Maximum gas units to spend when sending a transaction from the node wallet.</p>
 			</div>
 
 			<input
@@ -240,7 +242,9 @@
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
-							<label for="{namePrefix}.config.snapshot_sync_sleep">Sleep Duration</label>
+							<label for="{namePrefix}.config.snapshot_sync_sleep">
+								Sleep Duration
+							</label>
 
 							<span class="annotation">Optional</span>
 						</div>
@@ -262,7 +266,9 @@
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
-							<label for="{namePrefix}.config.snapshot_sync_batch_size">Batch Size</label>
+							<label for="{namePrefix}.config.snapshot_sync_batch_size">
+								Batch Size
+							</label>
 
 							<span class="annotation">Optional</span>
 						</div>

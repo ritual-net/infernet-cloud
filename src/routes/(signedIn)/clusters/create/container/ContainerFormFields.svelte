@@ -410,7 +410,9 @@
 			<div class="column">
 				<div class="column inline">
 					<div class="row inline">
-						<label for="container.rate_limit_num_requests">Number of Requests</label>
+						<label for="container.rate_limit_num_requests">
+							Requests
+						</label>
 
 						<span class="annotation">Optional</span>
 					</div>
@@ -431,7 +433,9 @@
 			<div class="column">
 				<div class="column inline">
 					<div class="row inline">
-						<label for="container.rate_limit_period">Period</label>
+						<label for="container.rate_limit_period">
+							Period
+						</label>
 
 						<span class="annotation">Optional</span>
 					</div>

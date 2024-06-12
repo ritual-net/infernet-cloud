@@ -150,7 +150,7 @@
 						</label>
 					</h3>
 			
-					<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
+					<p>Whether the node running this container will listen and respond to onchain events, and optionally accept payments from subscriptions.</p>
 				</div>
 			
 				<Switch
@@ -168,9 +168,11 @@
 							<label for="containerTemplate.chain_id">
 								Chain ID
 							</label>
+
+							<span class="annotation">Optional</span>
 						</h3>
 
-						<p>The chain ID of the EVM-based network to connect to.</p>
+						<p>The chain ID of the EVM-based network the node is connected to.</p>
 					</div>
 
 					<ChainCombobox
