@@ -190,6 +190,16 @@
 					every {containerTemplate.rate_limit_period} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period)]}
 				</dd>
 			</section>
+
+			{#if containerTemplate.generates_proofs !== undefined}
+				<section class="row">
+					<dt>Generates Proofs?</dt>
+
+					<dd>
+						{containerTemplate.generates_proofs ? 'Yes' : 'No'}
+					</dd>
+				</section>
+			{/if}
 		</dl>
 	</section>
 

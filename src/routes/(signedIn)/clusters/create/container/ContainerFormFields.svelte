@@ -75,7 +75,14 @@
 	$: dockerImages = dockerImagesQuery && $dockerImagesQuery!.data
 
 
+	// (Advanced options)
+	let hasAdvancedOptions = (
+		Boolean(container.generates_proofs)
+	)
+
+
 	// Components
+	import Collapsible from '$/components/Collapsible.svelte'
 	import Combobox from '$/components/Combobox.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
@@ -441,4 +448,41 @@
 			</div>
 		</div>
 	</section>
+
+	<div class="card column">
+		<Collapsible
+			open={hasAdvancedOptions}
+		>
+			<svelte:fragment slot="trigger">
+				<header>
+					Advanced
+				</header>
+			</svelte:fragment>
+
+			<section class="column">
+				<div class="row wrap">
+					<div class="column inline">
+						<h3>
+							<label for="container.generates_proofs">
+								Generate Proofs?
+							</label>
+						</h3>
+		
+						<p>Whether this container generates proofs. If disabled, the node will skip subscriptions that require proofs from this container.</p>
+					</div>
+		
+					<Switch
+						id="container.generates_proofs"
+						name="container.generates_proofs"
+						bind:checked={container.generates_proofs}
+						labelText="Generate Payment Proofs?"
+					/>
+				</div>
+
+				{#if container.generates_proofs}
+					<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. If using this, be sure to permission the node by setting allowed Addresses and Delegate Addresses under Firewall.</p>
+				{/if}
+			</section>
+		</Collapsible>
+	</div>
 </fieldset>

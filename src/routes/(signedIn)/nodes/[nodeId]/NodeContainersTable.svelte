@@ -85,7 +85,11 @@
 		// },
 		{
 			header: 'GPU?',
-			accessor: container => container.gpu,
+			accessor: container => container.gpu ? 'Yes' : 'No',
+		},
+		{
+			header: 'Proofs?',
+			accessor: container => container.generates_proofs ? 'Yes' : 'No',
 		},
 	]}
 >
