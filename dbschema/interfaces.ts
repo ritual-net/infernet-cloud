@@ -67,6 +67,7 @@ export interface ContainerTemplate extends Container {
   "name": string;
   "docker_account"?: DockerAccount | null;
   "chain_enabled"?: boolean | null;
+  "chain_id"?: number | null;
 }
 export interface DockerAccount extends std.$Object {
   "user": User;

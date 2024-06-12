@@ -136,6 +136,7 @@ module default {
     };
 
     chain_enabled: bool;
+    chain_id: int64;
     docker_account: DockerAccount;
 
     constraint exclusive on ((.name, .user));

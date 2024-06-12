@@ -75,8 +75,9 @@
 			const {
 				id,
 				name,
-				docker_account,
 				chain_enabled,
+				chain_id,
+				docker_account,
 				...newContainer
 			} = globalThis.structuredClone(containerTemplate)
 

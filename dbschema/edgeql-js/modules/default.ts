@@ -131,6 +131,7 @@ export type $ContainerTemplateλShape = $.typeutil.flatten<$ContainerλShape & {
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "docker_account": $.LinkDesc<$DockerAccount, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "chain_enabled": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "chain_id": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $ContainerTemplate = $.ObjectType<"default::ContainerTemplate", $ContainerTemplateλShape, null, [
   ...$Container['__exclusives__'],

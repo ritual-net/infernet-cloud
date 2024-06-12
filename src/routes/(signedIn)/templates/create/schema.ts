@@ -9,7 +9,12 @@ export const ContainerTemplate = Container.concat(
 
 		'chain_enabled': z
 			.boolean()
+			.required()
 			.default(false),
+
+		'chain_id': z
+			.number()
+			.required(),
 	})
 )
 
