@@ -7,6 +7,13 @@
 	export let chainId: number | undefined
 
 
+	// Functions
+	const isChainId = (chainId: string | number) => (
+		// @ts-ignore
+		!isNaN(chainId)
+	)
+
+
 	// Internal state
 	let inputValue = ''
 
@@ -39,7 +46,7 @@
 					chainId,
 					inputValue,
 				]
-					.filter(chainId => chainId && !(chainId in chainsByChainId))
+					.filter(chainId => chainId && isChainId(chainId) && !(chainId in chainsByChainId))
 					.map(chainId => ({
 						value: chainId,
 						label: chainId,
