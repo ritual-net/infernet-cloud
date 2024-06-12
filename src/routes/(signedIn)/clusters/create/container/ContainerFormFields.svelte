@@ -2,6 +2,7 @@
 	// Types/constants
 	import type { InputConstraints } from 'sveltekit-superforms'
 	import * as z from 'yup'
+	import { tokensByChainId } from '$/lib/tokens'
 
 
 	// Schema
@@ -89,8 +90,10 @@
 	import Combobox from '$/components/Combobox.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
+	import SizeTransition from '$/components/SizeTransition.svelte'
 	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
+	import TokenAddressCombobox from '$/components/TokenAddressCombobox.svelte'
 </script>
 
 
@@ -456,6 +459,98 @@
 		</div>
 	</section>
 
+	{#if nodeConfiguration.isOnchain}
+		<section class="column">
+			<div class="row wrap">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="container.accepted_payments">
+							Payments
+						</label>
+
+						<span class="annotation">Optional</span>
+					</h3>
+
+					<p>Accepted tokens and minimum payout amounts from subscriptions.</p>
+				</div>
+
+				<button
+					type="button"
+					class="small"
+					on:click={() => {
+						container.accepted_payments = [
+							...(container.accepted_payments ?? []),
+							{
+								address: '',
+								amount: undefined,
+							},
+						];
+					}}
+				>
+					Add Token
+				</button>
+
+				<p>If provided, subscriptions that don't meet these requirements will be skipped; otherwise, no payments will be received.</p>
+			</div>
+
+			<SizeTransition>
+				<div class="column">
+					{#each container.accepted_payments ?? [] as payment, i (i)}
+						<div class="row token-payment">
+							<div class="column inline">
+								<label for="container.accepted_payments.{i}.address">
+									Token Address
+								</label>
+
+								<TokenAddressCombobox
+									id="container.accepted_payments.{i}.address"
+									name="container.accepted_payments.{i}.address"
+									bind:value={payment.address}
+									tokens={
+										nodeConfiguration.chainId in tokensByChainId
+											? tokensByChainId[nodeConfiguration.chainId]
+												.filter(token => (
+													!new Set(
+														container.accepted_payments?.map(payment => payment.address)
+													)
+														.has(token.address)
+												))
+											: undefined
+									}
+								/>
+							</div>
+
+							<div class="column inline">
+								<label for="container.accepted_payments.{i}.amount">Minimum Subscription Payout</label>
+
+								<input
+									type="number"
+									id="container.accepted_payments.{i}.amount"
+									name="container.accepted_payments.{i}.amount"
+									class="token-amount"
+									bind:value={payment.amount}
+									placeholder="0"
+									step="1"
+									{...constraints?.accepted_payments?.amount}
+								/>
+							</div>
+
+							<button
+								type="button"
+								class="small destructive"
+								on:click={() => {
+									container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
+								}}
+							>
+								Delete
+							</button>
+						</div>
+					{/each}
+				</div>
+			</SizeTransition>
+		</section>
+	{/if}
+
 	<div class="card column">
 		<Collapsible
 			open={hasAdvancedOptions}
@@ -493,3 +588,15 @@
 		</Collapsible>
 	</div>
 </fieldset>
+
+
+<style>
+	.token-payment {
+		display: grid;
+		grid-template-columns: 1fr 1fr auto;
+
+		.token-amount {
+			text-align: end;
+		}
+	}
+</style>
