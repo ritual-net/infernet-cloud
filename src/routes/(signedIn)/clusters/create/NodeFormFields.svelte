@@ -134,51 +134,49 @@
 						bind:chainId
 					/>
 				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<label for="{namePrefix}.config.registry_address">
+							Registry Address
+						</label>
+		
+						<p>The address of the Infernet SDK Registry smart contract.</p>
+					</div>
+		
+					<input
+						type="text"
+						placeholder="0xabcdef...1234567890"
+						id="{namePrefix}.config.registry_address"
+						name="{namePrefix}.config.registry_address"
+						bind:value={node.config.registry_address}
+						{...constraints?.config?.registry_address}
+					/>
+				</div>
+	
+				<div class="column">
+					<div class="column inline">
+						<span class="row inline">
+							<label for="{namePrefix}.config.trail_head_blocks">
+								Trail Head Blocks
+							</label>
+	
+							<span class="annotation">Optional</span>
+						</span>
+	
+						<p>The number of blocks to delay chain syncing. This can prevent failed transactions due to chain reorganizations, at the expense of latency.</p>
+					</div>
+	
+					<input
+						type="number"
+						placeholder="{5}"
+						id="{namePrefix}.config.trail_head_blocks"
+						name="{namePrefix}.config.trail_head_blocks"
+						bind:value={node.config.trail_head_blocks}
+						{...constraints?.config?.trail_head_blocks}
+					/>
+				</div>
 			</div>
-		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.registry_address">
-						Registry Address
-					</label>
-				</h3>
-
-				<p>The address of the Infernet SDK Registry smart contract.</p>
-			</div>
-
-			<input
-				type="text"
-				placeholder="0xabcdef...1234567890"
-				id="{namePrefix}.config.registry_address"
-				name="{namePrefix}.config.registry_address"
-				bind:value={node.config.registry_address}
-				{...constraints?.config?.registry_address}
-			/>
-		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.trail_head_blocks">
-						Trail Head Blocks
-					</label>
-
-					<span class="annotation">Optional</span>
-				</h3>
-
-				<p>The number of blocks to delay chain syncing. This can prevent failed transactions due to chain reorganizations, at the expense of latency.</p>
-			</div>
-
-			<input
-				type="number"
-				placeholder="{5}"
-				id="{namePrefix}.config.trail_head_blocks"
-				name="{namePrefix}.config.trail_head_blocks"
-				bind:value={node.config.trail_head_blocks}
-				{...constraints?.config?.trail_head_blocks}
-			/>
 		</section>
 
 		<section class="row wrap">
