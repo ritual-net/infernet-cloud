@@ -86,7 +86,7 @@
 					</label>
 				</h3>
 
-				<p>The Ethereum node RPC URL.</p>
+				<p>HTTP(s) JSON-RPC URL. Must support the <a href="https://ethereum.org/en/developers/docs/apis/json-rpc#eth_newfilter" target="_blank"><code>eth_newFilter</code></a> method.</p>
 			</div>
 
 			<input
@@ -130,7 +130,7 @@
 					<span class="annotation">Optional</span>
 				</h3>
 
-				<p>The number of blocks.</p>
+				<p>The number of blocks to delay chain syncing. This can prevent failed transactions due to chain reorganizations, at the expense of latency.</p>
 			</div>
 
 			<input
@@ -153,7 +153,7 @@
 					<span class="annotation">Optional</span>
 				</h3>
 
-				<p>The threshold to trigger an Ethereum transaction in gwei.</p>
+				<p>Maximum gas units to spend when sending transactions from the node wallet.</p>
 			</div>
 
 			<input
@@ -174,7 +174,7 @@
 					</label>
 				</h3>
 
-				<p>The private key of the node.</p>
+				<p><code>0x</code>-prefixed node wallet private key.</p>
 			</div>
 
 			<input
