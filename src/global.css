@@ -134,12 +134,16 @@ dd {
 		gap: 0.25ch 0.75ch;
 	}
 
-	&.wrap {
-		flex-wrap: wrap;
-	}
-
 	&.equal > * {
 		flex: 1;
+	}
+
+	&.wrap {
+		flex-wrap: wrap;
+
+		&.equal > * {
+			flex-basis: 20rem;
+		}
 	}
 }
 

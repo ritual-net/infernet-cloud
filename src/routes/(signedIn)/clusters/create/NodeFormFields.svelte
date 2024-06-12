@@ -235,7 +235,7 @@
 				<p>Control rate limiting parameters for RPC communication.</p>
 			</div>
 
-			<div class="row equal">
+			<div class="row equal wrap">
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
