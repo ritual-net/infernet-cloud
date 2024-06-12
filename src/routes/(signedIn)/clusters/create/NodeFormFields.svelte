@@ -12,6 +12,11 @@
 	import { page } from '$app/stores'
 
 
+	// Functions
+	import { createPublicClient, http } from 'viem'
+	import { getChainId } from 'viem/actions'
+
+
 	// Inputs
 	export let node: z.InferType<typeof Node>
 	export let namePrefix = 'node'
@@ -21,8 +26,18 @@
 		username: string
 	}[]
 
+	export let chainId: number | undefined
+
 
 	// Internal state
+	$: client = node.config.rpc_url && createPublicClient({ 
+		transport: http(node.config.rpc_url),
+	})
+
+	$: if(client)
+		getChainId(client)
+			.then(_ => { chainId = _ })
+
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
 			...node.dockerAccountUsername && {
