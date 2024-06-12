@@ -42,10 +42,10 @@
 			value: 'custom',
 			label: 'Custom',
 			items: (
-				[
+				[...new Set([
 					chainId,
 					inputValue,
-				]
+				])]
 					.filter(chainId => chainId && isChainId(chainId) && !(chainId in chainsByChainId))
 					.map(chainId => ({
 						value: chainId,
