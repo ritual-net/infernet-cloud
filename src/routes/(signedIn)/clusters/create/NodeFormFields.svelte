@@ -182,49 +182,57 @@
 			</div>
 		</section>
 
-		<section class="row wrap">
+		<section class="column">
 			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.max_gas_limit">
-						Max Gas Limit
-					</label>
-
-					<span class="annotation">Optional</span>
-				</h3>
-
-				<p>Maximum gas units to spend when sending a transaction from the node wallet.</p>
+				<h3>Wallet Configuration</h3>
 			</div>
 
-			<input
-				type="number"
-				placeholder="{5000000}"
-				id="{namePrefix}.config.max_gas_limit"
-				name="{namePrefix}.config.max_gas_limit"
-				bind:value={node.config.max_gas_limit}
-				{...constraints?.config?.max_gas_limit}
-			/>
-		</section>
+			<div class="row equal wrap">
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.private_key">
+								Private Key
+							</label>
+						</div>
 
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.private_key">
-						Private Key
-					</label>
-				</h3>
+						<p><code>0x</code>-prefixed node wallet private key.</p>
+					</div>
 
-				<p><code>0x</code>-prefixed node wallet private key.</p>
+					<input
+						type="password"
+						placeholder="0xabcdef...1234567890"
+						id="{namePrefix}.config.private_key"
+						name="{namePrefix}.config.private_key"
+						bind:value={node.config.private_key}
+						{...constraints?.config?.private_key}
+						class="code"
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.max_gas_limit">
+								Max Gas Limit
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>Maximum gas units to spend when sending a transaction from the node wallet.</p>
+					</div>
+
+					<input
+						type="number"
+						placeholder="{5000000}"
+						id="{namePrefix}.config.max_gas_limit"
+						name="{namePrefix}.config.max_gas_limit"
+						bind:value={node.config.max_gas_limit}
+						{...constraints?.config?.max_gas_limit}
+					/>
+				</div>
 			</div>
-
-			<input
-				type="password"
-				placeholder="0xabcdef...1234567890"
-				id="{namePrefix}.config.private_key"
-				name="{namePrefix}.config.private_key"
-				bind:value={node.config.private_key}
-				{...constraints?.config?.private_key}
-				class="code"
-			/>
 		</section>
 
 		<section class="column">
