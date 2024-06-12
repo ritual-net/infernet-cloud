@@ -12,8 +12,10 @@
 	export let container: z.InferType<typeof Container>
 	export let constraints: InputConstraints<typeof container> | undefined
 	export let images: string[] | undefined
-	export let isOnchain: boolean
-	export let dockerAccountUsername: string | undefined
+	export let nodeConfiguration: {
+		isOnchain: boolean
+		dockerAccountUsername: string | undefined
+	}
 	export let dockerUserImages: string[] | undefined
 
 
@@ -31,7 +33,7 @@
 	// (Firewall)
 	let hasFirewall = (
 		Boolean(container.allowed_ips?.length)
-		|| (isOnchain && Boolean(container.allowed_addresses?.length || container.allowed_delegate_addresses?.length))
+		|| (nodeConfiguration.isOnchain && Boolean(container.allowed_addresses?.length || container.allowed_delegate_addresses?.length))
 	)
 
 	let allowed_ips = container.allowed_ips ?? []
@@ -117,7 +119,7 @@
 				[
 					dockerUserImages && {
 						value: 'docker',
-						label: `Docker Hub › ${dockerAccountUsername}`,
+						label: `Docker Hub › ${nodeConfiguration.dockerAccountUsername}`,
 						items: dockerUserImages,
 					},
 
@@ -259,7 +261,7 @@
 					</label>
 				</h3>
 
-				<p>Specify which IP addresses{isOnchain ? ' and onchain addresses' : ''} can request execution of this container.</p>
+				<p>Specify which IP addresses{nodeConfiguration.isOnchain ? ' and onchain addresses' : ''} can request execution of this container.</p>
 			</div>
 
 			<Select
@@ -271,11 +273,11 @@
 				items={[
 					{
 						value: false,
-						label: isOnchain ? 'All IPs and addresses' : 'All IPs',
+						label: nodeConfiguration.isOnchain ? 'All IPs and addresses' : 'All IPs',
 					},
 					{
 						value: true,
-						label: isOnchain ? 'Only allowed IPs and addresses' : 'Only allowed IPs',
+						label: nodeConfiguration.isOnchain ? 'Only allowed IPs and addresses' : 'Only allowed IPs',
 					}
 				]}
 			/>
@@ -323,7 +325,7 @@
 							value={serializeCommaSeparated(allowed_addresses)}
 							onblur={e => { allowed_addresses = parseCommaSeparated(e.currentTarget.value) }}
 							{...constraints?.allowed_addresses}
-							disabled={!(hasFirewall && isOnchain)}
+							disabled={!(hasFirewall && nodeConfiguration.isOnchain)}
 						/>
 
 					{:else if item.id === 2}
@@ -335,7 +337,7 @@
 							value={serializeCommaSeparated(allowed_delegate_addresses)}
 							onblur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
 							{...constraints?.allowed_delegate_addresses}
-							disabled={!(hasFirewall && isOnchain)}
+							disabled={!(hasFirewall && nodeConfiguration.isOnchain)}
 						/>
 					{/if}
 				</svelte:fragment>

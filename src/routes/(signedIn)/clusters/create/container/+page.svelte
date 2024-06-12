@@ -173,8 +173,10 @@
 		bind:container={$form.container}
 		constraints={$constraints.container}
 		{images}
-		{isOnchain}
-		{dockerAccountUsername}
+		nodeConfiguration={{
+			isOnchain,
+			dockerAccountUsername: dockerAccountUsername ?? undefined,
+		}}
 		{dockerUserImages}
 	/>
 
