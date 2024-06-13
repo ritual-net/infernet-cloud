@@ -59,7 +59,6 @@ export interface Container extends std.$Object {
   "allowed_ips"?: string[] | null;
   "command"?: string | null;
   "env"?: unknown | null;
-  "accepted_payments"?: {address: string, amount: bigint}[] | null;
   "generates_proofs": boolean;
 }
 export interface ContainerTemplate extends Container {

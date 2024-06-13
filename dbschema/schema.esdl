@@ -29,6 +29,10 @@ module default {
     constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/(3[0-2]|[1-2]?[0-9]))?$');
   }
 
+  scalar type BigIntString extending str {
+    constraint regexp(r'^[0]|[1-9][0-9]*$');
+  }
+
   type User {
     required name: str;
     required email: str;
@@ -123,7 +127,8 @@ module default {
     }
     rate_limit_num_requests: int64;
     rate_limit_period: float32;
-    accepted_payments: array<tuple<address: Address, amount: bigint>>;
+    # accepted_payments: array<tuple<address: Address, amount: bigint>>;
+    # accepted_payments: array<tuple<address: Address, amount: BigIntString>>;
     required generates_proofs: bool {
       default := false;
     }

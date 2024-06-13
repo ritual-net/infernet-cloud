@@ -59,6 +59,7 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _default.$IpWithAddressMask ? _default.$IpWithAddressMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
+  T extends _default.$BigIntString ? _default.$BigIntString : 
   T extends _default.$Address ? _default.$Address : 
   T extends _std.$str ? _std.$str : 
   T extends _cfg.$memory ? _cfg.$memory : 
@@ -119,6 +120,7 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _default.$IpWithAddressMask ? _default.$IpWithAddressMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
+  T extends _default.$BigIntString ? _default.$BigIntString : 
   T extends _default.$Address ? _default.$Address : 
   T extends _std.$str ? _std.$str : 
   T extends _cfg.$memory ? _cfg.$memory : 
@@ -411,6 +413,12 @@ type getSharedParentScalar<A, B> =
   :
   A extends _default.$CloudProvider ?
     B extends _default.$CloudProvider ?
+    B
+    :
+    never
+  :
+  A extends _default.$BigIntString ?
+    B extends _default.$BigIntString ?
     B
     :
     never
@@ -776,6 +784,12 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
   if (a.__name__ === "default::CloudProvider") {
     if(b.__name__ === "default::CloudProvider") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "default::BigIntString") {
+    if(b.__name__ === "default::BigIntString") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);

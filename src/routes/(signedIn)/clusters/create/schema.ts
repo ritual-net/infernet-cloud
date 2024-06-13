@@ -1,5 +1,5 @@
 import * as z from 'yup'
-import { Ip, IpWithAddressMask, Address, Secp256k1PrivateKey, Bigint } from '$/types/stringFormats'
+import { Ip, IpWithAddressMask, Address, Secp256k1PrivateKey, BigIntString } from '$/types/stringFormats'
 
 export const Config = z
 	.object({
@@ -42,7 +42,7 @@ export const ContainerPayment = z
 		'address': Address
 			.required(),
 
-		'amount': Bigint
+		'amount': BigIntString
 			.required(),
 	})
 
