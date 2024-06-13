@@ -560,15 +560,12 @@
 									id="container.accepted_payments.{i}.amount"
 									name="container.accepted_payments.{i}.amount"
 									class="token-amount"
-									bind:value={payment.amount}
+									value={payment.amount}
+									on:input={e => { payment.amount = e.currentTarget.value }}
 									placeholder="0"
 									step="1"
 									{...constraints?.accepted_payments?.amount}
 								/>
-								<!--
-									value={payment.amount}
-									on:input={e => { payment.amount = e.currentTarget.value }}
-								-->
 							</div>
 
 							<button
