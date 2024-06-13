@@ -94,6 +94,7 @@
 
 	// Components
 	import ChainCombobox from '$/components/ChainCombobox.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
 	import Select from '$/components/Select.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import ContainerFormFields from '$/routes/(signedIn)/clusters/create/container/ContainerFormFields.svelte'
@@ -161,27 +162,27 @@
 				/>
 			</section>
 
-			{#if $form.containerTemplate.chain_enabled}
-				<section class="row wrap">
-					<div class="column inline">
-						<h3>
-							<label for="containerTemplate.chain_id">
-								Chain ID
-							</label>
+			<Collapsible open={$form.containerTemplate.chain_enabled}>
+				<fieldset disabled={!$form.containerTemplate.chain_enabled}>
+					<section class="row wrap">
+						<div class="column inline">
+							<h3>
+								<label for="containerTemplate.chain_id">
+									Chain ID
+								</label>
+							</h3>
 
-							<span class="annotation">Optional</span>
-						</h3>
+							<p>The chain ID of the EVM-based network the node is connected to.</p>
+						</div>
 
-						<p>The chain ID of the EVM-based network the node is connected to.</p>
-					</div>
-
-					<ChainCombobox
-						id="containerTemplate.chain_id"
-						name="containerTemplate.chain_id"
-						bind:chainId={$form.containerTemplate.chain_id}
-					/>
-				</section>
-			{/if}
+						<ChainCombobox
+							id="containerTemplate.chain_id"
+							name="containerTemplate.chain_id"
+							bind:chainId={$form.containerTemplate.chain_id}
+						/>
+					</section>
+				</fieldset>
+			</Collapsible>
 
 			<section class="row wrap">
 				<div class="column inline">
