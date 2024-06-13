@@ -149,24 +149,23 @@ module default {
     required chain_enabled: bool {
       default := false;
     }
+
     required forward_stats: bool {
       default := true;
     }
 
-    trail_head_blocks: int16 {
-      default := 0;
-    }
-    rpc_url: str {
-      default := "";
-    }
+    trail_head_blocks: int16;
+
+    rpc_url: str;
+
     registry_address: Address;
-    max_gas_limit: int64 {
-      default := 0;
-    }
-    private_key: str {
-      default := "";
-    }
+
+    max_gas_limit: int64;
+
+    private_key: str;
+
     payment_address: Address;
+
     allowed_sim_errors: array<str>;
 
     provider_id: str;
