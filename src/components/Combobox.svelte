@@ -13,6 +13,7 @@
 
 	export let labelText: string | undefined
 	export let placeholder: string = 'Select...'
+	export let menuPlaceholder: string = 'No results found.'
 
 	export let id: string | undefined
 	export let name: string | undefined
@@ -229,7 +230,11 @@
 					</li>
 				{/if}
 			{:else}
-				<li class="placeholder">No results found.</li>
+				<li class="placeholder">
+					<slot name="menu-placeholder">
+						{menuPlaceholder}
+					</slot>
+				</li>
 			{/each}
 		</div>
 	</ul>
