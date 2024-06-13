@@ -248,6 +248,14 @@ button, .button {
 		font-size: 0.8em;
 	}
 
+	&.smaller {
+		font-size: 0.65em;
+	}
+
+	&.destructive {
+		--button-textColor: #ff1111;
+	}
+
 	&:disabled,
 	&[aria-disabled="true"] {
 		opacity: 0.5;
