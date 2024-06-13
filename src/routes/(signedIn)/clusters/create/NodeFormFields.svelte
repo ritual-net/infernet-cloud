@@ -30,6 +30,7 @@
 
 
 	// Internal state
+	// (Chain)
 	$: client = node.config.rpc_url && createPublicClient({ 
 		transport: http(node.config.rpc_url),
 	})
@@ -38,6 +39,14 @@
 		getChainId(client)
 			.then(_ => { chainId = _ })
 
+
+	// (Payments)
+	let isPaymentsEnabled = (
+		Boolean(node.config.payment_address)
+	)
+
+
+	// (Containers)
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
 			...node.dockerAccountUsername && {
@@ -263,6 +272,38 @@
 				/>
 			</div>
 		</section>
+
+		<Collapsible open={isPaymentsEnabled}>
+			<fieldset
+				class="column"
+				disabled={!isPaymentsEnabled}
+			>
+				<section class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.payment_address">
+								Payment Address
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>The address to send payments to.</p>
+					</div>
+
+					<input
+						type="text"
+						placeholder="0xabcdef...1234567890"
+						id="{namePrefix}.config.payment_address"
+						name="{namePrefix}.config.payment_address"
+						bind:value={node.config.payment_address}
+						{...constraints?.config?.payment_address}
+						required={isPaymentsEnabled}
+						class="code"
+					/>
+				</section>
+			</fieldset>
+		</Collapsible>
 
 		<section class="column">
 			<div class="column inline">
