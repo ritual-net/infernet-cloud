@@ -64,6 +64,7 @@
 	import Select from '$/components/Select.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import ContainerForm from './container/+page.svelte'
+	import Textarea from '$/components/Textarea.svelte'
 
 
 	// Shallow Routes
@@ -232,6 +233,34 @@
 						{...constraints?.config?.max_gas_limit}
 					/>
 				</div>
+			</div>
+
+			<div class="column">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="{namePrefix}.config.allowed_sim_errors">
+							Ignored Errors
+						</label>
+					</h3>
+
+					<p>
+						Substrings of error messages to ignore when simulating transactions. Case-insensitive; one per line.
+						<br>
+						For example, <code>"out of gas"</code> matches <code>"Contract reverted: Out of gas"</code>.
+					</p>
+				</div>
+
+				<Textarea
+					id="{namePrefix}.config.allowed_sim_errors"
+					name="{namePrefix}.config.allowed_sim_errors"
+					rows="2"
+					placeholder={`Enter one string per line...\nout of gas`}
+					value={node.config.allowed_sim_errors?.join('\n')}
+					onblur={e => { node.config.allowed_sim_errors = e.currentTarget.value.split('\n').map(item => item.trim()) }}
+					{...constraints?.config?.allowed_sim_errors}
+					disabled={!node.config.chain_enabled}
+					class="code"
+				/>
 			</div>
 		</section>
 
