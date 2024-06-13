@@ -211,13 +211,19 @@
 								)}
 
 								<li>
-									<span class="row inline">
+									<span class="row inline with-icon">
 										<span>≥</span>
 										{#if token}
+											{@const formattedAmount = String(Number(payment.amount) / 10 ** token.decimals)}
+											{@const [number, exponent] = formattedAmount.split('e')}
+
 											<abbr
 												title={payment.amount}
 											>
-												{payment.amount / 10 ** token.decimals}
+												{number}
+												{#if exponent}
+													× 10<sup>{exponent}</sup>
+												{/if}
 											</abbr>
 
 											<abbr
