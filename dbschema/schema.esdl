@@ -14,6 +14,13 @@ module default {
     constraint regexp(r'^0x[[:xdigit:]]{40}$');
   }
 
+  scalar type Secp256k1PrivateKey extending str {
+    constraint regexp(r'^0x[[:xdigit:]]{64}$');
+    constraint expression on (
+      __subject__ != '0x0000000000000000000000000000000000000000000000000000000000000000'
+    );
+  }
+
   scalar type IpAddress extending str {
     constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$');
   }
@@ -162,7 +169,7 @@ module default {
 
     max_gas_limit: int64;
 
-    private_key: str;
+    private_key: Secp256k1PrivateKey;
 
     payment_address: Address;
 

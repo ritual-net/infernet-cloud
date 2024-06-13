@@ -1,5 +1,5 @@
 import * as z from 'yup'
-import { Ip, IpWithAddressMask, Address } from '$/types/stringFormats'
+import { Ip, IpWithAddressMask, Address, Secp256k1PrivateKey } from '$/types/stringFormats'
 
 export const Config = z
 	.object({
@@ -177,9 +177,8 @@ export const NodeConfig = z
 			.positive()
 			.optional(),
 
-		'private_key': z
-			.string()
-			.default('')
+		'private_key':
+			Secp256k1PrivateKey
 			.when(
 				'chain_enabled',
 				([chain_enabled], _) => (

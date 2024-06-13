@@ -14,3 +14,8 @@ export const Address = z
 	.string<`0x${string}`>()
 	.matches(/^0x[0-9a-f]{40}$/i)
 	.defined()
+
+export const Secp256k1PrivateKey = z
+	.string<`0x${string}`>()
+	.matches(/^(?!0x0000000000000000000000000000000000000000000000000000000000000000)0x[0-9a-f]{64}$/i)
+	.defined()
