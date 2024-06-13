@@ -7,6 +7,7 @@
 	// Inputs
 	export let tokens: Token[] | undefined
 	export let value: `0x${string}` | undefined
+	export let menuPlaceholder: string | undefined
 
 
 	// Functions
@@ -31,8 +32,16 @@
 		tokens?.length
 			? `Choose token or enter address...`
 			: `Enter token address...`
-	}		
+	}
 	{...$$restProps}
+	menuPlaceholder={
+		menuPlaceholder
+		?? (
+			tokens?.length
+				? `No results found.`
+				: `Enter token address...`
+		)
+	}
 	items={[
 		tokens?.length && {
 			value: 'common',
