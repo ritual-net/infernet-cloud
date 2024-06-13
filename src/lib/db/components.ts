@@ -38,7 +38,7 @@ export const createNodeParams = e.tuple({
 			accepted_payments: e.array(
 				e.tuple({
 					address: e.Address,
-					amount: e.bigint,
+					amount: e.str,
 				})
 			),
 			generates_proofs: e.bool,
@@ -87,7 +87,10 @@ export const insertNodeQuery = (
 				gpu: container.gpu,
 				rate_limit_num_requests: container.rate_limit_num_requests,
 				rate_limit_period: container.rate_limit_period,
-				accepted_payments: container.accepted_payments,
+				accepted_payments: e.for(container.accepted_payments, payment => e.tuple([
+					payment.address,
+					e.to_bigint(payment.amount),
+				])),
 				generates_proofs: container.generates_proofs,
 			})
 		),
