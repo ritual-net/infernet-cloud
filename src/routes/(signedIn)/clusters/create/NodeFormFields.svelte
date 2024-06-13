@@ -194,7 +194,7 @@
 
 		<section class="column">
 			<div class="column inline">
-				<h3>Wallet Configuration</h3>
+				<h3>Wallet and Transactions</h3>
 			</div>
 
 			<div class="row equal wrap">
@@ -206,7 +206,7 @@
 							</label>
 						</div>
 
-						<p><code>0x</code>-prefixed node wallet private key.</p>
+						<p>The <code>0x</code>-prefixed private key for the node's wallet.</p>
 					</div>
 
 					<input
