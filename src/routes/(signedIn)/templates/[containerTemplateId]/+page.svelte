@@ -1,4 +1,9 @@
 <script lang="ts">
+	// Types/constants
+	import { chainsByChainId } from '$/lib/chains'
+	import { tokensByChainId } from '$/lib/tokens'
+
+
 	// Context
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
@@ -144,7 +149,7 @@
 
 					<dd>
 						{#each containerTemplate.allowed_addresses as address}
-							<p>{address}</p>
+							<p><output>{address}</output></p>
 						{/each}
 					</dd>
 				</section>
@@ -156,7 +161,7 @@
 
 					<dd>
 						{#each containerTemplate.allowed_delegate_addresses as address}
-							<output>{address}</output>
+							<p><output>{address}</output></p>
 						{/each}
 					</dd>
 				</section>
@@ -191,6 +196,54 @@
 				</dd>
 			</section>
 
+			{#if containerTemplate.accepted_payments?.length}
+				<section class="row">
+					<dt>Payments</dt>
+
+					<dd>
+						<ul>
+							{#each containerTemplate.accepted_payments as payment, i}
+								{@const token = (
+									containerTemplate.chain_id && containerTemplate.chain_id in tokensByChainId
+										? tokensByChainId[containerTemplate.chain_id]
+											.find((token) => token.address === payment.address)
+										: null
+								)}
+
+								<li>
+									<span class="row inline">
+										<span>≥</span>
+										{#if token}
+											<abbr
+												title={payment.amount}
+											>
+												{payment.amount / 10 ** token.decimals}
+											</abbr>
+
+											<abbr
+												title={token.address}
+												class="row inline with-icon"
+											>
+												<img
+													src={token.icon}
+													alt={token.name}
+													class="icon"
+												/>
+												{token.name}
+											</abbr>
+										{:else}
+											<span>{payment.amount}</span>
+											<span>units</span>
+											<span><output>{payment.address}</output></span>
+										{/if}
+									</span>
+								</li>
+							{/each}
+						</ul>
+					</dd>
+				</section>
+			{/if}
+
 			{#if containerTemplate.generates_proofs !== undefined}
 				<section class="row">
 					<dt>Generates Proofs?</dt>
@@ -212,6 +265,27 @@
 
 				<dd>
 					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
+			<section class="row">
+				<dt>Chain</dt>
+
+				<dd>
+					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
+						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
+
+						<span class="row inline with-icon">
+							<img
+								src={chain.icon}
+								alt={chain.name}
+								class="icon"
+							/>
+							{chain.name}
+						</span>
+					{:else}
+						{containerTemplate.chain_id}
+					{/if}
 				</dd>
 			</section>
 

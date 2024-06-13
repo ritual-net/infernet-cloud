@@ -138,6 +138,10 @@ sup {
 		align-items: baseline;
 		justify-content: start;
 		gap: 0.25ch 0.75ch;
+
+		&.with-icon {
+			align-items: center;
+		}
 	}
 
 	&.equal > * {
