@@ -94,6 +94,11 @@
 	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
 	import TokenAddressCombobox from '$/components/TokenAddressCombobox.svelte'
+
+
+	// Transitions
+	import { scale } from 'svelte/transition'
+	import { expoOut } from 'svelte/easing'
 </script>
 
 
@@ -496,6 +501,11 @@
 			<SizeTransition>
 				<div class="column">
 					{#each container.accepted_payments ?? [] as payment, i (i)}
+						{@const selectedToken = (
+							tokensByChainId[nodeConfiguration.chainId]
+								?.find(token => token.address === payment.address)
+						)}
+
 						<div class="row token-payment">
 							<div class="column inline">
 								<label for="container.accepted_payments.{i}.address">
@@ -521,7 +531,22 @@
 							</div>
 
 							<div class="column inline">
-								<label for="container.accepted_payments.{i}.amount">Minimum Subscription Payout</label>
+								<div class="row wrap">
+									<label for="container.accepted_payments.{i}.amount">Minimum Payout</label>
+
+									{#if selectedToken && payment.amount && Math.log10(payment.amount) < selectedToken.decimals - 2}
+										<button
+											type="button"
+											class="smaller"
+											on:click={() => {
+												payment.amount *= Math.pow(10, selectedToken.decimals)
+											}}
+											transition:scale={{ duration: 200, easing: expoOut }}
+										>
+											× 10<sup>{selectedToken.decimals}</sup>
+										</button>
+									{/if}
+								</div>
 
 								<input
 									type="number"
@@ -593,7 +618,7 @@
 <style>
 	.token-payment {
 		display: grid;
-		grid-template-columns: 1fr 1fr auto;
+		grid-template-columns: 1.6fr 1fr auto;
 
 		.token-amount {
 			text-align: end;

@@ -109,6 +109,12 @@ dd {
 	}
 }
 
+sub,
+sup {
+	font-size: smaller;
+	line-height: 1;
+}
+
 .stack {
 	display: grid;
 	grid: 'stack';
@@ -182,6 +188,10 @@ textarea {
 
 	&.small {
 		font-size: 0.8em;
+	}
+
+	&.smaller {
+		font-size: 0.65em;
 	}
 
 	&:disabled,
