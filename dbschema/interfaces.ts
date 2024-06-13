@@ -88,7 +88,6 @@ export interface InfernetNode extends std.$Object {
   "chain_enabled": boolean;
   "forward_stats": boolean;
   "max_gas_limit"?: number | null;
-  "private_key"?: string | null;
   "provider_id"?: string | null;
   "rpc_url"?: string | null;
   "trail_head_blocks"?: number | null;
@@ -99,6 +98,7 @@ export interface InfernetNode extends std.$Object {
   "registry_address"?: string | null;
   "allowed_sim_errors"?: string[] | null;
   "payment_address"?: string | null;
+  "private_key"?: string | null;
 }
 export interface current_user extends User {}
 export namespace ext {
