@@ -528,6 +528,12 @@
 											: undefined
 									}
 									required
+									menuPlaceholder={
+										nodeConfiguration.chainId in tokensByChainId ?
+											undefined
+										:
+											`Select a chain ID first.`
+									}
 								/>
 							</div>
 
