@@ -527,6 +527,7 @@
 												))
 											: undefined
 									}
+									required
 								/>
 							</div>
 
