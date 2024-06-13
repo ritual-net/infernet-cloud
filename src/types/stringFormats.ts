@@ -19,3 +19,8 @@ export const Secp256k1PrivateKey = z
 	.string<`0x${string}`>()
 	.matches(/^(?!0x0000000000000000000000000000000000000000000000000000000000000000)0x[0-9a-f]{64}$/i)
 	.defined()
+
+export const Bigint = z
+	.string()
+	.matches(/^\d+$/)
+	.defined()
