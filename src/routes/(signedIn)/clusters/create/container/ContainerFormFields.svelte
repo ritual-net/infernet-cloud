@@ -546,7 +546,7 @@
 											type="button"
 											class="smaller"
 											on:click={() => {
-												payment.amount *= Math.pow(10, selectedToken.decimals)
+												payment.amount = String(BigInt(payment.amount) * BigInt(Math.pow(10, selectedToken.decimals)))
 											}}
 											transition:scale={{ duration: 200, easing: expoOut }}
 										>
