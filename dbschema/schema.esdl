@@ -128,7 +128,7 @@ module default {
     rate_limit_num_requests: int64;
     rate_limit_period: float32;
     # accepted_payments: array<tuple<address: Address, amount: bigint>>;
-    # accepted_payments: array<tuple<address: Address, amount: BigIntString>>;
+    accepted_payments: array<tuple<address: Address, amount: BigIntString>>;
     required generates_proofs: bool {
       default := false;
     }

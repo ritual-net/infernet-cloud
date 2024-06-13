@@ -60,6 +60,7 @@ export interface Container extends std.$Object {
   "command"?: string | null;
   "env"?: unknown | null;
   "generates_proofs": boolean;
+  "accepted_payments"?: {address: string, amount: string}[] | null;
 }
 export interface ContainerTemplate extends Container {
   "user": User;
