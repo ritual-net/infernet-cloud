@@ -13,7 +13,9 @@
 
 
 	// Components
+	import { createRender } from 'svelte-headless-table'
 	import Table from '$/components/Table.svelte'
+	import NodeContainersTableCell, { CellType } from './NodeContainersTableCell.svelte'
 </script>
 
 
@@ -22,16 +24,18 @@
 	getId={container => container.id}
 	columns={[
 		{
-			header: 'Image',
-			accessor: container => container.image,
+			header: 'Image / Description',
+			accessor: container => container,
+			cell: ({ value: container }) => (
+				createRender(NodeContainersTableCell, {
+					cellType: CellType.Description,
+					container,
+				})
+			)
 		},
 		{
 			header: 'Service ID',
 			accessor: container => container.container_id,
-		},
-		{
-			header: 'Description',
-			accessor: container => container.description,
 		},
 		{
 			header: 'Visibility',
@@ -39,11 +43,19 @@
 		},
 		{
 			header: 'GPU?',
-			accessor: container => container.gpu,
+			accessor: container => container.gpu ? 'Yes' : 'No',
 		},
 		{
 			header: 'Firewall?',
 			accessor: container => container.allowed_ips.length || container.allowed_addresses.length || container.allowed_delegate_addresses.length ? 'Yes' : 'No',
+		},
+		{
+			header: 'Payments',
+			accessor: container => container.accepted_payments?.length ? `${container.accepted_payments.length} tokens` : '–',
+		},
+		{
+			header: 'Generates Proofs?',
+			accessor: container => container.generates_proofs ? 'Yes' : 'No',
 		},
 	]}
 	onRowClick={container => {
