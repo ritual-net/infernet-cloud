@@ -1,5 +1,5 @@
 import * as z from 'yup'
-import { IpWithAddressMask } from '$/types/stringFormats'
+import { IpAddressWithMask } from '$/types/stringFormats'
 
 export const Config = z
 	.object({
@@ -15,13 +15,13 @@ export const Config = z
 
 		'ip_allow_http': z
 			.array(
-				IpWithAddressMask
+				IpAddressWithMask
 			)
 			.default([]),
 
 		'ip_allow_ssh': z
 			.array(
-				IpWithAddressMask
+				IpAddressWithMask
 			)
 			.default([]),
 	})
