@@ -36,16 +36,17 @@
 		const normalizedInput = input?.toLowerCase().trim()
 
 		return (
-			(
-				typeof item.value === 'string' && typeof normalizedInput === 'string' ?
-					String(item.value).toLowerCase().includes(normalizedInput)
-					: item.value === normalizedInput
-			)
-			|| (
-				typeof item.label === 'string' && typeof normalizedInput === 'string' ?
-					item.label.toLowerCase().includes(normalizedInput)
-					: false
-			)
+			String(item.value).toLowerCase().includes(String(normalizedInput))
+			// (
+			// 	typeof item.value === 'string' && typeof normalizedInput === 'string'
+			// 		? String(item.value).toLowerCase().includes(normalizedInput)
+			// 		: item.value === normalizedInput
+			// )
+			// || (
+			// 	typeof item.label === 'string' && typeof normalizedInput === 'string'
+			// 		? item.label.toLowerCase().includes(normalizedInput)
+			// 		: false
+			// )
 		)
 	}
 
