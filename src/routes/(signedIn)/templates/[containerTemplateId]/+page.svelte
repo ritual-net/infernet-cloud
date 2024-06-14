@@ -200,52 +200,50 @@
 				<section class="row">
 					<dt>Payments</dt>
 
-					<dd>
-						<ul>
-							{#each containerTemplate.accepted_payments as payment, i}
-								{@const token = (
-									containerTemplate.chain_id && containerTemplate.chain_id in tokensByChainId
-										? tokensByChainId[containerTemplate.chain_id]
-											.find((token) => token.address === payment.address)
-										: null
-								)}
+					<dd class="column inline">
+						{#each containerTemplate.accepted_payments as payment, i}
+							{@const token = (
+								containerTemplate.chain_id && containerTemplate.chain_id in tokensByChainId
+									? tokensByChainId[containerTemplate.chain_id]
+										.find((token) => token.address === payment.address)
+									: null
+							)}
 
-								<li>
-									<span class="row inline with-icon">
-										<span>≥</span>
-										{#if token}
-											{@const formattedAmount = String(Number(payment.amount) / 10 ** token.decimals)}
-											{@const [number, exponent] = formattedAmount.split('e')}
+							<p>
+								<span class="row inline with-icon">
+									<span>≥</span>
+									{#if token}
+										{@const formattedAmount = String(Number(payment.amount) / 10 ** token.decimals)}
+										{@const [number, exponent] = formattedAmount.split('e')}
 
-											<abbr
-												title={payment.amount}
-											>
-												{number}
-												{#if exponent}
-													× 10<sup>{exponent}</sup>
-												{/if}
-											</abbr>
+										<abbr
+											title={payment.amount}
+										>
+											{number}
+											{#if exponent}
+												× 10<sup>{exponent}</sup>
+											{/if}
+										</abbr>
 
-											<abbr
-												title={token.address}
-												class="row inline with-icon"
-											>
-												<img
-													src={token.icon}
-													alt={token.name}
-													class="icon"
-												/>
-												{token.name}
-											</abbr>
-										{:else}
-											<span>{payment.amount}</span>
-											<span>units</span>
-											<span><output>{payment.address}</output></span>
-										{/if}
-									</span>
-								</li>
-							{/each}
-						</ul>
+										<abbr
+											title={token.address}
+											class="row inline with-icon"
+										>
+											<img
+												src={token.icon}
+												alt={token.name}
+												class="icon"
+											/>
+											{token.name}
+										</abbr>
+									{:else}
+										<span>{payment.amount}</span>
+										<span>units</span>
+										<span><output>{payment.address}</output></span>
+									{/if}
+								</span>
+							</p>
+						{/each}
 					</dd>
 				</section>
 			{/if}
