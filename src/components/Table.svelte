@@ -182,7 +182,8 @@
 	}
 
 	table {
-		width: 100%;
+		min-width: 100%;
+		width: max-content;
 		margin-inline: calc(-1 * var(--borderWidth));
 
 		border-collapse: separate;
