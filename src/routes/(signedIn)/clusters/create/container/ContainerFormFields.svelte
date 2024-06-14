@@ -673,8 +673,8 @@
 	}
 
 	* :global(.address-input) {
-		font-size: 0.9em;
-		--input-paddingY: 0.57rem;
+		font-size: 0.75em;
+		--input-paddingY: 0.75rem;
 	}
 
 	.loading-status {
