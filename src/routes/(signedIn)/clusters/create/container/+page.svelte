@@ -15,8 +15,6 @@
 		dockerUserImages,
 	} = data
 
-	let configurations = []
-
 
 	// Inputs
 	// (View options)
@@ -145,7 +143,7 @@
 					id="containerTemplateId"
 					name="containerTemplateId"
 					labelText="Container template"
-					placeholder={configurations.length ? `Select templates...` : `No templates found`}
+					placeholder={containerTemplates?.length ? `Select template...` : `No templates found.`}
 					bind:value={containerTemplateId}
 					items={
 						containerTemplates
