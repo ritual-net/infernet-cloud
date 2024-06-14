@@ -1,5 +1,5 @@
 import * as z from 'yup'
-import { Ip, IpWithAddressMask, Address, Secp256k1PrivateKey, BigIntString } from '$/types/stringFormats'
+import { IpWithAddressMask, Address, Secp256k1PrivateKey, BigIntString } from '$/types/stringFormats'
 
 export const Config = z
 	.object({
@@ -89,7 +89,7 @@ export const Container = z
 
 		'allowed_ips': z
 			.array(
-				Ip
+				IpWithAddressMask
 			)
 			.optional()
 			.default([]),

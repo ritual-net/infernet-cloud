@@ -119,7 +119,7 @@ module default {
     }
     allowed_addresses: array<Address>;
     allowed_delegate_addresses: array<Address>;
-    allowed_ips: array<IpAddress>;
+    allowed_ips: array<IpWithAddressMask>;
     command: str;
     env: json;
     required gpu: bool {
