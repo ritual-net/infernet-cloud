@@ -164,6 +164,7 @@
 			value={inputValue}
 			{placeholder}
 			{name}
+			{...$$restProps}
 		/>
 	</div>
 </div>
