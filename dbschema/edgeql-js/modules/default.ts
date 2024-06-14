@@ -19,8 +19,8 @@ const CloudProvider: $CloudProvider = $.makeType<$CloudProvider>(_.spec, "157bc3
 export type $IpAddress = $.ScalarType<"std::str", string>;
 const IpAddress: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2ab75bce-29a7-11ef-aaf6-4109a4c14a12", _.syntax.literal);
 
-export type $IpWithAddressMask = $.ScalarType<"std::str", string>;
-const IpWithAddressMask: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2ab8e7c8-29a7-11ef-b1b2-2d75161546c6", _.syntax.literal);
+export type $IpAddressWithMask = $.ScalarType<"std::str", string>;
+const IpAddressWithMask: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2ab8e7c8-29a7-11ef-b1b2-2d75161546c6", _.syntax.literal);
 
 export type $Secp256k1PrivateKey = $.ScalarType<"std::str", string>;
 const Secp256k1PrivateKey: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2c0eccd2-29a7-11ef-b85d-657974a7810a", _.syntax.literal);
@@ -54,8 +54,8 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "router": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
   "tfstate": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "terraform_logs": $.PropertyDesc<_std.$json, $.Cardinality.Many, false, false, false, false>;
-  "ip_allow_http": $.PropertyDesc<$.ArrayType<$IpWithAddressMask>, $.Cardinality.AtMostOne, false, false, false, false>;
-  "ip_allow_ssh": $.PropertyDesc<$.ArrayType<$IpWithAddressMask>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "ip_allow_http": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "ip_allow_ssh": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "<cluster[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -117,11 +117,11 @@ export type $ContainerλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
   "rate_limit_period": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
   "allowed_addresses": $.PropertyDesc<$.ArrayType<$Address>, $.Cardinality.AtMostOne, false, false, false, false>;
   "allowed_delegate_addresses": $.PropertyDesc<$.ArrayType<$Address>, $.Cardinality.AtMostOne, false, false, false, false>;
-  "allowed_ips": $.PropertyDesc<$.ArrayType<$IpAddress>, $.Cardinality.AtMostOne, false, false, false, false>;
   "command": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "env": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "generates_proofs": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "accepted_payments": $.PropertyDesc<$.ArrayType<$.NamedTupleType<{address: $Address, amount: $BigIntString}>>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "allowed_ips": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "<containers[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<containers": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -235,14 +235,14 @@ const $default__globals: {  current_user: _.syntax.$expr_Global<
 
 
 
-export { Address, BigIntString, CloudProvider, IpAddress, IpWithAddressMask, Secp256k1PrivateKey, $User, User, $Cluster, Cluster, $AWSCluster, AWSCluster, $ServiceAccount, ServiceAccount, $AWSServiceAccount, AWSServiceAccount, $Container, Container, $ContainerTemplate, ContainerTemplate, $DockerAccount, DockerAccount, $GCPCluster, GCPCluster, $GCPServiceAccount, GCPServiceAccount, $InfernetNode, InfernetNode, $current_user, current_user };
+export { Address, BigIntString, CloudProvider, IpAddress, IpAddressWithMask, Secp256k1PrivateKey, $User, User, $Cluster, Cluster, $AWSCluster, AWSCluster, $ServiceAccount, ServiceAccount, $AWSServiceAccount, AWSServiceAccount, $Container, Container, $ContainerTemplate, ContainerTemplate, $DockerAccount, DockerAccount, $GCPCluster, GCPCluster, $GCPServiceAccount, GCPServiceAccount, $InfernetNode, InfernetNode, $current_user, current_user };
 
 type __defaultExports = {
   "Address": typeof Address;
   "BigIntString": typeof BigIntString;
   "CloudProvider": typeof CloudProvider;
   "IpAddress": typeof IpAddress;
-  "IpWithAddressMask": typeof IpWithAddressMask;
+  "IpAddressWithMask": typeof IpAddressWithMask;
   "Secp256k1PrivateKey": typeof Secp256k1PrivateKey;
   "User": typeof User;
   "Cluster": typeof Cluster;
@@ -263,7 +263,7 @@ const __defaultExports: __defaultExports = {
   "BigIntString": BigIntString,
   "CloudProvider": CloudProvider,
   "IpAddress": IpAddress,
-  "IpWithAddressMask": IpWithAddressMask,
+  "IpAddressWithMask": IpAddressWithMask,
   "Secp256k1PrivateKey": Secp256k1PrivateKey,
   "User": User,
   "Cluster": Cluster,
