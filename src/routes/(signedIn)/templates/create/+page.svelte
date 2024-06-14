@@ -245,6 +245,7 @@
 			nodeConfiguration={{
 				isOnchain: $form.containerTemplate.chain_enabled,
 				chainId: $form.containerTemplate.chain_id,
+				isPaymentsEnabled: true,
 				dockerAccountUsername: $form.dockerAccountUsername,
 			}}
 		>

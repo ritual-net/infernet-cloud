@@ -44,20 +44,23 @@
 
 	// (Payments)
 	let isPaymentsEnabled = (
-		Boolean(node.config.payment_address)
+		Boolean(node.config.chain_enabled && node.config.payment_address)
 	)
 
 
 	// (Containers)
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
+			...node.config.chain_enabled && {
+				isOnchain: 'true',
+				chainId: chainId?.toString(),
+				...isPaymentsEnabled && {
+					isPaymentsEnabled: 'true',
+				},
+			},
 			...node.dockerAccountUsername && {
 				dockerAccountUsername: node.dockerAccountUsername,
 			},
-			...node.config.chain_enabled && {
-				isOnchain: 'true',
-			},
-			chainId: chainId?.toString(),
 		})}`,
 		$page.url
 	).toString()
@@ -300,37 +303,59 @@
 			</div>
 		</section>
 
-		<Collapsible open={isPaymentsEnabled}>
-			<fieldset
-				class="column"
-				disabled={!isPaymentsEnabled}
-			>
-				<section class="column">
-					<div class="column inline">
-						<div class="row inline">
-							<label for="{namePrefix}.config.payment_address">
-								Payment Address
-							</label>
+		<section class="column">
+			<div class="row wrap">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="{namePrefix}|isPaymentsEnabled">
+							Accept Payments?
+						</label>
+					</h3>
 
-							<span class="annotation">Optional</span>
+					<p>Whether to accept payments from subscriptions.</p>
+				</div>
+
+				<Switch
+					id="{namePrefix}|isPaymentsEnabled"
+					name="{namePrefix}|isPaymentsEnabled"
+					bind:checked={isPaymentsEnabled}
+					on:change={e => {
+						node.config.payment_address = undefined
+					}}
+					labelText="Accept Payments?"
+				/>
+			</div>
+
+			<Collapsible open={isPaymentsEnabled}>
+				<fieldset
+					class="column"
+					disabled={!isPaymentsEnabled}
+				>
+					<div class="row wrap">
+						<div class="column inline">
+							<div class="row inline">
+								<label for="{namePrefix}.config.payment_address">
+									Payment Address
+								</label>
+							</div>
+
+							<p>The address to send payments to.</p>
 						</div>
 
-						<p>The address to send payments to.</p>
+						<input
+							type="text"
+							placeholder="0xabcdef...1234567890"
+							id="{namePrefix}.config.payment_address"
+							name="{namePrefix}.config.payment_address"
+							bind:value={node.config.payment_address}
+							{...constraints?.config?.payment_address}
+							required={isPaymentsEnabled}
+							class="code address-input"
+						/>
 					</div>
-
-					<input
-						type="text"
-						placeholder="0xabcdef...1234567890"
-						id="{namePrefix}.config.payment_address"
-						name="{namePrefix}.config.payment_address"
-						bind:value={node.config.payment_address}
-						{...constraints?.config?.payment_address}
-						required={isPaymentsEnabled}
-						class="code"
-					/>
-				</section>
-			</fieldset>
-		</Collapsible>
+				</fieldset>
+			</Collapsible>
+		</section>
 
 		<section class="column">
 			<div class="column inline">

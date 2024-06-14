@@ -266,6 +266,7 @@ export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
 	node.config.registry_address ??= ''
 	node.config.max_gas_limit ??= 5000000
 	node.config.private_key ??= ''
+	node.config.payment_address ??= ''
 	node.config.forward_stats ??= false
 	node.config.snapshot_sync_sleep ??= 1.0
 	node.config.snapshot_sync_batch_size ??= 200

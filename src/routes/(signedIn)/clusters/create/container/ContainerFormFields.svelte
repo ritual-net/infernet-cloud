@@ -3,6 +3,7 @@
 	import type { InputConstraints } from 'sveltekit-superforms'
 	import * as z from 'yup'
 	import { tokensByChainId } from '$/lib/tokens'
+	import { chainsByChainId } from '$/lib/chains'
 
 
 	// Schema
@@ -16,6 +17,7 @@
 	export let nodeConfiguration: {
 		isOnchain: boolean
 		chainId?: number
+		isPaymentsEnabled?: boolean
 		dockerAccountUsername?: string
 	}
 	export let dockerUserImages: string[] | undefined
@@ -468,130 +470,155 @@
 	</section>
 
 	{#if nodeConfiguration.isOnchain}
-		<section class="column">
-			<div class="row wrap">
-				<div class="column inline">
-					<h3 class="row inline">
-						<label for="container.accepted_payments">
-							Payments
-						</label>
+		<section class="stack">
+			<fieldset
+				class="column"
+				disabled={!nodeConfiguration.isPaymentsEnabled}
+			>
+				<div class="row wrap">
+					<div class="column inline">
+						<h3 class="row inline">
+							<label for="container.accepted_payments">
+								Payments
+							</label>
 
-						<span class="annotation">Optional</span>
-					</h3>
+							<span class="annotation">Optional</span>
+						</h3>
 
-					<p>Accepted tokens and minimum payout amounts from subscriptions.</p>
+						<p>Accepted tokens and minimum payout amounts from subscriptions.</p>
+					</div>
+
+					<button
+						type="button"
+						class="small"
+						on:click={() => {
+							container.accepted_payments = [
+								...(container.accepted_payments ?? []),
+								{
+									address: '',
+									amount: undefined,
+								},
+							];
+						}}
+					>
+						Add Token
+					</button>
+
+					<p>If provided, subscriptions that don't meet these requirements will be skipped; otherwise, no payments will be received.</p>
 				</div>
 
-				<button
-					type="button"
-					class="small"
-					on:click={() => {
-						container.accepted_payments = [
-							...(container.accepted_payments ?? []),
-							{
-								address: '',
-								amount: undefined,
-							},
-						];
-					}}
-				>
-					Add Token
-				</button>
+				<SizeTransition>
+					<div class="column">
+						{#each container.accepted_payments ?? [] as payment, i (i)}
+							{@const selectedToken = (
+								tokensByChainId[nodeConfiguration.chainId]
+									?.find(token => token.address === payment.address)
+							)}
 
-				<p>If provided, subscriptions that don't meet these requirements will be skipped; otherwise, no payments will be received.</p>
-			</div>
+							<div class="row token-payment">
+								<div class="column inline">
+									<label for="container.accepted_payments.{i}.address">
+										Token Address
+									</label>
 
-			<SizeTransition>
-				<div class="column">
-					{#each container.accepted_payments ?? [] as payment, i (i)}
-						{@const selectedToken = (
-							tokensByChainId[nodeConfiguration.chainId]
-								?.find(token => token.address === payment.address)
-						)}
-
-						<div class="row token-payment">
-							<div class="column inline">
-								<label for="container.accepted_payments.{i}.address">
-									Token Address
-								</label>
-
-								<TokenAddressCombobox
-									id="container.accepted_payments.{i}.address"
-									name="container.accepted_payments.{i}.address"
-									bind:value={payment.address}
-									tokens={
-										nodeConfiguration.chainId in tokensByChainId
-											? tokensByChainId[nodeConfiguration.chainId]
-												.filter(token => (
-													!new Set(
-														container.accepted_payments?.map(payment => payment.address)
-													)
-														.has(token.address)
-												))
-											: undefined
-									}
-									required
-									menuPlaceholder={
-										nodeConfiguration.chainId in tokensByChainId ?
-											undefined
-										:
-											`Select a chain ID first.`
-									}
-									class="address-input"
-								/>
-							</div>
-
-							<div class="column inline">
-								<div class="row wrap">
-									<label for="container.accepted_payments.{i}.amount">Minimum Payout</label>
-
-									{#if selectedToken && payment.amount && (
-										Math.log10(payment.amount) < selectedToken.decimals - 2
-										|| Number(payment.amount) !== Math.floor(Number(payment.amount))
-									)}
-										<button
-											type="button"
-											class="smaller"
-											on:click={() => {
-												payment.amount = String(
-													Number(payment.amount) === Math.floor(Number(payment.amount))
-														? BigInt(payment.amount) * BigInt(Math.pow(10, selectedToken.decimals))
-														: payment.amount * Math.pow(10, selectedToken.decimals)
-												)
-											}}
-											transition:scale={{ duration: 200, easing: expoOut }}
-										>
-											× 10<sup>{selectedToken.decimals}</sup>
-										</button>
-									{/if}
+									<TokenAddressCombobox
+										id="container.accepted_payments.{i}.address"
+										name="container.accepted_payments.{i}.address"
+										bind:value={payment.address}
+										tokens={
+											nodeConfiguration.chainId in tokensByChainId
+												? tokensByChainId[nodeConfiguration.chainId]
+													.filter(token => (
+														!new Set(
+															container.accepted_payments?.map(payment => payment.address)
+														)
+															.has(token.address)
+													))
+												: undefined
+										}
+										required
+										menuPlaceholder={
+											nodeConfiguration.chainId in tokensByChainId ?
+												undefined
+											:
+												`Select a chain ID first.`
+										}
+										class="address-input"
+									/>
 								</div>
 
-								<input
-									type="number"
-									id="container.accepted_payments.{i}.amount"
-									name="container.accepted_payments.{i}.amount"
-									class="token-amount"
-									value={payment.amount}
-									on:input={e => { payment.amount = e.currentTarget.value }}
-									placeholder="0"
-									step="1"
-									{...constraints?.accepted_payments?.amount}
-								/>
-							</div>
+								<div class="column inline">
+									<div class="row wrap">
+										<label for="container.accepted_payments.{i}.amount">Minimum Payout</label>
 
-							<button
-								type="button"
-								class="small destructive"
-								on:click={() => {
-									container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
-								}}
-							>
-								Delete
-							</button>
-						</div>
-					{/each}
+										{#if selectedToken && payment.amount && (
+											Math.log10(payment.amount) < selectedToken.decimals - 2
+											|| Number(payment.amount) !== Math.floor(Number(payment.amount))
+										)}
+											<button
+												type="button"
+												class="smaller"
+												on:click={() => {
+													payment.amount = String(
+														Number(payment.amount) === Math.floor(Number(payment.amount))
+															? BigInt(payment.amount) * BigInt(Math.pow(10, selectedToken.decimals))
+															: payment.amount * Math.pow(10, selectedToken.decimals)
+													)
+												}}
+												transition:scale={{ duration: 200, easing: expoOut }}
+											>
+												× 10<sup>{selectedToken.decimals}</sup>
+											</button>
+										{/if}
+									</div>
+
+									<input
+										type="number"
+										id="container.accepted_payments.{i}.amount"
+										name="container.accepted_payments.{i}.amount"
+										class="token-amount"
+										value={payment.amount}
+										on:input={e => { payment.amount = e.currentTarget.value }}
+										placeholder="0"
+										step="1"
+										{...constraints?.accepted_payments?.amount}
+									/>
+								</div>
+
+								<button
+									type="button"
+									class="small destructive"
+									on:click={() => {
+										container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
+									}}
+								>
+									Delete
+								</button>
+							</div>
+						{/each}
+					</div>
+				</SizeTransition>
+			</fieldset>
+
+			{#if !nodeConfiguration.chainId}
+				<div
+					class="loading-status card row"
+					transition:scale
+				>
+					<p>Specify a Chain ID at the node level first.</p>
 				</div>
-			</SizeTransition>
+			{:else if !nodeConfiguration.isPaymentsEnabled}
+				<div
+					class="loading-status card row"
+					transition:scale
+				>
+					{#if chainsByChainId.has(nodeConfiguration.chainId)}
+						<img class="icon" src={chainsByChainId.get(nodeConfiguration.chainId)?.icon} />
+					{/if}
+
+					<p>Enable Payments at the node level first.</p>
+				</div>
+			{/if}
 		</section>
 	{/if}
 
@@ -647,5 +674,15 @@
 	* :global(.address-input) {
 		font-size: 0.9em;
 		--input-paddingY: 0.57rem;
+	}
+
+	.loading-status {
+		position: relative;
+		place-self: center;
+	}
+
+	.icon {
+		width: 1.5em;
+		height: 1.5em;
 	}
 </style>
