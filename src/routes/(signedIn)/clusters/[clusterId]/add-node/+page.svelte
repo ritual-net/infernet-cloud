@@ -27,6 +27,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -92,7 +93,7 @@
 			<button
 				type="submit"
 				class="primary"
-				disabled={$submitting}
+				disabled={$submitting || $allErrors.length > 0}
 			>
 				Add Node
 			</button>

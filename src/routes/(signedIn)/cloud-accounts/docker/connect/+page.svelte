@@ -162,7 +162,7 @@
 		<button
 			type="submit"
 			class="primary"
-			disabled={$submitting}
+			disabled={$submitting || $allErrors.length > 0}
 		>
 			Connect Docker Account
 		</button>

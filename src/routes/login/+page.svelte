@@ -31,6 +31,7 @@
 		formId: signUpFormId,
 		form: signUpForm,
 		errors: signUpErrors,
+		allErrors: signUpAllErrors,
 		enhance: signUpEnhance,
 		constraints: signUpConstraints,
 		submitting: signUpSubmitting,
@@ -51,6 +52,7 @@
 		formId: signInFormId,
 		form: signInForm,
 		errors: signInErrors,
+		allErrors: signInAllErrors,
 		enhance: signInEnhance,
 		constraints: signInConstraints,
 		submitting: signInSubmitting,
@@ -64,6 +66,7 @@
 		formId: resetPasswordFormId,
 		form: resetPasswordForm,
 		errors: resetPasswordErrors,
+		allErrors: resetPasswordAllErrors,
 		enhance: resetPasswordEnhance,
 		constraints: resetPasswordConstraints,
 		submitting: resetPasswordSubmitting,
@@ -145,7 +148,7 @@
 						placeholder="Email address"
 						bind:value={$signUpForm.email}
 						{...$signUpConstraints.email}
-						on:change={e => { $signInForm.email = $resetPasswordForm.email = e.target.value }}
+						on:change={e => { $signInForm.email = $resetPasswordForm.email = e.currentTarget.value }}
 					/>
 
 					<input
@@ -159,7 +162,7 @@
 					<button
 						type="submit"
 						class="primary"
-						disabled={$signUpSubmitting}
+						disabled={$signUpSubmitting || $signUpAllErrors.length > 0}
 					>Sign Up</button>
 				</form>
 
@@ -187,7 +190,7 @@
 						placeholder="Email address"
 						bind:value={$signInForm.email}
 						{...$signInConstraints.email}
-						on:change={e => { $signUpForm.email = $resetPasswordForm.email = e.target.value }}
+						on:change={e => { $signUpForm.email = $resetPasswordForm.email = e.currentTarget.value }}
 					/>
 
 					<input
@@ -201,7 +204,7 @@
 					<button
 						type="submit"
 						class="primary"
-						disabled={$signInSubmitting}
+						disabled={$signInSubmitting || $signInAllErrors.length > 0}
 					>Log in</button>
 				</form>
 
@@ -232,13 +235,13 @@
 						placeholder="Email address"
 						bind:value={$resetPasswordForm.email}
 						{...$resetPasswordConstraints.email}
-						on:change={e => { $signUpForm.email = $signInForm.email = e.target.value }}
+						on:change={e => { $signUpForm.email = $signInForm.email = e.currentTarget.value }}
 					/>
 
 					<button
 						type="submit"
 						class="primary"
-						disabled={$resetPasswordSubmitting}
+						disabled={$resetPasswordSubmitting || $resetPasswordAllErrors.length > 0}
 					>Send verification link</button>
 				</form>
 			{/if}
