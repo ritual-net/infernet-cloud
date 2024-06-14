@@ -157,7 +157,7 @@
 							Registry Address
 						</label>
 		
-						<p>The address of the Infernet SDK Registry smart contract.</p>
+						<p>The address of the <a href="https://docs.ritual.net/infernet/sdk/reference/Registry" target="_blank">Infernet SDK Registry</a> smart contract.</p>
 					</div>
 		
 					<Combobox
@@ -201,10 +201,10 @@
 							</label>
 	
 							<span class="annotation">Optional</span>
-						</span>
-	
-						<p>The number of blocks to delay chain syncing. This can prevent failed transactions due to chain reorganizations, at the expense of latency.</p>
+						</span>	
 					</div>
+
+					<p>Number of blocks to delay chain syncing. Added latency may help avoid failed transactions due to reorganizations.</p>
 	
 					<input
 						type="number"
@@ -471,7 +471,7 @@
 				Containers
 			</h3>
 
-			<p>Assign new or existing container configurations to this node.</p>
+			<p>Assign container configurations to this node.</p>
 		</div>
 
 		<a
