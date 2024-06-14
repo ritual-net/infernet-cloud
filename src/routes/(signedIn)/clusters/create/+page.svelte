@@ -302,9 +302,10 @@
 														value={serializeCommaSeparated(ip_allow_http)}
 														onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
 														{...$constraints.config?.ip_allow_http}
+														pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
 														disabled={!hasFirewall}
 													/>
-						
+
 												{:else}
 													<Textarea
 														id="config.ip_allow_ssh"
@@ -314,6 +315,7 @@
 														value={serializeCommaSeparated(ip_allow_ssh)}
 														onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
 														{...$constraints.config?.ip_allow_ssh}
+														pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
 														disabled={!hasFirewall}
 													/>
 												{/if}

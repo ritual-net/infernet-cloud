@@ -322,6 +322,7 @@
 							value={serializeCommaSeparated(allowed_ips)}
 							onblur={e => { allowed_ips = parseCommaSeparated(e.currentTarget.value) }}
 							{...constraints?.allowed_ips}
+							pattern={constraints?.allowed_ips?.pattern && `^${constraints.allowed_ips.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${constraints.allowed_ips.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
 							disabled={!hasFirewall}
 						/>
 
@@ -334,6 +335,7 @@
 							value={serializeCommaSeparated(allowed_addresses)}
 							onblur={e => { allowed_addresses = parseCommaSeparated(e.currentTarget.value) }}
 							{...constraints?.allowed_addresses}
+							pattern={constraints?.allowed_addresses?.pattern && `^${constraints.allowed_addresses.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${constraints.allowed_addresses.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
 							disabled={!(hasFirewall && nodeConfiguration.isOnchain)}
 						/>
 
@@ -346,6 +348,7 @@
 							value={serializeCommaSeparated(allowed_delegate_addresses)}
 							onblur={e => { allowed_delegate_addresses = parseCommaSeparated(e.currentTarget.value) }}
 							{...constraints?.allowed_delegate_addresses}
+							pattern={constraints?.allowed_delegate_addresses?.pattern && `^${constraints.allowed_delegate_addresses.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${constraints.allowed_delegate_addresses.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
 							disabled={!(hasFirewall && nodeConfiguration.isOnchain)}
 						/>
 					{/if}
