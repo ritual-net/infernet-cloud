@@ -165,6 +165,7 @@
 						placeholder="0xabcdef...1234567890"
 						id="{namePrefix}.config.registry_address"
 						name="{namePrefix}.config.registry_address"
+						class="address-input"
 						bind:value={node.config.registry_address}
 						{...constraints?.config?.registry_address}
 						items={
@@ -598,3 +599,11 @@
 		/>
 	</Dialog>
 </section>
+
+
+<style>
+	* :global(.address-input) {
+		font-size: 0.9em;
+		--input-paddingY: 0.57rem;
+	}
+</style>

@@ -537,6 +537,7 @@
 										:
 											`Select a chain ID first.`
 									}
+									class="address-input"
 								/>
 							</div>
 
@@ -641,5 +642,10 @@
 		.token-amount {
 			text-align: end;
 		}
+	}
+
+	* :global(.address-input) {
+		font-size: 0.9em;
+		--input-paddingY: 0.57rem;
 	}
 </style>
