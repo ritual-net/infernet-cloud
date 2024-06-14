@@ -112,7 +112,7 @@
 		method="POST"
 		use:enhance
 	>
-		<div class="card">
+		<div class="card column">
 			<header>
 				Container template
 			</header>
@@ -152,7 +152,11 @@
 						</label>
 					</h3>
 			
-					<p>Whether the node running this container will listen and respond to onchain events, and optionally accept payments from subscriptions.</p>
+					<p>
+						Whether the node running this container will listen and respond to
+						<br>
+						onchain events, and optionally accept payments from subscriptions.
+					</p>
 				</div>
 			
 				<Switch

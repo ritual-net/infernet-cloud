@@ -393,7 +393,7 @@
 				<span class="annotation">Optional</span>
 			</h3>
 
-			<p>Please enter the contents of the .env file for this container.</p>
+			<p>The .env file for this container. One variable per line.</p>
 		</div>
 
 		<Textarea
