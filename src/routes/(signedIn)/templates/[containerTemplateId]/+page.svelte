@@ -149,7 +149,7 @@
 
 					<dd>
 						{#each containerTemplate.allowed_addresses as address}
-							<p><output>{address}</output></p>
+							<p><code>{address}</code></p>
 						{/each}
 					</dd>
 				</section>
@@ -161,7 +161,7 @@
 
 					<dd>
 						{#each containerTemplate.allowed_delegate_addresses as address}
-							<p><output>{address}</output></p>
+							<p><code>{address}</code></p>
 						{/each}
 					</dd>
 				</section>
@@ -239,7 +239,7 @@
 									{:else}
 										<span>{payment.amount}</span>
 										<span>units</span>
-										<span><output>{payment.address}</output></span>
+										<span><code>{payment.address}</code></span>
 									{/if}
 								</span>
 							</p>
@@ -325,26 +325,6 @@
 
 		background-color: var(--color-ritualBlack);
 		color: #fff;
-	}
-
-	output {
-		font-size: 0.75em;
-
-		& pre {
-			overflow-y: auto;
-			max-height: 15.6rem;
-			padding: 1em;
-
-			background: rgba(0, 0, 0, 0.05);
-			border-radius: 0.5em;
-
-			tab-size: 2;
-
-			& code {
-				white-space: pre-wrap;
-				word-break: break-word;
-			}
-		}
 	}
 
 	.description {
