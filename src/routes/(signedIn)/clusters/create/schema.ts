@@ -172,7 +172,8 @@ export const NodeConfig = z
 			.number()
 			.integer()
 			.positive()
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'private_key':
 			Secp256k1PrivateKey
@@ -267,7 +268,7 @@ export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
 	node.config.max_gas_limit ??= 5000000
 	node.config.private_key ??= ''
 	node.config.payment_address ??= ''
-	node.config.forward_stats ??= false
+	node.config.allowed_sim_errors ??= []
 	node.config.snapshot_sync_sleep ??= 1.0
 	node.config.snapshot_sync_batch_size ??= 200
 	node.dockerAccountUsername ??= ''
