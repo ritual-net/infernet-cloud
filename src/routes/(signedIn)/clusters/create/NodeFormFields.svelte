@@ -2,6 +2,8 @@
 	// Types/constants
 	import type { InputConstraints } from 'sveltekit-superforms'
 	import * as z from 'yup'
+	import { chainsByChainId } from '$/lib/chains'
+	import { infernetDeployments } from '$/lib/infernet-sdk'
 
 
 	// Schema
@@ -67,6 +69,7 @@
 
 	// Components
 	import ChainCombobox from '$/components/ChainCombobox.svelte'
+	import Combobox from '$/components/Combobox.svelte'
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Dialog from '$/components/Dialog.svelte'
 	import Switch from '$/components/Switch.svelte'
@@ -157,13 +160,36 @@
 						<p>The address of the Infernet SDK Registry smart contract.</p>
 					</div>
 		
-					<input
-						type="text"
+					<Combobox
+						labelText="Registry Address"
 						placeholder="0xabcdef...1234567890"
 						id="{namePrefix}.config.registry_address"
 						name="{namePrefix}.config.registry_address"
 						bind:value={node.config.registry_address}
 						{...constraints?.config?.registry_address}
+						items={
+							Array.from(
+								Map.groupBy(
+									infernetDeployments,
+									deployment => deployment.chainId
+								)
+									.entries(),
+								([chainId, deployments]) => ({
+									value: chainId,
+									label: chainsByChainId.get(chainId)?.name ?? chainId,
+									items: deployments.map(deployment => ({
+										value: deployment.contracts['Registry'].address,
+										label: `${chainsByChainId.get(chainId)?.name ?? chainId} › Infernet SDK ${deployment.version} › Registry`, 
+										icon: chainsByChainId.get(chainId)?.icon,
+									})),
+								})
+							)
+								.filter(group => (
+									chainId
+										? group.value === chainId
+										: true
+								))
+						}
 					/>
 				</div>
 	
