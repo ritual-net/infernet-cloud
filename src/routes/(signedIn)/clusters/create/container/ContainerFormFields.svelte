@@ -545,8 +545,8 @@
 								<div class="row wrap">
 									<label for="container.accepted_payments.{i}.amount">Minimum Payout</label>
 
-									{#if selectedToken && (
-										payment.amount && Math.log10(payment.amount) < selectedToken.decimals - 2
+									{#if selectedToken && payment.amount && (
+										Math.log10(payment.amount) < selectedToken.decimals - 2
 										|| Number(payment.amount) !== Math.floor(Number(payment.amount))
 									)}
 										<button
