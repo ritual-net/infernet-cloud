@@ -31,7 +31,7 @@
 	items={[
 		{
 			value: 'infernet',
-			label: 'Ritual › Infernet Deployments', 
+			label: 'Ritual › Infernet SDK Deployments', 
 			items: chains.map(chain => ({
 				value: chain.chainId,
 				label: chain.name,
