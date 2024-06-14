@@ -13,8 +13,7 @@ export const ContainerTemplate = Container.concat(
 			.default(false),
 
 		'chain_id': z
-			.number()
-			.required(),
+			.number(),
 	})
 )
 
