@@ -543,7 +543,7 @@
 											:
 												`Select a chain ID first to see suggestions.`
 										}
-										class="address-input"
+										class="code address-input"
 									/>
 								</div>
 
