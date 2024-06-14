@@ -541,7 +541,7 @@
 											nodeConfiguration.chainId in tokensByChainId ?
 												undefined
 											:
-												`Select a chain ID first.`
+												`Select a chain ID first to see suggestions.`
 										}
 										class="address-input"
 									/>
@@ -600,14 +600,15 @@
 				</SizeTransition>
 			</fieldset>
 
-			{#if !nodeConfiguration.chainId}
+			<!-- {#if !nodeConfiguration.chainId}
 				<div
 					class="loading-status card row"
 					transition:scale
 				>
 					<p>Specify a Chain ID at the node level first.</p>
 				</div>
-			{:else if !nodeConfiguration.isPaymentsEnabled}
+			{:else if !nodeConfiguration.isPaymentsEnabled} -->
+			{#if !nodeConfiguration.isPaymentsEnabled}
 				<div
 					class="loading-status card row"
 					transition:scale
