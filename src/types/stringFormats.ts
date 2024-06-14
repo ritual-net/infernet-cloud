@@ -5,7 +5,7 @@ export const Ip = z
 	.matches(/^(?:(?:25[0-5]|(?:2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/)
 	.defined()
 
-export const IpWithAddressMask = z
+export const IpAddressWithMask = z
 	.string<`${number}.${number}.${number}.${number}/${number}`>()
 	.matches(/^(?:(?:25[0-5]|(?:2[0-4]|1\d|[1-9]|)\d)\.?\b){4}(?:\/(3[0-2]|[1-2]?\d))?$/)
 	.defined()

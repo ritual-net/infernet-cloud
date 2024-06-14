@@ -56,11 +56,11 @@ export interface Container extends std.$Object {
   "rate_limit_period"?: number | null;
   "allowed_addresses"?: string[] | null;
   "allowed_delegate_addresses"?: string[] | null;
-  "allowed_ips"?: string[] | null;
   "command"?: string | null;
   "env"?: unknown | null;
   "generates_proofs": boolean;
   "accepted_payments"?: {address: string, amount: string}[] | null;
+  "allowed_ips"?: string[] | null;
 }
 export interface ContainerTemplate extends Container {
   "user": User;

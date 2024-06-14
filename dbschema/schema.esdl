@@ -25,7 +25,7 @@ module default {
     constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$');
   }
 
-  scalar type IpWithAddressMask extending str {
+  scalar type IpAddressWithMask extending str {
     constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/(3[0-2]|[1-2]?[0-9]))?$');
   }
 
@@ -119,7 +119,7 @@ module default {
     }
     allowed_addresses: array<Address>;
     allowed_delegate_addresses: array<Address>;
-    allowed_ips: array<IpAddress>;
+    allowed_ips: array<IpAddressWithMask>;
     command: str;
     env: json;
     required gpu: bool {
@@ -208,8 +208,8 @@ module default {
     required deploy_router: bool {
       default := false;
     }
-    ip_allow_http: array<IpWithAddressMask>;
-    ip_allow_ssh: array<IpWithAddressMask>;
+    ip_allow_http: array<IpAddressWithMask>;
+    ip_allow_ssh: array<IpAddressWithMask>;
     required healthy: bool {
       default := true;
     }

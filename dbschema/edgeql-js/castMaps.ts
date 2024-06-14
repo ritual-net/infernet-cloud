@@ -56,7 +56,7 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _auth.$JWTAlgo ? _auth.$JWTAlgo : 
   T extends _auth.$FlowType ? _auth.$FlowType : 
   T extends _default.$Secp256k1PrivateKey ? _default.$Secp256k1PrivateKey : 
-  T extends _default.$IpWithAddressMask ? _default.$IpWithAddressMask : 
+  T extends _default.$IpAddressWithMask ? _default.$IpAddressWithMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
   T extends _default.$BigIntString ? _default.$BigIntString : 
@@ -117,7 +117,7 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _auth.$JWTAlgo ? _auth.$JWTAlgo : 
   T extends _auth.$FlowType ? _auth.$FlowType : 
   T extends _default.$Secp256k1PrivateKey ? _default.$Secp256k1PrivateKey : 
-  T extends _default.$IpWithAddressMask ? _default.$IpWithAddressMask : 
+  T extends _default.$IpAddressWithMask ? _default.$IpAddressWithMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
   T extends _default.$BigIntString ? _default.$BigIntString : 
@@ -399,8 +399,8 @@ type getSharedParentScalar<A, B> =
     :
     never
   :
-  A extends _default.$IpWithAddressMask ?
-    B extends _default.$IpWithAddressMask ?
+  A extends _default.$IpAddressWithMask ?
+    B extends _default.$IpAddressWithMask ?
     B
     :
     never
@@ -770,8 +770,8 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
     }
-  if (a.__name__ === "default::IpWithAddressMask") {
-    if(b.__name__ === "default::IpWithAddressMask") {
+  if (a.__name__ === "default::IpAddressWithMask") {
+    if(b.__name__ === "default::IpAddressWithMask") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
