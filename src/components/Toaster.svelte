@@ -60,6 +60,7 @@
 				<div class="card column">
 					<div>
 						<button
+							type="button"
 							use:melt={$close(id)}
 							class="small"
 						>
