@@ -13,7 +13,8 @@ import { setDefaultNodeValues, type FormData as CreateClusterFormData } from '$/
 import { error, json } from '@sveltejs/kit';
 import { e, ClusterTypeByProvider } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
-import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
+// import { createNodeParams, insertNodeQuery } from '$/lib/db/components'
+import { insertNodeJsonQuery } from '$/lib/db/components'
 import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
 
 
@@ -44,7 +45,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account and at least one node are required');
 	}
 
-	nodes.forEach(setDefaultNodeValues)
+	// nodes.forEach(setDefaultNodeValues)
 
 	// Get provider of service account
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
@@ -52,7 +53,9 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account could not be retrieved');
 	}
 
-	let cluster: Cluster
+	let cluster: Pick<Cluster, 'id'>
+
+	console.log('Create cluster', { serviceAccountId, config, nodes })
 
 	try {
 		// Exclude zone (unused by backend)
@@ -60,26 +63,27 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			delete config.zone
 
 		// Insert cluster
-		cluster = (await e
+		cluster = await e
 			.params(
 				{
-					nodes: e.array(createNodeParams),
+					nodes: e.array(e.json), 
 				},
-				({ nodes }) =>
-					// Choose cluster type based on provider
-					e.insert(ClusterTypeByProvider[serviceAccount.provider], {
-						...config,
-						service_account: e.select(e.ServiceAccount, () => ({
-							filter_single: { id: serviceAccountId },
-						})),
-						nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
-					})
+				({ nodes }) => e.insert(ClusterTypeByProvider[serviceAccount.provider], {
+					...config,
+					service_account: e.select(e.ServiceAccount, () => ({
+						filter_single: { id: serviceAccountId },
+					})),
+					// nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
+					nodes: e.for(e.array_unpack(nodes), (node) => (
+						insertNodeJsonQuery(node)
+					)),
+				})
 			)
-			.run(client, { nodes })) as Cluster;
+			.run(client, { nodes })
 	} catch (e) {
 		console.error(e)
 
-		if(e.message?.includes(`violates exclusivity constraint`)){
+		if((e as unknown as Error).message?.includes(`violates exclusivity constraint`)){
 			return error(500, `A cluster with name "${config.name}" already exists.`)
 		}
 
