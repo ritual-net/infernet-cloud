@@ -86,7 +86,7 @@
 								data-align="end"
 								data-column="menu"
 							>
-								Actions
+								<span hidden>Actions</span>
 							</th>
 						{/if}
 					</tr>
