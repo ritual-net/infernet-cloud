@@ -265,7 +265,7 @@
 
 		<dl class="card column">
 			<section class="row wrap">
-				<dt>Chain Enabled?</dt>
+				<dt>Onchain?</dt>
 
 				<dd>
 					{containerTemplate.chain_enabled ? 'Yes' : 'No'}

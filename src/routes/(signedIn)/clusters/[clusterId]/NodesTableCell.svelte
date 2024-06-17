@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	export enum CellType {
-		ID,
+		IpAndId,
 		Status,
 	}
 </script>
@@ -21,8 +21,9 @@
 </script>
 
 
-{#if cellType === CellType.ID}
-	<span class="node-id">{nodeWithInfo.node.id}</span>
+{#if cellType === CellType.IpAndId}
+	<p>{nodeWithInfo?.info?.ip ?? '–'}</p>  
+	<p><span class="node-id">{nodeWithInfo.node.provider_id}</span></p>
 
 {:else if cellType === CellType.Status}
 	<div class="row">

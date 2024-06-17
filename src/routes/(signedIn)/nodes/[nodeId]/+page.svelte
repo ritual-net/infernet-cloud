@@ -342,4 +342,8 @@
 			}
 		}
 	}
+
+	.secured:not(:active) {
+		-webkit-text-security: disc;
+	}
 </style>

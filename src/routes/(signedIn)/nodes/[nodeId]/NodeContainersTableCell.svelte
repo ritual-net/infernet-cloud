@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	export enum CellType {
-		ID,
-		Description,
+		ContainerIdAndDescription,
+		ImageAndCommand,
 	}
 </script>
 
@@ -17,19 +17,30 @@
 </script>
 
 
-{#if cellType === CellType.ID}
-	<span class="container-id">{container.container_id}</span>
+{#if cellType === CellType.ContainerIdAndDescription}
+	<p class="container-id">{container.container_id}</p>
 
-{:else if cellType === CellType.Description}
 	<p class="description">
 		{container.description}
+	</p>
+
+{:else if cellType === CellType.ImageAndCommand}
+	<p class="image">{container.image}</p>
+
+	<p class="command">
+		{container.command}
 	</p>
 {/if}
 
 
 <style>
-	.container-id {
+	p {
 		font-size: 0.8em;
+	}
+
+	.description {
+		overflow: auto;
+		max-height: 6lh;
 	}
 
 	.row {
@@ -39,11 +50,5 @@
 	img {
 		width: 1.5em;
 		height: 1.5em;
-	}
-
-	.description {
-		font-size: 0.8em;
-		overflow: auto;
-		max-height: 6lh;
 	}
 </style>

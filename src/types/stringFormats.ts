@@ -17,7 +17,7 @@ export const Address = z
 
 export const Secp256k1PrivateKey = z
 	.string<`0x${string}`>()
-	.matches(/^(?!0x0000000000000000000000000000000000000000000000000000000000000000)0x[0-9a-f]{64}$/i)
+	.matches(/^(?!0x0{64}})0x[0-9a-f]{64}$/i)
 	.defined()
 
 export const BigIntString = z
