@@ -30,11 +30,11 @@
 	data={nodesWithInfo}
 	columns={[
 		{
-			header: 'Name',
+			header: 'IP / ID',
 			accessor: nodeWithInfo => nodeWithInfo,
 			cell: ({ value: nodeWithInfo }) => (
 				createRender(NodesTableCell, {
-					cellType: CellType.ID,
+					cellType: CellType.IpAndId,
 					nodeWithInfo,
 				})
 			),
@@ -50,16 +50,24 @@
 			),
 		},
 		{
-			header: 'IP',
-			accessor: ({ info }) => info?.ip ?? '–',
-		},
-		{
-			header: 'Chain Enabled?',
+			header: 'Onchain?',
 			accessor: ({ node }) => node.chain_enabled ? 'Yes' : 'No',
 		},
 		{
 			header: 'Containers',
 			accessor: ({ node }) => node.containers.length,
+		},
+		{
+			header: 'Payment Address',
+			accessor: ({ node }) => node.payment_address,
+		},
+		{
+			header: 'Ignored Simulation Errors',
+			accessor: ({ node }) => node.allowed_sim_errors?.length ? `${node.allowed_sim_errors.length} substrings` : '–',
+		},
+		{
+			header: 'Docker Account',
+			accessor: ({ node }) => node.docker_account ? node.docker_account.username : '–',
 		},
 	]}
 	getRowLink={({ node }) => (

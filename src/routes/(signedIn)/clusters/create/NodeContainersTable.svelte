@@ -24,18 +24,24 @@
 	getId={container => container.id}
 	columns={[
 		{
-			header: 'Image / Description',
+			header: 'Service ID / Description',
 			accessor: container => container,
 			cell: ({ value: container }) => (
 				createRender(NodeContainersTableCell, {
-					cellType: CellType.Description,
+					cellType: CellType.ContainerIdAndDescription,
+					container,
+				})
+			),
+		},
+		{
+			header: 'Image / Command',
+			accessor: container => container,
+			cell: ({ value: container }) => (
+				createRender(NodeContainersTableCell, {
+					cellType: CellType.ImageAndCommand,
 					container,
 				})
 			)
-		},
-		{
-			header: 'Service ID',
-			accessor: container => container.container_id,
 		},
 		{
 			header: 'Visibility',
@@ -47,15 +53,32 @@
 		},
 		{
 			header: 'Firewall?',
-			accessor: container => container.allowed_ips.length || container.allowed_addresses.length || container.allowed_delegate_addresses.length ? 'Yes' : 'No',
+			accessor: container => (
+				container.allowed_ips?.length && (container.allowed_addresses?.length || container.allowed_delegate_addresses?.length) ?
+					'Only allowed IPs and addresses'
+				: container.allowed_ips?.length ?
+					'Only allowed IPs'
+				: container.allowed_addresses?.length || container.allowed_delegate_addresses?.length ?
+					'Only allowed addresses'
+				:
+					'-'
+			),
 		},
 		{
 			header: 'Payments',
 			accessor: container => container.accepted_payments?.length ? `${container.accepted_payments.length} tokens` : '–',
 		},
 		{
-			header: 'Generates Proofs?',
+			header: 'GPU?',
+			accessor: container => container.gpu ? 'Yes' : 'No',
+		},
+		{
+			header: 'Proofs?',
 			accessor: container => container.generates_proofs ? 'Yes' : 'No',
+		},
+		{
+			header: 'Environment Variables',
+			accessor: container => container.env && Object.entries(container.env).length ? `${Object.entries(container.env).length} variables` : '–',
 		},
 	]}
 	onRowClick={container => {

@@ -22,39 +22,21 @@
 	data={containers}
 	columns={[
 		{
-			header: 'Service ID',
+			header: 'Service ID / Description',
 			accessor: container => container,
 			cell: ({ value: container }) => (
 				createRender(NodeContainersTableCell, {
-					cellType: CellType.ID,
+					cellType: CellType.ContainerIdAndDescription,
 					container,
 				})
 			),
 		},
-		// {
-		// 	header: 'Allowed IPs',
-		// 	accessor: container => container.allowed_ips.length ? container.allowed_ips.join(', ') : 'All',
-		// },
-		// {
-		// 	header: 'Cloud Provider',
-		// 	accessor: container => container,
-		// 	cell: ({ value: container }) => (
-		// 		createRender(NodeContainersTableCell, {
-		// 			cellType: CellType.CloudProvider,
-		// 			container,
-		// 		})
-		// 	),
-		// },
 		{
-			header: 'Image',
-			accessor: container => container.image,
-		},
-		{
-			header: 'Description',
+			header: 'Image / Command',
 			accessor: container => container,
 			cell: ({ value: container }) => (
 				createRender(NodeContainersTableCell, {
-					cellType: CellType.Description,
+					cellType: CellType.ImageAndCommand,
 					container,
 				})
 			)
@@ -63,26 +45,27 @@
 			header: 'Visibility',
 			accessor: container => container.external ? 'External' : 'Internal',
 		},
-		// {
-		// 	header: 'Allowed Addresses',
-		// 	accessor: container => container.allowed_addresses,
-		// },
-		// {
-		// 	header: 'Allowed Delegate Addresses',
-		// 	accessor: container => container.allowed_delegate_addresses,
-		// },
-		// {
-		// 	header: 'Allowed IPs',
-		// 	accessor: container => container.allowed_ips,
-		// },
-		// {
-		// 	header: 'Command',
-		// 	accessor: container => container.command,
-		// },
-		// {
-		// 	header: 'Env',
-		// 	accessor: container => container.env,
-		// },
+		{
+			header: 'GPU?',
+			accessor: container => container.gpu ? 'Yes' : 'No',
+		},
+		{
+			header: 'Firewall?',
+			accessor: container => (
+				container.allowed_ips?.length && (container.allowed_addresses?.length || container.allowed_delegate_addresses?.length) ?
+					'Only allowed IPs and addresses'
+				: container.allowed_ips?.length ?
+					'Only allowed IPs'
+				: container.allowed_addresses?.length || container.allowed_delegate_addresses?.length ?
+					'Only allowed addresses'
+				:
+					'-'
+			),
+		},
+		{
+			header: 'Payments',
+			accessor: container => container.accepted_payments?.length ? `${container.accepted_payments.length} tokens` : '–',
+		},
 		{
 			header: 'GPU?',
 			accessor: container => container.gpu ? 'Yes' : 'No',
@@ -90,6 +73,10 @@
 		{
 			header: 'Proofs?',
 			accessor: container => container.generates_proofs ? 'Yes' : 'No',
+		},
+		{
+			header: 'Environment Variables',
+			accessor: container => container.env && Object.entries(container.env).length ? `${Object.entries(container.env).length} variables` : '–',
 		},
 	]}
 >
