@@ -264,8 +264,8 @@
 		<h3>Node Details</h3>
 
 		<dl class="card column">
-			<section class="row">
-				<dt>Chain Enabled?</dt>
+			<section class="row wrap">
+				<dt>Onchain?</dt>
 
 				<dd>
 					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
