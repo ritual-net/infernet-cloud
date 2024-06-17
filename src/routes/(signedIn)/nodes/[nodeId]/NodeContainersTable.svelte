@@ -63,16 +63,16 @@
 			),
 		},
 		{
+			header: 'Env Vars',
+			accessor: container => container.env && Object.entries(container.env).length ? `${Object.entries(container.env).length} variables` : '–',
+		},
+		{
 			header: 'Payments',
 			accessor: container => container.accepted_payments?.length ? `${container.accepted_payments.length} tokens` : '–',
 		},
 		{
 			header: 'Proofs?',
 			accessor: container => container.generates_proofs ? 'Yes' : 'No',
-		},
-		{
-			header: 'Environment Variables',
-			accessor: container => container.env && Object.entries(container.env).length ? `${Object.entries(container.env).length} variables` : '–',
 		},
 	]}
 >
