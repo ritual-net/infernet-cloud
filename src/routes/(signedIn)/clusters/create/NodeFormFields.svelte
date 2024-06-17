@@ -71,7 +71,7 @@
 
 
 	// Components
-	import ChainCombobox from '$/components/ChainCombobox.svelte'
+	import ChainCombobox from '$/views/ChainCombobox.svelte'
 	import Combobox from '$/components/Combobox.svelte'
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Dialog from '$/components/Dialog.svelte'
