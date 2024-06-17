@@ -67,10 +67,6 @@
 			accessor: container => container.accepted_payments?.length ? `${container.accepted_payments.length} tokens` : '–',
 		},
 		{
-			header: 'GPU?',
-			accessor: container => container.gpu ? 'Yes' : 'No',
-		},
-		{
 			header: 'Proofs?',
 			accessor: container => container.generates_proofs ? 'Yes' : 'No',
 		},
