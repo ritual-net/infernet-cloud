@@ -111,6 +111,50 @@
 
 	<section class="row wrap">
 		<div class="column inline">
+			<h3 class="row inline">
+				<label for="container.container_id">
+					Service ID
+				</label>
+			</h3>
+
+			<p>Set an ID to represent this container's intended workflow. <br>May be shared across similarly configured containers.</p>
+		</div>
+
+		<input
+			type="text"
+			id="container.container_id"
+			name="container.container_id"
+			bind:value={container.container_id}
+			placeholder={`organization-toolkit-model-version`}
+			{...constraints?.container_id ?? {}}
+		/>
+	</section>
+
+	<section class="row wrap">
+		<div class="column inline">
+			<h3 class="row inline">
+				<label for="container.description">
+					Description
+				</label>
+
+				<span class="annotation">Optional</span>
+			</h3>
+
+			<p>Add a description for this container.</p>
+		</div>
+
+		<input
+			type="text"
+			id="container.description"
+			name="container.description"
+			bind:value={container.description}
+			placeholder={`Enter a description here...`}
+			{...constraints?.description ?? {}}
+		/>
+	</section>
+
+	<section class="row wrap">
+		<div class="column inline">
 			<h3>
 				<label for="container.image">
 					Image
@@ -167,50 +211,6 @@
 			)}
 			placeholder={`Choose or search for an image...`}
 			{...constraints?.image}
-		/>
-	</section>
-
-	<section class="row wrap">
-		<div class="column inline">
-			<h3 class="row inline">
-				<label for="container.container_id">
-					Service ID
-				</label>
-			</h3>
-
-			<p>Set an ID to represent this container's intended workflow. <br>May be shared across similarly configured containers.</p>
-		</div>
-
-		<input
-			type="text"
-			id="container.container_id"
-			name="container.container_id"
-			bind:value={container.container_id}
-			placeholder={`organization-toolkit-model-version`}
-			{...constraints?.container_id ?? {}}
-		/>
-	</section>
-
-	<section class="row wrap">
-		<div class="column inline">
-			<h3 class="row inline">
-				<label for="container.description">
-					Description
-				</label>
-
-				<span class="annotation">Optional</span>
-			</h3>
-
-			<p>Add a description for this container.</p>
-		</div>
-
-		<input
-			type="text"
-			id="container.description"
-			name="container.description"
-			bind:value={container.description}
-			placeholder={`Enter a description here...`}
-			{...constraints?.description ?? {}}
 		/>
 	</section>
 
