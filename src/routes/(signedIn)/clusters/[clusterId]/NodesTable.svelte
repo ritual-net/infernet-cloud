@@ -1,11 +1,9 @@
 <script lang="ts">
 	// Types/constants
-	// import type { InfernetNode } from '$schema/interfaces'
 	import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
 	// Inputs
-	// export let nodes: InfernetNode[]
 	export let nodesWithInfo: InfernetNodeWithInfo[]
 
 

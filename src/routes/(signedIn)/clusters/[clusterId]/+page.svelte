@@ -185,9 +185,6 @@
 			</a>
 		</div>
 
-		<!-- <NodesTable
-			nodes={cluster.nodes}
-		/> -->
 		<NodesTable
 			{nodesWithInfo}
 		/>
