@@ -1,11 +1,9 @@
 <script lang="ts">
 	// Types/constants
-	// import type { InfernetNode } from '$schema/interfaces'
 	import type { InfernetNodeWithInfo } from '$/types/provider'
 
 
 	// Inputs
-	// export let nodes: InfernetNode[]
 	export let nodesWithInfo: InfernetNodeWithInfo[]
 
 
@@ -59,12 +57,12 @@
 		},
 		{
 			header: 'Payment Address',
-			accessor: ({ node }) => node.payment_address,
+			accessor: ({ node }) => node.payment_address ?? '–',
 		},
-		{
-			header: 'Ignored Simulation Errors',
-			accessor: ({ node }) => node.allowed_sim_errors?.length ? `${node.allowed_sim_errors.length} substrings` : '–',
-		},
+		// {
+		// 	header: 'Ignored Simulation Errors',
+		// 	accessor: ({ node }) => node.allowed_sim_errors?.length ? `${node.allowed_sim_errors.length} substrings` : '–',
+		// },
 		{
 			header: 'Docker Account',
 			accessor: ({ node }) => node.docker_account ? node.docker_account.username : '–',

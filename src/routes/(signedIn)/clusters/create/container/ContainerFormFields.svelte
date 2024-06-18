@@ -95,7 +95,7 @@
 	import SizeTransition from '$/components/SizeTransition.svelte'
 	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
-	import TokenAddressCombobox from '$/components/TokenAddressCombobox.svelte'
+	import TokenAddressCombobox from '$/views/TokenAddressCombobox.svelte'
 
 
 	// Transitions

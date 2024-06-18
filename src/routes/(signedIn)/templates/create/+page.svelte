@@ -94,7 +94,7 @@
 
 
 	// Components
-	import ChainCombobox from '$/components/ChainCombobox.svelte'
+	import ChainCombobox from '$/views/ChainCombobox.svelte'
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Select from '$/components/Select.svelte'
 	import Switch from '$/components/Switch.svelte'
