@@ -128,9 +128,27 @@
 			display: grid !important;
 			justify-content: stretch;
 			justify-items: start;
+			gap: 1rem;
 
 			li {
 				display: grid !important;
+			}
+
+			&:after {
+				position: absolute;
+				right: 1rem;
+				top: 0.6rem;
+
+				font-size: 1.5rem;
+				content: '☰';
+
+				:global(header:is(:hover, :focus-within) &) { 
+					opacity: 0;
+				}
+			}
+
+			> :last-child {
+				justify-self: stretch;
 			}
 		}
 	}
