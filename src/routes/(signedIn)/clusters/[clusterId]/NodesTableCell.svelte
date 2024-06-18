@@ -23,7 +23,7 @@
 
 {#if cellType === CellType.IpAndId}
 	<p>{nodeWithInfo?.info?.ip ?? '–'}</p>  
-	<p><span class="node-id">{nodeWithInfo.node.provider_id}</span></p>
+	<p><span class="node-id">{nodeWithInfo.node.provider_id ?? '–'}</span></p>
 
 {:else if cellType === CellType.Status}
 	<div class="row">
