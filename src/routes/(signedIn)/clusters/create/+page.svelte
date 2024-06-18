@@ -44,6 +44,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -147,6 +148,7 @@
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Combobox from '$/components/Combobox.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
@@ -592,13 +594,11 @@
 								Add Node
 							</button>
 
-							<button
-								type="submit"
-								class="primary"
-								disabled={$submitting}
-							>
-								Submit
-							</button>
+							<FormSubmitButton
+								submitting={$submitting}
+								allErrors={$allErrors}
+								submitLabel="Create Cluster"
+							/>
 						</div>
 					</footer>
 				{/if}

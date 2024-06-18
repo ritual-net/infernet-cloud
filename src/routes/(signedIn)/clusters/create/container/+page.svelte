@@ -105,6 +105,7 @@
 
 
 	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tooltip from '$/components/Tooltip.svelte'
 	import ContainerFormFields from './ContainerFormFields.svelte'
@@ -188,31 +189,11 @@
 		</div>
 
 		<div class="row">
-			<Tooltip
-				labelText="Form errors"
-				isEnabled={$allErrors.length > 0}
-			>
-				<button
-					type="submit"
-					class="primary"
-					disabled={$submitting || $allErrors.length > 0}
-				>
-					{submitLabel}
-				</button>
-
-				<svelte:fragment slot="content">
-					{#each $allErrors as error}
-						<div>
-							{error.path}
-							<ul>
-								{#each error.messages as message}
-									<li>{message}</li>
-								{/each}
-							</ul>
-						</div>
-					{/each}
-				</svelte:fragment>
-			</Tooltip>
+			<FormSubmitButton
+				submitting={$submitting}
+				allErrors={$allErrors}
+				{submitLabel}
+			/>
 		</div>
 	</footer>
 </form>

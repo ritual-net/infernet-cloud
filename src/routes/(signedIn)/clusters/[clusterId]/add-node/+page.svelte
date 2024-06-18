@@ -59,6 +59,7 @@
 
 	// Components
 	import NodeFormFields from '../../create/NodeFormFields.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 </script>
 
 
@@ -90,13 +91,11 @@
 		</a>
 				
 		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting || $allErrors.length > 0}
-			>
-				Add Node
-			</button>
+			<FormSubmitButton
+				submitting={$submitting}
+				allErrors={$allErrors}
+				submitLabel="Add Node"
+			/>
 		</div>
 	</footer>
 </form>

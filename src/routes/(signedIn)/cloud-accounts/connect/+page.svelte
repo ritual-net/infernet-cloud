@@ -66,6 +66,7 @@
 
 
 	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
@@ -457,13 +458,11 @@
 						</div>
 				
 						<div class="row">
-							<button
-								type="submit"
-								class="primary"
-								disabled={$submitting || $allErrors.length > 0}
-							>
-								Connect
-							</button>
+							<FormSubmitButton
+								submitting={$submitting}
+								allErrors={$allErrors}
+								submitLabel="Connect"
+							/>
 						</div>
 					</footer>
 				{/if}

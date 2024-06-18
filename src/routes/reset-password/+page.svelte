@@ -21,6 +21,7 @@
 		form,
 		enhance,
 		constraints,
+		allErrors,
 
 		submitting,
 	} = superForm(formData, {
@@ -28,6 +29,10 @@
 		customValidity: true,
 		validators: yupClient(PasswordFormData),
 	})
+
+
+	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 </script>
 
 
@@ -50,11 +55,11 @@
 			{...$constraints.password}
 		/>
 
-		<button
-			type="submit"
-			class="primary"
-			disabled={$submitting}
-		>Set Password</button>
+		<FormSubmitButton
+			allErrors={$allErrors}
+			submitting={$submitting}
+			submitLabel="Set Password"
+		/>
 	</form>
 </div>
 
