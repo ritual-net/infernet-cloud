@@ -40,7 +40,6 @@ export const createNodeParams = e.tuple({
 				e.tuple({
 					address: e.Address,
 					amount: e.BigIntString,
-					// amount: e.str,
 				})
 			),
 			generates_proofs: e.bool,
