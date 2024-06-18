@@ -8,11 +8,12 @@
 
 <script lang="ts">
 	// Types/constants
-	import type { Container } from '$schema/interfaces'
+	import type { InferType } from 'yup'
+	import type { Container } from './schema'
 
 
 	// Inputs
-	export let container: Container
+	export let container: InferType<typeof Container>
 	export let cellType: CellType
 </script>
 
