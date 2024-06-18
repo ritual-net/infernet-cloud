@@ -18,17 +18,17 @@
 
 
 {#if cellType === CellType.ContainerIdAndDescription}
-	<div>{container.container_id}</div>
+	<div>{container.container_id ?? '–'}</div>
 
 	<p class="description">
-		{container.description}
+		{container.description ?? '–'}
 	</p>
 
 {:else if cellType === CellType.ImageAndCommand}
-	<div>{container.image}</div>
+	<div>{container.image ?? '–'}</div>
 
 	<p class="command">
-		<code>{container.command}</code>
+		<code>{container.command ?? '–'}</code>
 	</p>
 {/if}
 
