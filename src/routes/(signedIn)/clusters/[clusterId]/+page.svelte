@@ -9,11 +9,14 @@
 
 	$: ({
 		cluster,
-		nodesWithInfo,
+		nodesWithInfoPromise,
 	} = $page.data as PageData)
 
 
 	// Internal state
+	let nodesWithInfo: Awaited<typeof nodesWithInfoPromise> | undefined
+	$: nodesWithInfoPromise.then(_ => nodesWithInfo = _)
+
 	$: clusterStatus = (
 		cluster.locked
 			? 'updating'
@@ -61,6 +64,11 @@
 	import NodesTable from './NodesTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import Status from '$/views/Status.svelte'
+
+
+	// Transitions
+	import { scale } from 'svelte/transition'
+	import SizeTransition from '$/components/SizeTransition.svelte'
 </script>
 
 
@@ -171,7 +179,7 @@
 		</div>
 	</header>
 
-	<section>
+	<section class="column">
 		<div class="row">
 			<h3>Nodes</h3>
 
@@ -185,9 +193,19 @@
 			</a>
 		</div>
 
-		<NodesTable
-			{nodesWithInfo}
-		/>
+		<SizeTransition>
+			<div class="stack">
+				{#if !nodesWithInfo}
+					<div class="card" transition:scale>
+						<p>Loading nodes...</p>
+					</div>
+				{:else}
+					<NodesTable
+						{nodesWithInfo}
+					/>
+				{/if}
+			</div>
+		</SizeTransition>
 	</section>
 
 	<section class="column">

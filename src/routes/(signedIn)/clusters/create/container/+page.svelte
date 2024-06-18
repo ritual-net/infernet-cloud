@@ -35,6 +35,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -104,7 +105,9 @@
 
 
 	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Select from '$/components/Select.svelte'
+	import Tooltip from '$/components/Tooltip.svelte'
 	import ContainerFormFields from './ContainerFormFields.svelte'
 </script>
 
@@ -186,13 +189,11 @@
 		</div>
 
 		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting}
-			>
+			<FormSubmitButton
+				submitting={$submitting}
+				allErrors={$allErrors}
 				{submitLabel}
-			</button>
+			/>
 		</div>
 	</footer>
 </form>

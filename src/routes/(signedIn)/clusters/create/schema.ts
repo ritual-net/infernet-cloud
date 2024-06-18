@@ -16,12 +16,16 @@ export const Config = z
 			.array(
 				IpAddressWithMask
 			)
+			.optional()
+			.nullable()
 			.default([]),
 
 		'ip_allow_ssh': z
 			.array(
 				IpAddressWithMask
 			)
+			.optional()
+			.nullable()
 			.default([]),
 
 		'region': z
@@ -30,7 +34,8 @@ export const Config = z
 
 		'zone': z
 			.string()
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'machine_type': z
 			.string()
@@ -51,6 +56,7 @@ export const Container = z
 		'id': z
 			.string()
 			.optional()
+			.nullable()
 			.default(() => (
 				crypto.randomUUID()
 			)),
@@ -66,6 +72,7 @@ export const Container = z
 		'description': z
 			.string()
 			.optional()
+			.nullable()
 			.default(''),
 
 		'external': z
@@ -78,6 +85,7 @@ export const Container = z
 				Address
 			)
 			.optional()
+			.nullable()
 			.default([]),
 
 		'allowed_delegate_addresses': z
@@ -85,6 +93,7 @@ export const Container = z
 				Address
 			)
 			.optional()
+			.nullable()
 			.default([]),
 
 		'allowed_ips': z
@@ -92,16 +101,19 @@ export const Container = z
 				IpAddressWithMask
 			)
 			.optional()
+			.nullable()
 			.default([]),
 
 		'command': z
 			.string()
 			.optional()
+			.nullable()
 			.default(''),
 
 		'env': z
 			.object()
 			.optional()
+			.nullable()
 			.default({}),
 
 		'gpu': z
@@ -113,18 +125,21 @@ export const Container = z
 			.number()
 			.integer()
 			.positive()
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'rate_limit_period': z
 			.number()
 			.positive()
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'accepted_payments': z
 			.array(
 				ContainerPayment,
 			)
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'generates_proofs': z
 			.boolean()
@@ -142,7 +157,8 @@ export const NodeConfig = z
 		'trail_head_blocks': z
 			.number()
 			.positive()
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'rpc_url': z
 			.string()
@@ -187,14 +203,16 @@ export const NodeConfig = z
 			),
 
 		'payment_address': Address
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'allowed_sim_errors': z
 			.array(
 				z
 					.string()
 			)
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'forward_stats': z
 			.boolean()
@@ -203,12 +221,16 @@ export const NodeConfig = z
 		
 		'snapshot_sync_sleep': z.
 			number()
-			.positive(),
-				
+			.positive()
+			.optional()
+			.nullable(),
+
 		'snapshot_sync_batch_size': z
 			.number()
 			.positive()
-			.integer(),
+			.integer()
+			.optional()
+			.nullable(),
 	})
 
 export const Node = z
@@ -225,7 +247,8 @@ export const Node = z
 		'dockerAccountUsername': z
 			.string()
 			.default('')
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'containers': z
 			.array(
@@ -248,6 +271,8 @@ export const FormData = z
 			.array(
 				Node,
 			)
+			.optional()
+			.nullable()
 			.default(() => (
 				[
 					Node.getDefault(),

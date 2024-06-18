@@ -91,6 +91,7 @@
 
 
 	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Tabs from '$/components/Tabs.svelte'
 </script>
 
@@ -159,11 +160,11 @@
 						{...$signUpConstraints.password}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$signUpSubmitting || $signUpAllErrors.length > 0}
-					>Sign Up</button>
+					<FormSubmitButton
+						submitting={$signUpSubmitting}
+						allErrors={$signUpAllErrors}
+						submitLabel="Sign Up"
+					/>
 				</form>
 
 			{:else if item.id === FormAction.LogIn}
@@ -201,11 +202,11 @@
 						{...$signInConstraints.password}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$signInSubmitting || $signInAllErrors.length > 0}
-					>Log in</button>
+					<FormSubmitButton
+						submitting={$signInSubmitting}
+						allErrors={$signInAllErrors}
+						submitLabel="Log in"
+					/>
 				</form>
 
 			{:else if item.id === FormAction.ResetPassword}
@@ -238,11 +239,11 @@
 						on:change={e => { $signUpForm.email = $signInForm.email = e.currentTarget.value }}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$resetPasswordSubmitting || $resetPasswordAllErrors.length > 0}
-					>Send verification link</button>
+					<FormSubmitButton
+						submitting={$resetPasswordSubmitting}
+						allErrors={$resetPasswordAllErrors}
+						submitLabel="Send verification link"
+					/>
 				</form>
 			{/if}
 		</svelte:fragment>

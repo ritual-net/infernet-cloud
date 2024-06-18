@@ -96,10 +96,10 @@
 	// Components
 	import ChainCombobox from '$/views/ChainCombobox.svelte'
 	import Collapsible from '$/components/Collapsible.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Select from '$/components/Select.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import ContainerFormFields from '$/routes/(signedIn)/clusters/create/container/ContainerFormFields.svelte'
-	import Tooltip from '$/components/Tooltip.svelte'
 </script>
 
 
@@ -270,31 +270,11 @@
 			</div>
 
 			<div class="row">
-				<Tooltip
-					labelText="Form errors"
-					isEnabled={$allErrors.length > 0}
-				>
-					<button
-						type="submit"
-						class="primary"
-						disabled={$submitting || $allErrors.length > 0}
-					>
-						Add Container Template
-					</button>
-
-					<svelte:fragment slot="content">
-						{#each $allErrors as error}
-							<div>
-								{error.path}
-								<ul>
-									{#each error.messages as message}
-										<li>{message}</li>
-									{/each}
-								</ul>
-							</div>
-						{/each}
-					</svelte:fragment>
-				</Tooltip>
+				<FormSubmitButton
+					submitting={$submitting}
+					allErrors={$allErrors}
+					submitLabel="Add Container Template"
+				/>
 			</div>
 		</footer>
 	</form>
