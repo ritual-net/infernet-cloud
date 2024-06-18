@@ -13,7 +13,7 @@ export const load: PageLoad = async ({
 }) => {
 	const { cluster } = await parent()
 
-	const nodesWithInfo = await Promise.all(
+	const nodesWithInfoPromise = Promise.all(
 		cluster.nodes.map(async node => (
 			await fetch(
 				resolveRoute('/api/node/[nodeId]', {
@@ -26,6 +26,6 @@ export const load: PageLoad = async ({
 
 	return {
 		cluster,
-		nodesWithInfo,
+		nodesWithInfoPromise,
 	}
 }
