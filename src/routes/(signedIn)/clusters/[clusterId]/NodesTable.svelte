@@ -59,12 +59,12 @@
 		},
 		{
 			header: 'Payment Address',
-			accessor: ({ node }) => node.payment_address,
+			accessor: ({ node }) => node.payment_address ?? '–',
 		},
-		{
-			header: 'Ignored Simulation Errors',
-			accessor: ({ node }) => node.allowed_sim_errors?.length ? `${node.allowed_sim_errors.length} substrings` : '–',
-		},
+		// {
+		// 	header: 'Ignored Simulation Errors',
+		// 	accessor: ({ node }) => node.allowed_sim_errors?.length ? `${node.allowed_sim_errors.length} substrings` : '–',
+		// },
 		{
 			header: 'Docker Account',
 			accessor: ({ node }) => node.docker_account ? node.docker_account.username : '–',
