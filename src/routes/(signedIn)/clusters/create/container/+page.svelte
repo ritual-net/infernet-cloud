@@ -35,6 +35,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -105,6 +106,7 @@
 
 	// Components
 	import Select from '$/components/Select.svelte'
+	import Tooltip from '$/components/Tooltip.svelte'
 	import ContainerFormFields from './ContainerFormFields.svelte'
 </script>
 
@@ -186,13 +188,31 @@
 		</div>
 
 		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting}
+			<Tooltip
+				labelText="Form errors"
+				isEnabled={$allErrors.length > 0}
 			>
-				{submitLabel}
-			</button>
+				<button
+					type="submit"
+					class="primary"
+					disabled={$submitting || $allErrors.length > 0}
+				>
+					{submitLabel}
+				</button>
+
+				<svelte:fragment slot="content">
+					{#each $allErrors as error}
+						<div>
+							{error.path}
+							<ul>
+								{#each error.messages as message}
+									<li>{message}</li>
+								{/each}
+							</ul>
+						</div>
+					{/each}
+				</svelte:fragment>
+			</Tooltip>
 		</div>
 	</footer>
 </form>
