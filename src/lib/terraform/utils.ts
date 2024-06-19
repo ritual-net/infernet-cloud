@@ -35,14 +35,14 @@ export const formatNodeConfig = (node: InfernetNode) => {
 	return {
 		chain: {
 			enabled: node.chain_enabled,
-			trail_head_blocks: node.trail_head_blocks,
-			rpc_url: node.rpc_url,
-			registry_address: node.registry_address,
+			trail_head_blocks: node.trail_head_blocks ?? 0,
+			rpc_url: node.rpc_url ?? '',
+			registry_address: node.registry_address ?? '',
 			allowed_sim_errors: node.allowed_sim_errors,
 			payment_address: node.payment_address,
 			wallet: {
-				max_gas_limit: node.max_gas_limit,
-				private_key: node.private_key,
+				max_gas_limit: node.max_gas_limit ?? 0,
+				private_key: node.private_key ?? '',
 			},
 		},
 		forward_stats: node.forward_stats,
