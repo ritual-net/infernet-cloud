@@ -212,7 +212,7 @@
 						href={resolveRoute(`/cloud-accounts/[serviceAccountId]`, {
 							serviceAccountId: cluster.service_account.id,
 						})}
-						class="row"
+						class="row inline with-icon"
 					>
 						<img
 							class="icon"
@@ -407,9 +407,9 @@
 
 	.scrollable {
 		overflow: auto;
-		max-height: 15.6rem;
+		max-height: 19.6rem;
 		resize: all;
-		padding: 1em;
+		padding: 0.66em 1em;
 
 		background: rgba(0, 0, 0, 0.05);
 		border-radius: 0.5em;
@@ -431,6 +431,7 @@
 		.log {
 			margin-inline: -1rem;
 			padding-inline: 1rem;
+			padding-block: 0.1rem;
 
 			&[data-level="error"] {
 				background-color: rgb(255, 246, 246);
