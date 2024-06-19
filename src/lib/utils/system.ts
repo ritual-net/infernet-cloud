@@ -27,7 +27,7 @@ export const readJsonFromFile = async <T>(filePath: string) => {
  * @param data The JSON object to write.
  */
 export const writeJsonToFile = async (filePath: string, data: object): Promise<void> => {
-	await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+	await fs.writeFile(filePath, JSON.stringify(data, null, '\t'), { encoding: 'utf8' });
 };
 
 /**
