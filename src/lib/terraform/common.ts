@@ -8,6 +8,40 @@ import { NodeAction } from '$/types/provider';
 import { TFAction } from '$/types/terraform';
 
 /**
+ * Locks the given cluster to prevent concurrent mutations.
+ *
+ * @param client The database client
+ * @param clusterId The id of the Cluster
+ */
+const lockCluster = async (client: Client, clusterId: string) => {
+	await e
+		.update(e.Cluster, () => ({
+			filter_single: { id: clusterId },
+			set: {
+				locked: true,
+			},
+		}))
+		.run(client)
+}
+
+/**
+ * Unlocks the given cluster.
+ *
+ * @param client The database client
+ * @param clusterId The id of the Cluster
+ */
+const unlockCluster = async (client: Client, clusterId: string) => {
+	await e
+		.update(e.Cluster, () => ({
+			filter_single: { id: clusterId },
+			set: {
+				locked: false,
+			},
+		}))
+		.run(client)
+}
+
+/**
  * Applies the given action to a cluster, and persists the resulting Terraform state
  * in the database.
  *
@@ -30,15 +64,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		throw new Error(`The cluster is already in the process of being updated. Please wait and try again.`)
 
 	try {
-		// Lock the cluster to prevent concurrent mutations
-		await e
-			.update(e.Cluster, () => ({
-				filter_single: { id: clusterId },
-				set: {
-					locked: true,
-				},
-			}))
-			.run(client)
+		await lockCluster(client, clusterId)
 
 		// Perform Terraform action
 		const {
@@ -106,14 +132,6 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 			error,
 		}
 	}finally{
-		// Unlock cluster
-		await e
-			.update(e.Cluster, () => ({
-				filter_single: { id: clusterId },
-				set: {
-					locked: false,
-				},
-			}))
-			.run(client)
+		await unlockCluster(client, clusterId)
 	}
 }
