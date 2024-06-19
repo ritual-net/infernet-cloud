@@ -46,12 +46,20 @@ export const executeCommands = async (directory: string, command: string): Promi
 	console.log(command);
 
 	return new Promise((resolve, reject) => {
-		exec(command, { cwd: directory }, (error, stdout, stderr) => {
+		const process = exec(command, { cwd: directory }, (error, stdout, stderr) => {
 			resolve({
 				error,
 				stdout: removeAnsiEscapeCodes(stdout),
 				stderr: removeAnsiEscapeCodes(stderr),
 			})
+		})
+
+		process.on('message', (message) => {
+			console.log(directory, command, message);
+		})
+
+		process.on('error', (message) => {
+			console.error(directory, command, message);
 		})
 	})
 }
