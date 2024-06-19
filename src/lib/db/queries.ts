@@ -263,7 +263,7 @@ export const getClustersForUser = async (
 			id: true,
 			name: true,
 			node_count: e.count(cluster.nodes),
-			healthy: true,
+			status: true,
 			locked: true,
 		}))
 		.run(client)

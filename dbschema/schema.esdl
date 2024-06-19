@@ -210,14 +210,6 @@ module default {
     }
     ip_allow_http: array<IpAddressWithMask>;
     ip_allow_ssh: array<IpAddressWithMask>;
-    required healthy: bool {
-      default := true;
-    }
-    required locked: bool {
-      default := false;
-    }
-    router: tuple<id: str, ip: str>;
-    error: str;
 
     required service_account: ServiceAccount {
       readonly := true;
@@ -233,6 +225,17 @@ module default {
       order by .timestamp desc
       limit 1
     );
+
+    required locked: bool {
+      default := false;
+    }
+    status := (
+      'updating' if .locked else
+      'unhealthy' if exists(.latest_deployment.error) else
+      'healthy' if exists(.latest_deployment.tfstate) else
+      'unknown'
+    );
+    router: tuple<id: str, ip: str>;
 
     constraint exclusive on ((.name, .service_account));
     access policy only_owner

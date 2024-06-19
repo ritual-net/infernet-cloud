@@ -17,14 +17,6 @@
 	let nodesWithInfo: Awaited<typeof nodesWithInfoPromise> | undefined
 	$: nodesWithInfoPromise.then(_ => nodesWithInfo = _)
 
-	$: clusterStatus = (
-		cluster.locked
-			? 'updating'
-			: cluster.latest_deployment?.error
-				? 'unhealthy'
-				: 'healthy'
-	)
-
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
@@ -97,7 +89,7 @@
 					<dt>Status</dt>
 					<dd>
 						<Status
-							status={clusterStatus}
+							status={cluster.status}
 						/>
 					</dd>
 				</div>
@@ -314,7 +306,7 @@
 
 				<dd>
 					<Status
-						status={clusterStatus}
+						status={cluster.status}
 					/>
 				</dd>
 			</section>

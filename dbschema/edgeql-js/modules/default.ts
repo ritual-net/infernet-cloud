@@ -47,8 +47,6 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "nodes": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, true, false,  false, false>;
   "service_account": $.LinkDesc<$ServiceAccount, $.Cardinality.One, {}, false, false,  true, false>;
   "deploy_router": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
-  "error": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "healthy": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "locked": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "router": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -56,6 +54,7 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "ip_allow_ssh": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "deployments": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, true,  false, false>;
   "latest_deployment": $.LinkDesc<$TerraformDeployment, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
+  "status": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
   "<cluster[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster[is TerraformDeployment]": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

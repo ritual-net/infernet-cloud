@@ -22,8 +22,6 @@ export interface Cluster extends std.$Object {
   "nodes": InfernetNode[];
   "service_account": ServiceAccount;
   "deploy_router": boolean;
-  "error"?: string | null;
-  "healthy": boolean;
   "locked": boolean;
   "name": string;
   "router"?: {id: string, ip: string} | null;
@@ -31,6 +29,7 @@ export interface Cluster extends std.$Object {
   "ip_allow_ssh"?: string[] | null;
   "deployments": TerraformDeployment[];
   "latest_deployment"?: TerraformDeployment | null;
+  "status": string;
 }
 export interface AWSCluster extends Cluster {
   "machine_type": string;
