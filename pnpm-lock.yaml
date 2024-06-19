@@ -20,6 +20,9 @@ importers:
       '@tanstack/svelte-query':
         specifier: ^5.28.9
         version: 5.28.9(svelte@4.2.12)
+      async-cleanup:
+        specifier: ^1.0.0
+        version: 1.0.0
       aws-sdk:
         specifier: ^2.1588.0
         version: 2.1588.0
@@ -1142,6 +1145,9 @@ packages:
 
   assertion-error@1.1.0:
     resolution: {integrity: sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==}
+
+  async-cleanup@1.0.0:
+    resolution: {integrity: sha512-nwvuXd9/HeN/dAOyi0JIVB/Ujk9+LUNX2jkyBr6p9tR//6084+rFAXMJYWFyN7FI8SPt+Pkkq+NKCA2mnLOfOA==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -4060,6 +4066,8 @@ snapshots:
   array-union@2.1.0: {}
 
   assertion-error@1.1.0: {}
+
+  async-cleanup@1.0.0: {}
 
   asynckit@0.4.0: {}
 

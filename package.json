@@ -62,6 +62,7 @@
 		"@fontsource/barlow": "^5.0.12",
 		"@google-cloud/compute": "^4.3.0",
 		"@tanstack/svelte-query": "^5.28.9",
+		"async-cleanup": "^1.0.0",
 		"aws-sdk": "^2.1588.0",
 		"edgedb": "^1.4.1",
 		"googleapis": "^131.0.0",

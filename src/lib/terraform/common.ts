@@ -1,11 +1,12 @@
-import { e } from '$/lib/db';
-import { getClusterById } from '../db/queries';
-import { routerAction } from '$/lib/clients/node/common';
-import { ProviderTerraform } from '$/lib';
-import type { Client } from 'edgedb';
-import type { ProviderServiceAccount } from '$/types/provider';
-import { NodeAction } from '$/types/provider';
-import { TFAction } from '$/types/terraform';
+import { e } from '$/lib/db'
+import { getClusterById } from '../db/queries'
+import { routerAction } from '$/lib/clients/node/common'
+import { ProviderTerraform } from '$/lib'
+import type { Client } from 'edgedb'
+import type { ProviderServiceAccount } from '$/types/provider'
+import { NodeAction } from '$/types/provider'
+import { TFAction } from '$/types/terraform'
+import { addCleanupListener } from 'async-cleanup'
 
 /**
  * Locks the given cluster to prevent concurrent mutations.
@@ -64,6 +65,10 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		throw new Error(`The cluster is already in the process of being updated. Please wait and try again.`)
 
 	try {
+		addCleanupListener(async () => {
+			await unlockCluster(client, clusterId)
+		})
+
 		await lockCluster(client, clusterId)
 
 		// Perform Terraform action
