@@ -63,7 +63,6 @@
 		"@google-cloud/compute": "^4.3.0",
 		"@tanstack/svelte-query": "^5.28.9",
 		"aws-sdk": "^2.1588.0",
-		"axios": "^1.6.8",
 		"edgedb": "^1.4.1",
 		"googleapis": "^131.0.0",
 		"svelte-headless-table": "^0.18.2",
