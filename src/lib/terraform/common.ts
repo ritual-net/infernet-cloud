@@ -6,7 +6,7 @@ import type { Client } from 'edgedb'
 import type { ProviderServiceAccount } from '$/types/provider'
 import { NodeAction } from '$/types/provider'
 import { TFAction } from '$/types/terraform'
-import { addCleanupListener } from 'async-cleanup'
+import { addCleanupListener, removeCleanupListener } from 'async-cleanup'
 
 /**
  * Locks the given cluster to prevent concurrent mutations.
@@ -64,10 +64,12 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 	if (action === TFAction.Apply && cluster.locked)
 		throw new Error(`The cluster is already in the process of being updated. Please wait and try again.`)
 
+	const cleanUp = async () => {
+		await unlockCluster(client, clusterId)
+	}
+
 	try {
-		addCleanupListener(async () => {
-			await unlockCluster(client, clusterId)
-		})
+		addCleanupListener(cleanUp)
 
 		await lockCluster(client, clusterId)
 
@@ -137,6 +139,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 			error,
 		}
 	}finally{
-		await unlockCluster(client, clusterId)
+		await cleanUp()
+		removeCleanupListener(cleanUp)
 	}
 }
