@@ -223,9 +223,9 @@ const createNodeConfigFiles = async (
 	for (const node of nodes) {
 		const jsonConfig = formatNodeConfig(node);
 
-		await fs.writeFile(
-			path.join(tempDir, `configs/${node.id}.json`),
-			JSON.stringify(jsonConfig, null, 2)
+		await SystemUtils.writeJsonToFile(
+			path.join(tempDir, 'configs', `${node.id}.json`),
+			jsonConfig
 		);
 
 		console.log(`Created: configs/${node.id}.json`);
