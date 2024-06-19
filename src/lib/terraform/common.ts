@@ -23,78 +23,97 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		includeDockerAccountCredentials: true,
 	});
 
-	if (!cluster) {
-		return { error: 'Cluster not found.', success: false };
-	}
+	if (!cluster)
+		throw new Error(`Cluster not found.`)
 
-	if (cluster.locked) {
-		return { error: 'The cluster is already in the process of being updated. Please wait and try again.', success: false };
-	}
+	if (cluster.locked)
+		throw new Error(`The cluster is already in the process of being updated. Please wait and try again.`)
 
-	// Lock the cluster to prevent concurrent mutations
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: clusterId },
-			set: {
-				locked: true,
-			},
-		}))
-		.run(client);
-
-	const { error, state, success, logs } = await ProviderTerraform[
-		cluster.service_account.provider
-	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
-
-	// Store state in the database
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: clusterId },
-			set: {
-				error: error ?? null,
-				healthy: success,
-				locked: false,
-				router: {
-					id: state?.outputs?.router?.value?.id ?? '',
-					ip: state?.outputs?.router?.value?.ip ?? '',
-				},
-				tfstate: JSON.stringify(state),
-				terraform_logs: logs,
-			},
-		}))
-		.run(client);
-
-	// Restart router to apply any changes to IP address list
-	if (success && cluster.deploy_router && action == TFAction.Apply) {
-		await routerAction(client, state!.outputs!.router!.value!.id, NodeAction.restart);
-	}
-
-	// Update node provider IDs
-	const nodeInfo = state?.outputs?.nodes?.value;
-	if (nodeInfo) {
+	try {
+		// Lock the cluster to prevent concurrent mutations
 		await e
-			.params(
-				{
-					nodeInfo: e.array(
-						e.tuple({
-							id: e.str,
-							ip: e.str,
-							key: e.uuid,
-						})
-					),
+			.update(e.Cluster, () => ({
+				filter_single: { id: clusterId },
+				set: {
+					locked: true,
 				},
-				(params) =>
-					e.for(e.array_unpack(params.nodeInfo), (obj) =>
-						e.update(e.InfernetNode, () => ({
-							filter_single: { id: obj.key },
-							set: {
-								provider_id: obj.id,
-							},
-						}))
-					)
-			)
-			.run(client, {
-				nodeInfo,
-			});
+			}))
+			.run(client)
+
+		// Perform Terraform action
+		const {
+			error,
+			tfstate,
+			stdout,
+			stderr,
+		} = await (
+			ProviderTerraform[cluster.service_account.provider]
+				.action(
+					cluster,
+					cluster.service_account as ProviderServiceAccount,
+					action
+				)
+		)
+
+		// Store state in the database
+		await e
+			.insert(e.TerraformDeployment, {
+				cluster: e.select(e.Cluster, () => ({
+					filter_single: { id: clusterId },
+				})),
+				error,
+				tfstate,
+				stdout,
+				stderr,
+			})
+			.run(client)
+
+		// Restart router to apply any changes to IP address list
+		if (cluster.deploy_router && action == TFAction.Apply && tfstate?.outputs?.router?.value) {
+			await routerAction(client, tfstate.outputs.router.value.id, NodeAction.restart);
+		}
+	
+		// Update node provider IDs
+		const nodeInfo = tfstate?.outputs?.nodes?.value;
+		if (nodeInfo) {
+			await e
+				.params(
+					{
+						nodeInfo: e.array(
+							e.tuple({
+								id: e.str,
+								ip: e.str,
+								key: e.uuid,
+							})
+						),
+					},
+					(params) =>
+						e.for(e.array_unpack(params.nodeInfo), (obj) =>
+							e.update(e.InfernetNode, () => ({
+								filter_single: { id: obj.key },
+								set: {
+									provider_id: obj.id,
+								},
+							}))
+						)
+				)
+				.run(client, {
+					nodeInfo,
+				})
+		}
+
+		return {
+			error,
+		}
+	}finally{
+		// Unlock cluster
+		await e
+			.update(e.Cluster, () => ({
+				filter_single: { id: clusterId },
+				set: {
+					locked: false,
+				},
+			}))
+			.run(client)
 	}
-	return { error, success };
-};
+}

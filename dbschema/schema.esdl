@@ -216,8 +216,6 @@ module default {
     required locked: bool {
       default := false;
     }
-    tfstate: str;
-    multi terraform_logs: json;
     router: tuple<id: str, ip: str>;
     error: str;
 
@@ -228,6 +226,13 @@ module default {
       constraint exclusive;
       on source delete delete target;
     }
+
+    multi deployments := .<cluster[is TerraformDeployment];
+    latest_deployment := (
+      select .deployments
+      order by .timestamp desc
+      limit 1
+    );
 
     constraint exclusive on ((.name, .service_account));
     access policy only_owner
@@ -259,5 +264,25 @@ module default {
       # e.g. "t2.medium"
       readonly := true;
     }
+  }
+
+  type TerraformDeployment {
+    index on ((.cluster, .timestamp));
+
+    timestamp: datetime {
+      readonly := true;
+      default := std::datetime_current();
+    }
+
+    cluster: Cluster {
+      readonly := true;
+      on source delete delete target;
+    }
+
+    config: json;
+    error: str;
+    tfstate: json;
+    stdout: array<json>;
+    stderr: array<json>;
   }
 }

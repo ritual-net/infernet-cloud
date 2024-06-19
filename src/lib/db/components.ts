@@ -164,6 +164,7 @@ export const getClusterSelectParams = (
 		includeServiceAccountCredentials = false,
 		includeNodeDetails = true,
 		includeDockerAccountCredentials = false,
+		includeTerraformDeploymentDetails = false,
 	}: {
 		/**
 		 * Whether to include sensitive Service Account credentials
@@ -179,6 +180,11 @@ export const getClusterSelectParams = (
 		 * Whether to include Docker Credentials from Nodes
 		 */
 		includeDockerAccountCredentials?: boolean,
+
+		/**
+		 * Whether to include Terraform deployment details
+		 */
+		includeTerraformDeploymentDetails?: boolean,
 	}
 ) => {
 	return {
@@ -214,5 +220,11 @@ export const getClusterSelectParams = (
 		),
 		...e.Cluster['*'],
 		...ClusterSpreadParamsByProvider[provider],
+
+		...includeTerraformDeploymentDetails && {
+			latest_deployment: {
+				...e.TerraformDeployment['*'],
+			},
+		},
 	};
 };

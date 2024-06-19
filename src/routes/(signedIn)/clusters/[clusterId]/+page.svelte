@@ -20,9 +20,9 @@
 	$: clusterStatus = (
 		cluster.locked
 			? 'updating'
-			: cluster.healthy
-				? 'healthy'
-				: 'unhealthy'
+			: cluster.latest_deployment?.error
+				? 'unhealthy'
+				: 'healthy'
 	)
 
 
@@ -319,47 +319,72 @@
 				</dd>
 			</section>
 
-			{#if cluster.tfstate}
-				<section class="column">
-					<dt>Terraform State</dt>
-	
-					<dd>
-						<output>
-							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
-						</output>
-					</dd>
-				</section>
-			{/if}
+			{#if cluster.latest_deployment}
+				{#if cluster.latest_deployment.error}
+					<section class="column">
+						<dt>Error</dt>
+		
+						<dd class="scrollable">
+							<output><code>{cluster.latest_deployment.error}</code></output>
+						</dd>
+					</section>
+				{/if}
 
-			{#if cluster.terraform_logs?.length}
-				<section class="column">
-					<dt>Terraform Logs</dt>
-	
-					<dd>
-						{#each cluster.terraform_logs as log}
-							<output
-								class="log"
-								data-type={log['type']} 
-								data-level={log['@level']}
-								data-module={log['@module']}
-							>
-								<pre><date date={log['@timestamp']}>{log['@timestamp']}</date> <code>{log['type']}</code> <code>{log['@message']}</code> {#if log['@hook']}<code>{JSON.stringify(log['hook'])}</code>{/if}</pre>
-							</output>
-						{/each}
-					</dd>
-				</section>
-			{/if}
+				{#if cluster.latest_deployment.tfstate}
+					<section class="column">
+						<dt>Terraform State</dt>
+		
+						<dd class="scrollable">
+							<output><code>{JSON.stringify(cluster.latest_deployment.tfstate, null, '\t')}</code></output>
+						</dd>
+					</section>
+				{/if}
 
-			{#if cluster.error}
-				<section class="column">
-					<dt>Error</dt>
-	
-					<dd>
-						<output>
-							<pre><code>{cluster.error}</code></pre>
-						</output>
-					</dd>
-				</section>
+				{#if cluster.latest_deployment.stdout?.length}
+					<section class="column">
+						<dt>Terraform Logs</dt>
+		
+						<dd class="scrollable log-container">
+							{#each cluster.latest_deployment.stdout as log, i}
+								{@const previousLog = cluster.latest_deployment.stdout[i - 1]}
+
+								{#if previousLog && previousLog['@type'] !== log['@type']}
+									<hr>
+								{/if}
+
+								<output
+									class="log"
+									data-type={log['type']} 
+									data-level={log['@level']}
+									data-module={log['@module']}
+								><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+							{/each}
+						</dd>
+					</section>
+				{/if}
+
+				{#if cluster.latest_deployment.stderr?.length}
+					<section class="column">
+						<dt>Terraform Error Logs</dt>
+		
+						<dd class="scrollable log-container">
+							{#each cluster.latest_deployment.stderr as log, i}
+								{@const previousLog = cluster.latest_deployment.stderr[i - 1]}
+
+								{#if previousLog && previousLog['@type'] !== log['@type']}
+									<hr>
+								{/if}
+
+								<output
+									class="log"
+									data-type={log['type']} 
+									data-level={log['@level']}
+									data-module={log['@module']}
+								><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+							{/each}
+						</dd>
+					</section>
+				{/if}
 			{/if}
 		</dl>
 	</section>
@@ -388,20 +413,49 @@
 		color: #fff;
 	}
 
+	.scrollable {
+		overflow: auto;
+		max-height: 15.6rem;
+		resize: all;
+		padding: 1em;
+
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
+	}
+
 	output {
 		font-size: 0.75em;
+	}
 
-		& pre {
-			max-height: 15.6rem;
-			padding: 1em;
+	code {
+		white-space: pre-wrap;
+		word-break: break-word;
+		tab-size: 2;
+	}
 
-			background: rgba(0, 0, 0, 0.05);
-			border-radius: 0.5em;
+	.log-container {
+		display: grid;
 
-			& code {
-				white-space: pre-wrap;
-				word-break: break-word;
+		.log {
+			margin-inline: -1rem;
+			padding-inline: 1rem;
+
+			&[data-level="error"] {
+				background-color: rgb(255, 246, 246);
+				color: rgb(150, 0, 0);
 			}
+		}
+
+		date {
+			position: sticky;
+			right: 0;
+			float: right;
+			font-size: smaller;
+			opacity: 0.5;
+		}
+
+		code {
+			white-space: pre-line;
 		}
 	}
 </style>

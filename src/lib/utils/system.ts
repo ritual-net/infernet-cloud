@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec, type ExecException } from 'child_process';
 import { promises as fs } from 'fs';
 
 /**
@@ -16,8 +16,8 @@ export const removeDir = async (directory: string): Promise<void> => {
  * @param filePath The path to the JSON file.
  * @returns The parsed JSON object.
  */
-export const readJsonFromFile = async (filePath: string): Promise<object> => {
-	return JSON.parse(await fs.readFile(filePath, { encoding: 'utf8' }));
+export const readJsonFromFile = async <T>(filePath: string) => {
+	return JSON.parse(await fs.readFile(filePath, { encoding: 'utf8' })) as T;
 };
 
 /**
@@ -37,23 +37,24 @@ export const writeJsonToFile = async (filePath: string, data: object): Promise<v
  * @param command The command to execute.
  * @returns The stdout of the command.
  */
-export const executeCommands = async (directory: string, command: string): Promise<string> => {
+export const executeCommands = async (directory: string, command: string): Promise<{
+	error: ExecException | null;
+	stdout: string;
+	stderr: string;
+}> => {
 	console.log(`Executing command in directory "${directory}":`);
 	console.log(command);
 
 	return new Promise((resolve, reject) => {
 		exec(command, { cwd: directory }, (error, stdout, stderr) => {
-			if (error) {
-				reject({
-					error,
-					stderr: removeAnsiEscapeCodes(stderr),
-				});
-			} else {
-				resolve(removeAnsiEscapeCodes(stdout));
-			}
-		});
-	});
-};
+			resolve({
+				error,
+				stdout: removeAnsiEscapeCodes(stdout),
+				stderr: removeAnsiEscapeCodes(stderr),
+			})
+		})
+	})
+}
 
 // https://github.com/chalk/ansi-regex/blob/main/index.js
 export const removeAnsiEscapeCodes = (string: string): string => (

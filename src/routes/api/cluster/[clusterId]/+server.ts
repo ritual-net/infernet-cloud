@@ -19,7 +19,11 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 		return error(400, 'Cluster id is required');
 	}
 
-	return json(await getClusterById(client, id, { includeServiceAccountCredentials: false, includeNodeDetails: false }));
+	return json(await getClusterById(client, id, {
+		includeServiceAccountCredentials: false,
+		includeNodeDetails: false,
+		includeTerraformDeploymentDetails: true,
+	}))
 };
 
 /**
@@ -43,17 +47,15 @@ export const POST: RequestHandler = async ({ locals: { client }, params }) => {
 			client,
 			clusterId,
 			TFAction.Apply
-		);
+		)
 	} catch (e) {
 		console.error(e)
 
 		return error(500, e)
 	}
 
-	const { success, error: _error } = result
-
-	if(!success)
-		return error(500, _error)
+	if(result?.error)
+		return error(500, result.error)
 
 	return json(await getClusterById(client, clusterId, { includeServiceAccountCredentials: false, includeNodeDetails: false }));
 };
@@ -108,17 +110,15 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 				client,
 				updatedCluster.id,
 				TFAction.Apply
-			);
+			)
 		} catch (e) {
 			console.error(e)
 
 			// return error(500, JSON.stringify(e))
 		}
 
-		// const { success, error: errorMessage } = result
-
-		// if(!success)
-		// 	return error(500, errorMessage)
+		if(result?.error)
+			return error(500, result.error)
 	})();
 
 	return json({
@@ -155,10 +155,8 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		return error(500, JSON.stringify(e))
 	}
 
-	const { success, error: errorMessage } = result
-
-	if(!success)
-		return error(500, errorMessage)
+	if(result?.error)
+		return error(500, result.error)
 
 	// Delete cluster, nodes and containers deleted through cascade
 	const deletedCluster = await e
