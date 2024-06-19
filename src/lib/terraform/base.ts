@@ -116,20 +116,22 @@ export abstract class BaseTerraform {
 					console.error(`Error initializing Terraform project:`)
 					console.error(error)
 
-					const {
-						stdout: tfstate,
-					} = await SystemUtils.executeCommands(
-						tempDir,
-						'terraform show -no-color -json terraform.tfstate'
-					)
-
-					// const tfstate = await SystemUtils.readJsonFromFile<TFState>(
-					// 	path.join(tempDir, 'terraform.tfstate')
+					// const {
+					// 	stdout: tfstateString,
+					// } = await SystemUtils.executeCommands(
+					// 	tempDir,
+					// 	'terraform show -no-color -json terraform.tfstate'
 					// )
+
+					// const tfstate = JSON.parse(tfstateString)
+
+					const tfstate = await SystemUtils.readJsonFromFile<TFState>(
+						path.join(tempDir, 'terraform.tfstate')
+					)
 	
 					return {
 						error: error?.message,
-						tfstate: JSON.parse(tfstate),
+						tfstate,
 						stdout: stdout.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
 						stderr: stderr.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
 					}
@@ -153,20 +155,22 @@ export abstract class BaseTerraform {
 					console.error(error)
 				}
 
-				const {
-					stdout: tfstate,
-				} = await SystemUtils.executeCommands(
-					tempDir,
-					'terraform show -no-color -json terraform.tfstate'
-				)
-
-				// const tfstate = await SystemUtils.readJsonFromFile<TFState>(
-				// 	path.join(tempDir, 'terraform.tfstate')
+				// const {
+				// 	stdout: tfstateString,
+				// } = await SystemUtils.executeCommands(
+				// 	tempDir,
+				// 	'terraform show -no-color -json terraform.tfstate'
 				// )
+
+				// const tfstate = JSON.parse(tfstateString)
+
+				const tfstate = await SystemUtils.readJsonFromFile<TFState>(
+					path.join(tempDir, 'terraform.tfstate')
+				)
 
 				return {
 					error: error?.message,
-					tfstate: JSON.parse(tfstate),
+					tfstate,
 					stdout: stdout.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
 					stderr: stderr.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
 				}
