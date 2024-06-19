@@ -56,7 +56,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		)
 
 		// Store state in the database
-		await e
+		const deployment = await e
 			.insert(e.TerraformDeployment, {
 				cluster: e.select(e.Cluster, () => ({
 					filter_single: { id: clusterId },
@@ -72,7 +72,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		if (cluster.deploy_router && action == TFAction.Apply && tfstate?.outputs?.router?.value) {
 			await routerAction(client, tfstate.outputs.router.value.id, NodeAction.restart);
 		}
-	
+
 		// Update node provider IDs
 		const nodeInfo = tfstate?.outputs?.nodes?.value;
 		if (nodeInfo) {
