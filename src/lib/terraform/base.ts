@@ -128,6 +128,10 @@ export abstract class BaseTerraform {
 					const tfstate = await SystemUtils.readJsonFromFile<TFState>(
 						path.join(tempDir, 'terraform.tfstate')
 					)
+						.catch(e => {
+							console.error(e)
+							return null
+						})
 	
 					return {
 						error: error?.message,
@@ -167,6 +171,10 @@ export abstract class BaseTerraform {
 				const tfstate = await SystemUtils.readJsonFromFile<TFState>(
 					path.join(tempDir, 'terraform.tfstate')
 				)
+					.catch(e => {
+						console.error(e)
+						return null
+					})
 
 				return {
 					error: error?.message,
