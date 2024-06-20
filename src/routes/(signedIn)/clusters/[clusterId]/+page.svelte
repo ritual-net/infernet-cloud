@@ -312,6 +312,16 @@
 			</section>
 
 			{#if cluster.latest_deployment}
+				{#if cluster.latest_deployment.timestamp}
+					<section class="row wrap">
+						<dt>Last Updated</dt>
+
+						<dd>
+							<date>{new Date(cluster.latest_deployment.timestamp).toLocaleString()}</date>
+						</dd>
+					</section>
+				{/if}
+
 				{#if cluster.latest_deployment.error}
 					<section class="column">
 						<dt>Error</dt>
