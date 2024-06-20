@@ -55,6 +55,7 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _auth.$SMTPSecurity ? _auth.$SMTPSecurity : 
   T extends _auth.$JWTAlgo ? _auth.$JWTAlgo : 
   T extends _auth.$FlowType ? _auth.$FlowType : 
+  T extends _default.$TerraformAction ? _default.$TerraformAction : 
   T extends _default.$Secp256k1PrivateKey ? _default.$Secp256k1PrivateKey : 
   T extends _default.$IpAddressWithMask ? _default.$IpAddressWithMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
@@ -116,6 +117,7 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _auth.$SMTPSecurity ? _auth.$SMTPSecurity : 
   T extends _auth.$JWTAlgo ? _auth.$JWTAlgo : 
   T extends _auth.$FlowType ? _auth.$FlowType : 
+  T extends _default.$TerraformAction ? _default.$TerraformAction : 
   T extends _default.$Secp256k1PrivateKey ? _default.$Secp256k1PrivateKey : 
   T extends _default.$IpAddressWithMask ? _default.$IpAddressWithMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
@@ -389,6 +391,12 @@ type getSharedParentScalar<A, B> =
   :
   A extends _auth.$FlowType ?
     B extends _auth.$FlowType ?
+    B
+    :
+    never
+  :
+  A extends _default.$TerraformAction ?
+    B extends _default.$TerraformAction ?
     B
     :
     never
@@ -760,6 +768,12 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
   if (a.__name__ === "ext::auth::FlowType") {
     if(b.__name__ === "ext::auth::FlowType") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "default::TerraformAction") {
+    if(b.__name__ === "default::TerraformAction") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);

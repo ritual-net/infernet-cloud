@@ -94,6 +94,10 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				cluster: e.select(e.Cluster, () => ({
 					filter_single: { id: clusterId },
 				})),
+				action: ({
+					[TFAction.Apply]: e.TerraformAction.Apply,
+					[TFAction.Destroy]: e.TerraformAction.Destroy,
+				} as const)[action],
 				error,
 				tfstate,
 				stdout,

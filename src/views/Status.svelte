@@ -4,6 +4,7 @@
 		'healthy': 'Healthy',
 		'updating': 'Updating',
 		'unhealthy': 'Unhealthy',
+		'destroyed': 'Destroyed',
 		'unknown': 'Unknown',
 		'TERMINATED': 'Terminated',
 	}
@@ -32,6 +33,7 @@
 			--status-color: #b3a316;
 		}
 
+		&[data-status="destroyed"] {
 		&[data-status="unhealthy"],
 		&[data-status="terminated"] {
 			--status-color: #b33d16;

@@ -232,6 +232,7 @@ module default {
     status := (
       'updating' if .locked else
       'unhealthy' if exists(.latest_deployment.error) else
+      'destroyed' if .latest_deployment.action = TerraformAction.Destroy else
       'healthy' if exists(.latest_deployment.tfstate) else
       'unknown'
     );
@@ -272,12 +273,14 @@ module default {
   type TerraformDeployment {
     index on ((.cluster, .timestamp));
 
-    timestamp: datetime {
+    required action: TerraformAction;
+
+    required timestamp: datetime {
       readonly := true;
       default := std::datetime_current();
     }
 
-    cluster: Cluster {
+    required cluster: Cluster {
       readonly := true;
       on source delete delete target;
     }
@@ -288,4 +291,6 @@ module default {
     stdout: array<json>;
     stderr: array<json>;
   }
+
+  scalar type TerraformAction extending enum<Apply, Destroy>;
 }

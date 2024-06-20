@@ -29,7 +29,7 @@ export interface Cluster extends std.$Object {
   "ip_allow_ssh"?: string[] | null;
   "deployments": TerraformDeployment[];
   "latest_deployment"?: TerraformDeployment | null;
-  "status": string;
+  "status"?: string | null;
 }
 export interface AWSCluster extends Cluster {
   "machine_type": string;
@@ -99,14 +99,16 @@ export interface InfernetNode extends std.$Object {
   "payment_address"?: string | null;
   "private_key"?: string | null;
 }
+export type TerraformAction = "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {
-  "cluster"?: Cluster | null;
-  "timestamp"?: Date | null;
   "config"?: unknown | null;
   "error"?: string | null;
   "stderr"?: unknown[] | null;
   "stdout"?: unknown[] | null;
   "tfstate"?: unknown | null;
+  "cluster": Cluster;
+  "action": TerraformAction;
+  "timestamp": Date;
 }
 export interface current_user extends User {}
 export namespace ext {
@@ -556,6 +558,7 @@ export interface types {
     "GCPCluster": GCPCluster;
     "GCPServiceAccount": GCPServiceAccount;
     "InfernetNode": InfernetNode;
+    "TerraformAction": TerraformAction;
     "TerraformDeployment": TerraformDeployment;
     "current_user": current_user;
   };
