@@ -1,6 +1,6 @@
 output "router" {
   value = {
-    id = var.deploy_router ? google_compute_instance.infernet_router[0].name : ""
+    id = var.router.deploy ? google_compute_instance.infernet_router[0].name : ""
     ip = length(google_compute_address.router_static_ip) > 0 ? google_compute_address.router_static_ip[0].address : ""
   }
 }
