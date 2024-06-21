@@ -397,6 +397,13 @@
 									data-level={log['@level']}
 									data-module={log['@module']}
 								><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+
+								{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
+									<div class="diagnostic-log">
+										<output><code>{log.diagnostic.detail}</code></output>
+										<output><pre><code>{log.diagnostic.snippet.code}</code></pre></output>
+									</div>
+								{/if}
 							{/each}
 						</dd>
 					</section>
