@@ -335,7 +335,7 @@
 	</section>
 
 	<section class="column">
-		<h3>Status</h3>
+		<h3>Deployment</h3>
 
 		<dl class="card column">
 			<section class="row wrap">
