@@ -38,10 +38,10 @@ resource "google_compute_instance" "nodes" {
     })
 
     # Deployment files
-    deploy_tar = each.value.gpu_count > 0 ? filebase64("${path.module}/../deploy-gpu.tar.gz") : filebase64("${path.module}/../deploy.tar.gz")
+    deploy_tar = each.value.gpu_count > 0 ? filebase64("${path.module}/deploy-gpu.tar.gz") : filebase64("${path.module}/deploy.tar.gz")
 
     # Node config
-    secret-config = filebase64("${path.module}/../../configs/${each.key}.json")
+    secret-config = filebase64("${path.module}/configs/${each.key}.json")
   }
 
   boot_disk {
