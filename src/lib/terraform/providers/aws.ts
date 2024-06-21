@@ -23,8 +23,9 @@ export class AWSTerraform extends BaseTerraform {
 			region: cluster.region,
 
 			name: cluster.id,
-			ip_allow_ssh: cluster.ip_allow_ssh,
-			ip_allow_http: cluster.ip_allow_http,
+			is_production: true,
+			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
+			ip_allow_http: cluster.ip_allow_http ?? [],
 			ip_allow_http_from_port: 4000,
 			ip_allow_http_to_port: 4000,
 

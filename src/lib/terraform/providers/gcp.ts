@@ -26,8 +26,8 @@ export class GCPTerraform extends BaseTerraform {
 
 			name: `infernet-deployment-${cluster.id}`,
 			is_production: true,
-			ip_allow_ssh: cluster.ip_allow_ssh,
-			ip_allow_http: cluster.ip_allow_http,
+			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
+			ip_allow_http: cluster.ip_allow_http ?? [],
 
 			router: {
 				deploy: cluster.deploy_router,
