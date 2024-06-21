@@ -31,7 +31,7 @@ export class AWSTerraform extends BaseTerraform {
 
 			router: {
 				deploy: cluster.deploy_router,
-				zone: `${cluster.region}-a`,
+				zone: `${cluster.region}a`,
 				machine_type: cluster.machine_type,
 			},
 
@@ -40,7 +40,7 @@ export class AWSTerraform extends BaseTerraform {
 					.map((node) => [
 						`infernet-node-${node.id}`,
 						{
-							zone: `${cluster.region}-a`, 
+							zone: `${cluster.region}a`, 
 							machine_type: cluster.machine_type,
 							image: 'ami-05fb0b8c1424f266b',
 							has_gpu: false,
