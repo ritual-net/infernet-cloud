@@ -391,24 +391,26 @@
 									<hr>
 								{/if}
 
-								<output
+								<div
 									class="log"
 									data-type={log['type']} 
 									data-level={log['@level']}
 									data-module={log['@module']}
-								><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+								>
+									<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
 
-								{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
-									<div class="diagnostic-log">
-										{#if log.diagnostic.detail}
-											<output><code>{log.diagnostic.detail}</code></output>
-										{/if}
+									{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
+										<div class="diagnostic-log">
+											{#if log.diagnostic.detail}
+												<output><code>{log.diagnostic.detail}</code></output>
+											{/if}
 
-										{#if log.diagnostic.snippet?.code}
-											<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
-										{/if}
-									</div>
-								{/if}
+											{#if log.diagnostic.snippet?.code}
+												<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+											{/if}
+										</div>
+									{/if}
+								</div>
 							{/each}
 						</dd>
 					</section>
