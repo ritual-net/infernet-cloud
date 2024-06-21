@@ -89,10 +89,8 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		return error(500, JSON.stringify(e))
 	}
 
-	const { success, error: errorMessage } = result
-
-	if(!success)
-		return error(500, errorMessage)
+	if(result.error)
+		return error(500, result.error)
 
 	return json({
 		node: deletedNode,

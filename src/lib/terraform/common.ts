@@ -140,6 +140,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		}
 
 		return {
+			deployment,
 			error,
 		}
 	}finally{
