@@ -30,13 +30,7 @@
 
 {:else if cellType === CellType.Status}
 	<Status
-		status={
-			cluster.locked
-				? 'updating'
-				: cluster.healthy
-					? 'healthy'
-					: 'unhealthy'
-		}
+		status={cluster.status}
 	/>
 {/if}
 
