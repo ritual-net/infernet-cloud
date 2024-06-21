@@ -113,15 +113,14 @@ export const formatNodeConfig = (node: InfernetNode) => {
  * @param config Generic object to format. Should be flat (non-nested).
  * @returns Terraform variables file as a formatted string.
  */
-
 export const formatTfVars = (
-	config: Record<string, string[] | string | number | boolean | Record<string, unknown>>
+	config: Record<string, any>
 ): string => {
-	const formatValue = (value: unknown): string => {
+	const formatValue = (value: any): string => {
 		if (Array.isArray(value)) {
 			// Format array, recursively format each element
 			return `[${value.map((v) => formatValue(v)).join(', ')}]`;
-		} else if (typeof value === 'object' && value !== null) {
+		} else if (typeof value === 'object') {
 			// Format object as a map, recursively format each value
 			const objectValue = `{${Object.entries(value)
 				.map(([k, v]) => `"${k}" = ${formatValue(v)}`)
@@ -136,8 +135,11 @@ export const formatTfVars = (
 		}
 	};
 
-	const vars: string[] = Object.entries(config).map(
-		([key, value]) => `${key} = ${formatValue(value)}`
-	);
-	return vars.join('\n');
+	const vars: string[] = (
+		Object.entries(config)
+			.filter(([, value]) => value !== undefined && value !== null)
+			.map(([key, value]) => `${key} = ${formatValue(value)}`)
+	)
+
+	return vars.join('\n')
 };

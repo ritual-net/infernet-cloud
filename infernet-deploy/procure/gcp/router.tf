@@ -1,22 +1,22 @@
 # Infernet Router
 resource "google_compute_instance" "infernet_router" {
-  count        = var.deploy_router ? 1 : 0
+  count        = var.router.deploy ? 1 : 0
   name         = "router-${var.name}"
-  machine_type = "e2-micro"
-  zone         = var.zone
+  zone         = var.router.zone
+  machine_type = var.router.machine_type
 
   network_interface {
     network    = google_compute_network.node_net.id
-    subnetwork = google_compute_subnetwork.node_subnet.id
+    subnetwork = google_compute_subnetwork.node_subnet[var.router.region].id
     stack_type = "IPV4_IPV6"
 
     access_config {
-      nat_ip = google_compute_address.router_static_ip[0].address
+      nat_ip       = google_compute_address.router_static_ip[0].address
       network_tier = "PREMIUM"
     }
 
     ipv6_access_config {
-      network_tier  = "PREMIUM"
+      network_tier = "PREMIUM"
     }
   }
 
@@ -41,20 +41,38 @@ resource "google_compute_instance" "infernet_router" {
 
   boot_disk {
     initialize_params {
-      image = var.image
-      size = 100
+      image = var.router.image
+      size  = 100
     }
   }
 
-  # Disabled in production
-  allow_stopping_for_update = var.is_production ? false : true
+  allow_stopping_for_update = true
 }
 
 # Router external IP
 resource "google_compute_address" "router_static_ip" {
-  count  = var.deploy_router ? 1 : 0
-  name   = "router-ip-${var.name}"
-  region = var.region
+  count        = var.router.deploy ? 1 : 0
+  name         = "router-ip-${var.name}"
+  region       = var.router.region
   address_type = "EXTERNAL"
   network_tier = "PREMIUM"
+}
+
+# Reset router when node IPs change
+resource "null_resource" "router_restarter" {
+  count = var.router.deploy ? 1 : 0
+  triggers = {
+    node-ips = join(",", [for ip in google_compute_address.static_ip : ip.address])
+  }
+
+  provisioner "local-exec" {
+    # Force reset router, since updating its metadata does not
+    command = <<EOT
+      gcloud auth activate-service-account --key-file=${var.gcp_credentials_file_path}
+      gcloud compute instances reset ${google_compute_instance.infernet_router[0].name} --zone=${google_compute_instance.infernet_router[0].zone}
+      gcloud auth revoke ${var.service_account_email}
+    EOT
+  }
+
+  depends_on = [google_compute_instance.infernet_router]
 }
