@@ -106,9 +106,9 @@ export interface TerraformDeployment extends std.$Object {
   "stderr"?: unknown[] | null;
   "stdout"?: unknown[] | null;
   "tfstate"?: unknown | null;
-  "cluster": Cluster;
   "action": TerraformAction;
   "timestamp": Date;
+  "cluster": Cluster;
 }
 export interface current_user extends User {}
 export namespace ext {

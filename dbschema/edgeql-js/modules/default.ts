@@ -227,9 +227,9 @@ export type $TerraformDeploymentλShape = $.typeutil.flatten<_std.$Object_8ce8c7
   "stderr": $.PropertyDesc<$.ArrayType<_std.$json>, $.Cardinality.AtMostOne, false, false, false, false>;
   "stdout": $.PropertyDesc<$.ArrayType<_std.$json>, $.Cardinality.AtMostOne, false, false, false, false>;
   "tfstate": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
-  "cluster": $.LinkDesc<$Cluster, $.Cardinality.One, {}, false, false,  true, false>;
   "action": $.PropertyDesc<$TerraformAction, $.Cardinality.One, false, false, false, false>;
   "timestamp": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
+  "cluster": $.LinkDesc<$Cluster, $.Cardinality.One, {}, false, false,  true, false>;
   "<deployments[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.Many, {}, false, false,  false, false>;
   "<deployments[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.Many, {}, false, false,  false, false>;
   "<deployments[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.Many, {}, false, false,  false, false>;

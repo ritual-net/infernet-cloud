@@ -282,7 +282,7 @@ module default {
 
     required cluster: Cluster {
       readonly := true;
-      on source delete delete target;
+      on target delete delete source;
     }
 
     config: json;
