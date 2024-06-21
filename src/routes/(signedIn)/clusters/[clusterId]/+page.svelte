@@ -400,8 +400,13 @@
 
 								{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
 									<div class="diagnostic-log">
-										<output><code>{log.diagnostic.detail}</code></output>
-										<output><pre><code>{log.diagnostic.snippet.code}</code></pre></output>
+										{#if log.diagnostic.detail}
+											<output><code>{log.diagnostic.detail}</code></output>
+										{/if}
+
+										{#if log.diagnostic.snippet?.code}
+											<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+										{/if}
 									</div>
 								{/if}
 							{/each}
