@@ -66,7 +66,7 @@
 			data: {
 				type: 'default',
 				title: `Creating cluster...`,
-				description: `This may take a few minutes.`,
+				description: `This may take several minutes.`,
 			},
 		})
 	}else{
