@@ -4,7 +4,7 @@ resource "aws_ssm_parameter" "config_file" {
 
   name  = "${each.key}.json"
   type  = "SecureString"
-  value = filebase64("${path.module}/../../configs/${each.key}.json")
+  value = filebase64("${path.module}/configs/${each.key}.json")
 
   lifecycle {
     ignore_changes = [value]
@@ -17,7 +17,7 @@ resource "aws_ssm_parameter" "deploy_tar" {
 
   name  = "deploy-tar-${each.key}"
   type  = "SecureString"
-  value = each.value.has_gpu ? filebase64("${path.module}/../deploy-gpu.tar.gz") : filebase64("${path.module}/../deploy.tar.gz")
+  value = each.value.has_gpu ? filebase64("${path.module}/deploy-gpu.tar.gz") : filebase64("${path.module}/deploy.tar.gz")
 
   lifecycle {
     ignore_changes = [value]
