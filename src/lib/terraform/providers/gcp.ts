@@ -19,7 +19,7 @@ export class GCPTerraform extends BaseTerraform {
 		cluster: GCPCluster,
 		serviceAccount: GCPServiceAccount
 	): Promise<void> {
-		await createTerraformVarsFile(tempDir, {
+		const terraformVars = {
 			service_account_email: serviceAccount.creds.client_email,
 			project: serviceAccount.creds.project_id,
 			region: cluster.region,
@@ -52,7 +52,12 @@ export class GCPTerraform extends BaseTerraform {
 					}
 				])
 			),
-		})
+		}
+
+		await createTerraformVarsFile(
+			tempDir,
+			terraformVars
+		)
 
 		// Write service account credentials to file
 		await SystemUtils.writeJsonToFile(
