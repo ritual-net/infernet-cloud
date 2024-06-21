@@ -1,6 +1,6 @@
 output "router" {
     value = {
-        id = var.deploy_router ? aws_instance.infernet_router[0].id : ""
+        id = var.router.deploy ? aws_instance.infernet_router[0].id : ""
         ip = length(aws_eip.router_eip) > 0 ? aws_eip.router_eip[0].public_ip : ""
     }
 }
