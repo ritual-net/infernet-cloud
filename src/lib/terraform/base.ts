@@ -149,11 +149,12 @@ export abstract class BaseTerraform {
  */
 export const createTerraformVarsFile = async (
 	tempDir: string,
-	tfVars: Record<string, string[] | string | number | boolean | Record<string, string>>
+	tfVars: Record<string, any>,
 ): Promise<void> => {
-	const varsFile = path.join(tempDir, 'terraform.tfvars');
-	const varsString = formatTfVars(tfVars);
-	await fs.writeFile(varsFile, varsString);
+	await fs.writeFile(
+		path.join(tempDir, 'terraform.tfvars'),
+		formatTfVars(tfVars)
+	);
 };
 
 /**
@@ -173,14 +174,16 @@ const createNodeConfigFiles = async (
 
 	// Create node config files under configs/
 	for (const node of nodes) {
+		const nodeId = `infernet-node-${node.id}`;
+
 		const jsonConfig = formatNodeConfig(node);
 
 		await fs.writeFile(
-			path.join(tempDir, `configs/${node.id}.json`),
+			path.join(tempDir, `configs/${nodeId}.json`),
 			JSON.stringify(jsonConfig, null, 2)
 		);
 
-		console.log(`Created: configs/${node.id}.json`);
+		console.log(`Created: configs/${nodeId}.json`);
 	}
 };
 

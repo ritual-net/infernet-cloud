@@ -19,34 +19,48 @@ export class GCPTerraform extends BaseTerraform {
 		cluster: GCPCluster,
 		serviceAccount: GCPServiceAccount
 	): Promise<void> {
-		const credentials = serviceAccount.creds;
-		credentials.private_key = credentials.private_key.split(String.raw`\n`).join('\n');
-
-		// Format nodes as a map of node id to node name
-		const nodes = Object.fromEntries(cluster.nodes.map((node) => [node.id, node.id]));
-
 		await createTerraformVarsFile(tempDir, {
-			nodes,
-			name: cluster.id,
-			deploy_router: cluster.deploy_router,
-			ip_allow_http: cluster.ip_allow_http,
-			ip_allow_ssh: cluster.ip_allow_ssh,
+			service_account_email: serviceAccount.creds.client_email,
+			project: serviceAccount.creds.project_id,
 			region: cluster.region,
-			zone: cluster.zone,
-			machine_type: cluster.machine_type,
-			project: credentials.project_id,
-			service_account_email: credentials.client_email,
 
-			// defaulted
-			image: 'ubuntu-2004-focal-v20231101',
-			ip_allow_http_ports: ['4000'],
+			name: `infernet-deployment-${cluster.id}`,
 			is_production: true,
-		});
+			ip_allow_ssh: cluster.ip_allow_ssh,
+			ip_allow_http: cluster.ip_allow_http,
+
+			router: {
+				deploy: cluster.deploy_router,
+				zone: cluster.zone,
+				machine_type: cluster.machine_type,
+			},
+
+			nodes: Object.fromEntries(
+				cluster.nodes.map((node, i) => [
+					`infernet-node-${node.id}`,
+					{
+						region: cluster.region,
+						zone: cluster.zone,
+						machine_type: cluster.machine_type,
+						image: 'ubuntu-2004-focal-v20231101',
+
+						// region: node.region,
+						// zone: node.zone,
+						// machine_type: node.machine_type,
+						// image: node.has_gpu ? 'nvidia-tesla-t4' : 'ubuntu-2004-focal-v20231101',
+						// has_gpu: node.has_gpu,
+					}
+				])
+			),
+		})
 
 		// Write service account credentials to file
 		await SystemUtils.writeJsonToFile(
 			path.join(tempDir, 'terraform-deployer-key.json'),
-			credentials
-		);
+			{
+				...serviceAccount.creds,
+				private_key: serviceAccount.creds.private_key.split(String.raw`\n`).join('\n'),
+			}
+		)
 	}
 }
