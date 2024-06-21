@@ -33,12 +33,12 @@
 			--status-color: #b3a316;
 		}
 
-		&[data-status="destroyed"] {
 		&[data-status="unhealthy"],
 		&[data-status="terminated"] {
 			--status-color: #b33d16;
 		}
 
+		&[data-status="destroyed"],
 		&[data-status="unknown"] {
 			--status-color: gray;
 		}
