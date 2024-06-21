@@ -19,7 +19,7 @@
 	class="status"
 	data-status={status}
 >
-	{statusLabels[status] ?? status}
+	{statusLabels[status] ?? status ?? 'Unknown'}
 </div>
 
 
