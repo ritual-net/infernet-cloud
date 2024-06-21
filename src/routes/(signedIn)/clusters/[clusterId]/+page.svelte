@@ -123,13 +123,22 @@
 					},
 					{
 						value: 'apply',
-						label: 'Trigger Update',
+						label: (
+							cluster.status !== 'destroyed'
+								? 'Trigger Update'
+								: 'Recreate Cluster'
+						), 
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
 							const toast = addToast({
 								data: {
 									type: 'default',
-									title: `Applying changes to cluster "${cluster.name}"...`,
+									title: (
+										cluster.status !== 'destroyed' ?
+											`Applying changes to cluster "${cluster.name}"...`
+										:
+											`Recreating cluster "${cluster.name}"...`
+									)
 								},
 							})
 
@@ -147,25 +156,53 @@
 							}
 						},
 					},
-					{
-						value: 'delete',
-						label: 'Delete Cluster',
-						formAction: `?/delete`,
-						formSubmit: async (e) => {
-							const toast = addToast({
-								data: {
-									type: 'default',
-									title: `Deleting cluster "${cluster.name}"...`,
+					(
+						cluster.status !== 'destroyed'
+							? {
+								value: 'destroy',
+								label: 'Destroy Cluster',
+								formAction: `?/destroy`,
+								formSubmit: async (e) => {
+									const toast = addToast({
+										data: {
+											type: 'default',
+											title: `Destroying cluster "${cluster.name}"...`,
+										},
+									})
+
+									return async ({ result }) => {
+										await applyAction(result)
+
+										if(result.type === 'success')
+											invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+
+										removeToast(toast.id)
+									}
 								},
-							})
-
-							return async ({ result }) => {
-								await applyAction(result)
-
-								removeToast(toast.id)
 							}
-						},
-					},
+							: {
+								value: 'delete',
+								label: 'Delete Cluster',
+								formAction: `?/delete`,
+								formSubmit: async (e) => {
+									const toast = addToast({
+										data: {
+											type: 'default',
+											title: `Deleting cluster "${cluster.name}"...`,
+										},
+									})
+
+									return async ({ result }) => {
+										await applyAction(result)
+
+										if(result.type === 'success')
+											invalidate(`/api/cluster`)
+
+										removeToast(toast.id)
+									}
+								},
+							}
+					),
 				]}
 			/>
 		</div>

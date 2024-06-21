@@ -48,6 +48,46 @@ export const actions: Actions = {
 		)
 	},
 
+	destroy: async ({
+		fetch,
+		params: { clusterId },
+	}) => {
+		const response = await fetch(
+			`${resolveRoute('/api/cluster/[clusterId]', { clusterId })}?destroy`,
+			{
+				method: 'POST',
+			},
+		)
+
+		if(!response.ok){
+			const result = await response.json()
+
+			return message(
+				{},
+				{
+					title: `Couldn't destroy cluster.`,
+					description: result.message,
+				},
+				{
+					status: response.status,
+				}
+			)
+		}
+
+		const result = await response.json()
+
+		return message(
+			{},
+			{
+				title: `Destroyed cluster "${result.name}".`,
+				description: `You can choose to recreate the cluster at a later time or delete it from your account.`,
+			},
+			{
+				status: response.status,
+			}
+		)
+	},
+
 	delete: async ({
 		fetch,
 		params: { clusterId },
