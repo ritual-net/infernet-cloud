@@ -28,6 +28,7 @@ export class GCPTerraform extends BaseTerraform {
 			is_production: true,
 			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
 			ip_allow_http: cluster.ip_allow_http ?? [],
+			ip_allow_http_ports: ["4000"],
 
 			router: {
 				deploy: cluster.deploy_router,
