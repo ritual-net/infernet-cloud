@@ -22,7 +22,7 @@ export class AWSTerraform extends BaseTerraform {
 			secret_access_key: serviceAccount.creds.secret_access_key,
 			region: cluster.region,
 
-			name: `infernet-cloud-${cluster.id}`,
+			name: `ic-${cluster.id}`,
 			is_production: true,
 			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
 			ip_allow_http: cluster.ip_allow_http ?? [],
