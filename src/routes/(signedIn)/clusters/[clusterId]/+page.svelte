@@ -406,7 +406,9 @@
 											{/if}
 
 											{#if log.diagnostic.snippet?.code}
-												<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+												<blockquote>
+													<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+												</blockquote>
 											{/if}
 										</div>
 									{/if}
@@ -466,7 +468,8 @@
 		color: #fff;
 	}
 
-	.scrollable {
+	.scrollable,
+	blockquote {
 		overflow: auto;
 		max-height: 19.6rem;
 		resize: all;
