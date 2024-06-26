@@ -37,7 +37,7 @@ RUN apk add --update curl unzip
 RUN curl -fsS https://dotenvx.sh/ | sh
 
 # Install Terraform
-ENV TERRAFORM_VERSION=1.8.5
+ENV TERRAFORM_VERSION=1.9.0
 RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip \
     && unzip terraform.zip -d /usr/local/bin/ \
     && rm -f terraform.zip
