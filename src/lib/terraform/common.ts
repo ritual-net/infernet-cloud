@@ -125,11 +125,11 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 						),
 					},
 					(params) =>
-						e.for(e.array_unpack(params.nodeInfo), (obj) =>
+						e.for(e.array_unpack(params.nodeInfo), (nodeInfo) =>
 							e.update(e.InfernetNode, () => ({
-								filter_single: { id: obj.key },
+								filter_single: { id: nodeInfo.key },
 								set: {
-									provider_id: obj.id,
+									provider_id: nodeInfo.id,
 								},
 							}))
 						)
