@@ -471,9 +471,12 @@
 	.scrollable,
 	blockquote {
 		overflow: auto;
-		max-height: 19.6rem;
-		resize: vertical;
 		padding: 0.66em 1em;
+
+		resize: vertical;
+		&:not([style*="height"]) {
+			max-height: 19.6rem;
+		}
 
 		background: rgba(0, 0, 0, 0.05);
 		border-radius: 0.5em;
