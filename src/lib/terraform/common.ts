@@ -61,7 +61,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 	if (!cluster)
 		throw new Error(`Cluster not found.`)
 
-	if (action === TFAction.Apply && cluster.locked)
+	if (/*action === TFAction.Apply &&*/ cluster.locked)
 		throw new Error(`The cluster is already in the process of being updated. Please wait and try again.`)
 
 	const cleanUp = async () => {
