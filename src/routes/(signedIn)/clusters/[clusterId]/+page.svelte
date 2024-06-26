@@ -468,8 +468,7 @@
 		color: #fff;
 	}
 
-	.scrollable,
-	blockquote {
+	.scrollable {
 		overflow: auto;
 		padding: 0.66em 1em;
 
@@ -477,6 +476,15 @@
 		&:not([style*="height"]) {
 			max-height: 19.6rem;
 		}
+
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
+	}
+
+	blockquote {
+		padding: 0.5em 0.75em;
+		font-size: smaller;
+		margin-block: 0.5em;
 
 		background: rgba(0, 0, 0, 0.05);
 		border-radius: 0.5em;
