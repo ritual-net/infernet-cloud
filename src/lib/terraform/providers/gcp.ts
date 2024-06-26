@@ -22,7 +22,6 @@ export class GCPTerraform extends BaseTerraform {
 		const terraformVars = {
 			service_account_email: serviceAccount.creds.client_email,
 			project: serviceAccount.creds.project_id,
-			region: cluster.region,
 
 			name: `infernet-cloud-${cluster.id}`,
 			is_production: true,
