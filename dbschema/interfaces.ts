@@ -109,6 +109,7 @@ export interface TerraformDeployment extends std.$Object {
   "action": TerraformAction;
   "timestamp": Date;
   "cluster": Cluster;
+  "status": string;
 }
 export interface current_user extends User {}
 export namespace ext {
