@@ -20,11 +20,11 @@ export class GCPTerraform extends BaseTerraform {
 		serviceAccount: GCPServiceAccount
 	): Promise<void> {
 		const terraformVars = {
+			gcp_credentials_file_path: 'ritual-deployer-key.json',
 			service_account_email: serviceAccount.creds.client_email,
 			project: serviceAccount.creds.project_id,
-			region: cluster.region,
 
-			name: `infernet-deployment-${cluster.id}`,
+			name: `infernet-cloud-${cluster.id}`,
 			is_production: true,
 			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
 			ip_allow_http: cluster.ip_allow_http ?? [],
@@ -62,7 +62,7 @@ export class GCPTerraform extends BaseTerraform {
 
 		// Write service account credentials to file
 		await SystemUtils.writeJsonToFile(
-			path.join(tempDir, 'terraform-deployer-key.json'),
+			path.join(tempDir, 'ritual-deployer-key.json'),
 			{
 				...serviceAccount.creds,
 				private_key: serviceAccount.creds.private_key.split(String.raw`\n`).join('\n'),
