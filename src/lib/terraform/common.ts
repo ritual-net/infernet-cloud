@@ -89,20 +89,24 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		)
 
 		// Store state in the database
-		const deployment = await e
-			.insert(e.TerraformDeployment, {
-				cluster: e.select(e.Cluster, () => ({
-					filter_single: { id: clusterId },
-				})),
-				action: ({
-					[TFAction.Apply]: e.TerraformAction.Apply,
-					[TFAction.Destroy]: e.TerraformAction.Destroy,
-				} as const)[action],
-				error,
-				tfstate,
-				stdout,
-				stderr,
-			})
+		const queriedCluster = e.select(e.Cluster, () => ({
+			filter_single: { id: clusterId },
+		}))
+
+		const deployment = (
+			await e
+				.insert(e.TerraformDeployment, {
+					cluster: queriedCluster,
+					action: ({
+						[TFAction.Apply]: e.TerraformAction.Apply,
+						[TFAction.Destroy]: e.TerraformAction.Destroy,
+					} as const)[action],
+					error,
+					tfstate: tfstate ?? queriedCluster.latest_deployment.tfstate,
+					stdout,
+					stderr,
+				})
+		)
 			.run(client)
 
 		// Restart router to apply any changes to IP address list
