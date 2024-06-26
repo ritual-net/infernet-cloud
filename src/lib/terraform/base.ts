@@ -2,7 +2,7 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { TFAction, type TFState } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
-import { createTempDir, formatTfVars, formatNodeConfig } from '$/lib/terraform/utils';
+import { createTempDir, formatTfVars, formatNodeConfig, parseJsonLines } from '$/lib/terraform/utils';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
 import type { InfernetNode } from "$schema/interfaces";
 
@@ -179,8 +179,8 @@ export abstract class BaseTerraform {
 				return {
 					error: error?.message,
 					tfstate,
-					stdout: stdout.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
-					stderr: stderr.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
+					stdout: parseJsonLines(stdout),
+					stderr: parseJsonLines(stderr),
 				}
 			}
 		}finally{

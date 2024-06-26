@@ -143,3 +143,9 @@ export const formatTfVars = (
 
 	return vars.join('\n')
 };
+
+export const parseJsonLines = (stdout: string): any[] => (
+	stdout.split('\n')
+		.filter(Boolean)
+		.map((line) => JSON.parse(line))
+)
