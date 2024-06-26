@@ -24,7 +24,7 @@ export class GCPTerraform extends BaseTerraform {
 			project: serviceAccount.creds.project_id,
 			region: cluster.region,
 
-			name: `infernet-deployment-${cluster.id}`,
+			name: `infernet-cloud-${cluster.id}`,
 			is_production: true,
 			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
 			ip_allow_http: cluster.ip_allow_http ?? [],
