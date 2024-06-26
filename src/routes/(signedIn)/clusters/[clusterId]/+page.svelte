@@ -472,7 +472,7 @@
 	blockquote {
 		overflow: auto;
 		max-height: 19.6rem;
-		resize: all;
+		resize: vertical;
 		padding: 0.66em 1em;
 
 		background: rgba(0, 0, 0, 0.05);
