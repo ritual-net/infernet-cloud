@@ -1,6 +1,8 @@
 export enum TFAction {
-	Apply = 'apply',
-	Destroy = 'destroy',
+	Init = 'Init',
+	Plan = 'Plan',
+	Apply = 'Apply',
+	Destroy = 'Destroy',
 }
 
 export type TFState = {

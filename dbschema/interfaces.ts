@@ -99,7 +99,7 @@ export interface InfernetNode extends std.$Object {
   "payment_address"?: string | null;
   "private_key"?: string | null;
 }
-export type TerraformAction = "Apply" | "Destroy";
+export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {
   "config"?: unknown | null;
   "error"?: string | null;

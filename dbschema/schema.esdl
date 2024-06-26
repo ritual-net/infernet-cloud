@@ -238,6 +238,11 @@ module default {
     );
     router: tuple<id: str, ip: str>;
 
+    # router := (
+    #   .latest_deployment.tfstate. if exists(.latest_deployment.tfstate)
+    #   else {}
+    # );
+
     constraint exclusive on ((.name, .service_account));
     access policy only_owner
       allow all
@@ -292,5 +297,10 @@ module default {
     stderr: array<json>;
   }
 
-  scalar type TerraformAction extending enum<Apply, Destroy>;
+  scalar type TerraformAction extending enum<
+    Init,
+    Plan,
+    Apply,
+    Destroy
+  >;
 }

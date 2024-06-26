@@ -26,9 +26,11 @@ export type $Secp256k1PrivateKey = $.ScalarType<"std::str", string>;
 const Secp256k1PrivateKey: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2c0eccd2-29a7-11ef-b85d-657974a7810a", _.syntax.literal);
 
 export type $TerraformAction = {
+  "Init": $.$expr_Literal<$TerraformAction>;
+  "Plan": $.$expr_Literal<$TerraformAction>;
   "Apply": $.$expr_Literal<$TerraformAction>;
   "Destroy": $.$expr_Literal<$TerraformAction>;
-} & $.EnumType<"default::TerraformAction", ["Apply", "Destroy"]>;
+} & $.EnumType<"default::TerraformAction", ["Init", "Plan", "Apply", "Destroy"]>;
 const TerraformAction: $TerraformAction = $.makeType<$TerraformAction>(_.spec, "085f6934-2f58-11ef-9dbd-67fb1c9b5a2d", _.syntax.literal);
 
 export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
