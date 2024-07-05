@@ -24,7 +24,7 @@
 	
 <div
 	use:melt={$root}
-	class="column"
+	class="column {$$restProps.class}"
 >
 	{#if $$slots.trigger}
 		<button
