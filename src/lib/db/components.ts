@@ -222,6 +222,13 @@ export const getClusterSelectParams = (
 		...ClusterSpreadParamsByProvider[provider],
 
 		...includeTerraformDeploymentDetails && {
+			deployments: deployment => ({
+				...e.TerraformDeployment['*'],
+				order_by: {
+					expression: deployment.timestamp, 
+					direction: e.DESC,
+				},
+			}),
 			latest_deployment: {
 				...e.TerraformDeployment['*'],
 			},

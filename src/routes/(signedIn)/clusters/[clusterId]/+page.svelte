@@ -443,6 +443,118 @@
 			{/if}
 		</dl>
 	</section>
+
+	<section class="column">
+		<h3>History</h3> 
+
+		{#each cluster.deployments as snapshot}
+			<dl class="card column">
+				<section class="row wrap">
+					<dt>Status</dt>
+
+					<dd>
+						<Status
+							status={snapshot.status}
+						/>
+					</dd>
+				</section>
+
+				<section class="row wrap">
+					<dt>Timestamp</dt>
+
+					<dd>
+						{new Date(snapshot.timestamp).toLocaleString()}
+					</dd>
+				</section>
+
+				{#if snapshot.error}
+					<section class="column">
+						<dt>Error</dt>
+		
+						<dd class="scrollable">
+							<output><code>{snapshot.error}</code></output>
+						</dd>
+					</section>
+				{/if}
+
+				{#if snapshot.tfstate}
+					<section class="column">
+						<dt>Terraform State</dt>
+		
+						<dd class="scrollable">
+							<output><code>{JSON.stringify(snapshot.tfstate, null, '\t')}</code></output>
+						</dd>
+					</section>
+				{/if}
+
+				{#if snapshot.stdout?.length}
+					<section class="column">
+						<dt>Terraform Logs</dt>
+		
+						<dd class="scrollable log-container">
+							{#each snapshot.stdout as log, i}
+								{@const previousLog = snapshot.stdout[i - 1]}
+
+								{#if previousLog && previousLog['@type'] !== log['@type']}
+									<hr>
+								{/if}
+
+								<div
+									class="log"
+									data-type={log['type']} 
+									data-level={log['@level']}
+									data-module={log['@module']}
+								>
+									<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+
+									{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
+										<div class="diagnostic-log">
+											{#if log.diagnostic.detail}
+												<output><code>{log.diagnostic.detail}</code></output>
+											{/if}
+
+											{#if log.diagnostic.snippet?.code}
+												<blockquote>
+													<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+												</blockquote>
+											{/if}
+										</div>
+									{/if}
+								</div>
+							{/each}
+						</dd>
+					</section>
+				{/if}
+
+				{#if snapshot.stderr?.length}
+					<section class="column">
+						<dt>Terraform Error Logs</dt>
+		
+						<dd class="scrollable log-container">
+							{#each snapshot.stderr as log, i}
+								{@const previousLog = snapshot.stderr[i - 1]}
+
+								{#if previousLog && previousLog['@type'] !== log['@type']}
+									<hr>
+								{/if}
+
+								<output
+									class="log"
+									data-type={log['type']} 
+									data-level={log['@level']}
+									data-module={log['@module']}
+								><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+							{/each}
+						</dd>
+					</section>
+				{/if}
+			</dl>
+		{:else}
+			<div class="card">
+				<p>No deployments found.</p>
+			</div>
+		{/each}
+	</section>
 </div>
 
 
