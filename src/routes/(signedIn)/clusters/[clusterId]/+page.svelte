@@ -517,7 +517,12 @@
 	</section>
 
 	<section class="column">
-		<h3>History</h3> 
+		<h3 class="row inline">
+			History
+			<span class="annotation">
+				{cluster.deployments.length}
+			</span>
+		</h3>
 
 		{#each cluster.deployments as snapshot (snapshot.id)}
 			<Collapsible
