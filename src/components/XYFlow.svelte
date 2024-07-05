@@ -8,14 +8,14 @@
 	export let edges: Edge[] = []
 
 	export let direction: 'TB' | 'LR' | 'BT' | 'RL' = 'BT'
-	export let nodeWidth = 300
-	export let nodeHeight = 150
+	export let nodeWidth = 180
+	export let nodeHeight = 52
 
 	export let layoutOptions: Omit<dagre.GraphLabel, 'rankdir'> = {
 		ranker: 'longest-path',
-		nodesep: 1,
-		edgesep: 1,
-		ranksep: 1,
+		nodesep: 50,
+		edgesep: 50,
+		ranksep: 50,
 	}
 
 
@@ -108,7 +108,8 @@
 	}
 
 	:global(.svelte-flow__node) {
-		white-space: pre;
+		padding: 6px;
+		white-space: pre-line;
 	}
 
 	:global(.svelte-flow__attribution) {

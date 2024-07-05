@@ -81,13 +81,13 @@
 						))
 				}
 				direction="BT"
-				nodeWidth={300}
-				nodeHeight={150}
+				nodeWidth={180}
+				nodeHeight={52}
 				layoutOptions={{
 					ranker: 'longest-path',
-					nodesep: 0,
-					edgesep: 0,
-					ranksep: 0,
+					nodesep: 5,
+					edgesep: 50,
+					ranksep: 60,
 				}}
 			/>
 		</dd>
