@@ -21,6 +21,17 @@
 	// Functions
 	import { resolveRoute } from '$app/paths'
 
+	export const formatResourceType = (resourceType: string): string => (
+		resourceType
+			.split('_')
+			.map((word, i) => (
+				word.length <= 3 && i <= 1
+					? word.toUpperCase()
+					: `${word[0].toUpperCase()}${word.slice(1)}`
+			))
+			.join(' ')
+	)
+
 
 	// Actions
 	import { addToast, removeToast } from '$/components/Toaster.svelte'
@@ -56,6 +67,8 @@
 	import NodesTable from './NodesTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import Status from '$/views/Status.svelte'
+	import XYFlow from '$/components/XYFlow.svelte'
+	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
 
 
 	// Transitions
@@ -365,6 +378,64 @@
 		
 						<dd class="scrollable">
 							<output><code>{cluster.latest_deployment.error}</code></output>
+						</dd>
+					</section>
+				{/if}
+
+				{#if cluster.latest_deployment?.tfstate?.resources?.length}
+					<section class="column">
+						<dt>Cloud Resources</dt>
+
+						<dd>
+							<XYFlow
+								nodes={
+									cluster.latest_deployment.tfstate.resources
+										.flatMap(resource => (
+											resource.instances
+												.map(instance => ({
+													id: `${resource.type}.${resource.name}`,
+													data: {
+														label: [
+															resource.name,
+															formatResourceType(resource.type),
+														].join('\n'),
+													},
+												}))
+										))
+								}
+								edges={
+									cluster.latest_deployment.tfstate.resources
+										.flatMap(resource => (
+											resource.instances
+												.flatMap(instance => (
+													instance.dependencies
+														?.map(dependencyId => {
+															const [type, name] = dependencyId.split('.')
+															return { type, name }
+														})
+														.map(dependency => ({
+															id: `${resource.type}.${resource.name}-${dependency.type}.${dependency.name}`,
+															source: `${resource.type}.${resource.name}`,
+															target: `${dependency.type}.${dependency.name}`,
+															type: ConnectionLineType.Bezier,
+															markerEnd: {
+																type: MarkerType.ArrowClosed,
+															},
+														}))
+													?? []
+												))
+										))
+								}
+								direction="BT"
+								nodeWidth={300}
+								nodeHeight={150}
+								layoutOptions={{
+									ranker: 'longest-path',
+									nodesep: 0,
+									edgesep: 0,
+									ranksep: 0,
+								}}
+							/>
 						</dd>
 					</section>
 				{/if}
