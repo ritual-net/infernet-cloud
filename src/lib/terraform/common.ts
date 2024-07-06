@@ -95,10 +95,11 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 							e.insert(
 								e.TerraformDeployment,
 								{
+									action: e.cast(e.TerraformAction, snapshot['action']),
+									timestamp: e.cast(e.datetime, snapshot['timestamp']),
 									cluster: e.select(e.Cluster, () => ({
 										filter_single: { id: clusterId },
 									})),
-									action: e.cast(e.TerraformAction, snapshot['action']),
 									error: snapshot['error'] ? e.cast(e.str, snapshot['error']) : null,
 									tfstate: snapshot['tfstate'] ? e.cast(e.json, snapshot['tfstate']) : null,
 									stdout: snapshot['stdout'] ? e.cast(e.array(e.json), snapshot['stdout']) : null,
@@ -114,6 +115,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 						results
 							.map(result => ({
 								action: result.action,
+								timestamp: new Date(result.timestamp).toISOString(),
 								error: result.output.error,
 								tfstate: result.output.tfstate,
 								stdout: result.output.stdout,

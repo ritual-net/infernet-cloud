@@ -160,6 +160,7 @@ export abstract class BaseTerraform {
 					})
 
 				result.push({
+					timestamp: Date.now(),
 					action: command.action,
 					command: command.command,
 					output: {
