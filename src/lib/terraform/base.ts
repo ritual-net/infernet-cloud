@@ -100,73 +100,56 @@ export abstract class BaseTerraform {
 				)
 			}
 
-			// Initialize terraform
-			console.log(`Initializing Terraform project...`, tempDir)
-			{
+			const commands = (
+				[
+					{
+						action: TFAction.Init,
+						command: 'terraform init -json -no-color',
+						statusMessage: 'Initializing Terraform project...',
+						errorMessage: 'Error initializing Terraform project.',
+					},
+					[TFAction.Plan, TFAction.Apply, TFAction.Destroy].includes(action) && {
+						action: TFAction.Plan,
+						command: action === TFAction.Plan ? `terraform plan -json -no-color` : `terraform plan -destroy -json -no-color`,
+						statusMessage: 'Creating Terraform plan...',
+						errorMessage: 'Error creating Terraform plan.',
+					},
+					action === TFAction.Apply && {
+						action: TFAction.Apply,
+						command: `terraform apply -auto-approve -json -no-color`,
+						statusMessage: 'Applying changes to resources...',
+						errorMessage: 'Error applying changes to resources.',
+					},
+					action === TFAction.Destroy && {
+						action: TFAction.Destroy,
+						command: `terraform apply -destroy -auto-approve -json -no-color`,
+						statusMessage: 'Destroying resources...',
+						errorMessage: 'Error destroying resources.',
+					},
+				]
+					.filter(Boolean)
+			)
+
+			const result = []
+
+			for(const command of commands){
+				if(!command) continue
+
+				console.log(command.statusMessage, tempDir)
+
 				const {
 					error,
 					stdout,
 					stderr,
 				} = await SystemUtils.executeCommands(
 					tempDir,
-					'terraform init'
+					command.command
 				)
 
 				if(error){
-					console.error(`Error initializing Terraform project:`)
-					console.error(error)
-
-					// const {
-					// 	stdout: tfstateString,
-					// } = await SystemUtils.executeCommands(
-					// 	tempDir,
-					// 	'terraform show -no-color -json terraform.tfstate'
-					// )
-
-					// const tfstate = JSON.parse(tfstateString)
-
-					const tfstate = await SystemUtils.readJsonFromFile<TFState>(
-						path.join(tempDir, 'terraform.tfstate')
-					)
-						.catch(e => {
-							console.error(e)
-							return null
-						})
-	
-					return {
-						error: error?.message,
-						tfstate,
-						stdout: stdout.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
-						stderr: stderr.split('\n').filter(Boolean).map((line) => JSON.parse(line)),
-					}
-				}
-			}
-
-			// Run terraform action
-			console.log(`Running Terraform action "${action}"...`)
-			{
-				const {
-					error,
-					stdout,
-					stderr,
-				} = await SystemUtils.executeCommands(
-					tempDir,
-					`terraform ${action} -auto-approve -json -no-color`
-				)
-
-				if(error){
-					console.error(`Error running Terraform action "${action}":`)
+					console.error(command.errorMessage)
 					console.error(error)
 				}
-
-				// const {
-				// 	stdout: tfstateString,
-				// } = await SystemUtils.executeCommands(
-				// 	tempDir,
-				// 	'terraform show -no-color -json terraform.tfstate'
-				// )
-
-				// const tfstate = JSON.parse(tfstateString)
 
 				const tfstate = await SystemUtils.readJsonFromFile<TFState>(
 					path.join(tempDir, 'terraform.tfstate')
@@ -176,13 +159,22 @@ export abstract class BaseTerraform {
 						return null
 					})
 
-				return {
-					error: error?.message,
-					tfstate,
-					stdout: parseJsonLines(stdout),
-					stderr: parseJsonLines(stderr),
-				}
+				result.push({
+					action: command.action,
+					command: command.command,
+					output: {
+						error: error?.message,
+						tfstate,
+						stdout: parseJsonLines(stdout),
+						stderr: parseJsonLines(stderr),
+					},
+				})
+
+				if(error)
+					break
 			}
+
+			return result
 		}finally{
 			// Remove temporary directory
 			if(tempDir){

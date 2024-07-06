@@ -74,12 +74,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		await lockCluster(client, clusterId)
 
 		// Perform Terraform action
-		const {
-			error,
-			tfstate,
-			stdout,
-			stderr,
-		} = await (
+		const results = await (
 			ProviderTerraform[cluster.service_account.provider]
 				.action(
 					cluster,
@@ -89,25 +84,53 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		)
 
 		// Store state in the database
-		const queriedCluster = e.select(e.Cluster, () => ({
-			filter_single: { id: clusterId },
-		}))
-
-		const deployment = (
+		const snapshots = (
 			await e
-				.insert(e.TerraformDeployment, {
-					cluster: queriedCluster,
-					action: ({
-						[TFAction.Apply]: e.TerraformAction.Apply,
-						[TFAction.Destroy]: e.TerraformAction.Destroy,
-					} as const)[action],
-					error,
-					tfstate: tfstate ?? queriedCluster.latest_deployment.tfstate,
-					stdout,
-					stderr,
+				.params(
+					{
+						snapshots: e.json, 
+					},
+					({ snapshots }) => (
+						e.for(e.json_array_unpack(snapshots), (snapshot) =>
+							e.insert(
+								e.TerraformDeployment,
+								{
+									cluster: e.select(e.Cluster, () => ({
+										filter_single: { id: clusterId },
+									})),
+									action: e.cast(e.TerraformAction, snapshot['action']),
+									error: snapshot['error'] ? e.cast(e.str, snapshot['error']) : null,
+									tfstate: snapshot['tfstate'] ? e.cast(e.json, snapshot['tfstate']) : null,
+									stdout: snapshot['stdout'] ? e.cast(e.array(e.json), snapshot['stdout']) : null,
+									stderr: snapshot['stderr'] ? e.cast(e.array(e.json), snapshot['stderr']) : null,
+								}
+							)
+						)
+					)
+					
+				)
+				.run(client, {
+					snapshots: (
+						results
+							.map(result => ({
+								action: result.action,
+								error: result.output.error,
+								tfstate: result.output.tfstate,
+								stdout: result.output.stdout,
+								stderr: result.output.stderr,
+							}))
+					),
 				})
 		)
-			.run(client)
+
+		const {
+			output: {
+				error,
+				tfstate,
+				stdout,
+				stderr,
+			},
+		} = results[results.length - 1]
 
 		// Restart router to apply any changes to IP address list
 		if (cluster.deploy_router && action == TFAction.Apply && tfstate?.outputs?.router?.value) {
