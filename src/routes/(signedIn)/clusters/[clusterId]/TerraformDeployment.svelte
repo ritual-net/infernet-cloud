@@ -52,7 +52,7 @@
 	<section class="column">
 		<dt>Cloud Resources</dt>
 
-		<dd>
+		<dd class="column">
 			<XYFlow
 				nodes={
 					deployment.tfstate.resources
@@ -103,14 +103,12 @@
 					ranksep: 60,
 				}}
 			/>
-		</dd>
 
-		<dd class="card scrollable">
-			<dl class="column">
+			<dl class="card scrollable">
 				{#each deployment.tfstate.resources as resource}
 					<div
 						id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
-						class="row wrap"
+						class="column"
 					>
 						<dt>
 							{formatResourceType(resource.type)}: {resource.name}
