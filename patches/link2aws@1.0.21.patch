@@ -1,0 +1,61 @@
+diff --git a/link2aws.js b/link2aws.js
+index 6832253d9f849259671d757e4337809591fa5e55..1491aeca69613a4688bc8270d7c6aee87238ee0c 100644
+--- a/link2aws.js
++++ b/link2aws.js
+@@ -430,12 +430,12 @@ class ARN {
+                 "client-vpn-endpoint": null,
+                 "customer-gateway": null,
+                 "dedicated-host": null,
+-                "dhcp-options": null,
++                "dhcp-options": () => `https://${this.region}.${this.console}/vpc/home?region=${this.region}#DhcpOptionsDetails:DhcpOptionsId=${this.resource}`,
+                 "elastic-gpu": null,
+                 "fpga-image": null,
+                 "image": () => `https://${this.region}.${this.console}/ec2/home?region=${this.region}#ImageDetails:imageId=${this.resource}`,
+-                "instance": () => `https://${this.region}.${this.console}/ec2/home?region=${this.region}#InstanceDetails:instanceId=${this.resource}`,
+-                "internet-gateway": null,
++                "instance": () => `https://${this.region}.${this.console}/ec2/home?region=${this.region}#Instances:instanceId=${this.resource}`,
++                "internet-gateway": () => `https://${this.region}.${this.console}/vpc/home?region=${this.region}#InternetGateway:internetGatewayId=${this.resource}`,
+                 "natgateway": () => `https://${this.region}.${this.console}/vpcconsole/home?region=${this.region}#NatGatewayDetails:natGatewayId=${this.resource}`,
+                 "key-pair": null,
+                 "launch-template": () => `https://${this.region}.${this.console}/ec2/home?region=${this.region}#LaunchTemplateDetails:launchTemplateId=${this.resource}`,
+@@ -445,12 +445,12 @@ class ARN {
+                 "local-gateway-route-table-vpc-association": null,
+                 "local-gateway-virtual-interface": null,
+                 "local-gateway-virtual-interface-group": null,
+-                "network-acl": null,
+-                "network-interface": null,
++                "network-acl": () => `https://${this.region}.${this.console}/vpc/home?region=${this.region}#NetworkAclDetails:networkAclId=${this.resource}`,
++                "network-interface": () => `https://${this.region}.${this.console}/ec2/home?region=${this.region}#NetworkInterface:networkInterfaceId=${this.resource}`,
+                 "placement-group": null,
+                 "reserved-instances": null,
+-                "route-table": null,
+-                "security-group": () => `https://${this.region}.${this.console}/vpc/home?region=${this.region}#SecurityGroup:groupId=${this.resource}`,
++                "route-table": () => `https://${this.region}.${this.console}/vpc/home?region=${this.region}#RouteTableDetails:routeTableId=${this.resource}`,
++                "security-group": () => `https://${this.region}.${this.console}/ec2/home?region=${this.region}#SecurityGroup:groupId=${this.resource}`,
+                 "snapshot": () => `https://${this.region}.${this.console}/ec2/home?region=${this.region}#SnapshotDetails:snapshotId=${this.resource}`,
+                 "spot-instances-request": null,
+                 "subnet": () => `https://${this.region}.${this.console}/vpc/home?region=${this.region}#SubnetDetails:subnetId=${this.resource}`,
+@@ -1122,14 +1122,14 @@ class ARN {
+ 
+ // Running as command line script? (not in browser, and not as library)
+ /* istanbul ignore if */
+-if (typeof (require) !== 'undefined' && require.main === module) {
+-    for (let i = 2; i < process.argv.length; i++) {
+-        try {
+-            console.log(new ARN(process.argv[i]).consoleLink);
+-        } catch (e) {
+-            console.error(e);
+-        }
+-    }
+-}
++// if (typeof (require) !== 'undefined' && require.main === module) {
++//     for (let i = 2; i < process.argv.length; i++) {
++//         try {
++//             console.log(new ARN(process.argv[i]).consoleLink);
++//         } catch (e) {
++//             console.error(e);
++//         }
++//     }
++// }
+ 
+ exports.ARN = ARN;
