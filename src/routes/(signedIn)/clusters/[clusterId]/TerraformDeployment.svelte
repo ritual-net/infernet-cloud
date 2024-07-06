@@ -8,6 +8,17 @@
 
 
 	// Functions
+	import { ARN } from 'link2aws'
+
+	const getAwsConsoleLink = (arn: string) => {
+		try {
+			return new ARN(arn).consoleLink
+		} catch (error) {
+			// Search
+			return `https://console.aws.amazon.com/ec2/v2/home?region=${arn.split(':')[3]}#Instances:search=${arn}`
+		}
+	}
+
 	const formatResourceType = (resourceType: string) => (
 		resourceType
 			.split('_')
@@ -23,6 +34,7 @@
 	// Components
 	import XYFlow from '$/components/XYFlow.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
+	import { providers, ProviderTypeEnum } from '$/types/provider'
 </script>
 
 
@@ -84,12 +96,114 @@
 				nodeWidth={180}
 				nodeHeight={52}
 				layoutOptions={{
+					// ranker: 'tight-tree',
 					ranker: 'longest-path',
 					nodesep: 5,
 					edgesep: 50,
 					ranksep: 60,
 				}}
 			/>
+		</dd>
+
+		<dd class="card scrollable">
+			<dl class="column">
+				{#each deployment.tfstate.resources as resource}
+					<div
+						id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
+						class="row wrap"
+					>
+						<dt>
+							{formatResourceType(resource.type)}: {resource.name}
+						</dt>
+
+						<dd>
+							{#each resource.instances as instance}
+								<dl
+									class="card column"
+								>
+									{#if instance.attributes?.tags?.Name}
+										<section class="row wrap">
+											<dt>Tag</dt>
+											<dd>{instance.attributes.tags.Name}</dd>
+										</section>
+									{/if}
+
+									{#if instance.attributes?.id}
+										<section class="row wrap">
+											<dt>ID</dt>
+											<dd>{instance.attributes.id}</dd>
+										</section>
+									{/if}
+
+									{#if instance.attributes?.arn}
+										<section class="row wrap">
+											<dt>ARN</dt>
+											<dd>
+												<a
+													href={getAwsConsoleLink(instance.attributes.arn)}
+													target="_blank"
+													class="row inline with-icon"
+												>
+													<img
+														src={providers[ProviderTypeEnum.AWS].icon}
+														width="16"
+														height="16"
+													/>
+
+													{instance.attributes.arn}
+												</a>
+											</dd>
+										</section>
+									{/if}
+
+									{#each Object.entries(instance.attributes) as [key, value]}
+										{#if (
+											!['tags', 'tags_all', 'id', 'arn'].includes(key)
+											&& value !== null && !(Array.isArray(value) && value.length === 0)
+										)}
+											<section class="row wrap">
+												<dt>{key}</dt>
+												<dd>
+													{#if Array.isArray(value)}
+														{#each value as item}
+															<div>
+																<output><code>{item}</code></output>
+															</div>
+														{/each}
+													{:else}
+														<output><code>{value}</code></output>
+													{/if}
+												</dd>
+											</section>
+										{/if}
+									{/each}
+
+									{#if instance.dependencies?.length}
+										<section class="row wrap">
+											<dt>Dependencies</dt>
+											<dd>
+												{#each instance.dependencies as dependency}
+													{@const [type, name] = dependency.split('.')}
+
+													<p>
+														<a href="#terraform-resource-{deployment.id}-{type}-{name}">
+															{name} ({type})
+														</a>
+													</p>
+												{/each}
+											</dd>
+										</section>
+									{/if}
+								</dl>
+							{:else}
+								<div class="card column">
+									<p>No resources found.</p>
+								</div>
+							{/each}
+						</dd>
+					</div>
+				{/each}
+			</dl>
 		</dd>
 	</section>
 {/if}
