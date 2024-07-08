@@ -100,10 +100,10 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 									cluster: e.select(e.Cluster, () => ({
 										filter_single: { id: clusterId },
 									})),
-									error: snapshot['error'] ? e.cast(e.str, snapshot['error']) : null,
-									tfstate: snapshot['tfstate'] ? e.cast(e.json, snapshot['tfstate']) : null,
-									stdout: snapshot['stdout'] ? e.cast(e.array(e.json), snapshot['stdout']) : null,
-									stderr: snapshot['stderr'] ? e.cast(e.array(e.json), snapshot['stderr']) : null,
+									error: 'error' in snapshot && snapshot['error'] ? e.cast(e.str, snapshot['error']) : null,
+									tfstate: 'tfstate' in snapshot && snapshot['tfstate'] ? e.cast(e.json, snapshot['tfstate']) : null,
+									stdout: 'stdout' in snapshot && snapshot['stdout'] ? e.cast(e.array(e.json), snapshot['stdout']) : null,
+									stderr: 'stderr' in snapshot && snapshot['stderr'] ? e.cast(e.array(e.json), snapshot['stderr']) : null,
 								}
 							)
 						)
@@ -169,7 +169,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		}
 
 		return {
-			deployment,
+			snapshots,
 			error,
 		}
 	}finally{
