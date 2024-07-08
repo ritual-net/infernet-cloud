@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import { providers } from '$/types/provider'
+	import { TFAction } from '$/types/terraform'
 
 
 	// Context
@@ -392,50 +393,70 @@
 			</span>
 		</h3>
 
-		{#each cluster.deployments as snapshot (snapshot.id)}
-			<Collapsible
-				class="card"
-			>
-				<svelte:fragment slot="trigger">
-					<header class="row wrap">
-						<h4>{snapshot.action}</h4>
+		{#each (
+			// Group by "init" actions
+			cluster.deployments
+				.toReversed()
+				.reduce((groups, snapshot, i) => {
+					if(snapshot.action === TFAction.Init || i === 0)
+						groups.push([snapshot])
+					else
+						groups[groups.length - 1].push(snapshot)
+					return groups
+				}, [])
+				.toReversed()
+		) as group (group[0]?.id)}
+			<div class="column card">
+				{#each group as snapshot (snapshot.id)}
+					<Collapsible
+						class="card"
+					>
+						<svelte:fragment slot="trigger">
+							<header class="row wrap">
+								<h4>{snapshot.action}</h4>
 
-						<div class="column inline">
-							<dd>
-								<Status
-									status={snapshot.status}
-								/>
-							</dd>
+								<div class="column inline">
+									<dd>
+										<Status
+											status={snapshot.status}
+										/>
+									</dd>
 
-							<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
-						</div>
-					</header>
-				</svelte:fragment>
+									<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
+								</div>
+							</header>
+						</svelte:fragment>
 
-				<dl class="card column">
-					<section class="row wrap">
-						<dt>Status</dt>
+						<dl class="card column">
+							<section class="row wrap">
+								<dt>Status</dt>
 
-						<dd>
-							<Status
-								status={snapshot.status}
+								<dd>
+									<Status
+										status={snapshot.status}
+									/>
+								</dd>
+							</section>
+
+							<section class="row wrap">
+								<dt>Timestamp</dt>
+
+								<dd>
+									{new Date(snapshot.timestamp).toLocaleString()}
+								</dd>
+							</section>
+
+							<TerraformDeployment
+								deployment={snapshot}
 							/>
-						</dd>
-					</section>
-
-					<section class="row wrap">
-						<dt>Timestamp</dt>
-
-						<dd>
-							{new Date(snapshot.timestamp).toLocaleString()}
-						</dd>
-					</section>
-
-					<TerraformDeployment
-						deployment={snapshot}
-					/>
-				</dl>
-			</Collapsible>
+						</dl>
+					</Collapsible>
+				{:else}
+					<div class="card">
+						<p>No deployments found.</p>
+					</div>
+				{/each}
+			</div>
 		{:else}
 			<div class="card">
 				<p>No deployments found.</p>
