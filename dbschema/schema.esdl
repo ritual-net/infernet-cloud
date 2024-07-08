@@ -231,7 +231,9 @@ module default {
     }
     status := (
       'updating' if .locked else
-      .latest_deployment.status if exists(.latest_deployment) else
+      'unhealthy' if exists(.latest_deployment) and .latest_deployment.status = 'failed' else
+      'destroyed' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' and .latest_deployment.action = TerraformAction.Destroy else
+      'healthy' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' else
       'unknown'
     );
     router: tuple<id: str, ip: str>;
@@ -277,9 +279,8 @@ module default {
     index on ((.cluster, .timestamp));
 
     status := (
-      'unhealthy' if exists(.error) else
-      'destroyed' if .action = TerraformAction.Destroy else
-      'healthy' if exists(.tfstate) else
+      'failed' if exists(.error) else
+      'succeeded' if exists(.tfstate) else
       'unknown'
     );
 
