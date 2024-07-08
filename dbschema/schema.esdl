@@ -297,6 +297,7 @@ module default {
     }
 
     config: json;
+    command: str;
     error: str;
     tfstate: json;
     stdout: array<json>;

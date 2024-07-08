@@ -38,6 +38,16 @@
 </script>
 
 
+{#if deployment.command}
+	<section class="column">
+		<dt>Command</dt>
+
+		<dd class="scrollable">
+			<output><code>{deployment.command}</code></output>
+		</dd>
+	</section>
+{/if}
+
 {#if deployment.error}
 	<section class="column">
 		<dt>Error</dt>
