@@ -107,6 +107,10 @@
 		aspect-ratio: 2;
 	}
 
+	:global(.svelte-flow) {
+		--xy-node-border-default: var(--borderWidth) solid var(--borderColor);
+	}
+
 	:global(.svelte-flow__node) {
 		padding: 6px;
 		white-space: pre-line;
