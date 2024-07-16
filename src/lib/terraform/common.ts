@@ -83,15 +83,81 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				)
 		)
 
+		const snapshots = (
+			results
+				.map(result => ({
+					action: result.action,
+					timestamp: new Date(result.timestamp).toISOString(),
+					command: result.command,
+					error: result.output.error,
+					tfstate: result.output.tfstate,
+					stdout: result.output.stdout,
+					stderr: result.output.stderr,
+				}))
+		)
+
 		// Store state in the database
+
+		// https://github.com/edgedb/edgedb-js/issues/554
+
+		/*
 		const snapshots = (
 			await e
 				.params(
 					{
-						snapshots: e.json, 
+						snapshots: e.array(
+							e.tuple({
+								action: e.TerraformAction,
+								error: e.str,
+								tfstate: e.json,
+								stdout: e.array(e.json),
+								stderr: e.array(e.json),
+							})
+						), 
 					},
 					({ snapshots }) => (
-						e.for(e.json_array_unpack(snapshots), (snapshot) =>
+						e.for(e.array_unpack(snapshots), (snapshot) =>
+							e.insert(
+								e.TerraformDeployment,
+								{
+									cluster: e.select(e.Cluster, () => ({
+										filter_single: { id: clusterId },
+									})),
+									action: e.cast(e.TerraformAction, action),
+									error: snapshot.error,
+									tfstate: snapshot.tfstate,
+									stdout: snapshot.stdout,
+									stderr: snapshot.stderr,
+								}
+							)
+						)
+					)
+				)
+				.run(client, {
+					snapshots: (
+						results
+							.map(result => ({
+								action: result.action,
+								error: result.output.error ?? '',
+								tfstate: result.output.tfstate,
+								stdout: result.output.stdout,
+								stderr: result.output.stderr,
+							}))
+					),
+				})
+		)
+		*/
+
+		// InvalidValueError: JSON index 'error' is out of bounds
+		/*
+		const insertedSnapshots = (
+			await e
+				.params(
+					{
+						snapshots: e.json,
+					},
+					({ snapshots }) => (
+						e.for(e.json_array_unpack(snapshots), (snapshot) =>console.log('snapshot', JSON.stringify(snapshot))||console.log('snapshot action', snapshot['action'])||console.log('snapshot error', snapshot['error'])||console.log('snapshot output', snapshot['output'])||
 							e.insert(
 								e.TerraformDeployment,
 								{
@@ -101,31 +167,45 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 										filter_single: { id: clusterId },
 									})),
 									command: e.cast(e.str, snapshot['command']),
-									error: 'error' in snapshot && snapshot['error'] ? e.cast(e.str, snapshot['error']) : null,
-									tfstate: 'tfstate' in snapshot && snapshot['tfstate'] ? e.cast(e.json, snapshot['tfstate']) : null,
-									stdout: 'stdout' in snapshot && snapshot['stdout'] ? e.cast(e.array(e.json), snapshot['stdout']) : null,
-									stderr: 'stderr' in snapshot && snapshot['stderr'] ? e.cast(e.array(e.json), snapshot['stderr']) : null,
+									error: e.cast(e.str, snapshot['error']),
+									tfstate: e.cast(e.json, snapshot['tfstate']),
+									stdout: e.cast(e.array(e.json), snapshot['stdout']),
+									stderr: e.cast(e.array(e.json), snapshot['stderr']),
 								}
 							)
 						)
 					)
-					
 				)
 				.run(client, {
-					snapshots: (
-						results
-							.map(result => ({
-								action: result.action,
-								timestamp: new Date(result.timestamp).toISOString(),
-								command: result.command,
-								error: result.output.error,
-								tfstate: result.output.tfstate,
-								stdout: result.output.stdout,
-								stderr: result.output.stderr,
-							}))
-					),
+					snapshots,
 				})
 		)
+		*/
+
+		// Insert snapshots individually
+		const insertedSnapshots = []
+		
+		for (const snapshot of snapshots) {
+			const insertedSnapshot = await e
+				.insert(
+					e.TerraformDeployment,
+					{
+						action: e.cast(e.TerraformAction, snapshot.action),
+						timestamp: e.cast(e.datetime, snapshot.timestamp),
+						cluster: e.select(e.Cluster, () => ({
+							filter_single: { id: clusterId },
+						})),
+						command: snapshot.command,
+						...snapshot.error && { error: snapshot.error },
+						...snapshot.tfstate && { tfstate: snapshot.tfstate },
+						...snapshot.stdout && { stdout: snapshot.stdout },
+						...snapshot.stderr && { stderr: snapshot.stderr }, 
+					}
+				)
+				.run(client)
+
+			insertedSnapshots.push(insertedSnapshot)
+		}
 
 		const {
 			output: {
@@ -171,7 +251,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		}
 
 		return {
-			snapshots,
+			snapshots: insertedSnapshots,
 			error,
 		}
 	}finally{
