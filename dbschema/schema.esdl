@@ -280,8 +280,9 @@ module default {
 
     status := (
       'failed' if exists(.error) else
-      'succeeded' if exists(.tfstate) else
-      'unknown'
+      'failed' if(.action = TerraformAction.Apply and not exists(.tfstate)) else
+      'succeeded' if(.action = TerraformAction.Apply and exists(.tfstate)) else
+      'succeeded'
     );
 
     required action: TerraformAction;
