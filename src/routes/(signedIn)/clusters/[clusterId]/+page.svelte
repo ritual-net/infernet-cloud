@@ -428,7 +428,9 @@
 							</header>
 						</svelte:fragment>
 
-						<dl class="card column">
+						<dl
+							class="snapshot-details card column"
+						>
 							<section class="row wrap">
 								<dt>Status</dt>
 
@@ -486,6 +488,14 @@
 
 		background-color: var(--color-ritualBlack);
 		color: #fff;
+	}
+
+	header.row > :last-child {
+		text-align: end;
+	}
+
+	.snapshot-details {
+		background-color: rgba(0, 0, 0, 0.03);
 	}
 
 	output {
