@@ -64,56 +64,58 @@
 		<dt>Cloud Resources</dt>
 
 		<dd class="column">
-			<XYFlow
-				nodes={
-					deployment.tfstate.resources
-						.flatMap(resource => (
-							resource.instances
-								.map(instance => ({
-									id: `${resource.type}.${resource.name}`,
-									data: {
-										label: [
-											resource.name,
-											formatResourceType(resource.type),
-										].join('\n'),
-									},
-								}))
-						))
-				}
-				edges={
-					deployment.tfstate.resources
-						.flatMap(resource => (
-							resource.instances
-								.flatMap(instance => (
-									instance.dependencies
-										?.map(dependencyId => {
-											const [type, name] = dependencyId.split('.')
-											return { type, name }
-										})
-										.map(dependency => ({
-											id: `${resource.type}.${resource.name}-${dependency.type}.${dependency.name}`,
-											source: `${resource.type}.${resource.name}`,
-											target: `${dependency.type}.${dependency.name}`,
-											type: ConnectionLineType.Bezier,
-											markerEnd: {
-												type: MarkerType.ArrowClosed,
-											},
-										}))
-									?? []
-								))
-						))
-				}
-				direction="BT"
-				nodeWidth={180}
-				nodeHeight={52}
-				layoutOptions={{
-					// ranker: 'tight-tree',
-					ranker: 'longest-path',
-					nodesep: 5,
-					edgesep: 50,
-					ranksep: 60,
-				}}
-			/>
+			{#if deployment.tfstate?.resources?.flatMap(resource => resource.instances).length}
+				<XYFlow
+					nodes={
+						deployment.tfstate.resources
+							.flatMap(resource => (
+								resource.instances
+									.map(instance => ({
+										id: `${resource.type}.${resource.name}`,
+										data: {
+											label: [
+												resource.name,
+												formatResourceType(resource.type),
+											].join('\n'),
+										},
+									}))
+							))
+					}
+					edges={
+						deployment.tfstate.resources
+							.flatMap(resource => (
+								resource.instances
+									.flatMap(instance => (
+										instance.dependencies
+											?.map(dependencyId => {
+												const [type, name] = dependencyId.split('.')
+												return { type, name }
+											})
+											.map(dependency => ({
+												id: `${resource.type}.${resource.name}-${dependency.type}.${dependency.name}`,
+												source: `${resource.type}.${resource.name}`,
+												target: `${dependency.type}.${dependency.name}`,
+												type: ConnectionLineType.Bezier,
+												markerEnd: {
+													type: MarkerType.ArrowClosed,
+												},
+											}))
+										?? []
+									))
+							))
+					}
+					direction="BT"
+					nodeWidth={180}
+					nodeHeight={52}
+					layoutOptions={{
+						// ranker: 'tight-tree',
+						ranker: 'longest-path',
+						nodesep: 5,
+						edgesep: 50,
+						ranksep: 60,
+					}}
+				/>
+			{/if}
 
 			<dl class="card scrollable">
 				{#each deployment.tfstate.resources as resource}
