@@ -380,6 +380,7 @@
 
 				<TerraformDeployment
 					deployment={cluster.latest_deployment}
+					isSummary
 				/>
 			{/if}
 		</dl>

@@ -5,6 +5,7 @@
 
 	// Inputs
 	export let deployment: TerraformDeployment
+	export let isSummary = false
 
 
 	// Functions
@@ -38,7 +39,7 @@
 </script>
 
 
-{#if deployment.command}
+{#if !isSummary && deployment.command}
 	<section class="column">
 		<dt>Command</dt>
 
@@ -216,7 +217,7 @@
 	</section>
 {/if}
 
-{#if deployment.tfstate}
+{#if !isSummary && deployment.tfstate}
 	<section class="column">
 		<dt>Terraform State</dt>
 
