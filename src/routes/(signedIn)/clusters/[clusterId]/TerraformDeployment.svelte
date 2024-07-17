@@ -105,7 +105,7 @@
 							))
 					}
 					direction="BT"
-					nodeWidth={180}
+					nodeWidth={190}
 					nodeHeight={52}
 					layoutOptions={{
 						// ranker: 'tight-tree',
@@ -117,9 +117,9 @@
 				/>
 			{/if}
 
-			<dl class="card scrollable">
+			<dl class="card scrollable column">
 				{#each deployment.tfstate.resources as resource}
-					<div
+					<section
 						id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
 						class="column"
 					>
@@ -142,7 +142,9 @@
 									{#if instance.attributes?.id}
 										<section class="row wrap">
 											<dt>ID</dt>
-											<dd>{instance.attributes.id}</dd>
+											<dd>
+												<output><code>{instance.attributes.id}</code></output>
+											</dd>
 										</section>
 									{/if}
 
@@ -150,19 +152,21 @@
 										<section class="row wrap">
 											<dt>ARN</dt>
 											<dd>
-												<a
-													href={getAwsConsoleLink(instance.attributes.arn)}
-													target="_blank"
-													class="row inline with-icon"
-												>
-													<img
-														src={providers[ProviderTypeEnum.AWS].icon}
-														width="16"
-														height="16"
-													/>
+												<p>
+													<a
+														href={getAwsConsoleLink(instance.attributes.arn)}
+														target="_blank"
+														class="row inline with-icon"
+													>
+														<img
+															src={providers[ProviderTypeEnum.AWS].icon}
+															width="20"
+															height="20"
+														/>
 
-													{instance.attributes.arn}
-												</a>
+														{instance.attributes.arn}
+													</a>
+												</p>
 											</dd>
 										</section>
 									{/if}
@@ -212,7 +216,7 @@
 								</div>
 							{/each}
 						</dd>
-					</div>
+					</section>
 				{/each}
 			</dl>
 		</dd>
