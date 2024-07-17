@@ -15,8 +15,7 @@
 		try {
 			return new ARN(arn).consoleLink
 		} catch (error) {
-			// Search
-			return `https://console.aws.amazon.com/ec2/v2/home?region=${arn.split(':')[3]}#Instances:search=${arn}`
+			return `https://console.aws.amazon.com/go/view?arn=${encodeURIComponent(arn)}`
 		}
 	}
 
