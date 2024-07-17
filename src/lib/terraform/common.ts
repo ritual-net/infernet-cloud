@@ -56,6 +56,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		includeServiceAccountCredentials: true,
 		includeNodeDetails: true,
 		includeDockerAccountCredentials: true,
+		includeTerraformDeploymentDetails: true,
 	});
 
 	if (!cluster)
