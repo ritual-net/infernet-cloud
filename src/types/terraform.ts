@@ -25,6 +25,21 @@ export type TFState = {
 			};
 		};
 	};
-	resources: object[];
+	resources: {
+		name: string;
+		type: string;
+		mode: string;
+		instances: {
+			attributes: {
+				tags: {
+					Name: string;
+				};
+				id: string;
+				arn: string;
+			}
+			dependencies: string[];
+			id: string;
+		}[];
+	}[];
 	check_results: boolean | null;
 };
