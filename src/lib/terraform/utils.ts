@@ -35,12 +35,14 @@ export const formatNodeConfig = (node: InfernetNode) => {
 	return {
 		chain: {
 			enabled: node.chain_enabled,
-			trail_head_blocks: node.trail_head_blocks,
-			rpc_url: node.rpc_url,
-			coordinator_address: node.coordinator_address,
+			trail_head_blocks: node.trail_head_blocks ?? 0,
+			rpc_url: node.rpc_url ?? '',
+			registry_address: node.registry_address ?? '',
+			allowed_sim_errors: node.allowed_sim_errors,
+			payment_address: node.payment_address,
 			wallet: {
-				max_gas_limit: node.max_gas_limit,
-				private_key: node.private_key,
+				max_gas_limit: node.max_gas_limit ?? 0,
+				private_key: node.private_key ?? '',
 			},
 		},
 		forward_stats: node.forward_stats,
@@ -55,6 +57,24 @@ export const formatNodeConfig = (node: InfernetNode) => {
 			command: container.command,
 			env: container.env,
 			gpu: container.gpu,
+			...(container.rate_limit_num_requests || container.rate_limit_period) && { 
+				rate_limit: {
+					num_requests: container.rate_limit_num_requests,
+					period: container.rate_limit_period,
+				},
+			},
+			...(container.accepted_payments?.length) && {
+				accepted_payments: (
+					Object.fromEntries(
+						container.accepted_payments
+							.map((payment) => [
+								payment.address,
+								payment.amount,
+							])
+					)
+				),
+			},
+			generates_proofs: container.generates_proofs,
 			port: port--,
 		})),
 		...(node.docker_account && {

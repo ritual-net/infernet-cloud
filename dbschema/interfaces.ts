@@ -24,13 +24,13 @@ export interface Cluster extends std.$Object {
   "deploy_router": boolean;
   "error"?: string | null;
   "healthy": boolean;
-  "ip_allow_http": string[];
-  "ip_allow_ssh": string[];
   "locked": boolean;
   "name": string;
   "router"?: {id: string, ip: string} | null;
   "tfstate"?: string | null;
   "terraform_logs": unknown[];
+  "ip_allow_http"?: string[] | null;
+  "ip_allow_ssh"?: string[] | null;
 }
 export interface AWSCluster extends Cluster {
   "machine_type": string;
@@ -47,22 +47,27 @@ export interface AWSServiceAccount extends ServiceAccount {
 }
 export type CloudProvider = "AWS" | "GCP";
 export interface Container extends std.$Object {
-  "allowed_addresses": string[];
-  "allowed_delegate_addresses": string[];
-  "allowed_ips": string[];
-  "command": string;
   "container_id": string;
   "description"?: string | null;
-  "env": unknown;
   "external": boolean;
   "gpu": boolean;
   "image": string;
+  "rate_limit_num_requests"?: number | null;
+  "rate_limit_period"?: number | null;
+  "allowed_addresses"?: string[] | null;
+  "allowed_delegate_addresses"?: string[] | null;
+  "command"?: string | null;
+  "env"?: unknown | null;
+  "generates_proofs": boolean;
+  "accepted_payments"?: {address: string, amount: string}[] | null;
+  "allowed_ips"?: string[] | null;
 }
 export interface ContainerTemplate extends Container {
   "user": User;
   "name": string;
   "docker_account"?: DockerAccount | null;
   "chain_enabled"?: boolean | null;
+  "chain_id"?: number | null;
 }
 export interface DockerAccount extends std.$Object {
   "user": User;
@@ -81,10 +86,8 @@ export interface GCPServiceAccount extends ServiceAccount {
 export interface InfernetNode extends std.$Object {
   "containers": Container[];
   "chain_enabled": boolean;
-  "coordinator_address"?: string | null;
   "forward_stats": boolean;
   "max_gas_limit"?: number | null;
-  "private_key"?: string | null;
   "provider_id"?: string | null;
   "rpc_url"?: string | null;
   "trail_head_blocks"?: number | null;
@@ -92,6 +95,10 @@ export interface InfernetNode extends std.$Object {
   "cluster"?: Cluster | null;
   "snapshot_sync_batch_size"?: number | null;
   "snapshot_sync_sleep"?: number | null;
+  "registry_address"?: string | null;
+  "allowed_sim_errors"?: string[] | null;
+  "payment_address"?: string | null;
+  "private_key"?: string | null;
 }
 export interface current_user extends User {}
 export namespace ext {

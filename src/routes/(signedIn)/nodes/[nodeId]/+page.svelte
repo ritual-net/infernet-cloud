@@ -203,12 +203,12 @@
 					</section>
 				{/if}
 
-				{#if node.coordinator_address}
+				{#if node.registry_address}
 					<section class="row">
-						<dt>Coordinator Address</dt>
+						<dt>Registry Address</dt>
 
 						<dd>
-							{node.coordinator_address}
+							{node.registry_address}
 						</dd>
 					</section>
 				{/if}
@@ -343,5 +343,9 @@
 				word-break: break-word;
 			}
 		}
+	}
+
+	.secured:not(:active) {
+		-webkit-text-security: disc;
 	}
 </style>

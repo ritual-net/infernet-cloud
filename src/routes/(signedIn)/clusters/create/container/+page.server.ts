@@ -13,8 +13,10 @@ export const load: PageServerLoad = async ({
 	url,
 	fetch,
 }) => {
-	const dockerAccountUsername = url.searchParams.get('dockerAccountUsername')
 	const isOnchain = url.searchParams.has('isOnchain')
+	const isPaymentsEnabled = url.searchParams.has('isPaymentsEnabled')
+	const chainId = url.searchParams.has('chainId') ? Number(url.searchParams.get('chainId')) : undefined
+	const dockerAccountUsername = url.searchParams.get('dockerAccountUsername') ?? undefined
 
 	const containerTemplatesPromise = fetch(`/api/container_template${dockerAccountUsername ? `?${new URLSearchParams({ dockerAccountUsername })}` : ''}`)
 		.then(response => response.json())
@@ -40,9 +42,13 @@ export const load: PageServerLoad = async ({
 	return {
 		formData,
 		containerTemplatesPromise,
-		dockerAccountUsername,
+		nodeConfiguration: {
+			isOnchain,
+			isPaymentsEnabled,
+			chainId,
+			dockerAccountUsername,
+		},
 		dockerUserImages,
-		isOnchain,
 	}
 }
 

@@ -52,6 +52,10 @@
 		if(delayedToast)
 			removeToast(delayedToast.id)
 	}
+
+
+	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 </script>
 
 
@@ -159,12 +163,10 @@
 			Cancel
 		</a>
 
-		<button
-			type="submit"
-			class="primary"
-			disabled={$submitting}
-		>
-			Connect Docker Account
-		</button>
+		<FormSubmitButton
+			submitting={$submitting}
+			allErrors={$allErrors}
+			submitLabel="Connect Docker Account"
+		/>
 	</footer>
 </form>

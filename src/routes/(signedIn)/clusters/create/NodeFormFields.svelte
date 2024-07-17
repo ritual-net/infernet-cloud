@@ -2,6 +2,8 @@
 	// Types/constants
 	import type { InputConstraints } from 'sveltekit-superforms'
 	import * as z from 'yup'
+	import { chainsByChainId } from '$/lib/chains'
+	import { infernetDeployments } from '$/lib/infernet-sdk'
 
 
 	// Schema
@@ -10,6 +12,11 @@
 
 	// Context
 	import { page } from '$app/stores'
+
+
+	// Functions
+	import { createPublicClient, http } from 'viem'
+	import { getChainId } from 'viem/actions'
 
 
 	// Inputs
@@ -21,15 +28,38 @@
 		username: string
 	}[]
 
+	export let chainId: number | undefined
+
 
 	// Internal state
+	// (Chain)
+	$: client = node.config.rpc_url && createPublicClient({ 
+		transport: http(node.config.rpc_url),
+	})
+
+	$: if(client)
+		getChainId(client)
+			.then(_ => { chainId = _ })
+
+
+	// (Payments)
+	let isPaymentsEnabled = (
+		Boolean(node.config.chain_enabled && node.config.payment_address)
+	)
+
+
+	// (Containers)
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
-			...node.dockerAccountUsername && {
-				dockerAccountUsername: node.dockerAccountUsername,
-			},
 			...node.config.chain_enabled && {
 				isOnchain: 'true',
+				chainId: chainId?.toString(),
+				...isPaymentsEnabled && {
+					isPaymentsEnabled: 'true',
+				},
+			},
+			...node.dockerAccountUsername && {
+				dockerAccountUsername: node.dockerAccountUsername,
 			},
 		})}`,
 		$page.url
@@ -41,12 +71,15 @@
 
 
 	// Components
+	import ChainCombobox from '$/views/ChainCombobox.svelte'
+	import Combobox from '$/components/Combobox.svelte'
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Dialog from '$/components/Dialog.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import ContainerForm from './container/+page.svelte'
+	import Textarea from '$/components/Textarea.svelte'
 
 
 	// Shallow Routes
@@ -62,7 +95,7 @@
 			</label>
 		</h3>
 
-		<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
+		<p>Whether this node will listen and respond to onchain events, and optionally accept payments from subscriptions.</p>
 	</div>
 
 	<Switch
@@ -78,114 +111,250 @@
 		class="column"
 		disabled={!node.config.chain_enabled}
 	>
-		<section class="row wrap">
+		<section class="column">
 			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.rpc_url">
-						RPC URL
-					</label>
-				</h3>
-
-				<p>The Ethereum node RPC URL.</p>
+				<h3>Chain Configuration</h3>
 			</div>
 
-			<input
-				type="url"
-				placeholder="https://rpc.example.com/rpc"
-				id="{namePrefix}.config.rpc_url"
-				name="{namePrefix}.config.rpc_url"
-				bind:value={node.config.rpc_url}
-				{...constraints?.config?.rpc_url}
-			/>
+			<div class="row equal wrap">
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.rpc_url">JSON-RPC URL</label>
+						</div>
+
+						<p>HTTP(S). Must support the <a href="https://ethereum.org/en/developers/docs/apis/json-rpc#eth_newfilter" target="_blank"><code>eth_newFilter</code></a> method.</p>
+					</div>
+
+					<input
+						type="url"
+						placeholder="https://rpc.example.com/rpc"
+						id="{namePrefix}.config.rpc_url"
+						name="{namePrefix}.config.rpc_url"
+						bind:value={node.config.rpc_url}
+						{...constraints?.config?.rpc_url}
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}|chainId">
+								Chain ID
+							</label>
+						</div>
+
+						<p>The chain ID of the EVM-based network to connect to.</p>
+					</div>
+	
+					<ChainCombobox
+						id="{namePrefix}|chain_id"
+						name="{namePrefix}|chain_id"
+						bind:chainId
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<label for="{namePrefix}.config.registry_address">
+							Registry Address
+						</label>
+		
+						<p>The address of the <a href="https://docs.ritual.net/infernet/sdk/reference/Registry" target="_blank">Infernet SDK Registry</a> smart contract.</p>
+					</div>
+		
+					<Combobox
+						labelText="Registry Address"
+						placeholder="0xabcdef...1234567890"
+						id="{namePrefix}.config.registry_address"
+						name="{namePrefix}.config.registry_address"
+						class="code address-input"
+						bind:value={node.config.registry_address}
+						{...constraints?.config?.registry_address}
+						items={
+							Array.from(
+								Map.groupBy(
+									infernetDeployments,
+									deployment => deployment.chainId
+								)
+									.entries(),
+								([chainId, deployments]) => ({
+									value: chainId,
+									label: chainsByChainId.get(chainId)?.name ?? chainId,
+									items: deployments.map(deployment => ({
+										value: deployment.contracts['Registry'].address,
+										label: `${chainsByChainId.get(chainId)?.name ?? chainId} › Infernet SDK ${deployment.version} › Registry`, 
+										icon: chainsByChainId.get(chainId)?.icon,
+									})),
+								})
+							)
+								.filter(group => (
+									chainId
+										? group.value === chainId
+										: true
+								))
+						}
+					/>
+				</div>
+	
+				<div class="column">
+					<div class="column inline">
+						<span class="row inline">
+							<label for="{namePrefix}.config.trail_head_blocks">
+								Trail Head Blocks
+							</label>
+	
+							<span class="annotation">Optional</span>
+						</span>	
+					</div>
+
+					<p>Number of blocks to delay chain syncing. Added latency may help avoid failed transactions due to reorganizations.</p>
+	
+					<input
+						type="number"
+						placeholder="{5}"
+						id="{namePrefix}.config.trail_head_blocks"
+						name="{namePrefix}.config.trail_head_blocks"
+						bind:value={node.config.trail_head_blocks}
+						{...constraints?.config?.trail_head_blocks}
+					/>
+				</div>
+			</div>
 		</section>
 
-		<section class="row wrap">
+		<section class="column">
 			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.coordinator_address">
-						Coordinator Address
-					</label>
-				</h3>
-
-				<p>The address of the Coordinator smart contract.</p>
+				<h3>Wallet and Transactions</h3>
 			</div>
 
-			<input
-				type="text"
-				placeholder="0xabcdef...1234567890"
-				id="{namePrefix}.config.coordinator_address"
-				name="{namePrefix}.config.coordinator_address"
-				bind:value={node.config.coordinator_address}
-				{...constraints?.config?.coordinator_address}
-			/>
+			<div class="row equal wrap">
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.private_key">
+								Private Key
+							</label>
+						</div>
+
+						<p>The <code>0x</code>-prefixed private key for the node's wallet.</p>
+					</div>
+
+					<input
+						type="password"
+						placeholder="0xabcdef...1234567890"
+						id="{namePrefix}.config.private_key"
+						name="{namePrefix}.config.private_key"
+						bind:value={node.config.private_key}
+						{...constraints?.config?.private_key}
+						class="code"
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.max_gas_limit">
+								Max Gas Limit
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>Maximum gas units to spend when sending a transaction from the node wallet.</p>
+					</div>
+
+					<input
+						type="number"
+						placeholder="{5000000}"
+						id="{namePrefix}.config.max_gas_limit"
+						name="{namePrefix}.config.max_gas_limit"
+						bind:value={node.config.max_gas_limit}
+						{...constraints?.config?.max_gas_limit}
+					/>
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="{namePrefix}.config.allowed_sim_errors">
+							Ignored Errors
+						</label>
+					</h3>
+
+					<p>
+						Substrings of error messages to ignore when simulating transactions. Case-insensitive; one per line.
+						<br>
+						For example, <code>"out of gas"</code> matches <code>"Contract reverted: Out of gas"</code>.
+					</p>
+				</div>
+
+				<Textarea
+					id="{namePrefix}.config.allowed_sim_errors"
+					name="{namePrefix}.config.allowed_sim_errors"
+					rows="2"
+					placeholder={`Enter one string per line...\nout of gas`}
+					value={node.config.allowed_sim_errors?.join('\n')}
+					onblur={e => { node.config.allowed_sim_errors = e.currentTarget.value.split('\n').map(item => item.trim()) }}
+					{...constraints?.config?.allowed_sim_errors}
+					disabled={!node.config.chain_enabled}
+					class="code"
+				/>
+			</div>
 		</section>
 
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.trail_head_blocks">
-						Trail Head Blocks
-					</label>
+		<section class="column">
+			<div class="row wrap">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="{namePrefix}|isPaymentsEnabled">
+							Accept Payments?
+						</label>
+					</h3>
 
-					<span class="annotation">Optional</span>
-				</h3>
+					<p>Whether to accept payments from subscriptions.</p>
+				</div>
 
-				<p>The number of blocks.</p>
+				<Switch
+					id="{namePrefix}|isPaymentsEnabled"
+					name="{namePrefix}|isPaymentsEnabled"
+					bind:checked={isPaymentsEnabled}
+					on:change={e => {
+						node.config.payment_address = undefined
+					}}
+					labelText="Accept Payments?"
+				/>
 			</div>
 
-			<input
-				type="number"
-				placeholder="{5}"
-				id="{namePrefix}.config.trail_head_blocks"
-				name="{namePrefix}.config.trail_head_blocks"
-				bind:value={node.config.trail_head_blocks}
-				{...constraints?.config?.trail_head_blocks}
-			/>
-		</section>
+			<Collapsible open={isPaymentsEnabled}>
+				<fieldset
+					class="column"
+					disabled={!isPaymentsEnabled}
+				>
+					<div class="row wrap">
+						<div class="column inline">
+							<div class="row inline">
+								<label for="{namePrefix}.config.payment_address">
+									Payment Address
+								</label>
+							</div>
 
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.max_gas_limit">
-						Max Gas Limit
-					</label>
+							<p>The address to send payments to.</p>
+						</div>
 
-					<span class="annotation">Optional</span>
-				</h3>
-
-				<p>The threshold to trigger an Ethereum transaction in gwei.</p>
-			</div>
-
-			<input
-				type="number"
-				placeholder="{5000000}"
-				id="{namePrefix}.config.max_gas_limit"
-				name="{namePrefix}.config.max_gas_limit"
-				bind:value={node.config.max_gas_limit}
-				{...constraints?.config?.max_gas_limit}
-			/>
-		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.private_key">
-						Private Key
-					</label>
-				</h3>
-
-				<p>The private key of the node.</p>
-			</div>
-
-			<input
-				type="password"
-				placeholder="0xabcdef...1234567890"
-				id="{namePrefix}.config.private_key"
-				name="{namePrefix}.config.private_key"
-				bind:value={node.config.private_key}
-				{...constraints?.config?.private_key}
-				class="code"
-			/>
+						<input
+							type="text"
+							placeholder="0xabcdef...1234567890"
+							id="{namePrefix}.config.payment_address"
+							name="{namePrefix}.config.payment_address"
+							bind:value={node.config.payment_address}
+							{...constraints?.config?.payment_address}
+							required={isPaymentsEnabled}
+							class="code address-input"
+						/>
+					</div>
+				</fieldset>
+			</Collapsible>
 		</section>
 
 		<section class="column">
@@ -199,11 +368,13 @@
 				<p>Control rate limiting parameters for RPC communication.</p>
 			</div>
 
-			<div class="row equal">
+			<div class="row equal wrap">
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
-							<label for="{namePrefix}.config.snapshot_sync_sleep">Sleep Duration</label>
+							<label for="{namePrefix}.config.snapshot_sync_sleep">
+								Sleep Duration
+							</label>
 
 							<span class="annotation">Optional</span>
 						</div>
@@ -225,7 +396,9 @@
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
-							<label for="{namePrefix}.config.snapshot_sync_batch_size">Batch Size</label>
+							<label for="{namePrefix}.config.snapshot_sync_batch_size">
+								Batch Size
+							</label>
 
 							<span class="annotation">Optional</span>
 						</div>
@@ -324,7 +497,7 @@
 				Containers
 			</h3>
 
-			<p>Assign new or existing container configurations to this node.</p>
+			<p>Assign container configurations to this node.</p>
 		</div>
 
 		<a
@@ -451,3 +624,11 @@
 		/>
 	</Dialog>
 </section>
+
+
+<style>
+	* :global(.address-input) {
+		font-size: 0.75em;
+		--input-paddingY: 0.75rem;
+	}
+</style>

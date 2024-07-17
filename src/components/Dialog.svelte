@@ -84,6 +84,7 @@
 				</div>
 
 				<button
+					type="button"
 					use:melt={$close}
 					aria-label="close"
 					on:m-click={onClose}

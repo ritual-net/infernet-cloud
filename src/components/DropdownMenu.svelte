@@ -39,6 +39,7 @@
 
 
 <button
+	type="button"
 	use:melt={$trigger}
 	aria-label={labelText}
 	on:click|stopPropagation

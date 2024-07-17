@@ -13,6 +13,7 @@
 
 	export let labelText: string | undefined
 	export let placeholder: string = 'Select...'
+	export let menuPlaceholder: string = 'No results found.'
 
 	export let id: string | undefined
 	export let name: string | undefined
@@ -35,16 +36,17 @@
 		const normalizedInput = input?.toLowerCase().trim()
 
 		return (
-			(
-				typeof item.value === 'string' && typeof normalizedInput === 'string' ?
-					String(item.value).toLowerCase().includes(normalizedInput)
-					: item.value === normalizedInput
-			)
-			|| (
-				typeof item.label === 'string' && typeof normalizedInput === 'string' ?
-					item.label.toLowerCase().includes(normalizedInput)
-					: false
-			)
+			String(item.value).toLowerCase().includes(String(normalizedInput))
+			// (
+			// 	typeof item.value === 'string' && typeof normalizedInput === 'string'
+			// 		? String(item.value).toLowerCase().includes(normalizedInput)
+			// 		: item.value === normalizedInput
+			// )
+			// || (
+			// 	typeof item.label === 'string' && typeof normalizedInput === 'string'
+			// 		? item.label.toLowerCase().includes(normalizedInput)
+			// 		: false
+			// )
 		)
 	}
 
@@ -163,6 +165,7 @@
 			value={inputValue}
 			{placeholder}
 			{name}
+			{...$$restProps}
 		/>
 	</div>
 </div>
@@ -201,7 +204,7 @@
 								>
 									<div class="row">
 										{#if subitem.icon}
-											<img src={item.icon} />
+											<img src={subitem.icon} />
 										{/if}
 
 										<span>{subitem.label}</span>
@@ -229,7 +232,11 @@
 					</li>
 				{/if}
 			{:else}
-				<li class="placeholder">No results found.</li>
+				<li class="placeholder">
+					<slot name="menu-placeholder">
+						{menuPlaceholder}
+					</slot>
+				</li>
 			{/each}
 		</div>
 	</ul>
@@ -319,6 +326,10 @@
 		& [data-melt-combobox-option] {
 			padding-left: calc(var(--combobox-paddingX) + var(--combobox-groupItem-indentX));
 		}
+	}
+
+	[data-melt-combobox-input] {
+		width: 100%;
 	}
 
 	[data-melt-combobox-option] {

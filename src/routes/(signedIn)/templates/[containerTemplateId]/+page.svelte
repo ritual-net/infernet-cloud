@@ -1,4 +1,9 @@
 <script lang="ts">
+	// Types/constants
+	import { chainsByChainId } from '$/lib/chains'
+	import { tokensByChainId } from '$/lib/tokens'
+
+
 	// Context
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
@@ -144,7 +149,7 @@
 
 					<dd>
 						{#each containerTemplate.allowed_addresses as address}
-							<p>{address}</p>
+							<p><code>{address}</code></p>
 						{/each}
 					</dd>
 				</section>
@@ -156,7 +161,7 @@
 
 					<dd>
 						{#each containerTemplate.allowed_delegate_addresses as address}
-							<output>{address}</output>
+							<p><code>{address}</code></p>
 						{/each}
 					</dd>
 				</section>
@@ -181,6 +186,77 @@
 					</dd>
 				</section>
 			{/if}
+
+			<section class="row">
+				<dt>Rate Limiting</dt>
+
+				<dd>
+					{containerTemplate.rate_limit_num_requests} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests)]}
+					every {containerTemplate.rate_limit_period} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period)]}
+				</dd>
+			</section>
+
+			{#if containerTemplate.accepted_payments?.length}
+				<section class="row">
+					<dt>Payments</dt>
+
+					<dd class="column inline">
+						{#each containerTemplate.accepted_payments as payment, i}
+							{@const token = (
+								containerTemplate.chain_id && containerTemplate.chain_id in tokensByChainId
+									? tokensByChainId[containerTemplate.chain_id]
+										.find((token) => token.address === payment.address)
+									: null
+							)}
+
+							<p>
+								<span class="row inline with-icon">
+									<span>≥</span>
+									{#if token}
+										{@const formattedAmount = String(Number(payment.amount) / 10 ** token.decimals)}
+										{@const [number, exponent] = formattedAmount.split('e')}
+
+										<abbr
+											title={payment.amount}
+										>
+											{number}
+											{#if exponent}
+												× 10<sup>{exponent}</sup>
+											{/if}
+										</abbr>
+
+										<abbr
+											title={token.address}
+											class="row inline with-icon"
+										>
+											<img
+												src={token.icon}
+												alt={token.name}
+												class="icon"
+											/>
+											{token.name}
+										</abbr>
+									{:else}
+										<span>{payment.amount}</span>
+										<span>units</span>
+										<span><code>{payment.address}</code></span>
+									{/if}
+								</span>
+							</p>
+						{/each}
+					</dd>
+				</section>
+			{/if}
+
+			{#if containerTemplate.generates_proofs !== undefined}
+				<section class="row">
+					<dt>Generates Proofs?</dt>
+
+					<dd>
+						{containerTemplate.generates_proofs ? 'Yes' : 'No'}
+					</dd>
+				</section>
+			{/if}
 		</dl>
 	</section>
 
@@ -188,11 +264,32 @@
 		<h3>Node Details</h3>
 
 		<dl class="card column">
-			<section class="row">
-				<dt>Chain Enabled?</dt>
+			<section class="row wrap">
+				<dt>Onchain?</dt>
 
 				<dd>
 					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
+			<section class="row">
+				<dt>Chain</dt>
+
+				<dd>
+					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
+						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
+
+						<span class="row inline with-icon">
+							<img
+								src={chain.icon}
+								alt={chain.name}
+								class="icon"
+							/>
+							{chain.name}
+						</span>
+					{:else}
+						{containerTemplate.chain_id}
+					{/if}
 				</dd>
 			</section>
 
@@ -228,26 +325,6 @@
 
 		background-color: var(--color-ritualBlack);
 		color: #fff;
-	}
-
-	output {
-		font-size: 0.75em;
-
-		& pre {
-			overflow-y: auto;
-			max-height: 15.6rem;
-			padding: 1em;
-
-			background: rgba(0, 0, 0, 0.05);
-			border-radius: 0.5em;
-
-			tab-size: 2;
-
-			& code {
-				white-space: pre-wrap;
-				word-break: break-word;
-			}
-		}
 	}
 
 	.description {

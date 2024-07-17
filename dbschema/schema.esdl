@@ -10,6 +10,29 @@ module default {
 
   scalar type CloudProvider extending enum<AWS, GCP>;
 
+  scalar type Address extending str {
+    constraint regexp(r'^0x[[:xdigit:]]{40}$');
+  }
+
+  scalar type Secp256k1PrivateKey extending str {
+    constraint regexp(r'^0x[[:xdigit:]]{64}$');
+    constraint expression on (
+      __subject__ != '0x0000000000000000000000000000000000000000000000000000000000000000'
+    );
+  }
+
+  scalar type IpAddress extending str {
+    constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$');
+  }
+
+  scalar type IpAddressWithMask extending str {
+    constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/(3[0-2]|[1-2]?[0-9]))?$');
+  }
+
+  scalar type BigIntString extending str {
+    constraint regexp(r'^[0]|[1-9][0-9]*$');
+  }
+
   type User {
     required name: str;
     required email: str;
@@ -94,22 +117,19 @@ module default {
     required external: bool {
       default := true;
     }
-    required allowed_addresses: array<str> {
-      default := <array<str>>[];
-    }
-    required allowed_delegate_addresses: array<str> {
-      default := <array<str>>[];
-    }
-    required allowed_ips: array<str> {
-      default := <array<str>>[];
-    }
-    required command: str {
-      default := "";
-    }
-    required env: json {
-      default := <json>{};
-    }
+    allowed_addresses: array<Address>;
+    allowed_delegate_addresses: array<Address>;
+    allowed_ips: array<IpAddressWithMask>;
+    command: str;
+    env: json;
     required gpu: bool {
+      default := false;
+    }
+    rate_limit_num_requests: int64;
+    rate_limit_period: float32;
+    # accepted_payments: array<tuple<address: Address, amount: bigint>>;
+    accepted_payments: array<tuple<address: Address, amount: BigIntString>>;
+    required generates_proofs: bool {
       default := false;
     }
 
@@ -128,6 +148,7 @@ module default {
     };
 
     chain_enabled: bool;
+    chain_id: int64;
     docker_account: DockerAccount;
 
     constraint exclusive on ((.name, .user));
@@ -140,25 +161,24 @@ module default {
     required chain_enabled: bool {
       default := false;
     }
+
     required forward_stats: bool {
       default := true;
     }
 
-    trail_head_blocks: int16 {
-      default := 0;
-    }
-    rpc_url: str {
-      default := "";
-    }
-    coordinator_address: str {
-      default := "";
-    }
-    max_gas_limit: int64 {
-      default := 0;
-    }
-    private_key: str {
-      default := "";
-    }
+    trail_head_blocks: int16;
+
+    rpc_url: str;
+
+    registry_address: Address;
+
+    max_gas_limit: int64;
+
+    private_key: Secp256k1PrivateKey;
+
+    payment_address: Address;
+
+    allowed_sim_errors: array<str>;
 
     provider_id: str;
 
@@ -188,12 +208,8 @@ module default {
     required deploy_router: bool {
       default := false;
     }
-    required ip_allow_http: array<str> {
-      default := ["0.0.0.0/0"];
-    }
-    required ip_allow_ssh: array<str> {
-      default := ["0.0.0.0/0"];
-    }
+    ip_allow_http: array<IpAddressWithMask>;
+    ip_allow_ssh: array<IpAddressWithMask>;
     required healthy: bool {
       default := true;
     }

@@ -109,6 +109,12 @@ dd {
 	}
 }
 
+sub,
+sup {
+	font-size: smaller;
+	line-height: 1;
+}
+
 .stack {
 	display: grid;
 	grid: 'stack';
@@ -132,14 +138,22 @@ dd {
 		align-items: baseline;
 		justify-content: start;
 		gap: 0.25ch 0.75ch;
-	}
 
-	&.wrap {
-		flex-wrap: wrap;
+		&.with-icon {
+			align-items: center;
+		}
 	}
 
 	&.equal > * {
 		flex: 1;
+	}
+
+	&.wrap {
+		flex-wrap: wrap;
+
+		&.equal > * {
+			flex-basis: 20rem;
+		}
 	}
 }
 
@@ -178,6 +192,10 @@ textarea {
 
 	&.small {
 		font-size: 0.8em;
+	}
+
+	&.smaller {
+		font-size: 0.65em;
 	}
 
 	&:disabled,
@@ -232,6 +250,14 @@ button, .button {
 
 	&.small {
 		font-size: 0.8em;
+	}
+
+	&.smaller {
+		font-size: 0.65em;
+	}
+
+	&.destructive {
+		--button-textColor: #ff1111;
 	}
 
 	&:disabled,

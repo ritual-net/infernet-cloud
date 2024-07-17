@@ -4,11 +4,26 @@ import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _std from "./std";
 import type * as _auth from "./ext/auth";
+export type $Address = $.ScalarType<"std::str", string>;
+const Address: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2ab5fbda-29a7-11ef-b2b5-1166829ebd2b", _.syntax.literal);
+
+export type $BigIntString = $.ScalarType<"std::str", string>;
+const BigIntString: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "dd59be16-29a7-11ef-96b6-fde11e397154", _.syntax.literal);
+
 export type $CloudProvider = {
   "AWS": $.$expr_Literal<$CloudProvider>;
   "GCP": $.$expr_Literal<$CloudProvider>;
 } & $.EnumType<"default::CloudProvider", ["AWS", "GCP"]>;
-const CloudProvider: $CloudProvider = $.makeType<$CloudProvider>(_.spec, "b5f66d9e-122b-11ef-b71b-cb1ede8df271", _.syntax.literal);
+const CloudProvider: $CloudProvider = $.makeType<$CloudProvider>(_.spec, "157bc326-29a7-11ef-8d87-cd94d7909fe5", _.syntax.literal);
+
+export type $IpAddress = $.ScalarType<"std::str", string>;
+const IpAddress: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2ab75bce-29a7-11ef-aaf6-4109a4c14a12", _.syntax.literal);
+
+export type $IpAddressWithMask = $.ScalarType<"std::str", string>;
+const IpAddressWithMask: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2ab8e7c8-29a7-11ef-b1b2-2d75161546c6", _.syntax.literal);
+
+export type $Secp256k1PrivateKey = $.ScalarType<"std::str", string>;
+const Secp256k1PrivateKey: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2c0eccd2-29a7-11ef-b85d-657974a7810a", _.syntax.literal);
 
 export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "identity": $.LinkDesc<_auth.$Identity, $.Cardinality.One, {}, false, false,  false, false>;
@@ -24,7 +39,7 @@ export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c2
 type $User = $.ObjectType<"default::User", $UserλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $User = $.makeType<$User>(_.spec, "b5e390ac-122b-11ef-a4b0-8fb6a943240a", _.syntax.literal);
+const $User = $.makeType<$User>(_.spec, "15626840-29a7-11ef-a90b-7ddc1bc17698", _.syntax.literal);
 
 const User: $.$expr_PathNode<$.TypeSet<$User, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($User, $.Cardinality.Many), null);
 
@@ -34,13 +49,13 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "deploy_router": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "error": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "healthy": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
-  "ip_allow_http": $.PropertyDesc<$.ArrayType<_std.$str>, $.Cardinality.One, false, false, false, true>;
-  "ip_allow_ssh": $.PropertyDesc<$.ArrayType<_std.$str>, $.Cardinality.One, false, false, false, true>;
   "locked": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "router": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
   "tfstate": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "terraform_logs": $.PropertyDesc<_std.$json, $.Cardinality.Many, false, false, false, false>;
+  "ip_allow_http": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "ip_allow_ssh": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "<cluster[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -49,7 +64,7 @@ type $Cluster = $.ObjectType<"default::Cluster", $ClusterλShape, null, [
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },service_account: {__element__: $ServiceAccount, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
   {nodes: {__element__: $InfernetNode, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $Cluster = $.makeType<$Cluster>(_.spec, "b6102bb2-122b-11ef-a0d1-7d851a26faa6", _.syntax.literal);
+const $Cluster = $.makeType<$Cluster>(_.spec, "159f2820-29a7-11ef-948d-0590ba89336b", _.syntax.literal);
 
 const Cluster: $.$expr_PathNode<$.TypeSet<$Cluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Cluster, $.Cardinality.Many), null);
 
@@ -60,7 +75,7 @@ export type $AWSClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 type $AWSCluster = $.ObjectType<"default::AWSCluster", $AWSClusterλShape, null, [
   ...$Cluster['__exclusives__'],
 ]>;
-const $AWSCluster = $.makeType<$AWSCluster>(_.spec, "b6453744-122b-11ef-b9f0-2b2535aeb90f", _.syntax.literal);
+const $AWSCluster = $.makeType<$AWSCluster>(_.spec, "16399ac2-29a7-11ef-8034-e3c7082f3274", _.syntax.literal);
 
 const AWSCluster: $.$expr_PathNode<$.TypeSet<$AWSCluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($AWSCluster, $.Cardinality.Many), null);
 
@@ -77,7 +92,7 @@ type $ServiceAccount = $.ObjectType<"default::ServiceAccount", $ServiceAccountλ
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $ServiceAccount = $.makeType<$ServiceAccount>(_.spec, "b5f6792e-122b-11ef-9f15-23cdfb3393c1", _.syntax.literal);
+const $ServiceAccount = $.makeType<$ServiceAccount>(_.spec, "157bcf42-29a7-11ef-8465-e911422a6504", _.syntax.literal);
 
 const ServiceAccount: $.$expr_PathNode<$.TypeSet<$ServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ServiceAccount, $.Cardinality.Many), null);
 
@@ -88,28 +103,32 @@ export type $AWSServiceAccountλShape = $.typeutil.flatten<Omit<$ServiceAccount�
 type $AWSServiceAccount = $.ObjectType<"default::AWSServiceAccount", $AWSServiceAccountλShape, null, [
   ...$ServiceAccount['__exclusives__'],
 ]>;
-const $AWSServiceAccount = $.makeType<$AWSServiceAccount>(_.spec, "b668f67a-122b-11ef-923d-35eadb4cd257", _.syntax.literal);
+const $AWSServiceAccount = $.makeType<$AWSServiceAccount>(_.spec, "16a7135e-29a7-11ef-8c96-ddea02804125", _.syntax.literal);
 
 const AWSServiceAccount: $.$expr_PathNode<$.TypeSet<$AWSServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($AWSServiceAccount, $.Cardinality.Many), null);
 
 export type $ContainerλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
-  "allowed_addresses": $.PropertyDesc<$.ArrayType<_std.$str>, $.Cardinality.One, false, false, false, true>;
-  "allowed_delegate_addresses": $.PropertyDesc<$.ArrayType<_std.$str>, $.Cardinality.One, false, false, false, true>;
-  "allowed_ips": $.PropertyDesc<$.ArrayType<_std.$str>, $.Cardinality.One, false, false, false, true>;
-  "command": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, true>;
   "container_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "env": $.PropertyDesc<_std.$json, $.Cardinality.One, false, false, false, true>;
   "external": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "gpu": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "image": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "rate_limit_num_requests": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
+  "rate_limit_period": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
+  "allowed_addresses": $.PropertyDesc<$.ArrayType<$Address>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "allowed_delegate_addresses": $.PropertyDesc<$.ArrayType<$Address>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "command": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "env": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "generates_proofs": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
+  "accepted_payments": $.PropertyDesc<$.ArrayType<$.NamedTupleType<{address: $Address, amount: $BigIntString}>>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "allowed_ips": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "<containers[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<containers": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $Container = $.ObjectType<"default::Container", $ContainerλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $Container = $.makeType<$Container>(_.spec, "b5efc8f4-122b-11ef-bf68-91863c09f81e", _.syntax.literal);
+const $Container = $.makeType<$Container>(_.spec, "1573f11e-29a7-11ef-8977-d9408b93da75", _.syntax.literal);
 
 const Container: $.$expr_PathNode<$.TypeSet<$Container, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Container, $.Cardinality.Many), null);
 
@@ -118,12 +137,13 @@ export type $ContainerTemplateλShape = $.typeutil.flatten<$ContainerλShape & {
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "docker_account": $.LinkDesc<$DockerAccount, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "chain_enabled": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "chain_id": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $ContainerTemplate = $.ObjectType<"default::ContainerTemplate", $ContainerTemplateλShape, null, [
   ...$Container['__exclusives__'],
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $ContainerTemplate = $.makeType<$ContainerTemplate>(_.spec, "b6af36c6-122b-11ef-b0fc-43ab69a12d00", _.syntax.literal);
+const $ContainerTemplate = $.makeType<$ContainerTemplate>(_.spec, "17272c42-29a7-11ef-898c-a71e701d7c09", _.syntax.literal);
 
 const ContainerTemplate: $.$expr_PathNode<$.TypeSet<$ContainerTemplate, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ContainerTemplate, $.Cardinality.Many), null);
 
@@ -139,7 +159,7 @@ type $DockerAccount = $.ObjectType<"default::DockerAccount", $DockerAccountλSha
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {username: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $DockerAccount = $.makeType<$DockerAccount>(_.spec, "c0c047a4-122b-11ef-a83e-21f2d8be62f1", _.syntax.literal);
+const $DockerAccount = $.makeType<$DockerAccount>(_.spec, "2908f594-29a7-11ef-810f-674a0d5e8c82", _.syntax.literal);
 
 const DockerAccount: $.$expr_PathNode<$.TypeSet<$DockerAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($DockerAccount, $.Cardinality.Many), null);
 
@@ -151,7 +171,7 @@ export type $GCPClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 type $GCPCluster = $.ObjectType<"default::GCPCluster", $GCPClusterλShape, null, [
   ...$Cluster['__exclusives__'],
 ]>;
-const $GCPCluster = $.makeType<$GCPCluster>(_.spec, "b6e602aa-122b-11ef-b6c1-cb469d04fe1d", _.syntax.literal);
+const $GCPCluster = $.makeType<$GCPCluster>(_.spec, "178a491c-29a7-11ef-a3e5-23ec5c57cc0a", _.syntax.literal);
 
 const GCPCluster: $.$expr_PathNode<$.TypeSet<$GCPCluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($GCPCluster, $.Cardinality.Many), null);
 
@@ -162,24 +182,26 @@ export type $GCPServiceAccountλShape = $.typeutil.flatten<Omit<$ServiceAccount�
 type $GCPServiceAccount = $.ObjectType<"default::GCPServiceAccount", $GCPServiceAccountλShape, null, [
   ...$ServiceAccount['__exclusives__'],
 ]>;
-const $GCPServiceAccount = $.makeType<$GCPServiceAccount>(_.spec, "b70a0b32-122b-11ef-870c-a9fa9400baff", _.syntax.literal);
+const $GCPServiceAccount = $.makeType<$GCPServiceAccount>(_.spec, "17cca8b6-29a7-11ef-8b77-899c0236f672", _.syntax.literal);
 
 const GCPServiceAccount: $.$expr_PathNode<$.TypeSet<$GCPServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($GCPServiceAccount, $.Cardinality.Many), null);
 
 export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "containers": $.LinkDesc<$Container, $.Cardinality.Many, {}, true, false,  false, false>;
   "chain_enabled": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
-  "coordinator_address": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, true>;
   "forward_stats": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
-  "max_gas_limit": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, true>;
-  "private_key": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, true>;
+  "max_gas_limit": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
   "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "rpc_url": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, true>;
-  "trail_head_blocks": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, true>;
+  "rpc_url": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "trail_head_blocks": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
   "docker_account": $.LinkDesc<$DockerAccount, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "cluster": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
   "snapshot_sync_batch_size": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
   "snapshot_sync_sleep": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
+  "registry_address": $.PropertyDesc<$Address, $.Cardinality.AtMostOne, false, false, false, false>;
+  "allowed_sim_errors": $.PropertyDesc<$.ArrayType<_std.$str>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "payment_address": $.PropertyDesc<$Address, $.Cardinality.AtMostOne, false, false, false, false>;
+  "private_key": $.PropertyDesc<$Secp256k1PrivateKey, $.Cardinality.AtMostOne, false, false, false, false>;
   "<nodes[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -189,7 +211,7 @@ type $InfernetNode = $.ObjectType<"default::InfernetNode", $InfernetNodeλShape,
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {containers: {__element__: $Container, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $InfernetNode = $.makeType<$InfernetNode>(_.spec, "b5f30b90-122b-11ef-a6b4-b5637974024a", _.syntax.literal);
+const $InfernetNode = $.makeType<$InfernetNode>(_.spec, "1577c6e0-29a7-11ef-8263-b9e25b9cad25", _.syntax.literal);
 
 const InfernetNode: $.$expr_PathNode<$.TypeSet<$InfernetNode, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($InfernetNode, $.Cardinality.Many), null);
 
@@ -198,7 +220,7 @@ export type $current_userλShape = $.typeutil.flatten<$UserλShape & {
 type $current_user = $.ObjectType<"default::current_user", $current_userλShape, null, [
   ...$User['__exclusives__'],
 ]>;
-const $current_user = $.makeType<$current_user>(_.spec, "b5ef8858-122b-11ef-b943-a3bf6466304e", _.syntax.literal);
+const $current_user = $.makeType<$current_user>(_.spec, "1573ad08-29a7-11ef-ba87-c9e2e9d229f4", _.syntax.literal);
 
 const current_user: $.$expr_PathNode<$.TypeSet<$current_user, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($current_user, $.Cardinality.Many), null);
 
@@ -208,15 +230,20 @@ const $default__globals: {  current_user: _.syntax.$expr_Global<
               $.Cardinality.AtMostOne
               >} = {  current_user: _.syntax.makeGlobal(
               "default::current_user",
-              $.makeType(_.spec, "b5ef8858-122b-11ef-b943-a3bf6466304e", _.syntax.literal),
+              $.makeType(_.spec, "1573ad08-29a7-11ef-ba87-c9e2e9d229f4", _.syntax.literal),
               $.Cardinality.AtMostOne) as any};
 
 
 
-export { CloudProvider, $User, User, $Cluster, Cluster, $AWSCluster, AWSCluster, $ServiceAccount, ServiceAccount, $AWSServiceAccount, AWSServiceAccount, $Container, Container, $ContainerTemplate, ContainerTemplate, $DockerAccount, DockerAccount, $GCPCluster, GCPCluster, $GCPServiceAccount, GCPServiceAccount, $InfernetNode, InfernetNode, $current_user, current_user };
+export { Address, BigIntString, CloudProvider, IpAddress, IpAddressWithMask, Secp256k1PrivateKey, $User, User, $Cluster, Cluster, $AWSCluster, AWSCluster, $ServiceAccount, ServiceAccount, $AWSServiceAccount, AWSServiceAccount, $Container, Container, $ContainerTemplate, ContainerTemplate, $DockerAccount, DockerAccount, $GCPCluster, GCPCluster, $GCPServiceAccount, GCPServiceAccount, $InfernetNode, InfernetNode, $current_user, current_user };
 
 type __defaultExports = {
+  "Address": typeof Address;
+  "BigIntString": typeof BigIntString;
   "CloudProvider": typeof CloudProvider;
+  "IpAddress": typeof IpAddress;
+  "IpAddressWithMask": typeof IpAddressWithMask;
+  "Secp256k1PrivateKey": typeof Secp256k1PrivateKey;
   "User": typeof User;
   "Cluster": typeof Cluster;
   "AWSCluster": typeof AWSCluster;
@@ -232,7 +259,12 @@ type __defaultExports = {
   "global": typeof $default__globals
 };
 const __defaultExports: __defaultExports = {
+  "Address": Address,
+  "BigIntString": BigIntString,
   "CloudProvider": CloudProvider,
+  "IpAddress": IpAddress,
+  "IpAddressWithMask": IpAddressWithMask,
+  "Secp256k1PrivateKey": Secp256k1PrivateKey,
   "User": User,
   "Cluster": Cluster,
   "AWSCluster": AWSCluster,

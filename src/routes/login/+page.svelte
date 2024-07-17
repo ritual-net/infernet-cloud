@@ -31,6 +31,7 @@
 		formId: signUpFormId,
 		form: signUpForm,
 		errors: signUpErrors,
+		allErrors: signUpAllErrors,
 		enhance: signUpEnhance,
 		constraints: signUpConstraints,
 		submitting: signUpSubmitting,
@@ -51,6 +52,7 @@
 		formId: signInFormId,
 		form: signInForm,
 		errors: signInErrors,
+		allErrors: signInAllErrors,
 		enhance: signInEnhance,
 		constraints: signInConstraints,
 		submitting: signInSubmitting,
@@ -64,6 +66,7 @@
 		formId: resetPasswordFormId,
 		form: resetPasswordForm,
 		errors: resetPasswordErrors,
+		allErrors: resetPasswordAllErrors,
 		enhance: resetPasswordEnhance,
 		constraints: resetPasswordConstraints,
 		submitting: resetPasswordSubmitting,
@@ -88,6 +91,7 @@
 
 
 	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Tabs from '$/components/Tabs.svelte'
 </script>
 
@@ -145,7 +149,7 @@
 						placeholder="Email address"
 						bind:value={$signUpForm.email}
 						{...$signUpConstraints.email}
-						on:change={e => { $signInForm.email = $resetPasswordForm.email = e.target.value }}
+						on:change={e => { $signInForm.email = $resetPasswordForm.email = e.currentTarget.value }}
 					/>
 
 					<input
@@ -156,11 +160,11 @@
 						{...$signUpConstraints.password}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$signUpSubmitting}
-					>Sign Up</button>
+					<FormSubmitButton
+						submitting={$signUpSubmitting}
+						allErrors={$signUpAllErrors}
+						submitLabel="Sign Up"
+					/>
 				</form>
 
 			{:else if item.id === FormAction.LogIn}
@@ -187,7 +191,7 @@
 						placeholder="Email address"
 						bind:value={$signInForm.email}
 						{...$signInConstraints.email}
-						on:change={e => { $signUpForm.email = $resetPasswordForm.email = e.target.value }}
+						on:change={e => { $signUpForm.email = $resetPasswordForm.email = e.currentTarget.value }}
 					/>
 
 					<input
@@ -198,11 +202,11 @@
 						{...$signInConstraints.password}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$signInSubmitting}
-					>Log in</button>
+					<FormSubmitButton
+						submitting={$signInSubmitting}
+						allErrors={$signInAllErrors}
+						submitLabel="Log in"
+					/>
 				</form>
 
 			{:else if item.id === FormAction.ResetPassword}
@@ -232,14 +236,14 @@
 						placeholder="Email address"
 						bind:value={$resetPasswordForm.email}
 						{...$resetPasswordConstraints.email}
-						on:change={e => { $signUpForm.email = $signInForm.email = e.target.value }}
+						on:change={e => { $signUpForm.email = $signInForm.email = e.currentTarget.value }}
 					/>
 
-					<button
-						type="submit"
-						class="primary"
-						disabled={$resetPasswordSubmitting}
-					>Send verification link</button>
+					<FormSubmitButton
+						submitting={$resetPasswordSubmitting}
+						allErrors={$resetPasswordAllErrors}
+						submitLabel="Send verification link"
+					/>
 				</form>
 			{/if}
 		</svelte:fragment>

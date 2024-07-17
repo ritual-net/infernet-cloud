@@ -50,6 +50,7 @@
 	use:melt={$input}
 	{id}
 	{name}
+	on:change
 />
 
 

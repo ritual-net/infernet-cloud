@@ -27,6 +27,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -58,6 +59,7 @@
 
 	// Components
 	import NodeFormFields from '../../create/NodeFormFields.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 </script>
 
 
@@ -89,13 +91,11 @@
 		</a>
 				
 		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting}
-			>
-				Add Node
-			</button>
+			<FormSubmitButton
+				submitting={$submitting}
+				allErrors={$allErrors}
+				submitLabel="Add Node"
+			/>
 		</div>
 	</footer>
 </form>

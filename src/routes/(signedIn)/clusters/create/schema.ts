@@ -1,5 +1,5 @@
 import * as z from 'yup'
-import { Ip, IpWithAddressMask, Address } from '$/types/stringFormats'
+import { IpAddressWithMask, Address, Secp256k1PrivateKey, BigIntString } from '$/types/stringFormats'
 
 export const Config = z
 	.object({
@@ -14,14 +14,18 @@ export const Config = z
 
 		'ip_allow_http': z
 			.array(
-				IpWithAddressMask
+				IpAddressWithMask
 			)
+			.optional()
+			.nullable()
 			.default([]),
 
 		'ip_allow_ssh': z
 			.array(
-				IpWithAddressMask
+				IpAddressWithMask
 			)
+			.optional()
+			.nullable()
 			.default([]),
 
 		'region': z
@@ -30,10 +34,20 @@ export const Config = z
 
 		'zone': z
 			.string()
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'machine_type': z
 			.string()
+			.required(),
+	})
+
+export const ContainerPayment = z
+	.object({
+		'address': Address
+			.required(),
+
+		'amount': BigIntString
 			.required(),
 	})
 
@@ -42,6 +56,7 @@ export const Container = z
 		'id': z
 			.string()
 			.optional()
+			.nullable()
 			.default(() => (
 				crypto.randomUUID()
 			)),
@@ -57,6 +72,7 @@ export const Container = z
 		'description': z
 			.string()
 			.optional()
+			.nullable()
 			.default(''),
 
 		'external': z
@@ -69,6 +85,7 @@ export const Container = z
 				Address
 			)
 			.optional()
+			.nullable()
 			.default([]),
 
 		'allowed_delegate_addresses': z
@@ -76,26 +93,55 @@ export const Container = z
 				Address
 			)
 			.optional()
+			.nullable()
 			.default([]),
 
 		'allowed_ips': z
 			.array(
-				Ip
+				IpAddressWithMask
 			)
 			.optional()
+			.nullable()
 			.default([]),
 
 		'command': z
 			.string()
 			.optional()
+			.nullable()
 			.default(''),
 
 		'env': z
 			.object()
 			.optional()
+			.nullable()
 			.default({}),
 
 		'gpu': z
+			.boolean()
+			.required()
+			.default(false),
+
+		'rate_limit_num_requests': z
+			.number()
+			.integer()
+			.positive()
+			.optional()
+			.nullable(),
+
+		'rate_limit_period': z
+			.number()
+			.positive()
+			.optional()
+			.nullable(),
+
+		'accepted_payments': z
+			.array(
+				ContainerPayment,
+			)
+			.optional()
+			.nullable(),
+
+		'generates_proofs': z
 			.boolean()
 			.required()
 			.default(false),
@@ -111,7 +157,8 @@ export const NodeConfig = z
 		'trail_head_blocks': z
 			.number()
 			.positive()
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'rpc_url': z
 			.string()
@@ -126,7 +173,7 @@ export const NodeConfig = z
 				),
 			),
 
-		'coordinator_address':
+		'registry_address':
 			Address
 			.when(
 				'chain_enabled',
@@ -141,11 +188,11 @@ export const NodeConfig = z
 			.number()
 			.integer()
 			.positive()
-			.optional(),
+			.optional()
+			.nullable(),
 
-		'private_key': z
-			.string()
-			.default('')
+		'private_key':
+			Secp256k1PrivateKey
 			.when(
 				'chain_enabled',
 				([chain_enabled], _) => (
@@ -155,6 +202,18 @@ export const NodeConfig = z
 				),
 			),
 
+		'payment_address': Address
+			.optional()
+			.nullable(),
+
+		'allowed_sim_errors': z
+			.array(
+				z
+					.string()
+			)
+			.optional()
+			.nullable(),
+
 		'forward_stats': z
 			.boolean()
 			.required()
@@ -162,12 +221,16 @@ export const NodeConfig = z
 		
 		'snapshot_sync_sleep': z.
 			number()
-			.positive(),
-				
+			.positive()
+			.optional()
+			.nullable(),
+
 		'snapshot_sync_batch_size': z
 			.number()
 			.positive()
-			.integer(),
+			.integer()
+			.optional()
+			.nullable(),
 	})
 
 export const Node = z
@@ -184,7 +247,8 @@ export const Node = z
 		'dockerAccountUsername': z
 			.string()
 			.default('')
-			.optional(),
+			.optional()
+			.nullable(),
 
 		'containers': z
 			.array(
@@ -207,6 +271,8 @@ export const FormData = z
 			.array(
 				Node,
 			)
+			.optional()
+			.nullable()
 			.default(() => (
 				[
 					Node.getDefault(),
@@ -223,10 +289,11 @@ export const FormData = z
 export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
 	node.config.trail_head_blocks ??= 5
 	node.config.rpc_url ??= ''
-	node.config.coordinator_address ??= ''
+	node.config.registry_address ??= ''
 	node.config.max_gas_limit ??= 5000000
 	node.config.private_key ??= ''
-	node.config.forward_stats ??= false
+	node.config.payment_address ??= ''
+	node.config.allowed_sim_errors ??= []
 	node.config.snapshot_sync_sleep ??= 1.0
 	node.config.snapshot_sync_batch_size ??= 200
 	node.dockerAccountUsername ??= ''
