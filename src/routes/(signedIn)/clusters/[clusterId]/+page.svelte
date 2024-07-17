@@ -238,20 +238,22 @@
 
 		<SizeTransition>
 			<div class="stack">
-				{#await nodesWithInfoPromise}
-					<div class="card" transition:scale>
-						<p>Loading nodes...</p>
-					</div>
-				{:then nodesWithInfo}
+				{#if !nodesWithInfo}
+					{#await nodesWithInfoPromise}
+						<div class="card" transition:scale>
+							<p>Loading nodes...</p>
+						</div>
+					{:catch error}
+						<div class="card" transition:scale>
+							<p>Failed to load nodes.</p>
+							<pre><output><code>{error}</code></output></pre>
+						</div>
+					{/await}
+				{:else}
 					<NodesTable
 						{nodesWithInfo}
 					/>
-				{:catch error}
-					<div class="card" transition:scale>
-						<p>Failed to load nodes.</p>
-						<pre><output><code>{error}</code></output></pre>
-					</div>
-				{/await}
+				{/if}
 			</div>
 		</SizeTransition>
 	</section>
