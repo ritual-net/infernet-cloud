@@ -90,7 +90,7 @@
 					}
 					direction="BT"
 					nodeWidth={310}
-					nodeHeight={80}
+					nodeHeight={75}
 					layoutOptions={{
 						// ranker: 'tight-tree',
 						ranker: 'longest-path',

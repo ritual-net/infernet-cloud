@@ -57,7 +57,7 @@
 		--xy-handle-border-color: transparent;
 
 		display: grid;
-		padding: 0.66em 1em;
+		padding: 0.5em 1em;
 
 		background-color: rgb(255, 255, 255);
 		border-radius: 0.5em;
