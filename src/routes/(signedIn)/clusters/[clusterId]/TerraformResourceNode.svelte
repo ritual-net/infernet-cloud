@@ -43,22 +43,19 @@
 	<Handle
 		type="target"
 		position={Position.Bottom}
-		style={`
-			background: transparent;
-		`}
 	/>
 	<Handle
 		type="source"
 		position={Position.Top}
-		style={`
-			background: transparent;
-		`}
 	/>
 </div>
 
 
 <style>
 	.node {
+		--xy-handle-background-color: transparent; 
+		--xy-handle-border-color: transparent;
+
 		padding: 0.66em 1em;
 
 		background-color: rgb(255, 255, 255);
