@@ -1,9 +1,11 @@
 <script lang="ts">
 	// Types/constants
 	import type { TerraformDeployment } from '$schema/interfaces'
+	import { providers, ProviderTypeEnum } from '$/types/provider'
 
 
 	// Inputs
+	export let provider: ProviderTypeEnum
 	export let deployment: TerraformDeployment
 	export let isSummary = false
 
@@ -15,7 +17,7 @@
 	// Components
 	import XYFlow from '$/components/XYFlow.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
-	import { providers, ProviderTypeEnum } from '$/types/provider'
+	import TerraformResourceNode from './TerraformResourceNode.svelte'
 </script>
 
 
@@ -46,17 +48,19 @@
 		<dd class="column">
 			{#if deployment.tfstate?.resources?.flatMap(resource => resource.instances).length}
 				<XYFlow
+					nodeTypes={{
+						'resource': TerraformResourceNode,
+					}}
 					nodes={
 						deployment.tfstate.resources
 							.flatMap(resource => (
 								resource.instances
 									.map(instance => ({
 										id: `${resource.type}.${resource.name}`,
+										type: 'resource',
 										data: {
-											label: [
-												resource.name,
-												formatResourceType(resource.type),
-											].join('\n'),
+											provider,
+											resource,
 										},
 									}))
 							))
@@ -85,12 +89,12 @@
 							))
 					}
 					direction="BT"
-					nodeWidth={190}
-					nodeHeight={52}
+					nodeWidth={310}
+					nodeHeight={80}
 					layoutOptions={{
 						// ranker: 'tight-tree',
 						ranker: 'longest-path',
-						nodesep: 5,
+						nodesep: 50,
 						edgesep: 50,
 						ranksep: 60,
 					}}

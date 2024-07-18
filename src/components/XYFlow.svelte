@@ -1,9 +1,10 @@
 <script lang="ts">
 	// Types
-	import type { Node, Edge } from '@xyflow/svelte'
+	import type { Node, Edge, SvelteFlowProps } from '@xyflow/svelte'
 	
 
 	// Inputs
+	export let nodeTypes: SvelteFlowProps['nodeTypes']
 	export let nodes: Omit<Node, 'position'>[] = []
 	export let edges: Edge[] = []
 
@@ -90,6 +91,7 @@
 	<SvelteFlow
 		fitView
 
+		{nodeTypes}
 		nodes={positionedNodes}
 		nodesConnectable={false}
 
@@ -112,8 +114,7 @@
 	}
 
 	:global(.svelte-flow__node) {
-		padding: 6px;
-		white-space: pre-line;
+		display: grid;
 	}
 
 	:global(.svelte-flow__attribution) {

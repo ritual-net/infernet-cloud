@@ -381,6 +381,7 @@
 				{/if}
 
 				<TerraformDeployment
+					provider={cluster.service_account.provider}
 					deployment={cluster.latest_deployment}
 					isSummary
 				/>
@@ -452,6 +453,7 @@
 							</section>
 
 							<TerraformDeployment
+								provider={cluster.service_account.provider}
 								deployment={snapshot}
 							/>
 						</dl>
