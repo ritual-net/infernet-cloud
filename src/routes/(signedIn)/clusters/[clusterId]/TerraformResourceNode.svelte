@@ -34,7 +34,7 @@
 			height="40"
 		/>
 
-		<div class="column inline">
+		<div>
 			<h5>{data.resource.name}</h5>
 			<span class="annotation">{formatResourceType(data.resource.type)}</span>
 		</div>
@@ -56,6 +56,7 @@
 		--xy-handle-background-color: transparent; 
 		--xy-handle-border-color: transparent;
 
+		display: grid;
 		padding: 0.66em 1em;
 
 		background-color: rgb(255, 255, 255);

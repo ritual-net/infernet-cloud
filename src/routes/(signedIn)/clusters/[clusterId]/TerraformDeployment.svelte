@@ -315,6 +315,7 @@
 
 	.log-container {
 		display: grid;
+		align-items: center;
 
 		.log {
 			margin-inline: -1rem;
