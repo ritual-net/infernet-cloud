@@ -92,9 +92,22 @@ export class AWSResourceClient extends BaseResourceClient {
 	 *   }, ...]
 	 */
 	async getMachines(zone: string): Promise<Machine[]> {
-		this.amazonCompute = await this.createInstance(zone.slice(0, -1)); // AWS api uses region name
-		const command = new DescribeInstanceTypeOfferingsCommand({});
-		const response = await this.amazonCompute.send(command);
+		const region = zone.slice(0, -1)
+
+		this.amazonCompute = await this.createInstance(region)
+	
+		const response = await this.amazonCompute.send(
+			new DescribeInstanceTypeOfferingsCommand({
+				LocationType: 'availability-zone',
+				Filters: [
+					{
+						Name: 'location',
+						Values: [zone],
+					},
+				],
+			})
+		)
+
 		return (
 			response.InstanceTypeOfferings?.map((offering) => ({
 				id: offering.InstanceType!,
