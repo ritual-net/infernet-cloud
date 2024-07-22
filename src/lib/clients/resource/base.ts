@@ -1,4 +1,8 @@
-import type { Machine, ProviderInfo, ZoneInfo } from '$/types/provider';
+// Types
+import type { Machine, ProviderInfo, ZoneInfo } from '$/types/provider'
+
+
+// Functions
 
 /**
  * Base abstract class for fetching data from cloud providers.
@@ -43,28 +47,25 @@ export abstract class BaseResourceClient {
 	 * @returns Flat array of ProviderInfo objects.
 	 */
 	async getProviderInfo(credentials: Record<string, any>): Promise<ProviderInfo[]> {
-		await this.auth(credentials);
+		await this.auth(credentials)
 
-		const regionIds = await this.getRegionIds();
+		const regionIds = await this.getRegionIds()
 
 		return await Promise.all(
 			regionIds.map(async (regionId) => {
-				const zones = await this.getZones(regionId);
+				const zones = await this.getZones(regionId)
 
 				return {
 					region: {
 						id: regionId,
 					},
 					zones: await Promise.all(
-						zones.map(
-							async (zone) =>
-								({
-									name: zone,
-									machines: await this.getMachines(zone),
-								}) as ZoneInfo
-						)
+						zones.map(async (zone) =>({
+							name: zone,
+							machines: await this.getMachines(zone),
+						}) as ZoneInfo)
 					),
-				} as ProviderInfo;
+				} as ProviderInfo
 			})
 		);
 	}
