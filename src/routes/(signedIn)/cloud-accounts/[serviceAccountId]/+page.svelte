@@ -52,7 +52,7 @@
 		<h3>Details</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Cloud Provider</dt>
 
 				<dd class="row">
@@ -64,7 +64,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>User</dt>
 
 				<dd>
@@ -72,7 +72,7 @@
 				</dd>
 			</section>
 
-			<!-- <section class="row">
+			<!-- <section class="row wrap">
 				<dt>Credentials</dt>
 
 				<dd>
@@ -103,6 +103,7 @@
 	}
 
 	header .icon {
+		flex-shrink: 0;
 		width: 4em;
 		height: 4em;
 		border-radius: 0.25em;

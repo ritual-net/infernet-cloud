@@ -212,7 +212,7 @@
 		<h3>Details</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Cloud Account</dt>
 
 				<dd>
@@ -231,7 +231,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Region / Zone</dt>
 
 				<dd>
@@ -249,7 +249,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Machine Type</dt>
 
 				<dd>
@@ -257,7 +257,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>IPs Allowed (HTTP)</dt>
 
 				{#if cluster.ip_allow_http?.length}
@@ -271,7 +271,7 @@
 				{/if}
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>IPs Allowed (SSH)</dt>
 
 				{#if cluster.ip_allow_ssh?.length}
@@ -285,7 +285,7 @@
 				{/if}
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Has Deployed Router?</dt>
 
 				<dd>
@@ -294,7 +294,7 @@
 			</section>
 
 			{#if cluster.router?.ip}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Router IP</dt>
 
 					<dd>
@@ -309,7 +309,7 @@
 		<h3>Status</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Status</dt>
 
 				<dd>
@@ -378,6 +378,7 @@
 	}
 
 	header .icon {
+		flex-shrink: 0;
 		width: 4em;
 		height: 4em;
 		border-radius: 0.25em;
@@ -391,14 +392,11 @@
 		font-size: 0.75em;
 
 		& pre {
-			overflow-y: auto;
 			max-height: 15.6rem;
 			padding: 1em;
 
 			background: rgba(0, 0, 0, 0.05);
 			border-radius: 0.5em;
-
-			tab-size: 2;
 
 			& code {
 				white-space: pre-wrap;

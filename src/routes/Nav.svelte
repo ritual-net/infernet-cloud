@@ -8,30 +8,34 @@
 		href: string,
 		label: string,
 		type?: 'link' | 'button',
-	}[]
+	}[][]
 
 	$: navItems = [
-		{
-			href: '/cloud-accounts',
-			label: 'Accounts',
-		},
-		{
-			href: '/templates',
-			label: 'Templates',
-		},
-		{
-			href: '/clusters',
-			label: 'Clusters',
-		},
-		$page.data.user ? {
-			href: '/account',
-			label: $page.data.user.name || $page.data.user.email,
-			type: 'button',
-		} : {
-			href: '/login',
-			label: 'Log In',
-			type: 'button',
-		},
+		[
+			{
+				href: '/cloud-accounts',
+				label: 'Accounts',
+			},
+			{
+				href: '/templates',
+				label: 'Templates',
+			},
+			{
+				href: '/clusters',
+				label: 'Clusters',
+			},
+		],
+		[
+			$page.data.user ? {
+				href: '/account',
+				label: $page.data.user.name || $page.data.user.email,
+				type: 'button',
+			} : {
+				href: '/login',
+				label: 'Log In',
+				type: 'button',
+			},
+		],
 	]
 
 
@@ -54,19 +58,23 @@
 		</h1>
 	</a>
 
-	<ul class="row">
-		{#each navItems as item}
-			<li>
-				<a	
-					href={item.href}
-					aria-current={$page.url.pathname === item.href ? 'page' : undefined}
-					class:button={item.type === 'button'}
-				>
-					{item.label}
-				</a>
-			</li>
+	<div class="row wrap">
+		{#each navItems as items}
+			<ul class="row">
+				{#each items as item}
+					<li>
+						<a	
+							href={item.href}
+							aria-current={$page.url.pathname === item.href ? 'page' : undefined}
+							class:button={item.type === 'button'}
+						>
+							{item.label}
+						</a>
+					</li>
+				{/each}
+			</ul>
 		{/each}
-	</ul>
+	</div>
 </nav>
 
 
@@ -93,21 +101,55 @@
 			font-family: var(--fontFamily-display);
 
 			& :global(svg) {
+				flex-shrink: 0;
 				height: 1.25em;
 			}
 		}
 	}
 
-	li {
-		list-style-type: none;
+	ul {
+		padding: 0;
+
+		li {
+			list-style-type: none;
+
+			&:not([aria-current="page"]) {
+				color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
+
+				@supports not (color: hsl(from #000 h s l)) {
+					filter: opacity(0.7);
+				}
+			}
+		}
 	}
 
-	ul a:not([aria-current="page"]) {
-		color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
-	}
-	@supports not (color: hsl(from #000 h s l)) {
-		ul a:not([aria-current="page"]) {
-			filter: opacity(0.7);
+	@media (width <= 50rem) {
+		nav {
+			display: grid !important;
+			justify-content: stretch;
+			justify-items: start;
+			gap: 1rem;
+
+			li {
+				display: grid !important;
+			}
+
+			&:after {
+				position: absolute;
+				right: 1rem;
+				top: 0.6rem;
+
+				font-size: 1.5rem;
+				content: '☰';
+
+				:global(header:is(:hover, :focus-within) &) { 
+					opacity: 0;
+				}
+			}
+
+			> :last-child {
+				justify-self: stretch;
+			}
 		}
 	}
 </style>

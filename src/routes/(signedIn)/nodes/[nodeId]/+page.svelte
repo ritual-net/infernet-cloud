@@ -62,7 +62,7 @@
 
 		<div class="row">
 			<dl class="card inline">
-				<div class="row">
+				<div class="row wrap">
 					<dt>Status</dt>
 					<dd>
 						<Status
@@ -160,7 +160,7 @@
 		<h3>Details</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Forward Stats?</dt>
 
 				<dd>
@@ -168,7 +168,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Chain Enabled?</dt>
 
 				<dd>
@@ -177,7 +177,7 @@
 			</section>
 
 			{#if node.docker_account}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Docker Hub Account</dt>
 
 					<dd>
@@ -194,7 +194,7 @@
 
 			<dl class="card column">
 				{#if node.rpc_url}
-					<section class="row">
+					<section class="row wrap">
 						<dt>RPC URL</dt>
 
 						<dd>
@@ -204,7 +204,7 @@
 				{/if}
 
 				{#if node.registry_address}
-					<section class="row">
+					<section class="row wrap">
 						<dt>Registry Address</dt>
 
 						<dd>
@@ -214,7 +214,7 @@
 				{/if}
 
 				{#if node.trail_head_blocks}
-					<section class="row">
+					<section class="row wrap">
 						<dt>Trail Head Blocks</dt>
 
 						<dd>
@@ -224,7 +224,7 @@
 				{/if}
 
 				{#if node.max_gas_limit !== undefined && node.max_gas_limit !== null}
-					<section class="row">
+					<section class="row wrap">
 						<dt>Max Gas Limit</dt>
 
 						<dd>
@@ -234,7 +234,7 @@
 				{/if}
 
 				{#if node.private_key}
-					<section class="row">
+					<section class="row wrap">
 						<dt>Private Key</dt>
 
 						<dd>
@@ -244,7 +244,7 @@
 				{/if}
 
 				{#if node.snapshot_sync_sleep || node.snapshot_sync_batch_size}
-					<section class="row">
+					<section class="row wrap">
 						<dt>Snapshot Syncing</dt>
 
 						<dd>
@@ -261,7 +261,7 @@
 		<h3>Status</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Status</dt>
 
 				<dd>
@@ -272,7 +272,7 @@
 			</section>
 
 			{#if info?.ip}
-				<section class="row">
+				<section class="row wrap">
 					<dt>IP</dt>
 
 					<dd>
@@ -316,6 +316,7 @@
 	}
 
 	header .icon {
+		flex-shrink: 0;
 		width: 4em;
 		height: 4em;
 		border-radius: 0.25em;
@@ -329,14 +330,11 @@
 		font-size: 0.75em;
 
 		& pre {
-			overflow-y: auto;
 			max-height: 15.6rem;
 			padding: 1em;
 
 			background: rgba(0, 0, 0, 0.05);
 			border-radius: 0.5em;
-
-			tab-size: 2;
 
 			& code {
 				white-space: pre-wrap;

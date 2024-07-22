@@ -37,19 +37,19 @@
 		action={FormAction.SignOut}
 		class="card column"
 	>
-		<section class="row">
+		<section class="row wrap">
 			<h3>Name</h3>
 
 			{$page.data.user?.name}
 		</section>
 
-		<section class="row">
+		<section class="row wrap">
 			<h3>Email</h3>
 
 			{$page.data.user?.email}
 		</section>
 
-		<section class="row">
+		<section class="row wrap">
 			<h3>Sign out</h3>
 
 			<button
