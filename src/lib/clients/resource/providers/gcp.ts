@@ -81,7 +81,19 @@ export class GCPResourceClient extends BaseResourceClient {
 				?.filter(zone => (
 					zone.region && zone.region.endsWith(`/regions/${region}`)
 				))
-				.map(zone => zone.name)
+				.map(zone => ({
+					id: zone.id,
+					name: zone.name,
+					availableCpuPlatforms: zone.availableCpuPlatforms,
+					creationTimestamp: zone.creationTimestamp,
+					deprecated: zone.deprecated,
+					description: zone.description,
+					kind: zone.kind,
+					region: zone.region,
+					selfLink: zone.selfLink,
+					status: zone.status,
+					supportsPzs: zone.supportsPzs,
+				}))
 				.filter(isTruthy)
 			?? []
 		)

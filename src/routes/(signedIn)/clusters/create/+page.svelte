@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
-	import { providers, type ProviderInfo, ProviderTypeEnum } from '$/types/provider'
+	import type { BaseResourceClient } from '$/lib/clients/resource/base'
+	import { providers } from '$/types/provider'
 	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
 	enum Fieldset {
@@ -93,10 +94,10 @@
 	$: serviceAccount = serviceAccounts.find(serviceAccount => serviceAccount.id === $form.serviceAccountId)
 
 
-	// (Provider)
-	$: providerConfigsQuery = createQuery({
-		queryKey: ['providerConfig', {
-			serviceAccountId: $form.serviceAccountId as string,
+	// (Regions/Zones/Machines)
+	$: regionsQuery = createQuery({
+		queryKey: ['regionConfig', {
+			serviceAccountId: $form.serviceAccountId,
 		}] as const,
 
 		queryFn: async ({
@@ -105,44 +106,123 @@
 			}],
 		}) => (
 			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]', {
+				resolveRoute('/api/providers/[serviceAccountId]/regions', {
 					serviceAccountId,
 				})
 			)
-				.then(response => response.json()) as ProviderInfo[]
+				.then(response => response.json())
+		) as Awaited<ReturnType<BaseResourceClient['getRegions']>>,
+	})
+
+	$: regions = $regionsQuery.data
+
+	$: selectedRegion = (
+		regions && $form.config.region
+			? regions
+				.find(region => (
+					region.id === $form.config.region
+				))
+			: undefined
+	)
+
+	$: zonesQuery = createQuery({
+		queryKey: ['zoneConfig', {
+			serviceAccountId: $form.serviceAccountId!,
+			regionId: $form.config.region!,
+		}] as const,
+
+		queryFn: async ({
+			queryKey: [_, {
+				serviceAccountId,
+				regionId,
+			}],
+		}) => (
+			await fetch(
+				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones', {
+					serviceAccountId,
+					regionId,
+				})
+			)
+				.then(response => response.json())
+		) as Awaited<ReturnType<BaseResourceClient['getZones']>>,
+	})
+
+	$: zones = $zonesQuery.data
+
+	$: selectedZone = (
+		selectedRegion && zones && $form.config.zone
+			? zones
+				.find(zone => (
+					zone.id === $form.config.zone
+				))
+			: undefined
+	)
+
+	$: machinesQuery = createQuery({
+		queryKey: ['machineConfig', {
+			serviceAccountId: $form.serviceAccountId!,
+			regionId: $form.config.region!,
+			zoneId: $form.config.zone!,
+		}] as const,
+
+		queryFn: async ({
+			queryKey: [_, {
+				serviceAccountId,
+				regionId,
+				zoneId,
+			}],
+		}) => (
+			await fetch(
+				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines', {
+					serviceAccountId,
+					regionId,
+					zoneId,
+				})
+			)
+				.then(response => response.json())
+		) as Awaited<ReturnType<BaseResourceClient['getMachines']>>,
+	})
+
+	$: machines = $machinesQuery.data
+
+	$: selectedMachine = (
+		machines && $form.config.machine_type
+			? machines
+				.find(machine => (
+					machine.id === $form.config.machine_type
+				))
+			: undefined
+	)
+
+	$: machineInfoQuery = createQuery({
+		queryKey: ['machineInfo', {
+			serviceAccountId: $form.serviceAccountId!,
+			regionId: $form.config.region!,
+			zoneId: $form.config.zone!,
+			machineId: $form.config.machine_type!,
+		}] as const,
+
+		queryFn: async ({
+			queryKey: [_, {
+				serviceAccountId,
+				regionId,
+				zoneId,
+				machineId,
+			}],
+		}) => (
+			await fetch(
+				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines/[machineId]', {
+					serviceAccountId,
+					regionId,
+					zoneId,
+					machineId,
+				})
+			)
+				.then(response => response.json())
 		),
 	})
 
-	$: providerConfigs = $providerConfigsQuery.data
-
-	$: regionConfig = (
-		providerConfigs && $form.config.region
-			? providerConfigs
-				.find(regionConfig => (
-					regionConfig.region.id === $form.config.region
-				))
-			: undefined
-	)
-
-	$: zoneConfig = (
-		regionConfig && $form.config.zone
-			? regionConfig
-				?.zones
-				.find(zoneConfig => (
-					zoneConfig.name === $form.config.zone
-				))
-			: undefined
-	)
-
-	$: machineConfig = (
-		zoneConfig && $form.config.machine_type
-			? zoneConfig
-				.machines
-				.find(machineConfig => (
-					machineConfig.id === $form.config.machine_type
-				))
-			: undefined
-	)
+	$: machineInfo = $machineInfoQuery.data
 
 
 	// Components
@@ -329,7 +409,7 @@
 								<div class="stack">
 									<fieldset
 										class="column"
-										aria-disabled={!$providerConfigsQuery.isSuccess}
+										aria-disabled={!$regionsQuery.isSuccess}
 									>
 										<section class="row wrap">
 											<div class="column inline">
@@ -347,9 +427,9 @@
 												name="config.region"
 												labelText="Region"
 												bind:value={$form.config.region}
-												{...!providerConfigs
+												{...!regions
 													? {
-														placeholder: 'Loading...',
+														placeholder: 'Loading available regions...',
 														items: [
 															$form.config.region && {
 																value: $form.config.region,
@@ -359,24 +439,25 @@
 														visuallyDisabled: true,
 													}
 													: {
-														placeholder: 'Choose region...',
+														placeholder: (
+															'Choose region...'
+														),
 														items: (
 															// Group by continents
 															Object.entries(
 																Object.groupBy(
-																	providerConfigs,
-																	providerConfig => (
-																		providerConfig.region.name.match(/^(.+) \(.+\)/)?.[1]
-																		|| providerConfig.region.name.match(/, (.+?)$/)?.[1]
+																	regions,
+																	regionConfig => (
+																		regionConfig.continent
 																	)
 																)
 															)
 																.map(([continent, configs]) => ({
 																	value: continent,
 																	label: continent,
-																	items: configs.map(config => ({
-																		value: config.region.id,
-																		label: `${config.region.id} – ${config.region.name}`,
+																	items: configs.map(regionConfig => ({
+																		value: regionConfig.id,
+																		label: `${regionConfig.id} – ${regionConfig.name}`,
 																	}))
 																}))
 														),
@@ -402,9 +483,13 @@
 												name="config.zone"
 												labelText="Zone"
 												bind:value={$form.config.zone}
-												{...!regionConfig
+												{...!zones
 													? {
-														placeholder: 'Choose a region first.',
+														placeholder: (
+															$machinesQuery.isPending
+																? 'Loading available zones...'
+																: 'Choose a region first.'
+														),
 														items: [
 															$form.config.zone && {
 																value: $form.config.zone,
@@ -416,11 +501,10 @@
 													: {
 														placeholder: 'Choose zone...',
 														items: (
-															regionConfig
-																.zones
-																.map(zone => ({
-																	value: zone.name,
-																	label: zone.name,
+															zones
+																.map(zoneConfig => ({
+																	value: zoneConfig.id,
+																	label: zoneConfig.id,
 																}))
 														),
 													}
@@ -429,51 +513,68 @@
 											/>
 										</section>
 
-										<section class="row wrap">
-											<div class="column inline">
-												<h3>
-													<label for="config.machine_type">
-														Machine Type
-													</label>
-												</h3>
+										<section class="column">
+											<div class="row wrap">
+												<div class="column inline">
+													<h3>
+														<label for="config.machine_type">
+															Machine Type
+														</label>
+													</h3>
 
-												<p>Select the type of machine you would like to deploy.</p>
+													<p>Select the type of machine you would like to deploy.</p>
+												</div>
+
+												<Combobox
+													id="config.machine_type"
+													name="config.machine_type"
+													labelText="Machine Type"
+													bind:value={$form.config.machine_type}
+													{...!machines
+														? {
+															placeholder: (
+																$machinesQuery.isPending
+																	? 'Loading available machine types...'
+																	: 'Choose a zone first.'
+															),
+															items: [
+																$form.config.machine_type && {
+																	value: $form.config.machine_type,
+																	label: $form.config.machine_type,
+																}
+															].filter(Boolean),
+															visuallyDisabled: true,
+														}
+														: {
+															placeholder: 'Choose machine type...',
+															items: (
+																Array.from(
+																	(
+																		Map.groupBy(
+																			machines,
+																			machineConfig => machineConfig.hasGpu
+																		)
+																			.entries()
+																	),
+																	([hasGpu, machineConfigs]) => ({
+																		value: hasGpu,
+																		label: hasGpu ? 'GPU-Enabled' : 'No GPU',
+																		items: machineConfigs.map(machineConfig => ({
+																			value: machineConfig.id,
+																			label: `${machineConfig.name} (${machineConfig.description})`,
+																		}))
+																	})
+																)
+															),
+														}
+													}
+													{...$constraints.config?.machine_type}
+												/>
 											</div>
-
-											<Combobox
-												id="config.machine_type"
-												name="config.machine_type"
-												labelText="Machine Type"
-												bind:value={$form.config.machine_type}
-												{...!zoneConfig
-													? {
-														placeholder: 'Choose a zone first.',
-														items: [
-															$form.config.machine_type && {
-																value: $form.config.machine_type,
-																label: $form.config.machine_type,
-															}
-														].filter(Boolean),
-														visuallyDisabled: true,
-													}
-													: {
-														placeholder: 'Choose machine type...',
-														items: (
-															zoneConfig
-																.machines
-																.map(machineConfig => ({
-																	value: machineConfig.name,
-																	label: `${machineConfig.name} (${machineConfig.description})`,
-																}))
-														),
-													}
-												}
-												{...$constraints.config?.machine_type}
-											/>
 										</section>
 									</fieldset>
 
-									{#if $providerConfigsQuery.isPending}
+									{#if $regionsQuery.isPending}
 										<div
 											class="loading-status card row"
 											transition:scale|global
@@ -481,7 +582,7 @@
 											<img class="icon" src={providers[serviceAccount.provider].icon} />
 											<p>Loading available cloud configurations...</p>
 										</div>
-									{:else if $providerConfigsQuery.isError}
+									{:else if $regionsQuery.isError}
 										<div
 											class="loading-status card row"
 											transition:scale|global

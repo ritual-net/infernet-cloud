@@ -22,7 +22,7 @@ export abstract class BaseResourceClient {
 	 *
 	 * @returns Flat array of all region IDs.
 	 */
-	abstract getRegionIds(): Promise<string[]>;
+	abstract getRegions(): Promise<{ id: string, name: string, [key: string]: any }[]>;
 
 	/**
 	 * Get the list of zones in a region.
@@ -30,7 +30,7 @@ export abstract class BaseResourceClient {
 	 * @param region The name of the region.
 	 * @returns Flat array of all zones in the region.
 	 */
-	abstract getZones(region: string): Promise<string[]>;
+	abstract getZones(region: string): Promise<{ id: string, name: string, [key: string]: any }[]>;
 
 	/**
 	 * Get the list of machine types in a zone.
@@ -49,7 +49,7 @@ export abstract class BaseResourceClient {
 	async getProviderInfo(credentials: Record<string, any>): Promise<ProviderInfo[]> {
 		await this.auth(credentials)
 
-		const regionIds = await this.getRegionIds()
+		const regionIds = await this.getRegions()
 
 		return await Promise.all(
 			regionIds.map(async (regionId) => {

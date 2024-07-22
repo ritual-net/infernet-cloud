@@ -1,7 +1,8 @@
 // Types
 import type { AWSServiceAccount } from '$schema/interfaces'
 import type { _InstanceType } from '@aws-sdk/client-ec2'
-import type { Machine } from '$/types/provider'
+import { ProviderTypeEnum, type Machine } from '$/types/provider'
+import { getRegionName } from '$/lib/utils/providers/common'
 
 
 // Functions
@@ -50,7 +51,7 @@ export class AWSResourceClient extends BaseResourceClient {
 			this.creds = creds
 			this.amazonCompute = await this.createInstance('us-east-1')
 			// sanity check to enusure creds are valid
-			await this.getRegionIds()
+			await this.getRegions()
 		} catch (error) {
 			throw new Error(`Error during AWS authentication: ${(error as Error).message}`)
 		}
@@ -62,14 +63,26 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @returns A flat array of region IDs.
 	 * Example return value: ['us-east-1', 'us-west-2', 'eu-west-1']
 	 */
-	async getRegionIds(): Promise<string[]> {
+	async getRegions() {
 		const command = new DescribeRegionsCommand({})
 		const response = await this.amazonCompute.send(command)
 
 		return (
 			response
 				.Regions
-				?.map(region => region.RegionName)
+				?.map(region => {
+					const id = region.RegionName!
+					const name = getRegionName(id, ProviderTypeEnum.AWS)
+					const continent = name.match(/^(.+) \(.+\)/)?.[1] || name.match(/, (.+?)$/)?.[1]
+
+					return {
+						id,
+						name,
+						continent,
+						endpoint: region.Endpoint,
+						optInStatus: region.OptInStatus,
+					}
+				})
 				.filter(isTruthy)
 			?? []
 		)
@@ -82,7 +95,7 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @returns A flat array of zone names.
 	 * Example return value: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 	 */
-	async getZones(region: string): Promise<string[]> {
+	async getZones(region: string) {
 		this.amazonCompute = await this.createInstance(region)
 
 		const command = new DescribeAvailabilityZonesCommand({});
@@ -92,7 +105,21 @@ export class AWSResourceClient extends BaseResourceClient {
 		return (
 			response
 				.AvailabilityZones
-				?.map(zone => zone.ZoneName)
+				?.map(zone => ({
+					id: zone.ZoneName,
+					name: zone.ZoneName,
+					state: zone.State,
+					optInStatus: zone.OptInStatus,
+					messages: zone.Messages,
+					regionName: zone.RegionName,
+					zoneName: zone.ZoneName,
+					zoneId: zone.ZoneId,
+					groupName: zone.GroupName,
+					networkBorderGroup: zone.NetworkBorderGroup,
+					zoneType: zone.ZoneType,
+					parentZoneName: zone.ParentZoneName,
+					parentZoneId: zone.ParentZoneId,
+				}))
 				.filter(isTruthy)
 			?? []
 		)
@@ -133,8 +160,8 @@ export class AWSResourceClient extends BaseResourceClient {
 				?.map(offering => ({
 					id: offering.InstanceType!,
 					name: offering.InstanceType!,
-					description: offering.InstanceType!,
-					link: 'https://aws.amazon.com/ec2/instance-types/',
+					locationType: offering.LocationType,
+					location: offering.Location,
 				}))
 			?? []
 		)
