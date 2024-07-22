@@ -3,10 +3,11 @@ import {
 	DescribeRegionsCommand,
 	DescribeAvailabilityZonesCommand,
 	DescribeInstanceTypeOfferingsCommand,
+	DescribeInstanceTypesCommand,
 } from '@aws-sdk/client-ec2';
 import { BaseResourceClient } from '$/lib/clients/resource/base';
 import type { AWSServiceAccount } from '$schema/interfaces';
-import type { EC2ClientConfig } from '@aws-sdk/client-ec2';
+import type { EC2ClientConfig, _InstanceType } from '@aws-sdk/client-ec2';
 import type { Machine } from '$/types/provider';
 
 // Amazon Web Services extension of BaseResourceClient abstract class.
@@ -20,15 +21,14 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @param region - AWS region name
 	 * @returns EC2 instance
 	 */
-	async createInstance(region: string): Promise<EC2Client> {
-		const config: EC2ClientConfig = {
+	async createInstance(region: string) {
+		return new EC2Client({
 			region: region,
 			credentials: {
 				accessKeyId: this.creds.access_key_id,
 				secretAccessKey: this.creds.secret_access_key,
 			},
-		};
-		return new EC2Client(config);
+		})
 	}
 
 	/**
@@ -116,5 +116,24 @@ export class AWSResourceClient extends BaseResourceClient {
 				link: 'https://aws.amazon.com/ec2/instance-types/',
 			})) ?? []
 		);
+	}
+
+	async getMachineInfo(instanceType: _InstanceType) {
+		const detailsResponse = await this.amazonCompute.send(
+			new DescribeInstanceTypesCommand({
+				InstanceTypes: [instanceType],
+			})
+		)
+
+		const instanceTypeInfo = detailsResponse.InstanceTypes?.[0]
+
+		return {
+			id: instanceType,
+			name: instanceType,
+			description: '',
+			link: 'https://aws.amazon.com/ec2/instance-types/',
+			hasGpu: instanceTypeInfo?.GpuInfo ? true : false,
+			info: instanceTypeInfo,
+		} as Machine
 	}
 }
