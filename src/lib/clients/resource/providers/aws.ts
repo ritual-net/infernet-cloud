@@ -1,16 +1,24 @@
+// Types
+import type { AWSServiceAccount } from '$schema/interfaces'
+import type { _InstanceType } from '@aws-sdk/client-ec2'
+import type { Machine } from '$/types/provider'
+
+
+// Functions
 import {
 	EC2Client,
 	DescribeRegionsCommand,
 	DescribeAvailabilityZonesCommand,
 	DescribeInstanceTypeOfferingsCommand,
 	DescribeInstanceTypesCommand,
-} from '@aws-sdk/client-ec2';
-import { BaseResourceClient } from '$/lib/clients/resource/base';
-import type { AWSServiceAccount } from '$schema/interfaces';
-import type { EC2ClientConfig, _InstanceType } from '@aws-sdk/client-ec2';
-import type { Machine } from '$/types/provider';
+} from '@aws-sdk/client-ec2'
+import { BaseResourceClient } from '$/lib/clients/resource/base'
 
-// Amazon Web Services extension of BaseResourceClient abstract class.
+import { isTruthy } from '$/lib/utils/isTruthy'
+
+/**
+ * Amazon Web Services extension of BaseResourceClient abstract class.
+ */
 export class AWSResourceClient extends BaseResourceClient {
 	amazonCompute!: EC2Client;
 	creds!: AWSServiceAccount['creds'];
@@ -39,12 +47,12 @@ export class AWSResourceClient extends BaseResourceClient {
 	async auth(creds: AWSServiceAccount['creds']) {
 		try {
 			// initial region does not matter
-			this.creds = creds;
-			this.amazonCompute = await this.createInstance('us-east-1');
+			this.creds = creds
+			this.amazonCompute = await this.createInstance('us-east-1')
 			// sanity check to enusure creds are valid
-			await this.getRegionIds();
+			await this.getRegionIds()
 		} catch (error) {
-			throw new Error(`Error during AWS authentication: ${(error as Error).message}`);
+			throw new Error(`Error during AWS authentication: ${(error as Error).message}`)
 		}
 	}
 
@@ -55,11 +63,16 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * Example return value: ['us-east-1', 'us-west-2', 'eu-west-1']
 	 */
 	async getRegionIds(): Promise<string[]> {
-		const command = new DescribeRegionsCommand({});
-		const response = await this.amazonCompute.send(command);
-		return (response.Regions?.map((region) => region.RegionName) ?? []).filter(
-			(name): name is string => !!name
-		);
+		const command = new DescribeRegionsCommand({})
+		const response = await this.amazonCompute.send(command)
+
+		return (
+			response
+				.Regions
+				?.map(region => region.RegionName)
+				.filter(isTruthy)
+			?? []
+		)
 	}
 
 	/**
@@ -70,12 +83,19 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * Example return value: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 	 */
 	async getZones(region: string): Promise<string[]> {
-		this.amazonCompute = await this.createInstance(region);
+		this.amazonCompute = await this.createInstance(region)
+
 		const command = new DescribeAvailabilityZonesCommand({});
-		const response = await this.amazonCompute.send(command);
-		return (response.AvailabilityZones?.map((zone) => zone.ZoneName) ?? []).filter(
-			(name): name is string => !!name
-		);
+
+		const response = await this.amazonCompute.send(command)
+
+		return (
+			response
+				.AvailabilityZones
+				?.map(zone => zone.ZoneName)
+				.filter(isTruthy)
+			?? []
+		)
 	}
 
 	/**
@@ -109,13 +129,15 @@ export class AWSResourceClient extends BaseResourceClient {
 		)
 
 		return (
-			response.InstanceTypeOfferings?.map((offering) => ({
-				id: offering.InstanceType!,
-				name: offering.InstanceType!,
-				description: offering.InstanceType!,
-				link: 'https://aws.amazon.com/ec2/instance-types/',
-			})) ?? []
-		);
+			response.InstanceTypeOfferings
+				?.map(offering => ({
+					id: offering.InstanceType!,
+					name: offering.InstanceType!,
+					description: offering.InstanceType!,
+					link: 'https://aws.amazon.com/ec2/instance-types/',
+				}))
+			?? []
+		)
 	}
 
 	async getMachineInfo(instanceType: _InstanceType) {
