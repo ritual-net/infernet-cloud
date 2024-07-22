@@ -1,10 +1,18 @@
-import { compute_v1, google } from 'googleapis';
-import { BaseResourceClient } from '$/lib/clients/resource/base';
-import type { GCPServiceAccount } from '$schema/interfaces';
-import type { Machine } from '$/types/provider';
-import type { OAuth2Client } from 'google-auth-library';
+// Types
+import type { GCPServiceAccount } from '$schema/interfaces'
+import type { Machine } from '$/types/provider'
+import type { OAuth2Client } from 'google-auth-library'
 
-// Google Cloud Provider extension of BaseResourceClient abstract class.
+
+// Functions
+import { compute_v1, google } from 'googleapis'
+import { BaseResourceClient } from '$/lib/clients/resource/base'
+import { isTruthy } from '$/lib/utils/isTruthy'
+
+
+/**
+ * Google Cloud Provider extension of BaseResourceClient abstract class.
+ */
 export class GCPResourceClient extends BaseResourceClient {
 	googleCompute!: compute_v1.Compute;
 	projectId: string = '';
@@ -23,15 +31,17 @@ export class GCPResourceClient extends BaseResourceClient {
 					project_id: creds.project_id,
 				},
 				scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-			});
+			})
 
-			const authClient = (await authObj.getClient()) as OAuth2Client;
-			this.projectId = creds.project_id;
-			this.googleCompute = google.compute({ version: 'v1', auth: authClient });
+			const authClient = (await authObj.getClient()) as OAuth2Client
+
+			this.projectId = creds.project_id
+			this.googleCompute = google.compute({ version: 'v1', auth: authClient })
+
 			// sanity check for creds
-			await this.getRegionIds();
+			await this.getRegionIds()
 		} catch (error) {
-			throw new Error(`Error during GCP authentication: ${(error as Error).message}`);
+			throw new Error(`Error during GCP authentication: ${(error as Error).message}`)
 		}
 	}
 
@@ -41,17 +51,17 @@ export class GCPResourceClient extends BaseResourceClient {
 	 * @returns A flat array of region IDs.
 	 * Example return value: ['us-east1', 'us-west1', 'us-central1']
 	 */
-	async getRegionIds(): Promise<string[]> {
+	async getRegionIds() {
 		const response = await this.googleCompute.regions.list({
 			project: this.projectId,
-		});
+		})
+
 		return (
 			response.data.items
-				?.map((region: compute_v1.Schema$Region) => region.name)
-				.filter(
-					(regionName): regionName is string => regionName !== null && regionName !== undefined
-				) ?? []
-		);
+				?.map(region => region.name)
+				.filter(isTruthy)
+			?? []
+		)
 	}
 
 	/**
@@ -61,19 +71,20 @@ export class GCPResourceClient extends BaseResourceClient {
 	 * @returns A flat array of zone names.
 	 * Example return value: ['us-east1-a', 'us-east1-b', 'us-east1-c']
 	 */
-	async getZones(region: string): Promise<string[]> {
+	async getZones(region: string) {
 		const response = await this.googleCompute.zones.list({
 			project: this.projectId,
-		});
+		})
+
 		return (
 			response.data.items
-				?.filter(
-					(zone: compute_v1.Schema$Zone) =>
-						zone.region && zone.region.endsWith(`/regions/${region}`)
-				)
-				.map((zone: compute_v1.Schema$Zone) => zone.name)
-				.filter((zoneName): zoneName is string => zoneName !== null && zoneName !== undefined) ?? []
-		);
+				?.filter(zone => (
+					zone.region && zone.region.endsWith(`/regions/${region}`)
+				))
+				.map(zone => zone.name)
+				.filter(isTruthy)
+			?? []
+		)
 	}
 
 	/**
@@ -89,21 +100,21 @@ export class GCPResourceClient extends BaseResourceClient {
 	 *     "link": "https://www.googleapis.com/compute/v1/projects/project/zones/us-west4-c/machineTypes/t2d-standard-48"
 	 *   }, ...]
 	 */
-	async getMachines(zone: string): Promise<Machine[]> {
+	async getMachines(zone: string) {
 		const response = await this.googleCompute.machineTypes.list({
 			project: this.projectId,
 			zone: zone,
-		});
+		})
+
 		return (
-			response.data.items?.map(
-				(machine: compute_v1.Schema$MachineType) =>
-					({
-						id: machine.id,
-						name: machine.name,
-						description: machine.description,
-						link: machine.selfLink,
-					}) as Machine
-			) ?? []
-		);
+			response.data.items
+				?.map(machine => ({
+					id: machine.id,
+					name: machine.name,
+					description: machine.description,
+					link: machine.selfLink,
+				}) as Machine)
+			?? []
+		)
 	}
 }
