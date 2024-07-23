@@ -126,8 +126,6 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 			)
 		} catch (e) {
 			console.error(e)
-
-			// return error(500, JSON.stringify(e))
 		}
 
 		if(result?.error)
