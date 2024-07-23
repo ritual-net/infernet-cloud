@@ -247,7 +247,7 @@
 	
 	:root {
 		--combobox-minWidth: 20rem;
-		--combobox-paddingX: 1.5em;
+		--combobox-paddingX: 1em;
 		--combobox-paddingY: 0.5em;
 		--combobox-groupItem-indentX: 1em;
 

@@ -173,7 +173,7 @@
 
 <style>
 	:root {
-		--select-paddingX: 1.5em;
+		--select-paddingX: 1em;
 		--select-paddingY: 0.5em;
 		--select-groupItem-indentX: 1em;
 
