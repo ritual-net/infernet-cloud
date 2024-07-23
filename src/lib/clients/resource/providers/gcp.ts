@@ -134,4 +134,25 @@ export class GCPResourceClient extends BaseResourceClient {
 			?? []
 		)
 	}
+
+	async getMachineInfo(
+		zoneId: string,
+		machineId: string,
+	) {
+		const response = await this.googleCompute.machineTypes.get({
+			project: this.projectId,
+			machineType: machineId,
+			zone: zoneId,
+		})
+
+		return {
+			id: machineId,
+			name: response.data.name!,
+			description: response.data.description,
+			link: response.data.selfLink,
+			// https://cloud.google.com/compute/docs/gpus/#gpus_for_compute_workloads
+			hasGpu: /^(a3|a2|g2|n1)-/.test(response.data.name!),
+			info: response.data,
+		} as Machine<ProviderTypeEnum.GCP>
+	}
 }
