@@ -41,19 +41,3 @@ resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.infernet_router[0].id
   allocation_id = aws_eip.router_eip[0].id
 }
-
-
-# Reboot router when node IPs change, so it can pick up new nodes and remove old ones
-resource "null_resource" "update_router" {
-  count = var.router.deploy ? 1 : 0
-  triggers = {
-    node-ips = join("\n", [for key, _ in aws_instance.nodes : "${aws_eip.static_ip[key].public_ip}:4000"])
-  }
-
-  provisioner "local-exec" {
-    interpreter = ["bash", "-c"]
-    command     = "aws ec2 reboot-instances --instance-ids ${aws_instance.infernet_router[0].id} --region ${var.region}"
-  }
-
-  depends_on = [aws_instance.infernet_router[0]]
-}
