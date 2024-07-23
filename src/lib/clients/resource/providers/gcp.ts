@@ -129,6 +129,8 @@ export class GCPResourceClient extends BaseResourceClient {
 					id: machine.name,
 					name: machine.name,
 					description: machine.description,
+					// https://cloud.google.com/compute/docs/gpus/#gpus_for_compute_workloads
+					hasGpu: /^(a3|a2|g2|n1)-/.test(machine.name!),
 					info: machine,
 				}) as Machine)
 			?? []
