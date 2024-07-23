@@ -138,8 +138,8 @@ export class GCPResourceClient extends BaseResourceClient {
 	}
 
 	async getMachineInfo(
-		zoneId: string,
 		machineId: string,
+		zoneId: string,
 	) {
 		const response = await this.googleCompute.machineTypes.get({
 			project: this.projectId,

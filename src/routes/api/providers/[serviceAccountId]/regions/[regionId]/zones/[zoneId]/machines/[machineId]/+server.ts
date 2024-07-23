@@ -41,6 +41,6 @@ export const GET: RequestHandler = async ({
 	await providerClient.auth(serviceAccount.creds)
 
 	return json(
-		await providerClient.getMachineInfo(machineId)
+		await providerClient.getMachineInfo(machineId, zoneId)
 	)
 }
