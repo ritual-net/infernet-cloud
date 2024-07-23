@@ -57,22 +57,3 @@ resource "google_compute_address" "router_static_ip" {
   address_type = "EXTERNAL"
   network_tier = "PREMIUM"
 }
-
-# Reset router when node IPs change
-resource "null_resource" "router_restarter" {
-  count = var.router.deploy ? 1 : 0
-  triggers = {
-    node-ips = join(",", [for ip in google_compute_address.static_ip : ip.address])
-  }
-
-  provisioner "local-exec" {
-    # Force reset router, since updating its metadata does not
-    command = <<EOT
-      gcloud auth activate-service-account --key-file=${var.gcp_credentials_file_path}
-      gcloud compute instances reset ${google_compute_instance.infernet_router[0].name} --zone=${google_compute_instance.infernet_router[0].zone}
-      gcloud auth revoke ${var.service_account_email}
-    EOT
-  }
-
-  depends_on = [google_compute_instance.infernet_router]
-}
