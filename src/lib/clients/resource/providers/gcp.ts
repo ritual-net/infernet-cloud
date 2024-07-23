@@ -1,13 +1,15 @@
-// Types
+// Types/constants
 import type { GCPServiceAccount } from '$schema/interfaces'
-import type { Machine } from '$/types/provider'
+import { ProviderTypeEnum, type Machine } from '$/types/provider'
 import type { OAuth2Client } from 'google-auth-library'
 
 
 // Functions
 import { compute_v1, google } from 'googleapis'
 import { BaseResourceClient } from '$/lib/clients/resource/base'
+
 import { isTruthy } from '$/lib/utils/isTruthy'
+import { getRegionName } from '$/lib/utils/providers/common'
 
 
 /**
@@ -39,7 +41,7 @@ export class GCPResourceClient extends BaseResourceClient {
 			this.googleCompute = google.compute({ version: 'v1', auth: authClient })
 
 			// sanity check for creds
-			await this.getRegionIds()
+			await this.getRegions()
 		} catch (error) {
 			throw new Error(`Error during GCP authentication: ${(error as Error).message}`)
 		}
@@ -51,14 +53,25 @@ export class GCPResourceClient extends BaseResourceClient {
 	 * @returns A flat array of region IDs.
 	 * Example return value: ['us-east1', 'us-west1', 'us-central1']
 	 */
-	async getRegionIds() {
+	async getRegions() {
 		const response = await this.googleCompute.regions.list({
 			project: this.projectId,
 		})
 
 		return (
 			response.data.items
-				?.map(region => region.name)
+				?.map(region => {
+					const id = region.name!
+					const name = getRegionName(id, ProviderTypeEnum.GCP)
+					const continent = name.match(/^(.+) \(.+\)/)?.[1] || name.match(/, (.+?)$/)?.[1]
+
+					return {
+						id,
+						name,
+						continent,
+						info: region,
+					}
+				})
 				.filter(isTruthy)
 			?? []
 		)
@@ -67,11 +80,11 @@ export class GCPResourceClient extends BaseResourceClient {
 	/**
 	 * Returns a list of all zone names in a given region.
 	 *
-	 * @param region - GCP region name
+	 * @param regionId - GCP region name
 	 * @returns A flat array of zone names.
 	 * Example return value: ['us-east1-a', 'us-east1-b', 'us-east1-c']
 	 */
-	async getZones(region: string) {
+	async getZones(regionId: string) {
 		const response = await this.googleCompute.zones.list({
 			project: this.projectId,
 		})
@@ -79,20 +92,12 @@ export class GCPResourceClient extends BaseResourceClient {
 		return (
 			response.data.items
 				?.filter(zone => (
-					zone.region && zone.region.endsWith(`/regions/${region}`)
+					zone.region && zone.region.endsWith(`/regions/${regionId}`)
 				))
 				.map(zone => ({
-					id: zone.id,
-					name: zone.name,
-					availableCpuPlatforms: zone.availableCpuPlatforms,
-					creationTimestamp: zone.creationTimestamp,
-					deprecated: zone.deprecated,
-					description: zone.description,
-					kind: zone.kind,
-					region: zone.region,
-					selfLink: zone.selfLink,
-					status: zone.status,
-					supportsPzs: zone.supportsPzs,
+					id: zone.name!,
+					name: zone.name!,
+					info: zone,
 				}))
 				.filter(isTruthy)
 			?? []
@@ -102,7 +107,7 @@ export class GCPResourceClient extends BaseResourceClient {
 	/**
 	 * Returns a list of all machine types in a given zone.
 	 *
-	 * @param zone - GCP zone name
+	 * @param zoneId - GCP zone name
 	 * @returns A flat array of machine types.
 	 * Example return value: [
 	 *   {
@@ -112,19 +117,19 @@ export class GCPResourceClient extends BaseResourceClient {
 	 *     "link": "https://www.googleapis.com/compute/v1/projects/project/zones/us-west4-c/machineTypes/t2d-standard-48"
 	 *   }, ...]
 	 */
-	async getMachines(zone: string) {
+	async getMachines(zoneId: string) {
 		const response = await this.googleCompute.machineTypes.list({
 			project: this.projectId,
-			zone: zone,
+			zone: zoneId,
 		})
 
 		return (
 			response.data.items
 				?.map(machine => ({
-					id: machine.id,
+					id: machine.name,
 					name: machine.name,
 					description: machine.description,
-					link: machine.selfLink,
+					info: machine,
 				}) as Machine)
 			?? []
 		)

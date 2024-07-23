@@ -79,8 +79,7 @@ export class AWSResourceClient extends BaseResourceClient {
 						id,
 						name,
 						continent,
-						endpoint: region.Endpoint,
-						optInStatus: region.OptInStatus,
+						info: region,
 					}
 				})
 				.filter(isTruthy)
@@ -91,12 +90,12 @@ export class AWSResourceClient extends BaseResourceClient {
 	/**
 	 * Returns a list of all zone names in a given region.
 	 *
-	 * @param region - AWS region name
+	 * @param regionId - AWS region name
 	 * @returns A flat array of zone names.
 	 * Example return value: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 	 */
-	async getZones(region: string) {
-		this.amazonCompute = await this.createInstance(region)
+	async getZones(regionId: string) {
+		this.amazonCompute = await this.createInstance(regionId)
 
 		const command = new DescribeAvailabilityZonesCommand({});
 
@@ -108,17 +107,7 @@ export class AWSResourceClient extends BaseResourceClient {
 				?.map(zone => ({
 					id: zone.ZoneName,
 					name: zone.ZoneName,
-					state: zone.State,
-					optInStatus: zone.OptInStatus,
-					messages: zone.Messages,
-					regionName: zone.RegionName,
-					zoneName: zone.ZoneName,
-					zoneId: zone.ZoneId,
-					groupName: zone.GroupName,
-					networkBorderGroup: zone.NetworkBorderGroup,
-					zoneType: zone.ZoneType,
-					parentZoneName: zone.ParentZoneName,
-					parentZoneId: zone.ParentZoneId,
+					info: zone,
 				}))
 				.filter(isTruthy)
 			?? []
@@ -128,7 +117,7 @@ export class AWSResourceClient extends BaseResourceClient {
 	/**
 	 * Returns a list of all machine types in a given zone.
 	 *
-	 * @param zone - AWS zone name
+	 * @param zoneId - AWS zone name
 	 * @returns A flat array of machine types.
 	 * Example return value: [
 	 *   {
@@ -138,10 +127,10 @@ export class AWSResourceClient extends BaseResourceClient {
 	 *     "link": "https://aws.amazon.com/ec2/instance-types/"
 	 *   }, ...]
 	 */
-	async getMachines(zone: string): Promise<Machine[]> {
-		const region = zone.slice(0, -1)
+	async getMachines(zoneId: string): Promise<Machine[]> {
+		const regionId = zoneId.slice(0, -1)
 
-		this.amazonCompute = await this.createInstance(region)
+		this.amazonCompute = await this.createInstance(regionId)
 	
 		const response = await this.amazonCompute.send(
 			new DescribeInstanceTypeOfferingsCommand({
@@ -149,7 +138,7 @@ export class AWSResourceClient extends BaseResourceClient {
 				Filters: [
 					{
 						Name: 'location',
-						Values: [zone],
+						Values: [zoneId],
 					},
 				],
 			})
@@ -160,29 +149,29 @@ export class AWSResourceClient extends BaseResourceClient {
 				?.map(offering => ({
 					id: offering.InstanceType!,
 					name: offering.InstanceType!,
-					locationType: offering.LocationType,
-					location: offering.Location,
+					info: offering.LocationType,
 				}))
 			?? []
 		)
 	}
 
-	async getMachineInfo(instanceType: _InstanceType) {
+	async getMachineInfo(
+		machineId: _InstanceType,
+		zoneId: string,
+	) {
 		const detailsResponse = await this.amazonCompute.send(
 			new DescribeInstanceTypesCommand({
-				InstanceTypes: [instanceType],
+				InstanceTypes: [machineId],
 			})
 		)
 
 		const instanceTypeInfo = detailsResponse.InstanceTypes?.[0]
 
 		return {
-			id: instanceType,
-			name: instanceType,
-			description: '',
-			link: 'https://aws.amazon.com/ec2/instance-types/',
+			id: machineId,
+			name: machineId,
 			hasGpu: instanceTypeInfo?.GpuInfo ? true : false,
 			info: instanceTypeInfo,
-		} as Machine
+		} as Machine<ProviderTypeEnum.AWS>
 	}
 }
