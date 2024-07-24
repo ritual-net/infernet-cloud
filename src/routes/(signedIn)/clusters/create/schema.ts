@@ -148,6 +148,21 @@ export const Container = z
 
 export const NodeConfig = z
 	.object({
+		'region': z
+			.string()
+			.optional()
+			.nullable(),
+
+		'zone': z
+			.string()
+			.optional()
+			.nullable(),
+
+		'machine_type': z
+			.string()
+			.optional()
+			.nullable(),
+
 		'chain_enabled': z
 			.boolean()
 			.required()

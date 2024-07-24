@@ -30,6 +30,9 @@ export interface Cluster extends std.$Object {
   "deployments": TerraformDeployment[];
   "latest_deployment"?: TerraformDeployment | null;
   "status"?: string | null;
+  "machine_type": string;
+  "region": string;
+  "zone": string;
 }
 export interface AWSCluster extends Cluster {
   "machine_type": string;
@@ -99,6 +102,9 @@ export interface InfernetNode extends std.$Object {
   "allowed_sim_errors"?: string[] | null;
   "payment_address"?: string | null;
   "private_key"?: string | null;
+  "machine_type": string;
+  "region": string;
+  "zone": string;
 }
 export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {

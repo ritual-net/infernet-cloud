@@ -9,6 +9,9 @@ import type { $json } from '$schema/edgeql-js/modules/std';
  */
 export const createNodeParams = e.tuple({
 	config: e.tuple({
+		region: e.str,
+		zone: e.str,
+		machine_type: e.str,
 		chain_enabled: e.bool,
 		trail_head_blocks: e.int16,
 		rpc_url: e.str,
@@ -57,6 +60,9 @@ export const insertNodeQuery = (
 	node: $expr_ForVar<typeof createNodeParams> | $expr_Param<'node', typeof createNodeParams>
 ) => {
 	return e.insert(e.InfernetNode, {
+		region: node.config.region,
+		zone: node.config.zone,
+		machine_type: node.config.machine_type,
 		chain_enabled: node.config.chain_enabled,
 		trail_head_blocks: node.config.trail_head_blocks,
 		rpc_url: node.config.rpc_url,
@@ -103,6 +109,9 @@ export const insertNodeJsonQuery = (
 	node: $expr_ForVar<$json> | $expr_Param<'node', $json>
 ) => (
 	e.insert(e.InfernetNode, {
+		region: 'region' in node['config'] && node['config']['region'] ? e.cast(e.str, node['config']['region']) : null,
+		zone: 'zone' in node['config'] && node['config']['zone'] ? e.cast(e.str, node['config']['zone']) : null,
+		machine_type: 'machine_type' in node['config'] && node['config']['machine_type'] ? e.cast(e.str, node['config']['machine_type']) : null,
 		chain_enabled: e.cast(e.bool, node['config']['chain_enabled']),
 		trail_head_blocks: 'trail_head_blocks' in node['config'] && node['config']['trail_head_blocks'] ? e.cast(e.int16, node['config']['trail_head_blocks']) : null,
 		rpc_url: 'rpc_url' in node['config'] && node['config']['rpc_url'] ? e.cast(e.str, node['config']['rpc_url']) : null,

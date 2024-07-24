@@ -40,13 +40,11 @@ export class AWSTerraform extends BaseTerraform {
 					.map((node) => [
 						`infernet-node-${node.id}`,
 						{
-							zone: `${cluster.region}a`, 
-							machine_type: cluster.machine_type,
+							zone: node.zone || cluster.zone,
+							machine_type: node.machine_type || cluster.machine_type,
 							image: 'ami-05fb0b8c1424f266b',
 							has_gpu: false,
 
-							// zone: node.zone,
-							// machine_type: node.machine_type,
 							// image: node.has_gpu ? 'ami-0b4750268a88e78e0' : 'ami-05fb0b8c1424f266b',
 							// has_gpu: node.has_gpu,
 							// gpu_type: node.gpu_type,
