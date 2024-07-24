@@ -1,14 +1,14 @@
 # Infernet Router
 resource "aws_instance" "infernet_router" {
-  count           = var.deploy_router ? 1 : 0
-  ami             = "ami-07b36ea9852e986ad"
-  instance_type   = "t2.micro"
-  subnet_id       = aws_subnet.node_subnet.id
-  vpc_security_group_ids = [ aws_security_group.security_group.id ]
+  count                  = var.router.deploy ? 1 : 0
+  ami                    = var.router.image
+  instance_type          = var.router.machine_type
+  subnet_id              = aws_subnet.node_subnet[var.router.zone].id
+  vpc_security_group_ids = [aws_security_group.security_group.id]
 
   # Startup script
   user_data = templatefile("${path.module}/scripts/router.tpl", {
-    region = var.region,
+    region       = var.region,
     cluster-name = var.name
   })
 
@@ -29,7 +29,7 @@ resource "aws_instance" "infernet_router" {
 
 # Router IP
 resource "aws_eip" "router_eip" {
-  count = var.deploy_router ? 1 : 0
+  count = var.router.deploy ? 1 : 0
   tags = {
     Name = "router-eip-${var.name}"
   }
@@ -37,7 +37,7 @@ resource "aws_eip" "router_eip" {
 
 # Use association to break eip -> security group -> router cycle
 resource "aws_eip_association" "eip_assoc" {
-  count         = var.deploy_router ? 1 : 0
+  count         = var.router.deploy ? 1 : 0
   instance_id   = aws_instance.infernet_router[0].id
   allocation_id = aws_eip.router_eip[0].id
 }

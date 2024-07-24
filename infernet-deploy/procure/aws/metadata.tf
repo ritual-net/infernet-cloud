@@ -5,18 +5,28 @@ resource "aws_ssm_parameter" "config_file" {
   name  = "${each.key}.json"
   type  = "SecureString"
   value = filebase64("${path.module}/configs/${each.key}.json")
+
+  lifecycle {
+    ignore_changes = [value]
+  }
 }
 
 # Deployment files
 resource "aws_ssm_parameter" "deploy_tar" {
-  name  = "deploy-tar-${var.name}"
+  for_each = var.nodes
+
+  name  = "deploy-tar-${each.key}"
   type  = "SecureString"
-  value = filebase64("${path.module}/deploy.tar.gz")
+  value = each.value.has_gpu ? filebase64("${path.module}/deploy-gpu.tar.gz") : filebase64("${path.module}/deploy.tar.gz")
+
+  lifecycle {
+    ignore_changes = [value]
+  }
 }
 
 # Node IPs
 resource "aws_ssm_parameter" "node_ips" {
   name  = "node-ips-${var.name}"
   type  = "String"
-  value = join("\n", [for key, node in aws_instance.nodes: "${aws_eip.static_ip[key].public_ip}:4000"])
+  value = join("\n", [for key, _ in aws_instance.nodes : "${aws_eip.static_ip[key].public_ip}:4000"])
 }
