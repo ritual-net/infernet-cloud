@@ -1,8 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import type { BaseResourceClient } from '$/lib/clients/resource/base'
 	import { providers } from '$/types/provider'
-	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
 	enum Fieldset {
 		CreateCluster,
@@ -27,13 +25,11 @@
 
 
 	// Functions
-	import { resolveRoute } from '$app/paths'
 	import { parseCommaSeparated, serializeCommaSeparated } from '$/lib/utils/commaSeparated'
 
 
 	// Actions
 	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
-	import { createQuery } from '@tanstack/svelte-query'
 
 
 	// Internal state
@@ -94,146 +90,15 @@
 	$: serviceAccount = serviceAccounts.find(serviceAccount => serviceAccount.id === $form.serviceAccountId)
 
 
-	// (Regions/Zones/Machines)
-	$: regionsQuery = createQuery({
-		queryKey: ['regionConfig', {
-			serviceAccountId: $form.serviceAccountId,
-		}] as const,
-
-		queryFn: async ({
-			queryKey: [_, {
-				serviceAccountId,
-			}],
-		}) => (
-			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]/regions', {
-					serviceAccountId,
-				})
-			)
-				.then(response => response.json())
-		) as Awaited<ReturnType<BaseResourceClient['getRegions']>>,
-	})
-
-	$: regions = $regionsQuery.data
-
-	$: selectedRegion = (
-		regions && $form.config.region
-			? regions
-				.find(region => (
-					region.id === $form.config.region
-				))
-			: undefined
-	)
-
-	$: zonesQuery = createQuery({
-		queryKey: ['zoneConfig', {
-			serviceAccountId: $form.serviceAccountId!,
-			regionId: $form.config.region!,
-		}] as const,
-
-		queryFn: async ({
-			queryKey: [_, {
-				serviceAccountId,
-				regionId,
-			}],
-		}) => (
-			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones', {
-					serviceAccountId,
-					regionId,
-				})
-			)
-				.then(response => response.json())
-		) as Awaited<ReturnType<BaseResourceClient['getZones']>>,
-	})
-
-	$: zones = $zonesQuery.data
-
-	$: selectedZone = (
-		selectedRegion && zones && $form.config.zone
-			? zones
-				.find(zone => (
-					zone.id === $form.config.zone
-				))
-			: undefined
-	)
-
-	$: machinesQuery = createQuery({
-		queryKey: ['machineConfig', {
-			serviceAccountId: $form.serviceAccountId!,
-			regionId: $form.config.region!,
-			zoneId: $form.config.zone!,
-		}] as const,
-
-		queryFn: async ({
-			queryKey: [_, {
-				serviceAccountId,
-				regionId,
-				zoneId,
-			}],
-		}) => (
-			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines', {
-					serviceAccountId,
-					regionId,
-					zoneId,
-				})
-			)
-				.then(response => response.json())
-		) as Awaited<ReturnType<BaseResourceClient['getMachines']>>,
-	})
-
-	$: machines = $machinesQuery.data
-
-	$: selectedMachine = (
-		machines && $form.config.machine_type
-			? machines
-				.find(machine => (
-					machine.id === $form.config.machine_type
-				))
-			: undefined
-	)
-
-	$: machineInfoQuery = createQuery({
-		queryKey: ['machineInfo', {
-			serviceAccountId: $form.serviceAccountId!,
-			regionId: $form.config.region!,
-			zoneId: $form.config.zone!,
-			machineId: $form.config.machine_type!,
-		}] as const,
-
-		queryFn: async ({
-			queryKey: [_, {
-				serviceAccountId,
-				regionId,
-				zoneId,
-				machineId,
-			}],
-		}) => (
-			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines/[machineId]', {
-					serviceAccountId,
-					regionId,
-					zoneId,
-					machineId,
-				})
-			)
-				.then(response => response.json())
-		),
-	})
-
-	$: machineInfo = $machineInfoQuery.data
-
-
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
-	import Combobox from '$/components/Combobox.svelte'
 	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
 	import NodeFormFields from './NodeFormFields.svelte'
+	import RegionZoneMachineFields from './RegionZoneMachineFields.svelte'
 
 
 	// Transitions/animations
@@ -406,192 +271,17 @@
 									{/if}
 								</section>
 
-								<div class="stack">
-									<fieldset
-										class="column"
-										aria-disabled={!$regionsQuery.isSuccess}
-									>
-										<section class="row wrap">
-											<div class="column inline">
-												<h3>
-													<label for="config.region">
-														Region
-													</label>
-												</h3>
-
-												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">region</a> where your cluster should be deployed.</p>
-											</div>
-
-											<Combobox
-												id="config.region"
-												name="config.region"
-												labelText="Region"
-												bind:value={$form.config.region}
-												{...!regions
-													? {
-														placeholder: 'Loading available regions...',
-														items: [
-															$form.config.region && {
-																value: $form.config.region,
-																label: $form.config.region,
-															}
-														].filter(Boolean),
-														visuallyDisabled: true,
-													}
-													: {
-														placeholder: (
-															'Choose region...'
-														),
-														items: (
-															// Group by continents
-															Object.entries(
-																Object.groupBy(
-																	regions,
-																	regionConfig => (
-																		regionConfig.continent
-																	)
-																)
-															)
-																.map(([continent, configs]) => ({
-																	value: continent,
-																	label: continent,
-																	items: configs.map(regionConfig => ({
-																		value: regionConfig.id,
-																		label: `${regionConfig.id} – ${regionConfig.name}`,
-																	}))
-																}))
-														),
-													}
-												}
-												{...$constraints.config?.region}
-											/>
-										</section>
-
-										<section class="row wrap">
-											<div class="column inline">
-												<h3>
-													<label for="config.zone">
-														Zone
-													</label>
-												</h3>
-
-												<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">zone</a> where your cluster should be deployed.</p>
-											</div>
-
-											<Combobox
-												id="config.zone"
-												name="config.zone"
-												labelText="Zone"
-												bind:value={$form.config.zone}
-												{...!zones
-													? {
-														placeholder: (
-															$machinesQuery.isPending
-																? 'Loading available zones...'
-																: 'Choose a region first.'
-														),
-														items: [
-															$form.config.zone && {
-																value: $form.config.zone,
-																label: $form.config.zone,
-															}
-														].filter(Boolean),
-														visuallyDisabled: true,
-													}
-													: {
-														placeholder: 'Choose zone...',
-														items: (
-															zones
-																.map(zoneConfig => ({
-																	value: zoneConfig.id,
-																	label: zoneConfig.id,
-																}))
-														),
-													}
-												}
-												{...$constraints.config?.zone}
-											/>
-										</section>
-
-										<section class="column">
-											<div class="row wrap">
-												<div class="column inline">
-													<h3>
-														<label for="config.machine_type">
-															Machine Type
-														</label>
-													</h3>
-
-													<p>Select the type of machine you would like to deploy.</p>
-												</div>
-
-												<Combobox
-													id="config.machine_type"
-													name="config.machine_type"
-													labelText="Machine Type"
-													bind:value={$form.config.machine_type}
-													{...!machines
-														? {
-															placeholder: (
-																$machinesQuery.isPending
-																	? 'Loading available machine types...'
-																	: 'Choose a zone first.'
-															),
-															items: [
-																$form.config.machine_type && {
-																	value: $form.config.machine_type,
-																	label: $form.config.machine_type,
-																}
-															].filter(Boolean),
-															visuallyDisabled: true,
-														}
-														: {
-															placeholder: 'Choose machine type...',
-															items: (
-																Array.from(
-																	(
-																		Map.groupBy(
-																			machines,
-																			machineConfig => machineConfig.hasGpu
-																		)
-																			.entries()
-																	),
-																	([hasGpu, machineConfigs]) => ({
-																		value: hasGpu,
-																		label: hasGpu ? 'GPU-Enabled' : 'No GPU',
-																		items: machineConfigs.map(machineConfig => ({
-																			value: machineConfig.id,
-																			label: `${machineConfig.name} (${machineConfig.description})`,
-																		}))
-																	})
-																)
-															),
-														}
-													}
-													{...$constraints.config?.machine_type}
-												/>
-											</div>
-										</section>
-									</fieldset>
-
-									{#if $regionsQuery.isPending}
-										<div
-											class="loading-status card row"
-											transition:scale|global
-										>
-											<img class="icon" src={providers[serviceAccount.provider].icon} />
-											<p>Loading available cloud configurations...</p>
-										</div>
-									{:else if $regionsQuery.isError}
-										<div
-											class="loading-status card row"
-											transition:scale|global
-										>
-											<img class="icon" src={providers[serviceAccount.provider].icon} />
-											<p>Couldn't load available cloud configurations. Please try again.</p>
-										</div>
-									{/if}
-								</div>
+								<RegionZoneMachineFields
+									{serviceAccount}
+									bind:regionId={$form.config.region}
+									bind:zoneId={$form.config.zone}
+									bind:machineId={$form.config.machine_type}
+									constraints={{
+										region: $constraints.config?.region,
+										zone: $constraints.config?.zone,
+										machine_type: $constraints.config?.machine_type,
+									}}
+								/>
 							</fieldset>
 						</Collapsible>
 					</div>
