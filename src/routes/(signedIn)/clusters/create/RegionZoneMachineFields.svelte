@@ -60,7 +60,7 @@
 
 	$: zonesQuery = createQuery({
 		queryKey: ['zoneConfig', {
-			serviceAccountId: serviceAccount.id!,
+			serviceAccountId: serviceAccount?.id,
 			regionId: regionId!,
 		}] as const,
 
@@ -70,13 +70,15 @@
 				regionId,
 			}],
 		}) => (
-			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones', {
-					serviceAccountId,
-					regionId,
-				})
+			serviceAccountId && (
+				await fetch(
+					resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones', {
+						serviceAccountId,
+						regionId,
+					})
+				)
+					.then(response => response.json())
 			)
-				.then(response => response.json())
 		) as Awaited<ReturnType<BaseResourceClient['getZones']>>,
 	})
 
@@ -93,7 +95,7 @@
 
 	$: machinesQuery = createQuery({
 		queryKey: ['machineConfig', {
-			serviceAccountId: serviceAccount.id!,
+			serviceAccountId: serviceAccount?.id,
 			regionId: regionId!,
 			zoneId: zoneId!,
 		}] as const,
@@ -105,14 +107,16 @@
 				zoneId,
 			}],
 		}) => (
-			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines', {
-					serviceAccountId,
-					regionId,
-					zoneId,
-				})
+			serviceAccountId && (
+				await fetch(
+					resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines', {
+						serviceAccountId,
+						regionId,
+						zoneId,
+					})
+				)
+					.then(response => response.json())
 			)
-				.then(response => response.json())
 		) as Awaited<ReturnType<BaseResourceClient['getMachines']>>,
 	})
 
@@ -129,7 +133,7 @@
 
 	$: machineInfoQuery = createQuery({
 		queryKey: ['machineInfo', {
-			serviceAccountId: serviceAccount.id!,
+			serviceAccountId: serviceAccount?.id,
 			regionId: regionId!,
 			zoneId: zoneId!,
 			machineId: machineId!,
@@ -143,15 +147,17 @@
 				machineId,
 			}],
 		}) => (
-			await fetch(
-				resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines/[machineId]', {
-					serviceAccountId,
-					regionId,
-					zoneId,
-					machineId,
-				})
+			serviceAccountId && (
+				await fetch(
+					resolveRoute('/api/providers/[serviceAccountId]/regions/[regionId]/zones/[zoneId]/machines/[machineId]', {
+						serviceAccountId,
+						regionId,
+						zoneId,
+						machineId,
+					})
+				)
+					.then(response => response.json())
 			)
-				.then(response => response.json())
 		),
 	})
 
@@ -180,7 +186,7 @@
 					</label>
 				</h3>
 
-				<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">region</a> where your cluster should be deployed.</p>
+				<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">region</a> where your cluster should be deployed.</p>
 			</div>
 
 			<Combobox
@@ -236,7 +242,7 @@
 					</label>
 				</h3>
 
-				<p>Select the <a href={providerRegionsAndZones[serviceAccount.provider].regionsInfoLink} target="_blank">zone</a> where your cluster should be deployed.</p>
+				<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">zone</a> where your cluster should be deployed.</p>
 			</div>
 
 			<Combobox
@@ -335,22 +341,31 @@
 		</section>
 	</fieldset>
 
-	{#if $regionsQuery.isPending}
+	{#if !serviceAccount}
 		<div
 			class="loading-status card row"
 			transition:scale|global
 		>
-			<img class="icon" src={providers[serviceAccount.provider].icon} />
-			<p>Loading available cloud configurations...</p>
+			<p>Choose a cloud account first.</p>
 		</div>
-	{:else if $regionsQuery.isError}
-		<div
-			class="loading-status card row"
-			transition:scale|global
-		>
-			<img class="icon" src={providers[serviceAccount.provider].icon} />
-			<p>Couldn't load available cloud configurations. Please try again.</p>
-		</div>
+	{:else}
+		{#if $regionsQuery.isPending}
+			<div
+				class="loading-status card row"
+				transition:scale|global
+			>
+				<img class="icon" src={providers[serviceAccount.provider].icon} />
+				<p>Loading available cloud configurations...</p>
+			</div>
+		{:else if $regionsQuery.isError}
+			<div
+				class="loading-status card row"
+				transition:scale|global
+			>
+				<img class="icon" src={providers[serviceAccount.provider].icon} />
+				<p>Couldn't load available cloud configurations. Please try again.</p>
+			</div>
+		{/if}
 	{/if}
 </div>
 
