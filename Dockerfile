@@ -1,32 +1,34 @@
 FROM node:22-alpine AS base
 
-# Include pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-COPY . /app
+
+FROM base AS deps
 WORKDIR /app
+COPY package.json ./
+
+# Clean install all modules
+RUN npm install -g pnpm
+RUN pnpm i
 
 
-FROM base AS prod-deps
-
-# pnpm install (production)
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
-
-
-FROM base AS build
-
+FROM deps AS builder
+COPY . .
 COPY .env.docker .env
-
-# pnpm install
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Build SvelteKit app
 RUN pnpm svelte-kit sync
-RUN pnpm run build
+RUN pnpm build
+
+# Remove dev dependencies
+RUN pnpm prune
 
 
 FROM base AS runtime
+WORKDIR /app
+COPY --from=builder /app/build build/
+COPY --from=builder /app/package.json package.json
+COPY --from=builder /app/node_modules node_modules/
+COPY --from=builder /app/.env .env
+COPY --from=builder /app/infernet-deploy infernet-deploy
 
 # Install curl and unzip
 RUN apk add --update curl unzip
@@ -40,15 +42,6 @@ RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/ter
     && unzip terraform.zip -d /usr/local/bin/ \
     && rm -f terraform.zip
 
-
-FROM runtime AS app
-
-COPY --from=prod-deps /app/node_modules/ /app/node_modules/
-COPY --from=build /app/build/ /app/build/
-COPY --from=build /app/package.json /app/package.json
-COPY --from=build /app/.env /app/.env
-COPY --from=build /app/infernet-deploy /app/infernet-deploy
-WORKDIR /app
 
 # Entry point for the app
 ENV NODE_ENV=production
