@@ -79,6 +79,7 @@ const Cluster: $.$expr_PathNode<$.TypeSet<$Cluster, $.Cardinality.Many>, null> =
 export type $AWSClusterλShape = $.typeutil.flatten<$ClusterλShape & {
   "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
 }>;
 type $AWSCluster = $.ObjectType<"default::AWSCluster", $AWSClusterλShape, null, [
   ...$Cluster['__exclusives__'],

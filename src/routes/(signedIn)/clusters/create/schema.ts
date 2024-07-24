@@ -34,8 +34,7 @@ export const Config = z
 
 		'zone': z
 			.string()
-			.optional()
-			.nullable(),
+			.required(),
 
 		'machine_type': z
 			.string()

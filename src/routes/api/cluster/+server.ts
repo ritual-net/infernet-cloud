@@ -58,10 +58,6 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	console.log('Create cluster', { serviceAccountId, config, nodes })
 
 	try {
-		// Exclude zone (unused by backend)
-		if(serviceAccount.provider === 'AWS')
-			delete config.zone
-
 		// Insert cluster
 		cluster = await e
 			.params(

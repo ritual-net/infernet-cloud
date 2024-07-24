@@ -31,7 +31,7 @@ export class AWSTerraform extends BaseTerraform {
 
 			router: {
 				deploy: cluster.deploy_router,
-				zone: `${cluster.region}a`,
+				zone: cluster.zone,
 				machine_type: cluster.machine_type,
 			},
 

@@ -34,6 +34,7 @@ export interface Cluster extends std.$Object {
 export interface AWSCluster extends Cluster {
   "machine_type": string;
   "region": string;
+  "zone": string;
 }
 export interface ServiceAccount extends std.$Object {
   "user": User;

@@ -269,6 +269,10 @@ module default {
       # e.g. "us-east-2"
       readonly := true;
     }
+    required zone: str {
+      # e.g. "us-east-2a"
+      readonly := true;
+    }
     required machine_type: str {
       # e.g. "t2.medium"
       readonly := true;
