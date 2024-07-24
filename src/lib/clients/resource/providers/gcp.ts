@@ -63,7 +63,7 @@ export class GCPResourceClient extends BaseResourceClient {
 				?.map(region => {
 					const id = region.name!
 					const name = getRegionName(id, ProviderTypeEnum.GCP)
-					const continent = name.match(/^(.+) \(.+\)/)?.[1] || name.match(/, (.+?)$/)?.[1]
+					const continent = name.match(/, ([^,]+?)$/)?.[1]
 
 					return {
 						id,

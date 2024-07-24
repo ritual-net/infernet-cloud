@@ -73,7 +73,7 @@ export class AWSResourceClient extends BaseResourceClient {
 				?.map(region => {
 					const id = region.RegionName!
 					const name = getRegionName(id, ProviderTypeEnum.AWS)
-					const continent = name.match(/^(.+) \(.+\)/)?.[1] || name.match(/, (.+?)$/)?.[1]
+					const continent = name.match(/^(.+) \(.+\)/)?.[1]
 
 					return {
 						id,
