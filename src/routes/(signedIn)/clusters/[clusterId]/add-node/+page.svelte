@@ -77,6 +77,8 @@
 		class="card column"
 	>
 		<NodeFormFields
+			defaultRegionId={cluster.region}
+			defaultZoneId={cluster.zone}
 			bind:node={$form.node}
 			constraints={$constraints.node}
 			{serviceAccount}

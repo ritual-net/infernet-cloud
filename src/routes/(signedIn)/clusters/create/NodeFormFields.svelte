@@ -25,6 +25,9 @@
 	export let namePrefix = 'node'
 	export let constraints: InputConstraints<z.InferType<typeof Node>> | undefined
 
+	export let defaultRegionId: string | undefined
+	export let defaultZoneId: string | undefined
+
 	export let serviceAccount: ServiceAccount | undefined
 	export let dockerAccounts: {
 		username: string
@@ -91,7 +94,12 @@
 
 
 <RegionZoneMachineFields
+	entityType="node"
 	{serviceAccount}
+	defaults={{
+		region: defaultRegionId,
+		zone: defaultZoneId,
+	}}
 	bind:regionId={node.config.region}
 	bind:zoneId={node.config.zone}
 	bind:machineId={node.config.machine_type}

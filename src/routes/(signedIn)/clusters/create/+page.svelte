@@ -272,6 +272,7 @@
 								</section>
 
 								<RegionZoneMachineFields
+									entityType="cluster"
 									{serviceAccount}
 									bind:regionId={$form.config.region}
 									bind:zoneId={$form.config.zone}
@@ -362,6 +363,8 @@
 							</header>
 
 							<NodeFormFields
+								defaultRegionId={$form.config.region}
+								defaultZoneId={$form.config.zone}
 								bind:node
 								namePrefix="nodes.{i}"
 								constraints={$constraints.nodes}

@@ -17,6 +17,13 @@
 	// Inputs
 	export let serviceAccount: ServiceAccount | undefined
 
+	export let entityType: 'cluster' | 'router' | 'node' = 'cluster'
+
+	export let defaults: {
+		region?: string
+		zone?: string
+	} | undefined
+
 	export let regionId: string | undefined | null
 	export let zoneId: string | undefined | null
 	export let machineId: string | undefined | null
@@ -25,6 +32,14 @@
 
 
 	// Internal state
+	let overrideDefaultRegionAndZone = false
+
+	$: if(defaults && !overrideDefaultRegionAndZone)
+		regionId = defaults.region
+
+	$: if(defaults && !overrideDefaultRegionAndZone)
+		zoneId = defaults.zone
+
 	// (Regions/Zones/Machines)
 	$: regionsQuery = createQuery({
 		queryKey: ['regionConfig', {
@@ -166,6 +181,7 @@
 
 	// Components
 	import Combobox from '$/components/Combobox.svelte'
+	import Switch from '$/components/Switch.svelte'
 
 
 	// Transitions/animations
@@ -176,108 +192,149 @@
 <div class="stack">
 	<fieldset
 		class="column"
-		aria-disabled={!$regionsQuery.isSuccess}
+		disabled={!$regionsQuery.isSuccess}
 	>
-		<section class="row wrap">
-			<div class="column inline">
+		<section class="column">
+			<div class="row wrap">
 				<h3>
-					<label for="config.region">
-						Region
-					</label>
+					Location
 				</h3>
 
-				<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">region</a> where your cluster should be deployed.</p>
-			</div>
+				{#if defaults}
+					<label class="row">
+						<span class="annotation">Override Cluster</span>
 
-			<Combobox
-				id="config.region"
-				name="config.region"
-				labelText="Region"
-				bind:value={regionId}
-				{...!regions
-					? {
-						placeholder: 'Loading available regions...',
-						items: [
-							regionId && {
-								value: regionId,
-								label: regionId,
-							}
-						].filter(Boolean),
-						visuallyDisabled: true,
-					}
-					: {
-						placeholder: (
-							'Choose region...'
-						),
-						items: (
-							// Group by continents
-							Object.entries(
-								Object.groupBy(
-									regions,
-									regionConfig => (
-										regionConfig.continent
-									)
-								)
-							)
-								.map(([continent, configs]) => ({
-									value: continent,
-									label: continent,
-									items: configs.map(regionConfig => ({
-										value: regionConfig.id,
-										label: `${regionConfig.id} – ${regionConfig.name}`,
-									}))
-								}))
-						),
-					}
-				}
-				{...constraints?.region}
-			/>
-		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3>
-					<label for="config.zone">
-						Zone
+						<Switch
+							id="config.region.override"
+							name="config.region.override"
+							bind:checked={overrideDefaultRegionAndZone}
+							labelText="Override"
+						/>
 					</label>
-				</h3>
-
-				<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">zone</a> where your cluster should be deployed.</p>
+				{/if}
 			</div>
 
-			<Combobox
-				id="config.zone"
-				name="config.zone"
-				labelText="Zone"
-				bind:value={zoneId}
-				{...!zones
-					? {
-						placeholder: (
-							$machinesQuery.isPending
-								? 'Loading available zones...'
-								: 'Choose a region first.'
-						),
-						items: [
-							zoneId && {
-								value: zoneId,
-								label: zoneId,
+			<div class="row equal wrap">
+				<div class="column">
+					<div class="column inline">
+						<h4>
+							<label for="config.region">
+								Region
+							</label>
+						</h4>
+
+						<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">region</a> where your {entityType} should be deployed.</p>
+					</div>
+
+					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
+						<Combobox
+							id="config.region"
+							name="config.region"
+							labelText="Region"
+							bind:value={regionId}
+							{...!regions
+								? {
+									placeholder: 'Loading available regions...',
+									items: [
+										regionId && {
+											value: regionId,
+											label: regionId,
+										}
+									].filter(Boolean),
+									visuallyDisabled: true,
+								}
+								: {
+									placeholder: (
+										'Choose region...'
+									),
+									items: (
+										// Group by continents
+										Object.entries(
+											Object.groupBy(
+												regions,
+												regionConfig => (
+													regionConfig.continent
+												)
+											)
+										)
+											.map(([continent, configs]) => ({
+												value: continent,
+												label: continent,
+												items: configs.map(regionConfig => ({
+													value: regionConfig.id,
+													label: `${regionConfig.id} – ${regionConfig.name}`,
+												}))
+											}))
+									),
+								}
 							}
-						].filter(Boolean),
-						visuallyDisabled: true,
-					}
-					: {
-						placeholder: 'Choose zone...',
-						items: (
-							zones
-								.map(zoneConfig => ({
-									value: zoneConfig.id,
-									label: zoneConfig.id,
-								}))
-						),
-					}
-				}
-				{...constraints?.zone}
-			/>
+							{...constraints?.region}
+						/>
+					{:else}
+						<input
+							type="text"
+							name="config.region"
+							value={regionId}
+							disabled
+						/>
+					{/if}
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<h4>
+							<label for="config.zone">
+								Zone
+							</label>
+						</h4>
+
+						<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">zone</a> where your {entityType} should be deployed.</p>
+					</div>
+
+					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
+						<Combobox
+							id="config.zone"
+							name="config.zone"
+							labelText="Zone"
+							bind:value={zoneId}
+							{...!zones
+								? {
+									placeholder: (
+										$machinesQuery.isPending
+											? 'Loading available zones...'
+											: 'Choose a region first.'
+									),
+									items: [
+										zoneId && {
+											value: zoneId,
+											label: zoneId,
+										}
+									].filter(Boolean),
+									visuallyDisabled: true,
+								}
+								: {
+									placeholder: 'Choose zone...',
+									items: (
+										zones
+											.map(zoneConfig => ({
+												value: zoneConfig.id,
+												label: zoneConfig.id,
+											}))
+									),
+								}
+							}
+							{...constraints?.zone}
+						/>
+					{:else}
+						<input
+							type="text"
+							name="config.zone"
+							value={zoneId}
+							disabled
+						/>
+					{/if}
+				</div>
+			</div>
 		</section>
 
 		<section class="column">
