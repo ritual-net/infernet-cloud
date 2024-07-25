@@ -299,13 +299,17 @@
 				</dd>
 			</section>
 
-			<section class="row wrap">
-				<dt>Machine Type</dt>
+			{#if cluster.machine_type}
+				{#if cluster.machine_type}
+					<section class="row wrap">
+						<dt>Machine Type</dt>
 
-				<dd>
-					{cluster.machine_type}
-				</dd>
-			</section>
+						<dd>
+							{cluster.machine_type}
+						</dd>
+					</section>
+				{/if}
+			{/if}
 
 			<section class="row wrap">
 				<dt>IPs Allowed (HTTP)</dt>

@@ -337,65 +337,67 @@
 			</div>
 		</section>
 
-		<section class="column">
-			<div class="row wrap">
-				<div class="column inline">
-					<h3>
-						<label for="config.machine_type">
-							Machine Type
-						</label>
-					</h3>
+		{#if entityType !== 'cluster'}
+			<section class="column">
+				<div class="row wrap">
+					<div class="column inline">
+						<h3>
+							<label for="config.machine_type">
+								Machine Type
+							</label>
+						</h3>
 
-					<p>Select the type of machine you would like to deploy.</p>
+						<p>Select the type of machine you would like to deploy.</p>
+					</div>
+
+					<Combobox
+						id="config.machine_type"
+						name="config.machine_type"
+						labelText="Machine Type"
+						bind:value={machineId}
+						{...!machines
+							? {
+								placeholder: (
+									$machinesQuery.isPending
+										? 'Loading available machine types...'
+										: 'Choose a zone first.'
+								),
+								items: [
+									machineId && {
+										value: machineId,
+										label: machineId,
+									}
+								].filter(Boolean),
+								visuallyDisabled: true,
+							}
+							: {
+								placeholder: 'Choose machine type...',
+								items: (
+									Array.from(
+										(
+											Map.groupBy(
+												machines,
+												machineConfig => machineConfig.hasGpu
+											)
+												.entries()
+										),
+										([hasGpu, machineConfigs]) => ({
+											value: hasGpu,
+											label: hasGpu ? 'GPU-Enabled' : 'No GPU',
+											items: machineConfigs.map(machineConfig => ({
+												value: machineConfig.id,
+												label: `${machineConfig.name} (${machineConfig.description})`,
+											}))
+										})
+									)
+								),
+							}
+						}
+						{...constraints?.machine_type}
+					/>
 				</div>
-
-				<Combobox
-					id="config.machine_type"
-					name="config.machine_type"
-					labelText="Machine Type"
-					bind:value={machineId}
-					{...!machines
-						? {
-							placeholder: (
-								$machinesQuery.isPending
-									? 'Loading available machine types...'
-									: 'Choose a zone first.'
-							),
-							items: [
-								machineId && {
-									value: machineId,
-									label: machineId,
-								}
-							].filter(Boolean),
-							visuallyDisabled: true,
-						}
-						: {
-							placeholder: 'Choose machine type...',
-							items: (
-								Array.from(
-									(
-										Map.groupBy(
-											machines,
-											machineConfig => machineConfig.hasGpu
-										)
-											.entries()
-									),
-									([hasGpu, machineConfigs]) => ({
-										value: hasGpu,
-										label: hasGpu ? 'GPU-Enabled' : 'No GPU',
-										items: machineConfigs.map(machineConfig => ({
-											value: machineConfig.id,
-											label: `${machineConfig.name} (${machineConfig.description})`,
-										}))
-									})
-								)
-							),
-						}
-					}
-					{...constraints?.machine_type}
-				/>
-			</div>
-		</section>
+			</section>
+		{/if}
 	</fieldset>
 
 	{#if !serviceAccount}

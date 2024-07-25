@@ -276,11 +276,9 @@
 									{serviceAccount}
 									bind:regionId={$form.config.region}
 									bind:zoneId={$form.config.zone}
-									bind:machineId={$form.config.machine_type}
 									constraints={{
 										region: $constraints.config?.region,
 										zone: $constraints.config?.zone,
-										machine_type: $constraints.config?.machine_type,
 									}}
 								/>
 							</fieldset>

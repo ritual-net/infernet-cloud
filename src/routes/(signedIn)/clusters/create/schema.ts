@@ -35,10 +35,6 @@ export const Config = z
 		'zone': z
 			.string()
 			.required(),
-
-		'machine_type': z
-			.string()
-			.required(),
 	})
 
 export const ContainerPayment = z
