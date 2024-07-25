@@ -10,6 +10,7 @@
 	const {
 		cluster,
 		formData,
+		serviceAccount,
 		dockerAccounts,
 	} = $page.data as PageData
 
@@ -78,6 +79,7 @@
 		<NodeFormFields
 			bind:node={$form.node}
 			constraints={$constraints.node}
+			{serviceAccount}
 			{dockerAccounts}
 		/>
 	</article>

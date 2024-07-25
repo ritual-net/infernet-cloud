@@ -365,6 +365,7 @@
 								bind:node
 								namePrefix="nodes.{i}"
 								constraints={$constraints.nodes}
+								{serviceAccount}
 								{dockerAccounts}
 							/>
 						</article>

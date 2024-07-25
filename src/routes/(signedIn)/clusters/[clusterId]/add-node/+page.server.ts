@@ -1,3 +1,7 @@
+// Types
+import type { getClusterById } from '$/lib/db/queries'
+
+
 // Schema
 import { message, superValidate } from 'sveltekit-superforms/server'
 import { yup } from 'sveltekit-superforms/adapters'
@@ -9,16 +13,22 @@ import type { PageServerLoad } from './$types'
 import { e } from '$/lib/db'
 
 export const load: PageServerLoad = async ({
-	parent,
 	params: { clusterId },
 	locals: { client },
+	fetch,
 }) => {
 	const [
-		parentData,
+		serviceAccount,
 		dockerAccounts,
 		formData,
 	] = await Promise.all([
-		parent(),
+		fetch(
+			`${resolveRoute('/api/cluster/[clusterId]', { clusterId })}?${new URLSearchParams({
+				includeServiceAccountCredentials: 'true',
+			})}`
+		)
+			.then(result => result.json() as ReturnType<typeof getClusterById>)
+			.then(cluster => cluster?.service_account),
 
 		e.select(e.DockerAccount, () => ({
 			username: true,
@@ -31,7 +41,7 @@ export const load: PageServerLoad = async ({
 	])
 
 	return {
-		...parentData,
+		serviceAccount,
 		dockerAccounts,
 		formData,
 	}

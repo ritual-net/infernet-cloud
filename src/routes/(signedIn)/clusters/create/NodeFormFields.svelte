@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { InputConstraints } from 'sveltekit-superforms'
+	import type { ServiceAccount } from '$schema/interfaces'
 	import * as z from 'yup'
 	import { chainsByChainId } from '$/lib/chains'
 	import { infernetDeployments } from '$/lib/infernet-sdk'
@@ -24,6 +25,7 @@
 	export let namePrefix = 'node'
 	export let constraints: InputConstraints<z.InferType<typeof Node>> | undefined
 
+	export let serviceAccount: ServiceAccount | undefined
 	export let dockerAccounts: {
 		username: string
 	}[]
@@ -80,12 +82,25 @@
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import ContainerForm from './container/+page.svelte'
 	import Textarea from '$/components/Textarea.svelte'
+	import RegionZoneMachineFields from './RegionZoneMachineFields.svelte'
 
 
 	// Shallow Routes
 	import { preloadData, goto, pushState } from '$app/navigation'
 </script>
 
+
+<RegionZoneMachineFields
+	{serviceAccount}
+	bind:regionId={node.config.region}
+	bind:zoneId={node.config.zone}
+	bind:machineId={node.config.machine_type}
+	constraints={{
+		region: constraints?.config?.region,
+		zone: constraints?.config?.zone,
+		machine_type: constraints?.config?.machine_type,
+	}}
+/>
 
 <section class="row wrap">
 	<div class="column inline">
