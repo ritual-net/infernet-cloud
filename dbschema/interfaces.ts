@@ -24,7 +24,6 @@ export interface Cluster extends std.$Object {
   "deploy_router": boolean;
   "locked": boolean;
   "name": string;
-  "router"?: {id: string, ip: string} | null;
   "ip_allow_http"?: string[] | null;
   "ip_allow_ssh"?: string[] | null;
   "deployments": TerraformDeployment[];
@@ -33,6 +32,7 @@ export interface Cluster extends std.$Object {
   "machine_type": string;
   "region": string;
   "zone": string;
+  "router_status"?: {id: string, ip: string} | null;
 }
 export interface AWSCluster extends Cluster {
   "machine_type": string;

@@ -216,6 +216,10 @@ module default {
   abstract type Cluster {
     required name: str;
 
+    required service_account: ServiceAccount {
+      readonly := true;
+    };
+
     required region: str {
       readonly := true;
     }
@@ -226,15 +230,13 @@ module default {
       readonly := true;
     }
 
-    required deploy_router: bool {
-      default := false;
-    }
     ip_allow_http: array<IpAddressWithMask>;
     ip_allow_ssh: array<IpAddressWithMask>;
 
-    required service_account: ServiceAccount {
-      readonly := true;
-    };
+    required deploy_router: bool {
+      default := false;
+    }
+
     multi nodes: InfernetNode {
       constraint exclusive;
       on source delete delete target;
@@ -257,7 +259,7 @@ module default {
       'healthy' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' else
       'unknown'
     );
-    router: tuple<id: str, ip: str>;
+    router_status: tuple<id: str, ip: str>;
 
     # router := (
     #   .latest_deployment.tfstate. if exists(.latest_deployment.tfstate)
