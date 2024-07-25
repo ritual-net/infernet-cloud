@@ -343,7 +343,7 @@
 				<dt>Has Deployed Router?</dt>
 
 				<dd>
-					{cluster.deploy_router ? 'Yes' : 'No'}
+					{cluster.router ? 'Yes' : 'No'}
 				</dd>
 			</section>
 

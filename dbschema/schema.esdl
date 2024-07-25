@@ -233,9 +233,6 @@ module default {
     ip_allow_http: array<IpAddressWithMask>;
     ip_allow_ssh: array<IpAddressWithMask>;
 
-    required deploy_router: bool {
-      default := false;
-    }
     router: tuple<region: str, zone: str, machine_type: str> {
       readonly := true;
     };

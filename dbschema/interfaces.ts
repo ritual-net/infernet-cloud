@@ -21,7 +21,6 @@ export interface User extends std.$Object {
 export interface Cluster extends std.$Object {
   "nodes": InfernetNode[];
   "service_account": ServiceAccount;
-  "deploy_router": boolean;
   "locked": boolean;
   "name": string;
   "ip_allow_http"?: string[] | null;

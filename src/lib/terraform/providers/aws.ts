@@ -29,11 +29,22 @@ export class AWSTerraform extends BaseTerraform {
 			ip_allow_http_from_port: 4000,
 			ip_allow_http_to_port: 4000,
 
-			router: {
-				deploy: cluster.deploy_router,
-				zone: cluster.zone,
-				machine_type: cluster.machine_type,
-			},
+			router: (	
+				cluster.router ?
+					{
+						deploy: true,
+						region: cluster.router.region,
+						zone: cluster.router.zone,
+						machine_type: cluster.router.machine_type,
+					}
+				:
+					{
+						deploy: false,
+						region: '',
+						zone: '',
+						machine_type: '',
+					}
+			),
 
 			nodes: Object.fromEntries(
 				cluster.nodes

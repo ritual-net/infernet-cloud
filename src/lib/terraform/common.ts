@@ -218,9 +218,8 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		} = results[results.length - 1]
 
 		// Restart router to apply any changes to IP address list
-		if (cluster.deploy_router && action == TFAction.Apply && tfstate?.outputs?.router?.value) {
-			await routerAction(client, tfstate.outputs.router.value.id, NodeAction.restart);
-		}
+		if (cluster.router && action == TFAction.Apply && tfstate?.outputs?.router?.value)
+			await routerAction(client, tfstate.outputs.router.value.id, NodeAction.restart)
 
 		// Update node provider IDs
 		const nodeInfo = tfstate?.outputs?.nodes?.value;

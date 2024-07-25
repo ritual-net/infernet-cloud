@@ -30,11 +30,22 @@ export class GCPTerraform extends BaseTerraform {
 			ip_allow_http: cluster.ip_allow_http ?? [],
 			ip_allow_http_ports: ["4000"],
 
-			router: {
-				deploy: cluster.deploy_router,
-				zone: cluster.zone,
-				machine_type: cluster.machine_type,
-			},
+			router: (	
+				cluster.router ?
+					{
+						deploy: true,
+						region: cluster.router.region,
+						zone: cluster.router.zone,
+						machine_type: cluster.router.machine_type,
+					}
+				:
+					{
+						deploy: false,
+						region: '',
+						zone: '',
+						machine_type: '',
+					}
+			),
 
 			nodes: Object.fromEntries(
 				cluster.nodes.map((node, i) => [
