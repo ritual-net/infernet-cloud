@@ -236,6 +236,9 @@ module default {
     required deploy_router: bool {
       default := false;
     }
+    router: tuple<region: str, zone: str, machine_type: str> {
+      readonly := true;
+    };
 
     multi nodes: InfernetNode {
       constraint exclusive;

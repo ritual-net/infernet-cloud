@@ -66,6 +66,7 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "router_status": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "router": $.PropertyDesc<$.NamedTupleType<{region: _std.$str, zone: _std.$str, machine_type: _std.$str}>, $.Cardinality.AtMostOne, false, false, true, false>;
   "<cluster[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster[is TerraformDeployment]": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

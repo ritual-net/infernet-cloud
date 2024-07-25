@@ -37,6 +37,24 @@ export const Config = z
 			.required(),
 	})
 
+export const RouterConfig = z
+	.object({
+		'region': z
+			.string()
+			.optional()
+			.nullable(),
+
+		'zone': z
+			.string()
+			.optional()
+			.nullable(),
+
+		'machine_type': z
+			.string()
+			.optional()
+			.nullable(),
+	})
+
 export const ContainerPayment = z
 	.object({
 		'address': Address
@@ -276,6 +294,16 @@ export const FormData = z
 			.uuid(),
 
 		'config': Config,
+
+		'router': RouterConfig
+			.when(
+				'config',
+				([config], _) => (
+					config.deploy_router
+						? _.required()
+						: _.notRequired()
+				),
+			),
 
 		'nodes': z
 			.array(

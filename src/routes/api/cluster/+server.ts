@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
  * @returns Cluster ID, success boolean, and Terraform message.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
-	const { serviceAccountId, config, nodes } = await request.json() as z.InferType<typeof CreateClusterFormData>;
+	const { serviceAccountId, config, router, nodes } = await request.json() as z.InferType<typeof CreateClusterFormData>;
 
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
@@ -69,6 +69,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					service_account: e.select(e.ServiceAccount, () => ({
 						filter_single: { id: serviceAccountId },
 					})),
+					router: config.deploy_router ? [router.region, router.zone, router.machine_type] : null,
 					// nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
 					nodes: e.for(e.array_unpack(nodes), (node) => (
 						insertNodeJsonQuery(node)
