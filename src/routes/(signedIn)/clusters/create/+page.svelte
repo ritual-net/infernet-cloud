@@ -4,6 +4,7 @@
 
 	enum Fieldset {
 		CreateCluster,
+		ConfigureRouter,
 		AddNodes,
 	}
 
@@ -117,6 +118,10 @@
 			{
 				id: Fieldset.CreateCluster,
 				label: 'Create a Cluster',
+			},
+			{
+				id: Fieldset.ConfigureRouter,
+				label: 'Configure Router',
 			},
 			{
 				id: Fieldset.AddNodes,
@@ -285,38 +290,6 @@
 						</Collapsible>
 					</div>
 
-					<div class="card column">
-						<Collapsible>
-							<svelte:fragment slot="trigger">
-								<header>
-									<!-- {providers[$form.serviceAccountId]} -->
-									<!-- Google Cloud -->
-
-									Advanced
-								</header>
-							</svelte:fragment>
-
-							<section class="row wrap">
-								<div class="column inline">
-									<h3>
-										<label for="config.deploy_router">
-											Deploy Router?
-										</label>
-									</h3>
-
-									<p>Determine whether your cluster will be deployed with a router.</p>
-								</div>
-
-								<Switch
-									id="config.deploy_router"
-									name="config.deploy_router"
-									bind:checked={$form.config.deploy_router}
-									labelText="Deploy Router?"
-								/>
-							</section>
-						</Collapsible>
-					</div>
-
 					<footer class="row">
 						<a
 							class="button"
@@ -324,6 +297,62 @@
 						>
 							Cancel
 						</a>
+
+						<button
+							type="button"
+							class="primary"
+							on:click={() => currentFieldset++}
+						>
+							Continue
+						</button>
+					</footer>
+
+				{:else if item.id === Fieldset.ConfigureRouter}
+					<div class="card column">
+						<section class="row wrap">
+							<div class="column inline">
+								<h3>
+									<label for="config.deploy_router">
+										Deploy Router?
+									</label>
+								</h3>
+
+								<p>Determine whether your cluster will be deployed with a router.</p>
+							</div>
+
+							<Switch
+								id="config.deploy_router"
+								name="config.deploy_router"
+								bind:checked={$form.config.deploy_router}
+								labelText="Deploy Router?"
+							/>
+						</section>
+
+						<Collapsible
+							open={$form.config.deploy_router}
+						>	
+							<RegionZoneMachineFields
+								entityType="router"
+								{serviceAccount}
+								defaults={{
+									region: $form.config.region,
+									zone: $form.config.zone,
+								}}
+								bind:regionId={$form.router.region}
+								bind:zoneId={$form.router.zone}
+								bind:machineId={$form.router.machine_type}
+								constraints={$constraints.router}
+							/>
+						</Collapsible>
+					</div>
+
+					<footer class="row">
+						<button
+							type="button"
+							on:click={() => currentFieldset--}
+						>
+							Back
+						</button>
 
 						<button
 							type="button"
