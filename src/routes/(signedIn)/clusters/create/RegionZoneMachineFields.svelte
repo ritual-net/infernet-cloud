@@ -24,11 +24,14 @@
 		zone?: string
 	} | undefined
 
+	export let constraints: Pick<InputConstraints<z.InferType<typeof Config> | z.InferType<typeof RouterConfig> | z.InferType<typeof NodeConfig>>, 'region' | 'zone' | 'machine_type'> | undefined 
+
+
+	// Outputs
 	export let regionId: string | undefined | null
 	export let zoneId: string | undefined | null
 	export let machineId: string | undefined | null
-
-	export let constraints: Pick<InputConstraints<z.InferType<typeof Config> | z.InferType<typeof RouterConfig> | z.InferType<typeof NodeConfig>>, 'region' | 'zone' | 'machine_type'> | undefined 
+	export let hasGpu: boolean | undefined | null
 
 
 	// Internal state
@@ -177,6 +180,9 @@
 	})
 
 	$: machineInfo = $machineInfoQuery.data
+
+	$: if(machineInfo)
+		hasGpu = machineInfo.hasGpu
 
 
 	// Components

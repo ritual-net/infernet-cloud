@@ -37,6 +37,10 @@
 
 
 	// Internal state
+	// (GPU)
+	let hasGpu: boolean = false
+
+
 	// (Chain)
 	$: client = node.config.rpc_url && createPublicClient({ 
 		transport: http(node.config.rpc_url),
@@ -56,6 +60,9 @@
 	// (Containers)
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
+			...hasGpu && {
+				hasGpu: 'true',
+			},
 			...node.config.chain_enabled && {
 				isOnchain: 'true',
 				chainId: chainId?.toString(),
@@ -103,6 +110,7 @@
 	bind:regionId={node.config.region}
 	bind:zoneId={node.config.zone}
 	bind:machineId={node.config.machine_type}
+	bind:hasGpu
 	constraints={{
 		region: constraints?.config?.region,
 		zone: constraints?.config?.zone,
