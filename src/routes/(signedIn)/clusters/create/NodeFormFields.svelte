@@ -102,6 +102,7 @@
 
 <RegionZoneMachineFields
 	entityType="node"
+	namePrefix={namePrefix}
 	{serviceAccount}
 	defaults={{
 		region: defaultRegionId,

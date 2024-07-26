@@ -278,6 +278,7 @@
 
 								<RegionZoneMachineFields
 									entityType="cluster"
+									namePrefix="config"
 									{serviceAccount}
 									bind:regionId={$form.config.region}
 									bind:zoneId={$form.config.zone}
@@ -333,6 +334,7 @@
 						>	
 							<RegionZoneMachineFields
 								entityType="router"
+								namePrefix="router"
 								{serviceAccount}
 								defaults={{
 									region: $form.config.region,

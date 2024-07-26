@@ -15,9 +15,11 @@
 
 
 	// Inputs
-	export let serviceAccount: ServiceAccount | undefined
-
 	export let entityType: 'cluster' | 'router' | 'node' = 'cluster'
+
+	export let namePrefix = 'cluster'
+
+	export let serviceAccount: ServiceAccount | undefined
 
 	export let defaults: {
 		region?: string
@@ -211,8 +213,8 @@
 						<span class="annotation">Override Cluster</span>
 
 						<Switch
-							id="config.region.override"
-							name="config.region.override"
+							id="{namePrefix}.region.override"
+							name="{namePrefix}.region.override"
 							bind:checked={overrideDefaultRegionAndZone}
 							labelText="Override"
 						/>
@@ -224,7 +226,7 @@
 				<div class="column">
 					<div class="column inline">
 						<h4>
-							<label for="config.region">
+							<label for="{namePrefix}.region">
 								Region
 							</label>
 						</h4>
@@ -234,8 +236,8 @@
 
 					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
 						<Combobox
-							id="config.region"
-							name="config.region"
+							id="{namePrefix}.region"
+							name="{namePrefix}.region"
 							labelText="Region"
 							bind:value={regionId}
 							{...!regions
@@ -279,7 +281,7 @@
 					{:else}
 						<input
 							type="text"
-							name="config.region"
+							name="{namePrefix}.region"
 							value={regionId ?? ''}
 							disabled
 						/>
@@ -289,7 +291,7 @@
 				<div class="column">
 					<div class="column inline">
 						<h4>
-							<label for="config.zone">
+							<label for="{namePrefix}.zone">
 								Zone
 							</label>
 						</h4>
@@ -299,8 +301,8 @@
 
 					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
 						<Combobox
-							id="config.zone"
-							name="config.zone"
+							id="{namePrefix}.zone"
+							name="{namePrefix}.zone"
 							labelText="Zone"
 							bind:value={zoneId}
 							{...!zones
@@ -334,7 +336,7 @@
 					{:else}
 						<input
 							type="text"
-							name="config.zone"
+							name="{namePrefix}.zone"
 							value={zoneId ?? ''}
 							disabled
 						/>
@@ -348,7 +350,7 @@
 				<div class="row wrap">
 					<div class="column inline">
 						<h3>
-							<label for="config.machine_type">
+							<label for="{namePrefix}.machine_type">
 								Machine Type
 							</label>
 						</h3>
@@ -357,8 +359,8 @@
 					</div>
 
 					<Combobox
-						id="config.machine_type"
-						name="config.machine_type"
+						id="{namePrefix}.machine_type"
+						name="{namePrefix}.machine_type"
 						labelText="Machine Type"
 						bind:value={machineId}
 						{...!machines
