@@ -274,7 +274,7 @@
 						<input
 							type="text"
 							name="config.region"
-							value={regionId}
+							value={regionId ?? ''}
 							disabled
 						/>
 					{/if}
@@ -329,7 +329,7 @@
 						<input
 							type="text"
 							name="config.zone"
-							value={zoneId}
+							value={zoneId ?? ''}
 							disabled
 						/>
 					{/if}
