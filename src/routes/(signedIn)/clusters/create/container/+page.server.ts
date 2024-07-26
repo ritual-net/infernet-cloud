@@ -13,6 +13,7 @@ export const load: PageServerLoad = async ({
 	url,
 	fetch,
 }) => {
+	const hasGpu = url.searchParams.has('hasGpu')
 	const isOnchain = url.searchParams.has('isOnchain')
 	const isPaymentsEnabled = url.searchParams.has('isPaymentsEnabled')
 	const chainId = url.searchParams.has('chainId') ? Number(url.searchParams.get('chainId')) : undefined
@@ -43,6 +44,7 @@ export const load: PageServerLoad = async ({
 		formData,
 		containerTemplatesPromise,
 		nodeConfiguration: {
+			hasGpu,
 			isOnchain,
 			isPaymentsEnabled,
 			chainId,

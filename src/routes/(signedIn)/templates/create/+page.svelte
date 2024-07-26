@@ -248,6 +248,7 @@
 			{images}
 			{dockerUserImages}
 			nodeConfiguration={{
+				hasGpu: true,
 				isOnchain: $form.containerTemplate.chain_enabled,
 				chainId: $form.containerTemplate.chain_id,
 				isPaymentsEnabled: true,
