@@ -4,7 +4,7 @@
 	import type { InputConstraints } from 'sveltekit-superforms'
 	import type { ServiceAccount } from '$schema/interfaces'
 	import type { BaseResourceClient } from '$/lib/clients/resource/base'
-	import type { FormData } from './schema'
+	import type { Config, NodeConfig, RouterConfig } from './schema'
 	import { providers } from '$/types/provider'
 	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
@@ -28,7 +28,7 @@
 	export let zoneId: string | undefined | null
 	export let machineId: string | undefined | null
 
-	export let constraints: Pick<InputConstraints<z.InferType<typeof FormData>['config']>, 'region' | 'zone' | 'machine_type'> | undefined
+	export let constraints: Pick<InputConstraints<z.InferType<typeof Config> | z.InferType<typeof RouterConfig> | z.InferType<typeof NodeConfig>>, 'region' | 'zone' | 'machine_type'> | undefined 
 
 
 	// Internal state
