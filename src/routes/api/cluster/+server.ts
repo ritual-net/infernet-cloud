@@ -57,6 +57,8 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 
 	console.log('Create cluster', { serviceAccountId, config, nodes })
 
+	const { deploy_router, ...clusterConfig } = config
+
 	try {
 		// Insert cluster
 		cluster = await e
@@ -65,11 +67,13 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					nodes: e.array(e.json), 
 				},
 				({ nodes }) => e.insert(ClusterTypeByProvider[serviceAccount.provider], {
-					...config,
+					...clusterConfig,
 					service_account: e.select(e.ServiceAccount, () => ({
 						filter_single: { id: serviceAccountId },
 					})),
-					router: config.deploy_router ? [router.region, router.zone, router.machine_type] : null,
+					...deploy_router && { 
+						router: [router.region, router.zone, router.machine_type],
+					},
 					// nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
 					nodes: e.for(e.array_unpack(nodes), (node) => (
 						insertNodeJsonQuery(node)
