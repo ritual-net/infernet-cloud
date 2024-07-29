@@ -71,8 +71,12 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					service_account: e.select(e.ServiceAccount, () => ({
 						filter_single: { id: serviceAccountId },
 					})),
-					...deploy_router && { 
-						router: [router.region, router.zone, router.machine_type],
+					...deploy_router && {
+						router: {
+							region: router.region,
+							zone: router.zone,
+							machine_type: router.machine_type,
+						},
 					},
 					// nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
 					nodes: e.for(e.array_unpack(nodes), (node) => (
