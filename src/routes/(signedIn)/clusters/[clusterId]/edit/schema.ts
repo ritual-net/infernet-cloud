@@ -8,11 +8,6 @@ export const Config = z
 			.default('')
 			.required(),
 
-		'deploy_router': z
-			.boolean()
-			.default(false)
-			.required(),
-
 		'ip_allow_http': z
 			.array(
 				IpAddressWithMask
