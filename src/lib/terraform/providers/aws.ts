@@ -52,7 +52,7 @@ export class AWSTerraform extends BaseTerraform {
 						`infernet-node-${node.id}`,
 						{
 							zone: node.zone || cluster.zone,
-							machine_type: node.machine_type || cluster.machine_type,
+							machine_type: node.machine_type,
 							image: 'ami-05fb0b8c1424f266b',
 							has_gpu: false,
 

@@ -28,14 +28,12 @@ export interface Cluster extends std.$Object {
   "deployments": TerraformDeployment[];
   "latest_deployment"?: TerraformDeployment | null;
   "status"?: string | null;
-  "machine_type": string;
   "region": string;
   "zone": string;
   "router_status"?: {id: string, ip: string} | null;
   "router"?: {region: string, zone: string, machine_type: string} | null;
 }
 export interface AWSCluster extends Cluster {
-  "machine_type": string;
   "region": string;
   "zone": string;
 }
@@ -78,7 +76,6 @@ export interface DockerAccount extends std.$Object {
   "password": string;
 }
 export interface GCPCluster extends Cluster {
-  "machine_type": string;
   "region": string;
   "zone": string;
 }

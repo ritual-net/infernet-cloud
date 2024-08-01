@@ -61,7 +61,6 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "deployments": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, true,  false, false>;
   "latest_deployment": $.LinkDesc<$TerraformDeployment, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
   "status": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, true, false, false>;
-  "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "router_status": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -79,8 +78,7 @@ const $Cluster = $.makeType<$Cluster>(_.spec, "159f2820-29a7-11ef-948d-0590ba893
 
 const Cluster: $.$expr_PathNode<$.TypeSet<$Cluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Cluster, $.Cardinality.Many), null);
 
-export type $AWSClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "machine_type" | "region" | "zone"> & {
-  "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+export type $AWSClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "region" | "zone"> & {
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
 }>;
@@ -175,8 +173,7 @@ const $DockerAccount = $.makeType<$DockerAccount>(_.spec, "2908f594-29a7-11ef-81
 
 const DockerAccount: $.$expr_PathNode<$.TypeSet<$DockerAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($DockerAccount, $.Cardinality.Many), null);
 
-export type $GCPClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "machine_type" | "region" | "zone"> & {
-  "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+export type $GCPClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "region" | "zone"> & {
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
 }>;
