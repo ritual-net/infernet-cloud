@@ -60,7 +60,7 @@
 								},
 							})
 
-							await invalidate(`/api/clusters`)
+							await invalidate(`/api/cluster`)
 
 							removeToast(toast.id)
 						},
