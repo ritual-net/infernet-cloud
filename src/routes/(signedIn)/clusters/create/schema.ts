@@ -51,8 +51,7 @@ export const RouterConfig = z
 
 		'machine_type': z
 			.string()
-			.optional()
-			.nullable(),
+			.required(),
 	})
 
 export const ContainerPayment = z
@@ -174,8 +173,7 @@ export const NodeConfig = z
 
 		'machine_type': z
 			.string()
-			.optional()
-			.nullable(),
+			.required(),
 
 		'chain_enabled': z
 			.boolean()
