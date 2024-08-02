@@ -297,9 +297,20 @@ export const FormData = z
 			.when(
 				'config',
 				([config], _) => (
-					config.deploy_router
+					config?.deploy_router
 						? _.required()
-						: _.notRequired()
+						: _.shape(
+							Object.fromEntries(
+								Object.entries(RouterConfig.fields)
+									.map(([key, value]) => (
+										[
+											key,
+											value.optional(),
+										]
+									))
+							)
+						)
+							.notRequired()
 				),
 			),
 
