@@ -294,15 +294,14 @@ export const FormData = z
 		'config': Config,
 
 		'router': RouterConfig
-			.required(),
-			// .when(
-			// 	'config',
-			// 	([config], _) => (
-			// 		config.deploy_router
-			// 			? _.required()
-			// 			: _.notRequired()
-			// 	),
-			// ),
+			.when(
+				'config',
+				([config], _) => (
+					config.deploy_router
+						? _.required()
+						: _.notRequired()
+				),
+			),
 
 		'nodes': z
 			.array(
