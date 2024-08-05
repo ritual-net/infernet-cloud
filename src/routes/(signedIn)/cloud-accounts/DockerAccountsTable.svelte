@@ -22,7 +22,10 @@
 
 
 	// Components
+	import { DockerIcon } from '$/icons'
 	import Table from '$/components/Table.svelte'
+	import { createRender } from 'svelte-headless-table'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
@@ -31,7 +34,14 @@
 	columns={[
 		{
 			header: 'Docker Hub Username',
-			accessor: dockerAccount => dockerAccount.username,
+			accessor: dockerAccount => dockerAccount,
+			cell: ({ value: dockerAccount }) => (
+				createRender(WithIcon, {
+					icon: DockerIcon,
+					alt: 'Docker',
+					value: dockerAccount.username,
+				})
+			),
 		},
 	]}
 	contextMenu={dockerAccount => {
