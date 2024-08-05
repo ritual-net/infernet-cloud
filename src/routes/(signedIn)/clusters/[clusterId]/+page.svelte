@@ -33,6 +33,15 @@
 			.join(' ')
 	)
 
+	const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	})
+
 
 	// Actions
 	import { addToast, removeToast } from '$/components/Toaster.svelte'
@@ -366,7 +375,7 @@
 						<dt>Last Updated</dt>
 
 						<dd>
-							<date>{new Date(cluster.latest_deployment.timestamp).toLocaleString()}</date>
+							<date>{dateTimeFormat.format(new Date(cluster.latest_deployment.timestamp))}</date>
 						</dd>
 					</section>
 				{/if}
@@ -439,7 +448,7 @@
 								<dt>Timestamp</dt>
 
 								<dd>
-									{new Date(snapshot.timestamp).toLocaleString()}
+									{dateTimeFormat.format(new Date(snapshot.timestamp))}
 								</dd>
 							</section>
 
