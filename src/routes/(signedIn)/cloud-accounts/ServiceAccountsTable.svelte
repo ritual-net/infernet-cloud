@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
-	import type { QueriedServiceAccount } from '../api/service_account/+server'
+	import type { QueriedServiceAccount } from '$/routes/api/service_account/+server'
+	import { providers } from '$/types/provider'
 
 
 	// Inputs
@@ -14,7 +15,7 @@
 	// Components
 	import { createRender } from 'svelte-headless-table'
 	import Table from '$/components/Table.svelte'
-	import ServiceAccountsTableCell, { CellType } from './ServiceAccountsTableCell.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
@@ -29,9 +30,10 @@
 			header: 'Cloud Provider',
 			accessor: serviceAccount => serviceAccount,
 			cell: ({ value: serviceAccount }) => (
-				createRender(ServiceAccountsTableCell, {
-					cellType: CellType.CloudProvider,
-					serviceAccount,
+				createRender(WithIcon, {
+					icon: providers[serviceAccount.provider].icon,
+					alt: providers[serviceAccount.provider].name,
+					value: providers[serviceAccount.provider].name,
 				})
 			),
 		},
