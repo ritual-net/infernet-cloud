@@ -98,15 +98,14 @@
 		</div>
 
 		<div class="row">
-			<dl class="card inline">
-				<div class="row">
-					<dt>Status</dt>
-					<dd>
-						<Status
-							status={cluster.status}
-						/>
-					</dd>
-				</div>
+			<dl class="status-container card row">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={cluster.status}
+					/>
+				</dd>
 			</dl>
 
 			<a
@@ -488,6 +487,14 @@
 
 	header.row > :last-child {
 		text-align: end;
+	}
+
+	header .status-container {
+		--card-paddingX: 1.5em;
+		--card-paddingY: 0.75em;
+		--card-backgroundColor: rgba(0, 0, 0, 0.04);
+		--card-borderColor: transparent;
+		font-size: 0.9em;
 	}
 
 	.snapshot-details {
