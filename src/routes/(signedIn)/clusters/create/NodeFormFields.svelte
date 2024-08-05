@@ -577,7 +577,7 @@
 				removeToast(loadingToast.id)
 			}}
 		>
-			Add Container
+			Add container
 		</a>
 	</div>
 
@@ -623,7 +623,7 @@
 				$page.state.showContainerForm === 'create' ?
 				// $page.url.hash === '#/container/create' ?
 					{
-						submitLabel: 'Add Container',
+						submitLabel: 'Add container',
 
 						onSubmit: ({ container }) => {
 							node.containers.push(container)
@@ -635,7 +635,7 @@
 				: $page.state.showContainerForm === 'edit' ?
 				// : $page.url.hash === '#/container/edit' ?
 					{
-						submitLabel: 'Save Changes',
+						submitLabel: 'Save changes',
 
 						onSubmit: ({ container }) => {
 							node.containers[

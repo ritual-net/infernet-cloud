@@ -117,15 +117,15 @@
 		items={[
 			{
 				id: Fieldset.CreateCluster,
-				label: 'Create a Cluster',
+				label: 'Create a cluster',
 			},
 			{
 				id: Fieldset.ConfigureRouter,
-				label: 'Configure Router',
+				label: 'Configure touter',
 			},
 			{
 				id: Fieldset.AddNodes,
-				label: 'Add Nodes',
+				label: 'Add nodes',
 			},
 		]}
 		layout="tooltip-dots"
@@ -150,7 +150,7 @@
 							<div class="column inline">
 								<h3>
 									<label for="serviceAccountId">
-										Cloud Account
+										Cloud account
 									</label>
 								</h3>
 
@@ -372,34 +372,38 @@
 							transition:scale={{ start: 0.8 }}
 							animate:flip={{ duration: 300 }}
 						>
-							<header class="row">
-								<h3 class="annotation">
-									Node #{i + 1}
-								</h3>
-						
-								{#if $form.nodes.length > 1}
-									<button
-										type="button"
-										class="small"
-										on:click={() => {
-											$form.nodes = $form.nodes.toSpliced(i, 1)
-										}}
-										transition:scale
-									>
-										Delete
-									</button>
-								{/if}
-							</header>
+							<Collapsible>
+								<svelte:fragment slot="trigger">
+									<header class="row">
+										<h3 class="annotation">
+											Node #{i + 1}
+										</h3>
+								
+										{#if $form.nodes.length > 1}
+											<button
+												type="button"
+												class="small"
+												on:click={() => {
+													$form.nodes = $form.nodes.toSpliced(i, 1)
+												}}
+												transition:scale
+											>
+												Delete
+											</button>
+										{/if}
+									</header>
+								</svelte:fragment>
 
-							<NodeFormFields
-								defaultRegionId={$form.config.region}
-								defaultZoneId={$form.config.zone}
-								bind:node
-								namePrefix="nodes.{i}"
-								constraints={$constraints.nodes}
-								{serviceAccount}
-								{dockerAccounts}
-							/>
+								<NodeFormFields
+									defaultRegionId={$form.config.region}
+									defaultZoneId={$form.config.zone}
+									bind:node
+									namePrefix="nodes.{i}"
+									constraints={$constraints.nodes}
+									{serviceAccount}
+									{dockerAccounts}
+								/>
+							</Collapsible>
 						</article>
 					{/each}
 
@@ -415,13 +419,13 @@
 								type="button"
 								on:click={() => $form.nodes = [...$form.nodes, Node.getDefault()]}
 							>
-								Add Node
+								Add node
 							</button>
 
 							<FormSubmitButton
 								submitting={$submitting}
 								allErrors={$allErrors}
-								submitLabel="Create Cluster"
+								submitLabel="Create cluster"
 							/>
 						</div>
 					</footer>

@@ -508,7 +508,7 @@
 							];
 						}}
 					>
-						Add Token
+						Add token
 					</button>
 
 					<p>If provided, subscriptions that don't meet these requirements will be skipped; otherwise, no payments will be received.</p>

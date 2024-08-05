@@ -70,7 +70,7 @@
 	class="column"
 >
 	<header>
-		<h2>Add Node to Cluster "{cluster.name}"</h2>
+		<h2>Add node to cluster "{cluster.name}"</h2>
 	</header>
 
 	<article
@@ -98,7 +98,7 @@
 			<FormSubmitButton
 				submitting={$submitting}
 				allErrors={$allErrors}
-				submitLabel="Add Node"
+				submitLabel="Add node"
 			/>
 		</div>
 	</footer>

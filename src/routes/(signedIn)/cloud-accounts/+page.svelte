@@ -16,12 +16,12 @@
 
 <section class="column">
 	<header class="row">
-		<h2>Cloud Accounts</h2>
+		<h2>Cloud accounts</h2>
 
 		<a
 			class="button primary"
 			href="/cloud-accounts/connect"
-		>Connect Cloud Account</a>
+		>Connect cloud account</a>
 	</header>
 
 	<ServiceAccountsTable
@@ -33,12 +33,12 @@
 
 <section class="column">
 	<header class="row">
-		<h2>Docker Accounts</h2>
+		<h2>Docker accounts</h2>
 
 		<a
 			class="button primary"
 			href="/cloud-accounts/docker/connect"
-		>Connect Docker Account</a>
+		>Connect Docker account</a>
 	</header>
 
 	<DockerAccountsTable

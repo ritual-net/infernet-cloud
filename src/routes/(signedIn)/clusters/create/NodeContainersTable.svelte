@@ -83,14 +83,14 @@
 	contextMenu={container => [
 		{
 			value: 'edit',
-			label: 'Edit Container',
+			label: 'Edit container',
 			onClick: () => {
 				onEdit?.(container)
 			},
 		},
 		{
 			value: 'duplicate',
-			label: 'Duplicate Container',
+			label: 'Duplicate container',
 			onClick: () => {
 				containers = containers.toSpliced(
 					containers.indexOf(container) + 1,
@@ -101,7 +101,7 @@
 		},
 		{
 			value: 'delete',
-			label: 'Delete Container',
+			label: 'Delete container',
 			onClick: () => {
 				containers = containers.filter(_container => _container !== container)
 			},

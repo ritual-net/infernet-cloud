@@ -75,7 +75,7 @@
 		return [
 			{
 				value: 'edit',
-				label: 'Edit Cluster',
+				label: 'Edit cluster',
 				onClick: () => {
 					goto(`${clusterRoute}/edit`)
 				},
@@ -84,8 +84,8 @@
 				value: 'apply',
 				label: (
 					cluster.status !== 'destroyed'
-						? 'Trigger Update'
-						: 'Recreate Cluster'
+						? 'Trigger update'
+						: 'Recreate cluster'
 				),
 				formAction: `${clusterRoute}?/apply`,
 				formSubmit: async (e) => {
@@ -119,7 +119,7 @@
 				cluster.status !== 'destroyed'
 					? {
 						value: 'destroy',
-						label: 'Destroy Cluster',
+						label: 'Destroy cluster',
 						formAction: `${clusterRoute}?/destroy`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -141,7 +141,7 @@
 					}
 					: {
 						value: 'delete',
-						label: 'Delete Cluster',
+						label: 'Delete cluster',
 						formAction: `${clusterRoute}?/delete`,
 						formSubmit: async (e) => {
 							const toast = addToast({

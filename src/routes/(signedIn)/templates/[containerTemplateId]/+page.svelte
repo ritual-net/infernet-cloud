@@ -43,7 +43,7 @@
 					{containerTemplate.name}
 				</h2>
 
-				<p>Container Template</p>
+				<p>Container template</p>
 			</div>
 		</div>
 
@@ -145,7 +145,7 @@
 
 			{#if containerTemplate.allowed_addresses?.length}
 				<section class="row wrap">
-					<dt>Allowed Addresses</dt>
+					<dt>Allowed addresses</dt>
 
 					<dd>
 						{#each containerTemplate.allowed_addresses as address}
@@ -157,7 +157,7 @@
 
 			{#if containerTemplate.allowed_delegate_addresses?.length}
 				<section class="row wrap">
-					<dt>Allowed Delegate Addresses</dt>
+					<dt>Allowed delegate addresses</dt>
 
 					<dd>
 						{#each containerTemplate.allowed_delegate_addresses as address}
@@ -169,7 +169,7 @@
 
 			{#if containerTemplate.command}
 				<section class="row wrap">
-					<dt>Start Command</dt>
+					<dt>Start command</dt>
 
 					<dd>
 						<pre><code>{containerTemplate.command}</code></pre>
@@ -179,7 +179,7 @@
 
 			{#if containerTemplate.env && Object.entries(containerTemplate.env).length}
 				<section class="column">
-					<dt>Environment Variables</dt>
+					<dt>Environment variables</dt>
 
 					<dd>
 						<pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre>
@@ -188,7 +188,7 @@
 			{/if}
 
 			<section class="row wrap">
-				<dt>Rate Limiting</dt>
+				<dt>Rate limiting</dt>
 
 				<dd>
 					{containerTemplate.rate_limit_num_requests} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests)]}
@@ -250,7 +250,7 @@
 
 			{#if containerTemplate.generates_proofs !== undefined}
 				<section class="row">
-					<dt>Generates Proofs?</dt>
+					<dt>Generates proofs?</dt>
 
 					<dd>
 						{containerTemplate.generates_proofs ? 'Yes' : 'No'}
@@ -261,7 +261,7 @@
 	</section>
 
 	<section class="column">
-		<h3>Node Details</h3>
+		<h3>Node details</h3>
 
 		<dl class="card column">
 			<section class="row wrap">
@@ -295,7 +295,7 @@
 
 			{#if containerTemplate.docker_account}
 				<section class="row wrap">
-					<dt>Docker Hub Account</dt>
+					<dt>Docker Hub account</dt>
 
 					<dd>
 						{containerTemplate.docker_account.username}

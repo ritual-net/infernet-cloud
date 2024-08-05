@@ -43,7 +43,7 @@
 
 {#if deployment.tfstate?.resources?.length}
 	<section class="column">
-		<dt>Cloud Resources</dt>
+		<dt>Cloud resources</dt>
 
 		<dd class="column">
 			{#if deployment.tfstate?.resources?.flatMap(resource => resource.instances).length}
@@ -209,7 +209,7 @@
 
 {#if !isSummary && deployment.tfstate}
 	<section class="column">
-		<dt>Terraform State</dt>
+		<dt>Terraform state</dt>
 
 		<dd class="scrollable">
 			<output><code>{JSON.stringify(deployment.tfstate, null, '\t')}</code></output>
@@ -219,7 +219,7 @@
 
 {#if deployment.stdout?.length}
 	<section class="column">
-		<dt>Terraform Logs</dt>
+		<dt>Terraform logs</dt>
 
 		<dd class="scrollable log-container">
 			{#each deployment.stdout as log, i}
@@ -258,7 +258,7 @@
 
 {#if deployment.stderr?.length}
 	<section class="column">
-		<dt>Terraform Error Logs</dt>
+		<dt>Terraform error logs</dt>
 
 		<dd class="scrollable log-container">
 			{#each deployment.stderr as log, i}

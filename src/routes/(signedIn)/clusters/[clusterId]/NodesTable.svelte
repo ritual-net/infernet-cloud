@@ -81,7 +81,7 @@
 		return [
 			{
 				value: 'start',
-				label: 'Start Node',
+				label: 'Start node',
 				formAction: `${nodeRoute}?/start`,
 				formSubmit: async (e) => {
 					const toast = addToast({
@@ -107,7 +107,7 @@
 			},
 			{
 				value: 'stop',
-				label: 'Stop Node',
+				label: 'Stop node',
 				formAction: `${nodeRoute}?/stop`,
 				formSubmit: async (e) => {
 					const toast = addToast({

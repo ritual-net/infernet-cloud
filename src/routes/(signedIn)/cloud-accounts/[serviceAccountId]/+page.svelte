@@ -45,7 +45,7 @@
 				serviceAccountId: $page.params.serviceAccountId,
 			})}
 			class="button primary"
-		>Edit Account</a> -->
+		>Edit account</a> -->
 	</header>
 
 	<section class="column">
@@ -53,7 +53,7 @@
 
 		<dl class="card column">
 			<section class="row wrap">
-				<dt>Cloud Provider</dt>
+				<dt>Cloud provider</dt>
 
 				<dd class="row">
 					<img

@@ -55,7 +55,7 @@
 					{node.id}
 				</h2>
 
-				<p>Infernet Node</p>
+				<p>Infernet node</p>
 				<!-- <p>Created {node.created}</p> -->
 			</div>
 		</div>
@@ -76,7 +76,7 @@
 				action="/?start"
 				use:enhance
 			>
-				<button type="submit">Start Node</button>
+				<button type="submit">Start node</button>
 			</form> -->
 
 			<DropdownMenu
@@ -84,7 +84,7 @@
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -100,7 +100,7 @@
 					},
 					{
 						value: 'start',
-						label: 'Start Node',
+						label: 'Start node',
 						formAction: `?/start`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -126,7 +126,7 @@
 					},
 					{
 						value: 'stop',
-						label: 'Stop Node',
+						label: 'Stop node',
 						formAction: `?/stop`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -189,7 +189,7 @@
 
 	{#if node.chain_enabled}
 		<section class="column">
-			<h3>Onchain Details</h3>
+			<h3>Onchain details</h3>
 
 			<dl class="card column">
 				{#if node.rpc_url}
@@ -204,7 +204,7 @@
 
 				{#if node.registry_address}
 					<section class="row wrap">
-						<dt>Registry Address</dt>
+						<dt>Registry address</dt>
 
 						<dd>
 							{node.registry_address}
@@ -214,7 +214,7 @@
 
 				{#if node.trail_head_blocks}
 					<section class="row wrap">
-						<dt>Trail Head Blocks</dt>
+						<dt>Trail head blocks</dt>
 
 						<dd>
 							{node.trail_head_blocks}
@@ -224,7 +224,7 @@
 
 				{#if node.max_gas_limit !== undefined && node.max_gas_limit !== null}
 					<section class="row wrap">
-						<dt>Max Gas Limit</dt>
+						<dt>Max gas limit</dt>
 
 						<dd>
 							{formatNumberCompact(node.max_gas_limit)}
@@ -234,7 +234,7 @@
 
 				{#if node.private_key}
 					<section class="row wrap">
-						<dt>Private Key</dt>
+						<dt>Private key</dt>
 
 						<dd>
 							<span class="secured">{node.private_key}</span>
@@ -244,7 +244,7 @@
 
 				{#if node.snapshot_sync_sleep || node.snapshot_sync_batch_size}
 					<section class="row wrap">
-						<dt>Snapshot Syncing</dt>
+						<dt>Snapshot syncing</dt>
 
 						<dd>
 							<p>{node.snapshot_sync_sleep} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sleep)]} between snapshots</p>

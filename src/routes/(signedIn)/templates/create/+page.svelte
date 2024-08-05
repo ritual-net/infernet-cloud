@@ -274,7 +274,7 @@
 				<FormSubmitButton
 					submitting={$submitting}
 					allErrors={$allErrors}
-					submitLabel="Add Container Template"
+					submitLabel="Add container template"
 				/>
 			</div>
 		</footer>

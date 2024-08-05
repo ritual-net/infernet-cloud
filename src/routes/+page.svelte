@@ -61,28 +61,28 @@
 			class="button"
 			href="/login#signUp"
 		>
-			Sign Up
+			Sign up
 		</a>
 
 		<a
 			class="button primary"
 			href="/login#logIn"
 		>
-			Log In
+			Log in
 		</a>
 	{:else}
 		<a
 			class="button"
 			href="/cloud-accounts"
 		>
-			Connect Cloud Account
+			Connect cloud account
 		</a>
 
 		<a
 			class="button primary"
 			href="/clusters"
 		>
-			Manage Clusters
+			Manage clusters
 		</a>
 	{/if}
 </div>

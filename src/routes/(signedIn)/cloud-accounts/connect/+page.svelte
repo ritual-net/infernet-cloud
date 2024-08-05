@@ -231,7 +231,7 @@
 												target="_blank"
 												download
 											>
-												Download Script
+												Download script
 											</a>
 										</p>
 									</li>
@@ -320,7 +320,7 @@
 												target="_blank"
 												download
 											>
-												Download Script
+												Download script
 											</a>
 										</p>
 									</li>
@@ -337,7 +337,7 @@
 								<h3>
 									<label for="credentials">
 										{#if $form.provider === 'GCP'}
-											Key File
+											Key file
 										{:else if $form.provider === 'AWS'}
 											Credentials
 										{/if}

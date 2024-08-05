@@ -163,7 +163,7 @@
 					<FormSubmitButton
 						submitting={$signUpSubmitting}
 						allErrors={$signUpAllErrors}
-						submitLabel="Sign Up"
+						submitLabel="Sign up"
 					/>
 				</form>
 

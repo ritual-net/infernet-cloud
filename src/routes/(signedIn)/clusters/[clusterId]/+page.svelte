@@ -101,7 +101,7 @@
 					{cluster.name || cluster.id}
 				</h2>
 
-				<p>Infernet Cluster</p>
+				<p>Infernet cluster</p>
 				<!-- <p>Created {cluster.created}</p> -->
 			</div>
 		</div>
@@ -122,14 +122,14 @@
 					clusterId: $page.params.clusterId,
 				})}
 				class="button primary"
-			>Edit Cluster</a>
+			>Edit cluster</a>
 
 			<DropdownMenu
-				labelText="Cluster Actions"
+				labelText="Cluster actions"
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -147,8 +147,8 @@
 						value: 'apply',
 						label: (
 							cluster.status !== 'destroyed'
-								? 'Trigger Update'
-								: 'Recreate Cluster'
+								? 'Trigger update'
+								: 'Recreate cluster'
 						), 
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
@@ -182,7 +182,7 @@
 						cluster.status !== 'destroyed'
 							? {
 								value: 'destroy',
-								label: 'Destroy Cluster',
+								label: 'Destroy cluster',
 								formAction: `?/destroy`,
 								formSubmit: async (e) => {
 									const toast = addToast({
@@ -204,7 +204,7 @@
 							}
 							: {
 								value: 'delete',
-								label: 'Delete Cluster',
+								label: 'Delete cluster',
 								formAction: `?/delete`,
 								formSubmit: async (e) => {
 									const toast = addToast({
@@ -240,7 +240,7 @@
 				})}
 				class="button"
 			>
-				Add Node
+				Add node
 			</a>
 		</div>
 
@@ -271,7 +271,7 @@
 
 		<dl class="card column">
 			<section class="row wrap">
-				<dt>Cloud Account</dt>
+				<dt>Cloud account</dt>
 
 				<dd>
 					<a
@@ -290,7 +290,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Region / Zone</dt>
+				<dt>Region / zone</dt>
 
 				<dd>
 					{#if 'region' in cluster}
@@ -308,7 +308,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>IPs Allowed (HTTP)</dt>
+				<dt>IPs allowed (HTTP)</dt>
 
 				{#if cluster.ip_allow_http?.length}
 					<dd class="column inline">
@@ -322,7 +322,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>IPs Allowed (SSH)</dt>
+				<dt>IPs allowed (SSH)</dt>
 
 				{#if cluster.ip_allow_ssh?.length}
 					<dd class="column inline">
@@ -336,7 +336,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Has Deployed Router?</dt>
+				<dt>Has deployed router?</dt>
 
 				<dd>
 					{cluster.router ? 'Yes' : 'No'}
@@ -372,7 +372,7 @@
 			{#if cluster.latest_deployment}
 				{#if cluster.latest_deployment.timestamp}
 					<section class="row wrap">
-						<dt>Last Updated</dt>
+						<dt>Last updated</dt>
 
 						<dd>
 							<date>{dateTimeFormat.format(new Date(cluster.latest_deployment.timestamp))}</date>
