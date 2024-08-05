@@ -410,6 +410,14 @@
 				}, [])
 				.toReversed()
 		) as group (group[0]?.id)}
+			<h4 class="annotation">
+				{#if group[0] && group.at(-1)}
+					{dateTimeFormat.formatRange(new Date(group[0].timestamp), new Date(group.at(-1).timestamp))}
+				{:else if group[0]}
+					{dateTimeFormat.format(new Date(group[0].timestamp))}
+				{/if}
+			</h4>
+
 			<div class="column card">
 				{#each group as snapshot (snapshot.id)}
 					<Collapsible
