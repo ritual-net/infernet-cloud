@@ -330,8 +330,11 @@
 
 		date {
 			position: sticky;
+			top: 0.25em;
 			right: 0;
 			float: right;
+			margin-left: 1em;
+			line-height: 2.4;
 			font-size: smaller;
 			opacity: 0.5;
 		}
