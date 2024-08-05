@@ -25,7 +25,7 @@
 	<section class="column">
 		<dt>Command</dt>
 
-		<dd class="scrollable">
+		<dd class="log-container scrollable">
 			<output><code>{deployment.command}</code></output>
 		</dd>
 	</section>
@@ -35,7 +35,7 @@
 	<section class="column">
 		<dt>Error</dt>
 
-		<dd class="scrollable">
+		<dd class="log-container scrollable">
 			<output><code>{deployment.error}</code></output>
 		</dd>
 	</section>
@@ -101,7 +101,7 @@
 				/>
 			{/if}
 
-			<dl class="card scrollable column">
+			<dl class="resources card scrollable column">
 				{#each deployment.tfstate.resources as resource}
 					<section
 						id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
@@ -211,7 +211,7 @@
 	<section class="column">
 		<dt>Terraform state</dt>
 
-		<dd class="scrollable">
+		<dd class="log-container scrollable">
 			<output><code>{JSON.stringify(deployment.tfstate, null, '\t')}</code></output>
 		</dd>
 	</section>
@@ -221,7 +221,7 @@
 	<section class="column">
 		<dt>Terraform logs</dt>
 
-		<dd class="scrollable log-container">
+		<dd class="log-container scrollable">
 			{#each deployment.stdout as log, i}
 				{@const previousLog = deployment.stdout[i - 1]}
 
@@ -260,7 +260,7 @@
 	<section class="column">
 		<dt>Terraform error logs</dt>
 
-		<dd class="scrollable log-container">
+		<dd class="log-container scrollable">
 			{#each deployment.stderr as log, i}
 				{@const previousLog = deployment.stderr[i - 1]}
 
@@ -283,15 +283,11 @@
 <style>
 	.scrollable {
 		overflow: auto;
-		padding: 0.66em 1em;
 
 		resize: vertical;
 		&:not([style*="height"]) {
 			max-height: 19.6rem;
 		}
-
-		background: rgba(0, 0, 0, 0.05);
-		border-radius: 0.5em;
 	}
 
 	blockquote {
@@ -316,6 +312,10 @@
 	.log-container {
 		display: grid;
 		align-items: center;
+
+		padding: 0.66em 1em;
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
 
 		.log {
 			margin-inline: -1rem;
@@ -342,5 +342,10 @@
 		code {
 			white-space: pre-line;
 		}
+	}
+
+	.resources {
+		font-size: 0.9em;
+		background-color: #0000000d;
 	}
 </style>
