@@ -60,27 +60,30 @@ export class DockerHubClient {
 	 * @returns Flat array of tagged repo ids.
 	 */
 	private async getRepos(ownerName: string, useHeaders: boolean = false): Promise<string[]> {
-		const repoUrl = `${BASEURL}/repositories/${ownerName}/?page_size=100`;
-		try {
-			const response = useHeaders
-				? await fetch(repoUrl, { headers: this.headers.repoHeaders })
-				: await fetch(repoUrl);
-			const data = await response.json();
-			const repos = data.results;
-			return await Promise.all(
-				repos.map(async (repo: DockerHubRepo) => {
-					const repoName = `${repo.namespace}/${repo.name}`;
-					const tag = useHeaders
-						? await this.getTag(repoName, useHeaders)
-						: await this.getTag(repoName);
-					return tag ? `${repoName}:${tag}` : repoName;
-				})
-			);
-		} catch (error) {
-			throw new Error(
-				`Failed to fetch repositories for owner ${ownerName}: ${(error as Error).message}`
-			);
-		}
+		const repoUrl = `${BASEURL}/repositories/${ownerName}/?page_size=100`
+
+		const { results: repos } = await fetch(
+			repoUrl,
+			useHeaders ? { headers: this.headers.repoHeaders } : undefined
+		)
+			.then(response => response.json())
+
+		return (
+			await Promise.all(
+				repos
+					.map(async (repo: DockerHubRepo) => {
+						const repoName = `${repo.namespace}/${repo.name}`
+
+						try {
+							const tag = await this.getTag(repoName, useHeaders)
+							return tag ? `${repoName}:${tag}` : repoName
+						}catch(error){
+							console.error(error)
+						}
+					})
+			)
+		)
+			.filter(Boolean)
 	}
 
 	/**

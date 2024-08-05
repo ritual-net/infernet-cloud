@@ -51,8 +51,7 @@ export const RouterConfig = z
 
 		'machine_type': z
 			.string()
-			.optional()
-			.nullable(),
+			.required(),
 	})
 
 export const ContainerPayment = z
@@ -174,8 +173,7 @@ export const NodeConfig = z
 
 		'machine_type': z
 			.string()
-			.optional()
-			.nullable(),
+			.required(),
 
 		'chain_enabled': z
 			.boolean()
@@ -296,15 +294,25 @@ export const FormData = z
 		'config': Config,
 
 		'router': RouterConfig
-			.required(),
-			// .when(
-			// 	'config',
-			// 	([config], _) => (
-			// 		config.deploy_router
-			// 			? _.required()
-			// 			: _.notRequired()
-			// 	),
-			// ),
+			.when(
+				'config',
+				([config], _) => (
+					config?.deploy_router
+						? _.required()
+						: _.shape(
+							Object.fromEntries(
+								Object.entries(RouterConfig.fields)
+									.map(([key, value]) => (
+										[
+											key,
+											value.optional(),
+										]
+									))
+							)
+						)
+							.notRequired()
+				),
+			),
 
 		'nodes': z
 			.array(

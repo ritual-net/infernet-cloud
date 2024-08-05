@@ -53,7 +53,7 @@ export class GCPTerraform extends BaseTerraform {
 					{
 						region: node.region || cluster.region,
 						zone: node.zone || cluster.zone,
-						machine_type: node.machine_type || cluster.machine_type,
+						machine_type: node.machine_type,
 						image: 'ubuntu-2004-focal-v20231101',
 
 						// image: node.has_gpu ? 'nvidia-tesla-t4' : 'ubuntu-2004-focal-v20231101',

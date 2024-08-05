@@ -226,9 +226,6 @@ module default {
     required zone: str {
       readonly := true;
     }
-    required machine_type: str {
-      readonly := true;
-    }
 
     ip_allow_http: array<IpAddressWithMask>;
     ip_allow_ssh: array<IpAddressWithMask>;
@@ -281,10 +278,6 @@ module default {
       # e.g. "us-east2-a"
       readonly := true;
     }
-    overloaded required machine_type: str {
-      # e.g. "e2-standard-2"
-      readonly := true;
-    }
   }
 
   type AWSCluster extending Cluster {
@@ -294,10 +287,6 @@ module default {
     }
     overloaded required zone: str {
       # e.g. "us-east-2a"
-      readonly := true;
-    }
-    overloaded required machine_type: str {
-      # e.g. "t2.medium"
       readonly := true;
     }
   }
