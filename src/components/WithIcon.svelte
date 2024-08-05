@@ -18,6 +18,7 @@
 <style>
 	.row {
 		justify-content: start;
+		gap: 0.75em;
 	}
 
 	img {
