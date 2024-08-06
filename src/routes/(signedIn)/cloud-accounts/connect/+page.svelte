@@ -194,7 +194,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://aws.amazon.com/cli"
 												target="_blank"
 											>
@@ -210,7 +210,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey"
 												target="_blank"
 											>
@@ -226,7 +226,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/aws/create_service_account.sh"
 												target="_blank"
 												download
@@ -250,7 +250,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://console.cloud.google.com"
 												target="_blank"
 											>
@@ -266,7 +266,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://console.cloud.google.com/apis/library/compute.googleapis.com"
 												target="_blank"
 											>
@@ -282,7 +282,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://cloud.google.com/sdk/docs/install"
 												target="_blank"
 											>
@@ -298,7 +298,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://support.google.com/googleapi/answer/7014113"
 												target="_blank"
 												download
@@ -315,7 +315,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/gcp/create_service_account.sh"
 												target="_blank"
 												download
