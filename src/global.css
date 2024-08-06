@@ -100,6 +100,38 @@ ol, ul {
 	}
 }
 
+ol {
+	padding-inline-start: 0;
+
+	li {
+		counter-increment: list-item;
+
+		position: relative;
+		list-style: none;
+
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		gap: 1em;
+
+		&::before {
+			content: counter(list-item);
+
+			width: 1.66em;
+			height: 1.66em;
+			padding: 0.33em;
+			
+			background-color: hsl(from var(--color-ritualGreen) h s l / 20%);
+			border-radius: 50%;
+			
+			line-height: 1.66em;
+			font-weight: bold;
+			color: #16B371;
+			text-align: center;
+		}
+	}
+}
+
 dt {
 	opacity: 0.5;
 }
