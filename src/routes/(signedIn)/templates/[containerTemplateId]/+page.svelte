@@ -182,7 +182,19 @@
 					<dt>Environment variables</dt>
 
 					<dd>
-						<pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre>
+						<!-- <pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre> -->
+
+						<dl class="card column">
+							{#each Object.entries(containerTemplate.env) as [key, value] (key)}
+								<section class="row wrap">
+									<dt>{key}</dt>
+
+									<dd>
+										<output>{value}</output>
+									</dd>
+								</section>
+							{/each}
+						</dl>
 					</dd>
 				</section>
 			{/if}
