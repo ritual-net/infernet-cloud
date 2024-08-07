@@ -196,15 +196,15 @@
 
 					(
 						dockerImagesQueryValue?.trim()
-						&& !images?.some(value => value === dockerImagesQueryValue.trim())
-						&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim())
+						&& !images?.some(value => value === dockerImagesQueryValue.trim().toLowerCase())
+						&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim().toLowerCase())
 					) && {
 						value: 'custom',
 						label: 'Custom',
 						items: [
 							{
-								value: dockerImagesQueryValue.trim(),
-								label: dockerImagesQueryValue.trim(),
+								value: dockerImagesQueryValue.trim().toLowerCase(),
+								label: dockerImagesQueryValue.trim().toLowerCase(),
 							}
 						].filter(Boolean),
 					},
