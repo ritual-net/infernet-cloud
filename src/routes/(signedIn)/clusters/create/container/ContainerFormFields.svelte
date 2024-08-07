@@ -586,28 +586,34 @@
 										{/if}
 									</div>
 
-									<input
-										type="number"
-										id="container.accepted_payments.{i}.amount"
-										name="container.accepted_payments.{i}.amount"
-										class="token-amount"
-										value={payment.amount}
-										on:input={e => { payment.amount = e.currentTarget.value }}
-										placeholder="0"
-										step="1"
-										{...constraints?.accepted_payments?.amount}
-									/>
+									<div class="row wrap">
+										<input
+											type="number"
+											id="container.accepted_payments.{i}.amount"
+											name="container.accepted_payments.{i}.amount"
+											class="token-amount"
+											value={payment.amount}
+											on:input={e => { payment.amount = e.currentTarget.value }}
+											placeholder="0"
+											step="1"
+											{...constraints?.accepted_payments?.amount}
+										/>
+									</div>
 								</div>
 
-								<button
-									type="button"
-									class="small destructive"
-									on:click={() => {
-										container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
-									}}
-								>
-									Delete
-								</button>
+								<div class="column inline">
+									<span></span>
+
+									<button
+										type="button"
+										class="small destructive"
+										on:click={() => {
+											container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
+										}}
+									>
+										Delete
+									</button>
+								</div>
 							</div>
 						{/each}
 					</div>
