@@ -119,7 +119,9 @@
 									{#if instance.attributes?.tags?.Name}
 										<section class="row wrap">
 											<dt>Tag</dt>
-											<dd>{instance.attributes.tags.Name}</dd>
+											<dd>
+												<p>{instance.attributes.tags.Name}</p>
+											</dd>
 										</section>
 									{/if}
 
