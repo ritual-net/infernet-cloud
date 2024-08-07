@@ -6,6 +6,7 @@ export type MenuItem<Value> = {
 	label: string,
 	disabled?: boolean,
 	icon?: string,
+	isDestructive?: boolean,
 	onClick?: (item: MenuItem<Value>) => void,
 	formAction?: string,
 	formMethod?: 'POST' | 'PATCH' | 'PUT' | 'DELETE',

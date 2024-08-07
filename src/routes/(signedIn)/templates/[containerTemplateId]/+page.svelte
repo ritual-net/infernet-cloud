@@ -61,6 +61,7 @@
 					{
 						value: 'delete',
 						label: 'Delete Container Template',
+						isDestructive: true,
 						formAction: `?/delete`,
 						formSubmit: async (e) => {
 							const toast = addToast({

@@ -205,6 +205,7 @@
 							: {
 								value: 'delete',
 								label: 'Delete cluster',
+								isDestructive: true,
 								formAction: `?/delete`,
 								formSubmit: async (e) => {
 									const toast = addToast({

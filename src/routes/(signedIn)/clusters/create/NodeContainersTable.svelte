@@ -102,6 +102,7 @@
 		{
 			value: 'delete',
 			label: 'Delete container',
+			isDestructive: true,
 			onClick: () => {
 				containers = containers.filter(_container => _container !== container)
 			},

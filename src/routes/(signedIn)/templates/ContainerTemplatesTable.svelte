@@ -113,6 +113,7 @@
 			{
 				value: 'delete',
 				label: 'Delete Container Template',
+				isDestructive: true,
 				formAction: `${containerTemplateRoute}?/delete`,
 				formSubmit: async (e) => {
 					const toast = addToast({

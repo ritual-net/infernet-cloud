@@ -120,6 +120,7 @@
 					? {
 						value: 'destroy',
 						label: 'Destroy cluster',
+						isDestructive: true,
 						formAction: `${clusterRoute}?/destroy`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -142,6 +143,7 @@
 					: {
 						value: 'delete',
 						label: 'Delete cluster',
+						isDestructive: true,
 						formAction: `${clusterRoute}?/delete`,
 						formSubmit: async (e) => {
 							const toast = addToast({
