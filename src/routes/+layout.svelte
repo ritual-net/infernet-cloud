@@ -177,6 +177,7 @@
 		align-content: start;
 
 		gap: 2rem 1rem;
+		padding-block-end: 10rem;
 	}
 
 	footer {
