@@ -372,7 +372,9 @@
 							transition:scale={{ start: 0.8 }}
 							animate:flip={{ duration: 300 }}
 						>
-							<Collapsible>
+							<Collapsible
+								open
+							>
 								<svelte:fragment slot="trigger">
 									<header class="row">
 										<h3 class="annotation">
