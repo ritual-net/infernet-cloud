@@ -11,31 +11,33 @@
 	}[][]
 
 	$: navItems = [
-		[
-			{
-				href: '/cloud-accounts',
-				label: 'Accounts',
-			},
-			{
-				href: '/templates',
-				label: 'Templates',
-			},
-			{
-				href: '/clusters',
-				label: 'Clusters',
-			},
-		],
-		[
-			$page.data.user ? {
-				href: '/account',
-				label: $page.data.user.name || $page.data.user.email,
-				type: 'button',
-			} : {
-				href: '/login',
-				label: 'Log In',
-				type: 'button',
-			},
-		],
+		!$page.data.user
+			? [
+				{
+					href: '/login',
+					label: 'Log In',
+					type: 'button',
+				},
+			]
+			: [
+				{
+					href: '/cloud-accounts',
+					label: 'Accounts',
+				},
+				{
+					href: '/templates',
+					label: 'Templates',
+				},
+				{
+					href: '/clusters',
+					label: 'Clusters',
+				},
+				{
+					href: '/account',
+					label: $page.data.user.name || $page.data.user.email,
+					type: 'button',
+				}
+			],
 	]
 
 
