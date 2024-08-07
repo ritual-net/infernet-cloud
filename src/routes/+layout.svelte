@@ -88,9 +88,7 @@
 	</header>
 
 	<div class="main-wrapper">
-		<main>
-			<slot />
-		</main>
+		<slot />
 	</div>
 
 	<!-- <footer></footer> -->
@@ -122,7 +120,9 @@
 		/* } */
 	}
 
-	header, main, footer {
+	header,
+	:global(main),
+	footer {
 		display: grid;
 		grid-template-columns: minmax(0, 50rem);
 		justify-content: center;
@@ -172,7 +172,7 @@
 		transition-duration: 0.3s;
 	}
 
-	main {
+	:global(main) {
 		grid-area: main;
 		align-content: start;
 

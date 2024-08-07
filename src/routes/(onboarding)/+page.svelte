@@ -34,8 +34,8 @@
 				</div>
 
 				<div class="column inline">
-					<h3>Customize your infra</h3>
-					<p>Choose the configuration details of your nodes and clusters.</p>
+					<h3>Customize your infrastructure</h3>
+					<p>Configure regions, zones and firewalls for clusters, routers and nodes.</p> 
 				</div>
 			</li>
 
@@ -45,8 +45,8 @@
 				</div>
 
 				<div class="column inline">
-					<h3>Control privacy settings</h3>
-					<p>Determine the visibility of your nodes, whitelist IP addresses and more.</p>
+					<h3>Bring your own cloud accounts</h3>
+					<p>Run containers using custom Docker images, machine types and more.</p>
 				</div>
 			</li>
 		</ul>
