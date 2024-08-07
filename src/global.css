@@ -90,6 +90,13 @@ a {
 	&[aria-disabled="true"]  {
 		pointer-events: none;
 	}
+
+	&.button[target="_blank"]:after {
+		content: '↗';
+		font-size: 0.66em;
+		vertical-align: text-bottom;
+		margin-inline-start: 0.5em;
+	}
 }
 
 ol, ul {
