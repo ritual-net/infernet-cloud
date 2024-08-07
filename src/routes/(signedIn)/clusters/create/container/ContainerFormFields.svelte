@@ -643,7 +643,7 @@
 		</section>
 	{/if}
 
-	<div class="card column">
+	<!-- <div class="card column">
 		<Collapsible
 			open={hasAdvancedOptions}
 		>
@@ -651,7 +651,7 @@
 				<header>
 					Advanced
 				</header>
-			</svelte:fragment>
+			</svelte:fragment> -->
 
 			<section class="column">
 				<div class="row wrap">
@@ -677,8 +677,8 @@
 					<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. If using this, be sure to permission the node by setting allowed Addresses and Delegate Addresses under Firewall.</p>
 				{/if}
 			</section>
-		</Collapsible>
-	</div>
+		<!-- </Collapsible>
+	</div> -->
 </fieldset>
 
 
