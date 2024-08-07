@@ -142,21 +142,24 @@
 					& > div {
 						row-gap: 0.25em;
 					}
+				}
 
-					& [data-melt-toast-close] {
-						--button-paddingX: 0.25em;
-						--button-paddingY: 0.25em;
-						--button-borderWidth: 0px;
+				[data-melt-toast-close] {
+					--button-paddingX: 0.25em;
+					--button-paddingY: 0.25em;
+					--button-borderWidth: 0px;
 
-						float: right;
-						margin-left: 0.5em;
-						margin-right: calc(-1 * var(--card-paddingX) + var(--card-paddingY));
+					float: right;
+					margin-left: 0.5em;
+					margin-right: calc(-1 * var(--card-paddingX) + var(--card-paddingY));
 
-						& span {
-							display: inline-block;
-							width: 1lh;
-						}
+					& span {
+						display: inline-block;
+						width: 1lh;
 					}
+				}
+				&:is([data-type="success"], [data-type="error"]) [data-melt-toast-close] {
+					--button-backgroundColor: transparent;
 				}
 			}
 		}
