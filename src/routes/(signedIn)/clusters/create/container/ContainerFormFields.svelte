@@ -196,8 +196,15 @@
 
 					(
 						dockerImagesQueryValue?.trim()
-						&& !images?.some(value => value === dockerImagesQueryValue.trim().toLowerCase())
-						&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim().toLowerCase())
+						&& !(
+							new Set([
+								...images ?? [],
+								...dockerImages?.map(image => image.value) ?? []
+							])
+								.has(
+									dockerImagesQueryValue.trim().toLowerCase()
+								)
+						)
 					) && {
 						value: 'custom',
 						label: 'Custom',
