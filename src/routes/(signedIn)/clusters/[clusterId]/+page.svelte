@@ -397,86 +397,90 @@
 			</span>
 		</h3>
 
-		{#each (
-			// Group by "init" actions
-			cluster.deployments
-				.toReversed()
-				.reduce((groups, snapshot, i) => {
-					if(snapshot.action === TFAction.Init || i === 0)
-						groups.push([snapshot])
-					else
-						groups[groups.length - 1].push(snapshot)
-					return groups
-				}, [])
-				.toReversed()
-		) as group (group[0]?.id)}
-			<h4 class="annotation">
-				{#if group[0] && group.at(-1)}
-					{dateTimeFormat.formatRange(new Date(group[0].timestamp), new Date(group.at(-1).timestamp))}
-				{:else if group[0]}
-					{dateTimeFormat.format(new Date(group[0].timestamp))}
-				{/if}
-			</h4>
+		<div class="history column">
+			{#each (
+				// Group by "init" actions
+				cluster.deployments
+					.toReversed()
+					.reduce((groups, snapshot, i) => {
+						if(snapshot.action === TFAction.Init || i === 0)
+							groups.push([snapshot])
+						else
+							groups[groups.length - 1].push(snapshot)
+						return groups
+					}, [])
+					.toReversed()
+			) as group (group[0]?.id)}
+				<div class="history-group-container column">
+					<h4 class="annotation">
+						{#if group[0] && group.at(-1)}
+							{dateTimeFormat.formatRange(new Date(group[0].timestamp), new Date(group.at(-1).timestamp))}
+						{:else if group[0]}
+							{dateTimeFormat.format(new Date(group[0].timestamp))}
+						{/if}
+					</h4>
 
-			<div class="column card">
-				{#each group as snapshot (snapshot.id)}
-					<Collapsible
-						class="card"
-					>
-						<svelte:fragment slot="trigger">
-							<header class="row wrap">
-								<h4>{snapshot.action}</h4>
+					<div class="column card">
+						{#each group as snapshot (snapshot.id)}
+							<Collapsible
+								class="card"
+							>
+								<svelte:fragment slot="trigger">
+									<header class="row wrap">
+										<h4>{snapshot.action}</h4>
 
-								<div class="column inline">
-									<dd>
-										<Status
-											status={snapshot.status}
-										/>
-									</dd>
+										<div class="column inline">
+											<dd>
+												<Status
+													status={snapshot.status}
+												/>
+											</dd>
 
-									<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
-								</div>
-							</header>
-						</svelte:fragment>
+											<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
+										</div>
+									</header>
+								</svelte:fragment>
 
-						<dl
-							class="snapshot-details card column"
-						>
-							<section class="row wrap">
-								<dt>Status</dt>
+								<dl
+									class="snapshot-details card column"
+								>
+									<section class="row wrap">
+										<dt>Status</dt>
 
-								<dd>
-									<Status
-										status={snapshot.status}
+										<dd>
+											<Status
+												status={snapshot.status}
+											/>
+										</dd>
+									</section>
+
+									<section class="row wrap">
+										<dt>Timestamp</dt>
+
+										<dd>
+											{dateTimeFormat.format(new Date(snapshot.timestamp))}
+										</dd>
+									</section>
+
+									<TerraformDeployment
+										provider={cluster.service_account.provider}
+										deployment={snapshot}
 									/>
-								</dd>
-							</section>
-
-							<section class="row wrap">
-								<dt>Timestamp</dt>
-
-								<dd>
-									{dateTimeFormat.format(new Date(snapshot.timestamp))}
-								</dd>
-							</section>
-
-							<TerraformDeployment
-								provider={cluster.service_account.provider}
-								deployment={snapshot}
-							/>
-						</dl>
-					</Collapsible>
-				{:else}
-					<div class="card">
-						<p>No deployments found.</p>
+								</dl>
+							</Collapsible>
+						{:else}
+							<div class="card">
+								<p>No deployments found.</p>
+							</div>
+						{/each}
 					</div>
-				{/each}
-			</div>
-		{:else}
-			<div class="card">
-				<p>No deployments found.</p>
-			</div>
-		{/each}
+				</div>
+			{:else}
+				<div class="card">
+					<p>No deployments found.</p>
+				</div>
+			{/each}
+		</div>
 	</section>
 </div>
 
@@ -526,5 +530,13 @@
 		white-space: pre-wrap;
 		word-break: break-word;
 		tab-size: 2;
+	}
+
+	.history {
+		gap: 1.25em;
+
+		.history-group-container {
+			gap: 0.75em;
+		}
 	}
 </style>
