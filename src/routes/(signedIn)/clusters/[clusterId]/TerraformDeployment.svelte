@@ -341,9 +341,9 @@
 			opacity: 0.5;
 		}
 
-		code {
+		/* code {
 			white-space: pre-line;
-		}
+		} */
 	}
 
 	.resources {
