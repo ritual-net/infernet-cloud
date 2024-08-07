@@ -100,13 +100,13 @@
 				align-self: start;
 				display: flex;
 				background-color: hsl(from var(--color-ritualGreen) h s l / 20%);
-				padding: 0.8em;
+				padding: 0.5em;
 				color: #16B371;
 				border-radius: 50%;
 
 				> :global(*) {
-					width: 2em;
-					height: 2em;
+					width: 1.66em;
+					height: 1.66em;
 				}
 			}
 		}
