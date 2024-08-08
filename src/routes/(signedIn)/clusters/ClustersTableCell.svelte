@@ -10,8 +10,19 @@
 	// Types/constants
 	import { providers } from '$/types/provider'
 	import type { getClustersForUser } from '$/lib/db/queries'
-	
-	
+
+
+	// Functions
+	const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	})
+
+
 	// Inputs
 	export let cluster: Awaited<ReturnType<typeof getClustersForUser>>[number]
 	export let cellType: CellType
@@ -32,9 +43,15 @@
 	</WithIcon>
 
 {:else if cellType === CellType.Status}
-	<Status
-		status={cluster.status}
-	/>
+	<div class="column inline">
+		<Status
+			status={cluster.status}
+		/>
+
+		{#if cluster.latest_deployment}
+			<date>{dateTimeFormat.format(new Date(cluster.latest_deployment.timestamp))}</date>
+		{/if}
+	</div>
 {/if}
 
 
