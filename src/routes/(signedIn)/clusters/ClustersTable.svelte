@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types
-	import type { getClustersForUser } from '$/lib/db/queries'
+	import type { getClusters } from '$/lib/db/queries'
 
 
 	// Context
@@ -13,7 +13,7 @@
 
 
 	// Inputs
-	export let clusters: Awaited<ReturnType<typeof getClustersForUser>>
+	export let clusters: Awaited<ReturnType<typeof getClusters>>
 
 
 	// Actions

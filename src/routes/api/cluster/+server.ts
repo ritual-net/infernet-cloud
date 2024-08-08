@@ -15,7 +15,7 @@ import { e, ClusterTypeByProvider } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
 // import { createNodeParams, insertNodeQuery } from '$/lib/db/components'
 import { insertNodeJsonQuery } from '$/lib/db/components'
-import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
+import { getServiceAccountById, getClusters } from '$/lib/db/queries';
 
 
 /**
@@ -26,7 +26,7 @@ import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
  */
 export const GET: RequestHandler = async ({ locals: { client } }) => {
 	// Get all clusters for user
-	const result = await getClustersForUser(client)
+	const result = await getClusters(client)
 
 	return json(result);
 };

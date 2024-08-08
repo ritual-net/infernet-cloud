@@ -1,5 +1,5 @@
 // Types
-import type { getClustersForUser } from '$/lib/db/queries'
+import type { getClusters } from '$/lib/db/queries'
 
 
 // Data
@@ -11,7 +11,7 @@ export const load: PageLoad = async ({
 	const clusters = (
 		await fetch('/api/cluster')
 			.then(result => result.json())
-	) as Awaited<ReturnType<typeof getClustersForUser>>
+	) as Awaited<ReturnType<typeof getClusters>>
 
 	return {
 		clusters,

@@ -246,12 +246,13 @@ export const getClusterByRouterId = async (
 };
 
 /**
- * Get clusters owned by user
+ * Get clusters
  *
+ * @param client The database client
  * @returns Cluster array
  */
-export const getClustersForUser = async (
-	client: Client
+export const getClusters = async (
+	client: Client,
 ) => (
 	await e
 		.select(e.Cluster, (cluster) => ({
