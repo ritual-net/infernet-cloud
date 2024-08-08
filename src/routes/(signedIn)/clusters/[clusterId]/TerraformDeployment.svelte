@@ -171,6 +171,15 @@
 																<output><code>{item}</code></output>
 															</div>
 														{/each}
+													{:else if typeof value === 'object'}
+														<dl class="column">
+															{#each Object.entries(value) as [key, _value] (key)}
+																<div class="row">
+																	<dt>{key}</dt>
+																	<dd>{_value}</dd>
+																</div>
+															{/each}
+														</dl>
 													{:else}
 														<output><code>{value}</code></output>
 													{/if}
