@@ -67,7 +67,7 @@
 					<li>
 						<a	
 							href={item.href}
-							aria-current={$page.url.pathname === item.href ? 'page' : undefined}
+							aria-current={$page.url.pathname.startsWith(item.href) ? 'page' : undefined}
 							class:button={item.type === 'button'}
 						>
 							{item.label}
@@ -82,7 +82,7 @@
 
 <style>
 	:root {
-		--nav-link-default-opacity: 0.7;
+		--nav-link-default-opacity: 0.66;
 	}
 
 	a {
@@ -115,7 +115,7 @@
 		li {
 			list-style-type: none;
 
-			&:not([aria-current="page"]) {
+			a:not([aria-current="page"]) {
 				color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
 
 				@supports not (color: hsl(from #000 h s l)) {
