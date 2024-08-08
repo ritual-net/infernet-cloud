@@ -18,15 +18,18 @@
 
 
 	// Components
+	import WithIcon from '$/components/WithIcon.svelte'
 	import Status from '$/views/Status.svelte'
 </script>
 
 
 {#if cellType === CellType.ServiceAccount}
-	<div class="row">
-		<img src={providers[cluster.service_account.provider].icon} />
+	<WithIcon
+		icon={providers[cluster.service_account.provider].icon}
+		alt={cluster.service_account.name}
+	>
 		{cluster.service_account.name}
-	</div>
+	</WithIcon>
 
 {:else if cellType === CellType.Status}
 	<Status
