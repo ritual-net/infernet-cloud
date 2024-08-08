@@ -35,12 +35,20 @@
 
 
 {#if cellType === CellType.ServiceAccount}
-	<WithIcon
-		icon={providers[cluster.service_account.provider].icon}
-		alt={cluster.service_account.name}
-	>
-		{cluster.service_account.name}
-	</WithIcon>
+	<div class="column inline">
+		<WithIcon
+			icon={providers[cluster.service_account.provider].icon}
+			alt={cluster.service_account.name}
+		>
+			{cluster.service_account.name}
+		</WithIcon>
+
+		<p class="annotation">
+			{cluster.region}
+			/
+			{cluster.zone}
+		</p>
+	</div>
 
 {:else if cellType === CellType.Status}
 	<div class="column inline">
