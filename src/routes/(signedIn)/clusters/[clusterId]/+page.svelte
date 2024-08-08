@@ -291,7 +291,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Region / zone</dt>
+				<dt>Region / Zone</dt>
 
 				<dd>
 					{#if 'region' in cluster}
