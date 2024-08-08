@@ -9,11 +9,11 @@
 <script lang="ts">
 	// Types/constants
 	import { providers } from '$/types/provider'
-	import type { getClustersForUser } from '$/lib/db/queries'
+	import type { getClusters } from '$/lib/db/queries'
 	
 	
 	// Inputs
-	export let cluster: Awaited<ReturnType<typeof getClustersForUser>>[number]
+	export let cluster: Awaited<ReturnType<typeof getClusters>>[number]
 	export let cellType: CellType
 
 
