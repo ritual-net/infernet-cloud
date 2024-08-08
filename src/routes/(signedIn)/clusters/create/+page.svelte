@@ -161,7 +161,7 @@
 								required
 								id="serviceAccountId"
 								name="serviceAccountId"
-								labelText="Cloud Account"
+								labelText="Cloud account"
 								bind:value={$form.serviceAccountId}
 								items={serviceAccounts.map(serviceAccount => ({
 									icon: providers[serviceAccount.provider].icon,

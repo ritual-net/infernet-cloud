@@ -40,7 +40,7 @@
 			accessor: cluster => cluster.name,
 		},
 		{
-			header: 'Cloud Account / Location',
+			header: 'Cloud account / Location',
 			accessor: cluster => cluster,
 			cell: ({ value: cluster }) => (
 				createRender(ClustersTableCell, {
