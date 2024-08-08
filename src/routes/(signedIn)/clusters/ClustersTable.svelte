@@ -40,11 +40,11 @@
 			accessor: cluster => cluster.name,
 		},
 		{
-			header: 'Cloud Account',
+			header: 'Status',
 			accessor: cluster => cluster,
 			cell: ({ value: cluster }) => (
 				createRender(ClustersTableCell, {
-					cellType: CellType.ServiceAccount,
+					cellType: CellType.Status,
 					cluster,
 				})
 			),
@@ -54,11 +54,11 @@
 			accessor: cluster => cluster.node_count,
 		},
 		{
-			header: 'Status',
+			header: 'Cloud Account',
 			accessor: cluster => cluster,
 			cell: ({ value: cluster }) => (
 				createRender(ClustersTableCell, {
-					cellType: CellType.Status,
+					cellType: CellType.ServiceAccount,
 					cluster,
 				})
 			),
