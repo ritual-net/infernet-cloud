@@ -9,8 +9,11 @@
 
 	$: ({
 		serviceAccount,
-		clusters,
+		clusters: clustersPromise,
 	} = $page.data as PageData)
+
+	let clusters: Awaited<typeof clustersPromise> | undefined
+	$: clustersPromise.then(_ => { clusters = _ })
 
 
 	// Functions
@@ -86,11 +89,15 @@
 	<div>
 		<h3>Clusters</h3>
 
-		{#await clusters then _clusters}
-			<ClustersTable
-				clusters={_clusters}
-			/>
-		{/await}
+		<ClustersTable
+			clusters={clusters ?? []}
+		>
+			{#await clusters}
+				Loading clusters...
+			{:then}
+				No clusters found.
+			{/await}
+		</ClustersTable>
 	</div>
 </div>
 
