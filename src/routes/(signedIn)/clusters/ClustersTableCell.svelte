@@ -39,7 +39,7 @@
 		icon={providers[cluster.service_account.provider].icon}
 		alt={cluster.service_account.name}
 	>
-		<div class="column inline">
+		<div>
 			{cluster.service_account.name}
 
 			<p class="annotation">
