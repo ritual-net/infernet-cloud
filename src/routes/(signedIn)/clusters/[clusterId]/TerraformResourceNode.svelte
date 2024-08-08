@@ -38,6 +38,8 @@
 			<h5>{data.resource.name}</h5>
 			<span class="annotation">{formatResourceType(data.resource.type)}</span>
 		</div>
+
+		<span>↗</span>
 	</a>
 
 	<Handle
