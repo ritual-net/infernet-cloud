@@ -86,8 +86,19 @@
 		</dl>
 	</section>
 
-	<div>
-		<h3>Clusters</h3>
+	<section class="column">
+		<header class="row">
+			<h3>Clusters</h3>
+
+			<a
+				class="button primary"
+				href={`/clusters/create?${new URLSearchParams({
+					serviceAccountId: serviceAccount.id,
+				})}`}
+			>
+				Create cluster
+			</a>
+		</header>
 
 		<ClustersTable
 			clusters={clusters ?? []}
@@ -98,7 +109,7 @@
 				No clusters found.
 			{/await}
 		</ClustersTable>
-	</div>
+	</section>
 </div>
 
 
