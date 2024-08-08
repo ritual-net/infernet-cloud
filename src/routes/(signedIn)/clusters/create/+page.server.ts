@@ -16,7 +16,10 @@ export const load: PageServerLoad = async ({
 	parent,
 	fetch,
 	locals: { client },
+	url,
 }) => {
+	const serviceAccountId = url.searchParams.get('serviceAccountId')
+
 	const [
 		parentData,
 		serviceAccounts,
@@ -33,7 +36,12 @@ export const load: PageServerLoad = async ({
 		}))
 			.run(client),
 		
-		superValidate(yup(FormData)),
+		superValidate(
+			{
+				serviceAccountId,
+			},
+			yup(FormData),
+		),
 	])
 
 	return {
