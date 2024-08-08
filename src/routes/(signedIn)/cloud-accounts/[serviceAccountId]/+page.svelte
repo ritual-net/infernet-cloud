@@ -9,6 +9,7 @@
 
 	$: ({
 		serviceAccount,
+		clusters,
 	} = $page.data as PageData)
 
 
@@ -17,7 +18,7 @@
 
 
 	// Components
-	// import ClustersTable from '$/routes/clusters/ClustersTable.svelte'
+	import ClustersTable from '$/routes/(signedIn)/clusters/ClustersTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
 
@@ -82,13 +83,15 @@
 		</dl>
 	</section>
 
-	<!-- <div>
+	<div>
 		<h3>Clusters</h3>
 
-		<ClustersTable
-			clusters={[]}
-		/>
-	</div> -->
+		{#await clusters then _clusters}
+			<ClustersTable
+				clusters={_clusters}
+			/>
+		{/await}
+	</div>
 </div>
 
 
