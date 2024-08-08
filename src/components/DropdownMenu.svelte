@@ -201,7 +201,9 @@
 		display: contents;
 
 		& button {
-			all: unset;
+			--button-backgroundColor: transparent;
+			--button-borderWidth: 0px;
+			--button-cornerRadius: 0px;
 		}
 	}
 </style>
