@@ -602,7 +602,7 @@
 								</div>
 
 								<div class="column inline">
-									<span></span>
+									<span>&nbsp;</span>
 
 									<button
 										type="button"
