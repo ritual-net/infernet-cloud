@@ -21,7 +21,7 @@
 <style>
 	.row {
 		justify-content: start;
-		gap: 0.75em;
+		gap: 0.66em;
 	}
 
 	img {
