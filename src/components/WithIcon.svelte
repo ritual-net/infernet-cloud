@@ -2,7 +2,7 @@
 	// Inputs
 	export let icon: string
 	export let alt: string | undefined
-	export let value: string
+	export let value: string | undefined
 </script>
 
 
@@ -11,7 +11,10 @@
 		src={icon}
 		{alt}
 	/>
-	{value}
+
+	<slot>
+		{value}
+	</slot>
 </div>
 
 
