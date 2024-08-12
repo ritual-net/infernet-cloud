@@ -89,7 +89,7 @@
 							))
 					}
 					direction="BT"
-					nodeWidth={310}
+					nodeWidth={330}
 					nodeHeight={75}
 					layoutOptions={{
 						// ranker: 'tight-tree',
