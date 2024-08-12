@@ -18,7 +18,7 @@
 				await new Promise(resolve => setTimeout(resolve, 5000))
 				if(!isMounted) return
 
-				await invalidate($page.url)
+				await invalidate('/api/cluster')
 			}
 		})()
 

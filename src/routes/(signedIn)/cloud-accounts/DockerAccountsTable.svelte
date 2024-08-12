@@ -7,14 +7,10 @@
 	export let dockerAccounts: PageServerData['dockerAccounts']
 
 
-	// Context
-	import { page } from '$app/stores'
-
-
 	// Actions
 	import { addToast, removeToast } from '$/components/Toaster.svelte'
 	import { applyAction } from '$app/forms'
-	import { invalidate } from '$app/navigation'
+	import { invalidateAll } from '$app/navigation'
 
 
 	// Functions
@@ -66,7 +62,7 @@
 						await applyAction(result)
 
 						if(result.type === 'success')
-							invalidate($page.url)
+							invalidateAll()
 
 						removeToast(toast.id)
 					}
