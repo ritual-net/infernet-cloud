@@ -121,7 +121,7 @@
 			},
 			{
 				id: Fieldset.ConfigureRouter,
-				label: 'Configure touter',
+				label: 'Configure router',
 			},
 			{
 				id: Fieldset.AddNodes,
@@ -318,7 +318,7 @@
 									</label>
 								</h3>
 
-								<p>Determine whether your cluster will be deployed with a router.</p>
+								<p>Determine whether your cluster will be deployed with an <a href="https://docs.ritual.net/infernet/router/introduction" target="_blank">Infernet Router</a>.</p>
 							</div>
 
 							<Switch

@@ -240,7 +240,7 @@
 						</span>	
 					</div>
 
-					<p>Number of blocks to delay chain syncing. Added latency may help avoid failed transactions due to reorganizations.</p>
+					<p><a href="https://docs.ritual.net/infernet/node/configuration/v1_1_0#trail_head_blocks-integer" target="_blank">Number of blocks</a> to delay chain syncing. Added latency may help avoid failed transactions due to reorganizations.</p>
 	
 					<input
 						type="number"
@@ -456,7 +456,7 @@
 	<div class="column inline">
 		<h3 class="row inline">
 			<label for="{namePrefix}.config.forward_stats">
-				Forward Stats?
+				Forward stats?
 			</label>
 		</h3>
 
@@ -467,7 +467,7 @@
 		id="{namePrefix}.config.forward_stats"
 		name="{namePrefix}.config.forward_stats"
 		bind:checked={node.config.forward_stats}
-		labelText="Forward Stats?"
+		labelText="Forward stats?"
 	/>
 </section>
 
@@ -475,7 +475,7 @@
 	<div class="column inline">
 		<h3 class="row inline">
 			<label for="{namePrefix}.dockerAccountUsername">
-				Docker Hub Account
+				Docker Hub account
 			</label>
 
 			<span class="annotation">Optional</span>
@@ -487,7 +487,7 @@
 	<Select
 		id="{namePrefix}.dockerAccountUsername"
 		name="{namePrefix}.dockerAccountUsername"
-		labelText="Docker Hub Username"
+		labelText="Docker Hub username"
 		bind:value={node.dockerAccountUsername}
 		{...!dockerAccounts
 			? {

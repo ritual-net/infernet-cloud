@@ -160,7 +160,7 @@
 
 		<dl class="card column">
 			<section class="row wrap">
-				<dt>Forward Stats?</dt>
+				<dt>Forward stats?</dt>
 
 				<dd>
 					{node.forward_stats ? 'Yes' : 'No'}

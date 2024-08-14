@@ -230,7 +230,7 @@
 				</label>
 			</h3>
 
-			<p>Determine if container is publicly accessible.</p>
+			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_1_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
 		</div>
 
 		<Select
@@ -377,7 +377,7 @@
 		<div class="column inline">
 			<h3 class="row inline">
 				<label for="container.command">
-					Start Command
+					Start command
 				</label>
 
 				<span class="annotation">Optional</span>
@@ -401,7 +401,7 @@
 		<div class="column inline">
 			<h3 class="row inline">
 				<label for="container.env">
-					Environment Variables
+					Environment variables
 				</label>
 
 				<span class="annotation">Optional</span>
@@ -426,7 +426,7 @@
 		<div class="column inline">
 			<h3>
 				<span>
-					Rate Limiting
+					Rate limiting
 				</span>
 			</h3>
 
@@ -658,7 +658,7 @@
 					<div class="column inline">
 						<h3>
 							<label for="container.generates_proofs">
-								Generate Proofs?
+								Generates proofs?
 							</label>
 						</h3>
 		

@@ -49,18 +49,18 @@
 
 		<div class="row">
 			<DropdownMenu
-				labelText="Container Template Actions"
+				labelText="Container Template actions"
 				items={[
 					{
 						value: 'duplicate',
-						label: 'Duplicate Container Template',
+						label: 'Duplicate container template',
 						onClick: () => {
 							goto(`/templates/create?fromContainerTemplate=${containerTemplate.id}`)
 						},
 					},
 					{
 						value: 'delete',
-						label: 'Delete Container Template',
+						label: 'Delete container template',
 						isDestructive: true,
 						formAction: `?/delete`,
 						formSubmit: async (e) => {

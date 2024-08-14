@@ -231,7 +231,13 @@
 							</label>
 						</h4>
 
-						<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">region</a> where your {entityType} should be deployed.</p>
+						<p>
+							Select the
+							<a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">
+								{serviceAccount ? `${serviceAccount.provider} ` : ''}region
+							</a>
+							to deploy your {entityType} to.
+						</p>
 					</div>
 
 					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
@@ -296,7 +302,13 @@
 							</label>
 						</h4>
 
-						<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">zone</a> where your {entityType} should be deployed.</p>
+						<p>
+							Select the
+							<a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">
+								{serviceAccount ? `${serviceAccount.provider} ` : ''}zone
+							</a>
+							to deploy your {entityType} to.
+						</p>
 					</div>
 
 					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
@@ -351,7 +363,7 @@
 					<div class="column inline">
 						<h3>
 							<label for="{namePrefix}.machine_type">
-								Machine Type
+								Machine type
 							</label>
 						</h3>
 
@@ -361,7 +373,7 @@
 					<Combobox
 						id="{namePrefix}.machine_type"
 						name="{namePrefix}.machine_type"
-						labelText="Machine Type"
+						labelText="Machine type"
 						bind:value={machineId}
 						{...!machines
 							? {
