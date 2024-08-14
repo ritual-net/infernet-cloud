@@ -5,7 +5,7 @@
 	import type { ServiceAccount } from '$schema/interfaces'
 	import type { BaseResourceClient } from '$/lib/clients/resource/base'
 	import type { Config, NodeConfig, RouterConfig } from './schema'
-	import { providers } from '$/types/provider'
+	import { providers, type Machine } from '$/types/provider'
 	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
 
@@ -177,7 +177,7 @@
 					})
 				)
 					.then(response => response.json())
-			)
+			) as Machine
 		),
 	})
 
