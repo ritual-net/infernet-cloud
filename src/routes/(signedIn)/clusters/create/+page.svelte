@@ -192,90 +192,90 @@
 							/>
 						</section>
 
+						<section class="column wrap">
+							<div class="row wrap">
+								<div class="column inline">
+									<h3 class="row inline">
+										<label for="hasFirewall">
+											Firewall
+										</label>
+									</h3>
+
+									<p>Determine which IP addresses will have permissions to this cluster.</p>
+								</div>
+
+								<Select
+									required
+									id="hasFirewall"
+									name="hasFirewall"
+									labelText="Firewall"
+									bind:value={hasFirewall}
+									items={[
+										{
+											value: false,
+											label: 'All IPs',
+										},
+										{
+											value: true,
+											label: 'Only allowed IPs',
+										}
+									]}
+								/>
+							</div>
+
+							{#if hasFirewall}
+								<Tabs
+									value={0}
+									items={[
+										{
+											id: 0,
+											label: 'HTTP',
+										},
+										{
+											id: 1,
+											label: 'SSH',
+										},
+									]}
+								>
+									<svelte:fragment slot="content"
+										let:item
+									>
+										{#if item.id === 0}
+											<Textarea
+												id="config.ip_allow_http"
+												name="config.ip_allow_http"
+												rows="2"
+												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+												value={serializeCommaSeparated(ip_allow_http)}
+												onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
+												{...$constraints.config?.ip_allow_http}
+												pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+												disabled={!hasFirewall}
+											/>
+
+										{:else}
+											<Textarea
+												id="config.ip_allow_ssh"
+												name="config.ip_allow_ssh"
+												rows="2"
+												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+												value={serializeCommaSeparated(ip_allow_ssh)}
+												onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
+												{...$constraints.config?.ip_allow_ssh}
+												pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+												disabled={!hasFirewall}
+											/>
+										{/if}
+									</svelte:fragment>
+								</Tabs>
+							{/if}
+						</section>
+
 						<Collapsible open={serviceAccount?.provider}>
 							<fieldset
 								class="column"
 								disabled={!(serviceAccount?.provider)}
 							>
-								<section class="column wrap">
-									<div class="row wrap">
-										<div class="column inline">
-											<h3 class="row inline">
-												<label for="hasFirewall">
-													Firewall
-												</label>
-											</h3>
-
-											<p>Determine which IP addresses will have permissions to this cluster.</p>
-										</div>
-
-										<Select
-											required
-											id="hasFirewall"
-											name="hasFirewall"
-											labelText="Firewall"
-											bind:value={hasFirewall}
-											items={[
-												{
-													value: false,
-													label: 'All IPs',
-												},
-												{
-													value: true,
-													label: 'Only allowed IPs',
-												}
-											]}
-										/>
-									</div>
-
-									{#if hasFirewall}
-										<Tabs
-											value={0}
-											items={[
-												{
-													id: 0,
-													label: 'HTTP',
-												},
-												{
-													id: 1,
-													label: 'SSH',
-												},
-											]}
-										>
-											<svelte:fragment slot="content"
-												let:item
-											>
-												{#if item.id === 0}
-													<Textarea
-														id="config.ip_allow_http"
-														name="config.ip_allow_http"
-														rows="2"
-														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={serializeCommaSeparated(ip_allow_http)}
-														onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
-														{...$constraints.config?.ip_allow_http}
-														pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
-														disabled={!hasFirewall}
-													/>
-
-												{:else}
-													<Textarea
-														id="config.ip_allow_ssh"
-														name="config.ip_allow_ssh"
-														rows="2"
-														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={serializeCommaSeparated(ip_allow_ssh)}
-														onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
-														{...$constraints.config?.ip_allow_ssh}
-														pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
-														disabled={!hasFirewall}
-													/>
-												{/if}
-											</svelte:fragment>
-										</Tabs>
-									{/if}
-								</section>
-
 								<RegionZoneMachineFields
 									entityType="cluster"
 									namePrefix="config"
