@@ -17,6 +17,7 @@
 			thumbX,
 			scrollbarY,
 			thumbY,
+			corner,
 		},
 	} = createScrollArea({
 		type: 'always',
@@ -47,6 +48,8 @@
 	<div use:melt={$scrollbarY}>
 		<div use:melt={$thumbY}></div>
 	</div>
+
+	<div use:melt={$corner}></div>
 </svelte:element>
 
 
