@@ -87,6 +87,51 @@
 	</header>
 
 	<section class="column">
+		<h3>Node details</h3>
+
+		<dl class="card column">
+			<section class="row wrap">
+				<dt>Onchain?</dt>
+
+				<dd>
+					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
+			<section class="row">
+				<dt>Chain</dt>
+
+				<dd>
+					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
+						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
+
+						<span class="row inline with-icon">
+							<img
+								src={chain.icon}
+								alt={chain.name}
+								class="icon"
+							/>
+							{chain.name}
+						</span>
+					{:else}
+						{containerTemplate.chain_id}
+					{/if}
+				</dd>
+			</section>
+
+			{#if containerTemplate.docker_account}
+				<section class="row wrap">
+					<dt>Docker Hub account</dt>
+
+					<dd>
+						{containerTemplate.docker_account.username}
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
+	<section class="column">
 		<h3>Details</h3>
 
 		<dl class="card column">
@@ -267,51 +312,6 @@
 
 					<dd>
 						{containerTemplate.generates_proofs ? 'Yes' : 'No'}
-					</dd>
-				</section>
-			{/if}
-		</dl>
-	</section>
-
-	<section class="column">
-		<h3>Node details</h3>
-
-		<dl class="card column">
-			<section class="row wrap">
-				<dt>Onchain?</dt>
-
-				<dd>
-					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
-				</dd>
-			</section>
-
-			<section class="row">
-				<dt>Chain</dt>
-
-				<dd>
-					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
-						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
-
-						<span class="row inline with-icon">
-							<img
-								src={chain.icon}
-								alt={chain.name}
-								class="icon"
-							/>
-							{chain.name}
-						</span>
-					{:else}
-						{containerTemplate.chain_id}
-					{/if}
-				</dd>
-			</section>
-
-			{#if containerTemplate.docker_account}
-				<section class="row wrap">
-					<dt>Docker Hub account</dt>
-
-					<dd>
-						{containerTemplate.docker_account.username}
 					</dd>
 				</section>
 			{/if}
