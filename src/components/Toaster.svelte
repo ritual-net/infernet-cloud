@@ -84,11 +84,11 @@
 
 <style>
 	:root {
-		--toast-typeSuccess-backgroundColor: rgb(246, 255, 246);
-		--toast-typeSuccess-borderColor: rgba(0, 160, 0, 0.2);
+		--toast-typeSuccess-backgroundColor: var(--card-typeSuccess-backgroundColor);
+		--toast-typeSuccess-borderColor: var(--card-typeSuccess-borderColor);
 
-		--toast-typeError-backgroundColor: rgb(255, 246, 246);
-		--toast-typeError-borderColor: rgba(255, 0, 0, 0.2);
+		--toast-typeError-backgroundColor: var(--card-typeError-backgroundColor);
+		--toast-typeError-borderColor: var(--card-typeError-borderColor);
 	}
 
 	[data-portal] {
