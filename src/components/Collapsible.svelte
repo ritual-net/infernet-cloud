@@ -25,7 +25,7 @@
 	
 <svelte:element this={tagName}
 	use:melt={$root}
-	class="column {$$restProps.class}"
+	class="column {$$restProps.class ?? ''}"
 >
 	{#if $$slots.trigger}
 		<button
