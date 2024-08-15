@@ -2,6 +2,7 @@
 	// Inputs
 	export let tagName = 'div'
 	export let containerProps: Record<string, any> | undefined
+	export let viewportProps: Record<string, any> | undefined
 	export let contentProps: Record<string, any> | undefined
 
 
@@ -32,7 +33,10 @@
 	use:melt={$root}
 	{...containerProps}
 >
-	<div use:melt={$viewport}>
+	<div
+		use:melt={$viewport}
+		{...viewportProps}
+	>
 		<div
 			use:melt={$content}
 			{...contentProps}
