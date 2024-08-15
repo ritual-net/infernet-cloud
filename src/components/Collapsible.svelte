@@ -1,5 +1,6 @@
 <script lang="ts">
 	// Inputs
+	export let tagName = 'div'
 	export let open: boolean
 
 
@@ -22,7 +23,7 @@
 </script>
 
 	
-<div
+<svelte:element this={tagName}
 	use:melt={$root}
 	class="column {$$restProps.class}"
 >
@@ -44,7 +45,7 @@
 			<slot />
 		</div>
 	{/if}
-</div>
+</svelte:element>
 
 
 <style>
