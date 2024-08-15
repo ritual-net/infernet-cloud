@@ -397,3 +397,11 @@ code, .code {
 hr {
 	border-top: solid var(--borderWidth) var(--borderColor);
 }
+
+[data-before]::before {
+	content: attr(data-before);
+}
+
+[data-after]::after {
+	content: attr(data-after);
+}
