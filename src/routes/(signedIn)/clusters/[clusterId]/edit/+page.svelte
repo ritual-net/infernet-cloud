@@ -99,7 +99,7 @@
 				Cloud account
 			</h3>
 
-			<div class="row">
+			<div class="row inline with-icon">
 				<img class="icon" src={providers[cluster.service_account.provider].icon} />
 				{cluster.service_account.name}
 			</div>
