@@ -54,23 +54,30 @@
 
 
 <style>
-	[data-melt-scroll-area-viewport] {
-		padding: 1px;
-		padding-right: 0.66em;
+	[data-melt-scroll-area] {
+		margin-right: -0.25em;
+		padding-right: 0.75em;
 
-		resize: vertical;
-		&:not([style*="height"]) {
-			max-height: 19.6rem;
+		[data-melt-scroll-area-viewport] {
+			padding: 1px;
+
+			[data-melt-scroll-area-content] {
+				resize: vertical;
+				&:not([style*="height"]) {
+					max-height: 19.6rem;
+				}
+			}
 		}
-	}
 
-	[data-melt-scroll-area-scrollbar] {
-		background-color: rgba(255, 255, 255, 0.75);
-	}
+		[data-melt-scroll-area-scrollbar] {
+			padding: 1px;
+			background-color: rgba(255, 255, 255, 0.75);
 
-	[data-melt-scroll-area-thumb] {
-		--melt-scroll-area-thumb-width: 0.33em;
-		background-color: #c8c8c875;
-		border-radius: 11em;
+			[data-melt-scroll-area-thumb] {
+				--melt-scroll-area-thumb-width: 0.4em;
+				background-color: #c8c8c875;
+				border-radius: 11em;
+			}
+		}
 	}
 </style>
