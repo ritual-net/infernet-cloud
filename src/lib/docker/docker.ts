@@ -1,4 +1,5 @@
 import type { DockerHubCreds, DockerHubHeaders, DockerHubRepo, DockerHubOrg } from '$/types/docker';
+import { isTruthy } from '../utils/isTruthy'
 
 const BASEURL = 'https://hub.docker.com/v2';
 
@@ -83,7 +84,7 @@ export class DockerHubClient {
 					})
 			)
 		)
-			.filter(Boolean)
+			.filter(isTruthy)
 	}
 
 	/**
@@ -116,11 +117,26 @@ export class DockerHubClient {
 		const orgs = await this.getOrgs();
 
 		// Get all repos for user and orgs
-		const allRepos = await Promise.all([
-			this.getRepos(creds.username, true),
-			...orgs.map((org) => this.getRepos(org, true)),
-		]);
-		return allRepos.flat();
+		return (
+			await Promise.all([
+				(
+					this.getRepos(creds.username, true)
+						.catch(e => {
+							console.warn(e)
+							return undefined
+						})
+				),
+				...orgs.map((org) => (
+					this.getRepos(org, true)
+						.catch(e => {
+							console.warn(e)
+							return undefined
+						})
+				)), 
+			])
+		)
+			.flat()
+			.filter(isTruthy)
 	}
 
 	/**
@@ -129,8 +145,12 @@ export class DockerHubClient {
 	 * @returns Flat array of tagged repo ids.
 	 */
 	public async getRitualImages(): Promise<string[]> {
-		const ritualRepos = await this.getRepos('ritualnetwork');
-		return ritualRepos;
+		try {
+			return await this.getRepos('ritualnetwork')
+		}catch(e){
+			console.warn(e)
+			return []
+		}
 	}
 
 	/**
