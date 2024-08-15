@@ -15,6 +15,8 @@
 
 
 	// Components
+	import DetailsValue from '$/components/DetailsValue.svelte'
+	import ScrollArea from '$/components/ScrollArea.svelte'
 	import XYFlow from '$/components/XYFlow.svelte'
 	import XYFlowDownload from '$/components/XYFlowDownload.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
@@ -104,119 +106,108 @@
 				</XYFlow>
 			{/if}
 
-			<dl class="resources card scrollable column">
-				{#each deployment.tfstate.resources as resource}
-					<section
-						id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
-						class="column"
-					>
-						<dt>
-							{formatResourceType(resource.type)}: {resource.name}
-						</dt>
+			<ScrollArea
+				tagName="dl"
+			>
+				<div class="resources card column">
+					{#each deployment.tfstate.resources as resource}
+						<section
+							id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
+							class="column"
+						>
+							<dt>
+								{formatResourceType(resource.type)}: {resource.name}
+							</dt>
 
-						<dd>
-							{#each resource.instances as instance}
-								<dl
-									class="card column"
-								>
-									{#if instance.attributes?.tags?.Name}
-										<section class="row wrap">
-											<dt>Tag</dt>
-											<dd>
-												<p>{instance.attributes.tags.Name}</p>
-											</dd>
-										</section>
-									{/if}
-
-									{#if instance.attributes?.id}
-										<section class="row wrap">
-											<dt>ID</dt>
-											<dd>
-												<output><code>{instance.attributes.id}</code></output>
-											</dd>
-										</section>
-									{/if}
-
-									{#if instance.attributes?.arn}
-										<section class="row wrap">
-											<dt>ARN</dt>
-											<dd>
-												<p>
-													<a
-														href={getAwsConsoleLink(instance.attributes.arn)}
-														target="_blank"
-														class="row inline with-icon"
-													>
-														<img
-															src={providers[ProviderTypeEnum.AWS].icon}
-															width="20"
-															height="20"
-														/>
-
-														{instance.attributes.arn}
-													</a>
-												</p>
-											</dd>
-										</section>
-									{/if}
-
-									{#each Object.entries(instance.attributes) as [key, value]}
-										{#if (
-											!['tags', 'tags_all', 'id', 'arn'].includes(key)
-											&& value !== null && !(Array.isArray(value) && value.length === 0)
-										)}
+							<dd>
+								{#each resource.instances as instance}
+									<dl
+										class="card column"
+									>
+										{#if instance.attributes?.tags?.Name}
 											<section class="row wrap">
-												<dt>{key}</dt>
+												<dt>Tag</dt>
 												<dd>
-													{#if Array.isArray(value)}
-														{#each value as item}
-															<div>
-																<output><code>{item}</code></output>
-															</div>
-														{/each}
-													{:else if typeof value === 'object'}
-														<dl class="column">
-															{#each Object.entries(value) as [key, _value] (key)}
-																<div class="row">
-																	<dt>{key}</dt>
-																	<dd>{_value}</dd>
-																</div>
-															{/each}
-														</dl>
-													{:else}
-														<output><code>{value}</code></output>
-													{/if}
+													<p>{instance.attributes.tags.Name}</p>
 												</dd>
 											</section>
 										{/if}
-									{/each}
 
-									{#if instance.dependencies?.length}
-										<section class="row wrap">
-											<dt>Dependencies</dt>
-											<dd>
-												{#each instance.dependencies as dependency}
-													{@const [type, name] = dependency.split('.')}
+										{#if instance.attributes?.id}
+											<section class="row wrap">
+												<dt>ID</dt>
+												<dd>
+													<output><code>{instance.attributes.id}</code></output>
+												</dd>
+											</section>
+										{/if}
 
+										{#if instance.attributes?.arn}
+											<section class="row wrap">
+												<dt>ARN</dt>
+												<dd>
 													<p>
-														<a href="#terraform-resource-{deployment.id}-{type}-{name}">
-															{name} ({type})
+														<a
+															href={getAwsConsoleLink(instance.attributes.arn)}
+															target="_blank"
+															class="row inline with-icon"
+														>
+															<img
+																src={providers[ProviderTypeEnum.AWS].icon}
+																width="20"
+																height="20"
+															/>
+
+															{instance.attributes.arn}
 														</a>
 													</p>
-												{/each}
-											</dd>
-										</section>
-									{/if}
-								</dl>
-							{:else}
-								<div class="card column">
-									<p>No resources found.</p>
-								</div>
-							{/each}
-						</dd>
-					</section>
-				{/each}
-			</dl>
+												</dd>
+											</section>
+										{/if}
+
+										{#each Object.entries(instance.attributes) as [key, value]}
+											{#if (
+												!['tags', 'tags_all', 'id', 'arn'].includes(key)
+												&& value !== null && !(Array.isArray(value) && value.length === 0)
+											)}
+												<section class="row wrap">
+													<dt>{key}</dt>
+													<dd>
+														<DetailsValue
+															{value}
+														/>
+													</dd>
+												</section>
+											{/if}
+										{/each}
+
+										{#if instance.dependencies?.length}
+											<section class="row wrap">
+												<dt>Dependencies</dt>
+												<dd>
+													{#each instance.dependencies as dependency}
+														{@const [type, name] = dependency.split('.')}
+
+														<p>
+															<a href="#terraform-resource-{deployment.id}-{type}-{name}">
+																{name} ({type})
+															</a>
+														</p>
+													{/each}
+												</dd>
+											</section>
+										{/if}
+									</dl>
+								{:else}
+									<div class="card column">
+										<p>No resources found.</p>
+									</div>
+								{/each}
+							</dd>
+						</section>
+					{/each}
+				<!-- </div> -->
+			</ScrollArea>
 		</dd>
 	</section>
 {/if}
@@ -225,9 +216,13 @@
 	<section class="column">
 		<dt>Terraform state</dt>
 
-		<dd class="log-container scrollable">
-			<output><code>{JSON.stringify(deployment.tfstate, null, '\t')}</code></output>
-		</dd>
+		<ScrollArea
+			tagName="dd"
+		>
+			<div class="log-container">
+				<output><code>{JSON.stringify(deployment.tfstate, null, '\t')}</code></output>
+			</div>
+		</ScrollArea>
 	</section>
 {/if}
 
@@ -235,38 +230,42 @@
 	<section class="column">
 		<dt>Terraform logs</dt>
 
-		<dd class="log-container scrollable">
-			{#each deployment.stdout as log, i}
-				{@const previousLog = deployment.stdout[i - 1]}
+		<ScrollArea
+			tagName="dd"
+		>
+			<div class="log-container">
+				{#each deployment.stdout as log, i}
+					{@const previousLog = deployment.stdout[i - 1]}
 
-				{#if previousLog && previousLog['@type'] !== log['@type']}
-					<hr>
-				{/if}
-
-				<div
-					class="log"
-					data-type={log['type']} 
-					data-level={log['@level']}
-					data-module={log['@module']}
-				>
-					<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
-
-					{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
-						<div class="diagnostic-log">
-							{#if log.diagnostic.detail}
-								<output><code>{log.diagnostic.detail}</code></output>
-							{/if}
-
-							{#if log.diagnostic.snippet?.code}
-								<blockquote>
-									<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
-								</blockquote>
-							{/if}
-						</div>
+					{#if previousLog && previousLog['@type'] !== log['@type']}
+						<hr>
 					{/if}
-				</div>
-			{/each}
-		</dd>
+
+					<div
+						class="log"
+						data-type={log['type']} 
+						data-level={log['@level']}
+						data-module={log['@module']}
+					>
+						<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+
+						{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
+							<div class="diagnostic-log">
+								{#if log.diagnostic.detail}
+									<output><code>{log.diagnostic.detail}</code></output>
+								{/if}
+
+								{#if log.diagnostic.snippet?.code}
+									<blockquote>
+										<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+									</blockquote>
+								{/if}
+							</div>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</ScrollArea>
 	</section>
 {/if}
 
@@ -274,36 +273,31 @@
 	<section class="column">
 		<dt>Terraform error logs</dt>
 
-		<dd class="log-container scrollable">
-			{#each deployment.stderr as log, i}
-				{@const previousLog = deployment.stderr[i - 1]}
+		<ScrollArea
+			tagName="dd"
+		>
+			<div class="log-container">
+				{#each deployment.stderr as log, i}
+					{@const previousLog = deployment.stderr[i - 1]}
 
-				{#if previousLog && previousLog['@type'] !== log['@type']}
-					<hr>
-				{/if}
+					{#if previousLog && previousLog['@type'] !== log['@type']}
+						<hr>
+					{/if}
 
-				<output
-					class="log"
-					data-type={log['type']} 
-					data-level={log['@level']}
-					data-module={log['@module']}
-				><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
-			{/each}
-		</dd>
+					<output
+						class="log"
+						data-type={log['type']} 
+						data-level={log['@level']}
+						data-module={log['@module']}
+					><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+				{/each}
+			</div>
+		</ScrollArea>
 	</section>
 {/if}
 
 
 <style>
-	.scrollable {
-		overflow: auto;
-
-		resize: vertical;
-		&:not([style*="height"]) {
-			max-height: 19.6rem;
-		}
-	}
-
 	blockquote {
 		padding: 0.5em 0.75em;
 		font-size: smaller;
