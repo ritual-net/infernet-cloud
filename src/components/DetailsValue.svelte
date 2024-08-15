@@ -21,19 +21,23 @@
 		{#each Object.entries(value) as [key, subvalue] (key)}
 			{#if !Array.isArray(subvalue) && typeof subvalue === 'object'}
 				<Collapsible
-					tagName="section"
+					tagName="div"
 				>
 					<svelte:fragment slot="trigger">
-						<dt class="row" data-after="▾">
-							{key}
-						</dt>
+						<header>
+							<dt class="row" data-after="▾">
+								{key}
+							</dt>
+						</header>
 					</svelte:fragment>
 
-					<dd>
-						<svelte:self
-							value={subvalue}
-						/>
-					</dd>
+					<section>
+						<dd>
+							<svelte:self
+								value={subvalue}
+							/>
+						</dd>
+					</section>
 				</Collapsible>
 			{:else}
 				<section class="row wrap">
