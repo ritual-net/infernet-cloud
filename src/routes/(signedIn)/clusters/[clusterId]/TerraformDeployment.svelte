@@ -16,6 +16,7 @@
 
 	// Components
 	import XYFlow from '$/components/XYFlow.svelte'
+	import XYFlowDownload from '$/components/XYFlowDownload.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
 	import TerraformResourceNode from './TerraformResourceNode.svelte'
 </script>
@@ -98,7 +99,9 @@
 						edgesep: 50,
 						ranksep: 60,
 					}}
-				/>
+				>
+					<XYFlowDownload />
+				</XYFlow>
 			{/if}
 
 			<dl class="resources card scrollable column">
