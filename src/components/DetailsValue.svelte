@@ -1,5 +1,10 @@
 <script lang="ts">
+	// Inputs
 	export let value: Record<string, any>
+
+
+	// Components
+	import Collapsible from './Collapsible.svelte'
 </script>
 
 
@@ -14,14 +19,33 @@
 {:else if typeof value === 'object'}
 	<dl class="card column">
 		{#each Object.entries(value) as [key, subvalue] (key)}
-			<div class="row">
-				<dt>{key}</dt>
-				<dd>
-					<svelte:self
-						value={subvalue}
-					/>
-				</dd>
-			</div>
+			{#if !Array.isArray(subvalue) && typeof subvalue === 'object'}
+				<Collapsible
+					tagName="section"
+				>
+					<svelte:fragment slot="trigger">
+						<dt class="row" data-after="▾">
+							{key}
+						</dt>
+					</svelte:fragment>
+
+					<dd>
+						<svelte:self
+							value={subvalue}
+						/>
+					</dd>
+				</Collapsible>
+			{:else}
+				<section class="row wrap">
+					<dt>{key}</dt>
+
+					<dd>
+						<svelte:self
+							value={subvalue}
+						/>
+					</dd>
+				</section>
+			{/if}
 		{/each}
 	</dl>
 {:else if value}
