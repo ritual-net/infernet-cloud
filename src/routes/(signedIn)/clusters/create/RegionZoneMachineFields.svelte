@@ -188,7 +188,10 @@
 
 
 	// Components
+	import Collapsible from '$/components/Collapsible.svelte'
 	import Combobox from '$/components/Combobox.svelte'
+	import DetailsValue from '$/components/DetailsValue.svelte'
+	import ScrollArea from '$/components/ScrollArea.svelte'
 	import Switch from '$/components/Switch.svelte'
 
 
@@ -416,6 +419,26 @@
 						{...constraints?.machine_type}
 					/>
 				</div>
+
+				{#if machineInfo?.info}
+					<Collapsible
+						class="card"
+					>
+						<svelte:fragment slot="trigger">
+							<header class="row" data-after="▾">
+								Details
+							</header>
+						</svelte:fragment>
+
+						<ScrollArea>
+							<div>
+								<DetailsValue
+									value={machineInfo.info}
+								/>
+							</div>
+						</ScrollArea>
+					</Collapsible>
+				{/if}
 			</section>
 		{/if}
 	</fieldset>
@@ -460,4 +483,3 @@
 		height: 1.5em;
 	}
 </style>
-
