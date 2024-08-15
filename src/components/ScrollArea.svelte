@@ -66,8 +66,10 @@
 			padding: 1px;
 
 			[data-melt-scroll-area-content] {
+				display: block !important;
+
 				resize: vertical;
-				&:not([style*="height"]) {
+				&:not([style^="height:"]):not([style*=";height:"]) {
 					max-height: 19.6rem;
 				}
 			}
