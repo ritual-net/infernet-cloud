@@ -19,7 +19,11 @@
 {:else if typeof value === 'object'}
 	<dl class="card column">
 		{#each Object.entries(value) as [key, subvalue] (key)}
-			{#if !Array.isArray(subvalue) && typeof subvalue === 'object'}
+			{#if (
+				Array.isArray(subvalue)
+					? !Array.isArray(subvalue[0]) && typeof subvalue[0] === 'object'
+					: typeof subvalue === 'object'
+			)}
 				<Collapsible
 					tagName="div"
 				>
