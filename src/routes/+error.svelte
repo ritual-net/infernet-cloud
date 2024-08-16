@@ -17,3 +17,10 @@
 		<p>Status: {JSON.stringify($page.status)}</p>
 	</div>
 </main>
+
+
+<style>
+	main {
+		align-content: center;
+	}
+</style>
