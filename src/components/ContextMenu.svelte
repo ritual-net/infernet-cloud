@@ -25,6 +25,9 @@
 			placement,
 			fitViewport: true,
 		},
+
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
 	})
 
 

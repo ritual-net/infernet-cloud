@@ -99,6 +99,9 @@
 			// boundary: document.getElementsByTagName('main')[0],
 		},
 
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
+
 		onOpenChange: ({ curr, next }) => {
 			const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
 
