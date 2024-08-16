@@ -32,7 +32,7 @@
 			type="button"
 			use:melt={$trigger}
 		>
-			<slot name="trigger" />
+			<slot name="trigger" {open} />
 		</button>
 	{/if}
 

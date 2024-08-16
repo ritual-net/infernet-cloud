@@ -33,8 +33,13 @@
 					<Collapsible
 						tagName="div"
 					>
-						<svelte:fragment slot="trigger">
-							<header class="row" data-after="▾">
+						<svelte:fragment slot="trigger"
+							let:open
+						>
+							<header
+								class="row"
+								data-after={open ? '▴' : '▾'}
+							>
 								<dt>
 									{key}
 								</dt>
