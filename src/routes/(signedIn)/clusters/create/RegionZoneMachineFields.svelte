@@ -430,7 +430,9 @@
 							</header>
 						</svelte:fragment>
 
-						<ScrollArea>
+						<ScrollArea
+							layout="inline"
+						>
 							<div>
 								<DetailsValue
 									value={machineInfo.info}
