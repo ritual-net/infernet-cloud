@@ -258,6 +258,7 @@
 											label: regionId,
 										}
 									].filter(Boolean),
+									loading: true,
 									visuallyDisabled: true,
 								}
 								: {
@@ -333,6 +334,7 @@
 											label: zoneId,
 										}
 									].filter(Boolean),
+									loading: true,
 									visuallyDisabled: true,
 								}
 								: {
@@ -391,6 +393,7 @@
 										label: machineId,
 									}
 								].filter(Boolean),
+								loading: true,
 								visuallyDisabled: true,
 							}
 							: {

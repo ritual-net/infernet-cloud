@@ -502,6 +502,7 @@
 						label: node.dockerAccountUsername,
 					}
 				].filter(Boolean),
+				loading: true,
 				visuallyDisabled: true,
 			}
 			: {
