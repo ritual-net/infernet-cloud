@@ -409,7 +409,7 @@
 											label: hasGpu ? 'GPU-Enabled' : 'No GPU',
 											items: machineConfigs.map(machineConfig => ({
 												value: machineConfig.id,
-												label: `${machineConfig.name} (${machineConfig.description})`,
+												label: `${machineConfig.name}${machineConfig.description ? ` (${machineConfig.description})` : ''}`,
 											}))
 										})
 									)
