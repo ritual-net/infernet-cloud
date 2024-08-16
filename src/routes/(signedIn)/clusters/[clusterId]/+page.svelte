@@ -442,9 +442,7 @@
 									</header>
 								</svelte:fragment>
 
-								<dl
-									class="snapshot-details card column"
-								>
+								<dl class="snapshot-details column">
 									<section class="row wrap">
 										<dt>Status</dt>
 

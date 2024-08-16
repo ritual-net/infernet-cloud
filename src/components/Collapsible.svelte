@@ -50,7 +50,7 @@
 
 <style>
 	[data-melt-collapsible] {
-		gap: 0;
+		gap: var(--borderWidth);
 
 		&:empty, &:not(:has(*)) {
 			display: contents;
