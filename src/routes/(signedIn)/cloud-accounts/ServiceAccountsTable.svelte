@@ -27,7 +27,7 @@
 			accessor: serviceAccount => serviceAccount.name,
 		},
 		{
-			header: 'Cloud Provider',
+			header: 'Cloud provider',
 			accessor: serviceAccount => serviceAccount,
 			cell: ({ value: serviceAccount }) => (
 				createRender(WithIcon, {
