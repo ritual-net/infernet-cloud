@@ -1,10 +1,10 @@
 <main>
-    <slot></slot>
+	<slot></slot>
 </main>
 
 
 <style>
-    main {
-        align-content: center;
-    }
+	main {
+		align-content: center;
+	}
 </style>
