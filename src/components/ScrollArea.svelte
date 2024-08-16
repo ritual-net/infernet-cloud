@@ -1,6 +1,11 @@
 <script lang="ts">
 	// Inputs
 	export let tagName = 'div'
+
+	// (View options)
+	export let layout: 'standalone' | 'nested' = 'standalone'
+
+	// (Parts)
 	export let containerProps: Record<string, any> | undefined
 	export let viewportProps: Record<string, any> | undefined
 	export let contentProps: Record<string, any> | undefined
@@ -32,6 +37,7 @@
 	this={tagName}
 	use:melt={$root}
 	{...containerProps}
+	data-layout={layout}
 >
 	<div
 		use:melt={$viewport}
@@ -59,8 +65,10 @@
 
 <style>
 	[data-melt-scroll-area] {
-		margin-right: -0.25em;
-		padding-right: 0.75em;
+		&[data-layout="standalone"] {
+			margin-right: -0.25em;
+			padding-right: 0.75em;
+		}
 
 		[data-melt-scroll-area-viewport] {
 			padding: 1px;
