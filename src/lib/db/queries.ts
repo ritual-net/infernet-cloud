@@ -224,7 +224,7 @@ export const getClusterByRouterId = async (
 			service_account: {
 				provider: true,
 			},
-			filter_single: e.op(cluster.router_status.id, '=', id),
+			filter_single: e.op(cluster.router_state?.id, '=', id),
 		}))
 		.run(client);
 

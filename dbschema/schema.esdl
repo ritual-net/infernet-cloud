@@ -205,6 +205,15 @@ module default {
       on source delete delete target;
     }
 
+    state := (
+      select (
+        id := <str>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index, 'id'),
+        ip := <IpAddress>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index, 'ip')
+      )
+      if exists(InfernetNode.cluster.latest_deployment.tfstate)
+      else {}
+    );
+
     access policy only_owner
       allow all
       using (.<nodes[is Cluster].service_account.user ?= global current_user);
@@ -212,6 +221,8 @@ module default {
     access policy insertion
       allow insert
   }
+
+  scalar type ClusterNodeIndex extending sequence;
 
   abstract type Cluster {
     required name: str;
@@ -237,6 +248,8 @@ module default {
     multi nodes: InfernetNode {
       constraint exclusive;
       on source delete delete target;
+
+      node_index: ClusterNodeIndex;
     }
 
     multi deployments := .<cluster[is TerraformDeployment];
@@ -256,12 +269,15 @@ module default {
       'healthy' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' else
       'unknown'
     );
-    router_status: tuple<id: str, ip: str>;
 
-    # router := (
-    #   .latest_deployment.tfstate. if exists(.latest_deployment.tfstate)
-    #   else {}
-    # );
+    router_state := (
+      select (
+        id := <str>json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value', 'id'),
+        ip := <IpAddress>json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value', 'ip')
+      )
+      if exists(Cluster.latest_deployment.tfstate)
+      else {}
+    );
 
     constraint exclusive on ((.name, .service_account));
     access policy only_owner

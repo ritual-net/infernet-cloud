@@ -344,12 +344,12 @@
 				</dd>
 			</section>
 
-			{#if cluster.router_status?.ip}
+			{#if cluster.router_state?.ip}
 				<section class="row wrap">
 					<dt>Router IP</dt>
 
 					<dd>
-						{cluster.router_status.ip}
+						{cluster.router_state.ip}
 					</dd>
 				</section>
 			{/if}

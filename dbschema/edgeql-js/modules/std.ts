@@ -5,6 +5,7 @@ import * as _ from "../imports";
 import _module__enc from "./std/enc";
 import type * as _cfg from "./cfg";
 import type * as _cal from "./cal";
+import type * as _default from "./default";
 import type * as _schema from "./schema";
 type $anyscalar = $anypoint | $anyreal | $.EnumType | $bool | $bytes | $uuid | $str | $json | _cfg.$memory | _cal.$local_time | _cal.$relative_duration | _cal.$date_duration;
 
@@ -16,6 +17,15 @@ type $anycontiguous = $anyfloat | $datetime | $duration | $decimal | _cal.$local
 
 export type $str = $.ScalarType<"std::str", string>;
 const str: $.scalarTypeWithConstructor<$str, never> = $.makeType<$.scalarTypeWithConstructor<$str, never>>(_.spec, "00000000-0000-0000-0000-000000000101", _.syntax.literal);
+
+type $anyreal = $anyint | $anyfloat | $anynumeric;
+
+type $anyint = $number | $bigint;
+
+export type $int64 = $.ScalarType<"std::number", number>;
+const int64: $.scalarTypeWithConstructor<$number, string> = $.makeType<$.scalarTypeWithConstructor<$number, string>>(_.spec, "00000000-0000-0000-0000-000000000105", _.syntax.literal);
+
+type $sequence = _default.$ClusterNodeIndex;
 
 export type $Endian = {
   "Little": $.$expr_Literal<$Endian>;
@@ -32,11 +42,7 @@ export type $JsonEmpty = {
 } & $.EnumType<"std::JsonEmpty", ["ReturnEmpty", "ReturnTarget", "Error", "UseNull", "DeleteKey"]>;
 const JsonEmpty: $JsonEmpty = $.makeType<$JsonEmpty>(_.spec, "584feb89-c83d-561d-aa78-24e6d779f044", _.syntax.literal);
 
-type $anyreal = $anyint | $anyfloat | $anynumeric;
-
 type $anyfloat = $number;
-
-type $anyint = $number | $bigint;
 
 type $anynumeric = $decimal | $bigint;
 
@@ -72,14 +78,8 @@ const int16: $.scalarTypeWithConstructor<$number, string> = $.makeType<$.scalarT
 export type $int32 = $.ScalarType<"std::number", number>;
 const int32: $.scalarTypeWithConstructor<$number, string> = $.makeType<$.scalarTypeWithConstructor<$number, string>>(_.spec, "00000000-0000-0000-0000-000000000104", _.syntax.literal);
 
-export type $int64 = $.ScalarType<"std::number", number>;
-const int64: $.scalarTypeWithConstructor<$number, string> = $.makeType<$.scalarTypeWithConstructor<$number, string>>(_.spec, "00000000-0000-0000-0000-000000000105", _.syntax.literal);
-
 export type $json = $.ScalarType<"std::json", unknown>;
 const json: $.scalarTypeWithConstructor<$json, never> = $.makeType<$.scalarTypeWithConstructor<$json, never>>(_.spec, "00000000-0000-0000-0000-00000000010f", _.syntax.literal);
-
-interface $sequence extends $int64 {}
-const $sequence: $sequence = $.makeType<$sequence>(_.spec, "fd1c52ea-74a9-541b-88e2-378d1edb02fd", _.syntax.literal);
 
 export type $uuid = $.ScalarType<"std::uuid", string>;
 const uuid: $.scalarTypeWithConstructor<$uuid, never> = $.makeType<$.scalarTypeWithConstructor<$uuid, never>>(_.spec, "00000000-0000-0000-0000-000000000100", _.syntax.literal);
@@ -4919,12 +4919,13 @@ function sequence_next(...args: any[]) {
 
 
 
-export { str, Endian, JsonEmpty, bigint, bool, bytes, datetime, decimal, duration, float32, float64, int16, int32, int64, json, $sequence, uuid, number, $BaseObject, BaseObject, $Object_8ce8c71ee4fa5f73840c22d7eaa58588, Object_8ce8c71ee4fa5f73840c22d7eaa58588, $FreeObject, FreeObject };
+export { str, int64, Endian, JsonEmpty, bigint, bool, bytes, datetime, decimal, duration, float32, float64, int16, int32, json, uuid, number, $BaseObject, BaseObject, $Object_8ce8c71ee4fa5f73840c22d7eaa58588, Object_8ce8c71ee4fa5f73840c22d7eaa58588, $FreeObject, FreeObject };
 
-export type { $anyscalar, $anypoint, $anydiscrete, $anycontiguous, $anyreal, $anyfloat, $anyint, $anynumeric };
+export type { $anyscalar, $anypoint, $anydiscrete, $anycontiguous, $anyreal, $anyint, $sequence, $anyfloat, $anynumeric };
 
 type __defaultExports = {
   "str": typeof str;
+  "int64": typeof int64;
   "Endian": typeof Endian;
   "JsonEmpty": typeof JsonEmpty;
   "bigint": typeof bigint;
@@ -4937,7 +4938,6 @@ type __defaultExports = {
   "float64": typeof float64;
   "int16": typeof int16;
   "int32": typeof int32;
-  "int64": typeof int64;
   "json": typeof json;
   "uuid": typeof uuid;
   "BaseObject": typeof BaseObject;
@@ -5042,6 +5042,7 @@ type __defaultExports = {
 };
 const __defaultExports: __defaultExports = {
   "str": str,
+  "int64": int64,
   "Endian": Endian,
   "JsonEmpty": JsonEmpty,
   "bigint": bigint,
@@ -5054,7 +5055,6 @@ const __defaultExports: __defaultExports = {
   "float64": float64,
   "int16": int16,
   "int32": int32,
-  "int64": int64,
   "json": json,
   "uuid": uuid,
   "BaseObject": BaseObject,

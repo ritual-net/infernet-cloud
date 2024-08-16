@@ -18,7 +18,6 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _sys.$TransactionIsolation ? _sys.$TransactionIsolation : 
   T extends _std.$uuid ? _std.$uuid : 
   T extends _std.$json ? _std.$json : 
-  T extends _std.$int64 ? _std.$int64 : 
   T extends _std.$int32 ? _std.$int32 : 
   T extends _std.$int16 ? _std.$int16 : 
   T extends _std.$float64 ? _std.$float64 : 
@@ -59,6 +58,8 @@ export type scalarAssignableBy<T extends $.ScalarType> =
   T extends _default.$Secp256k1PrivateKey ? _default.$Secp256k1PrivateKey : 
   T extends _default.$IpAddressWithMask ? _default.$IpAddressWithMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
+  T extends _default.$ClusterNodeIndex ? _default.$ClusterNodeIndex : 
+  T extends _std.$int64 ? _std.$int64 : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
   T extends _default.$BigIntString ? _default.$BigIntString : 
   T extends _default.$Address ? _default.$Address : 
@@ -80,7 +81,6 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _sys.$TransactionIsolation ? _sys.$TransactionIsolation : 
   T extends _std.$uuid ? _std.$uuid : 
   T extends _std.$json ? _std.$json : 
-  T extends _std.$int64 ? _std.$int64 : 
   T extends _std.$int32 ? _std.$int32 : 
   T extends _std.$int16 ? _std.$int16 : 
   T extends _std.$float64 ? _std.$float64 : 
@@ -121,6 +121,8 @@ export type scalarCastableFrom<T extends $.ScalarType> =
   T extends _default.$Secp256k1PrivateKey ? _default.$Secp256k1PrivateKey : 
   T extends _default.$IpAddressWithMask ? _default.$IpAddressWithMask : 
   T extends _default.$IpAddress ? _default.$IpAddress : 
+  T extends _default.$ClusterNodeIndex ? _default.$ClusterNodeIndex : 
+  T extends _std.$int64 ? _std.$int64 : 
   T extends _default.$CloudProvider ? _default.$CloudProvider : 
   T extends _default.$BigIntString ? _default.$BigIntString : 
   T extends _default.$Address ? _default.$Address : 
@@ -163,12 +165,6 @@ type getSharedParentScalar<A, B> =
   :
   A extends _std.$json ?
     B extends _std.$json ?
-    B
-    :
-    never
-  :
-  A extends _std.$int64 ?
-    B extends _std.$int64 ?
     B
     :
     never
@@ -419,6 +415,18 @@ type getSharedParentScalar<A, B> =
     :
     never
   :
+  A extends _default.$ClusterNodeIndex ?
+    B extends _default.$ClusterNodeIndex ?
+    B
+    :
+    never
+  :
+  A extends _std.$int64 ?
+    B extends _std.$int64 ?
+    B
+    :
+    never
+  :
   A extends _default.$CloudProvider ?
     B extends _default.$CloudProvider ?
     B
@@ -540,12 +548,6 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
   if (a.__name__ === "std::json") {
     if(b.__name__ === "std::json") {
-      return b;
-    }
-    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
-    }
-  if (a.__name__ === "std::int64") {
-    if(b.__name__ === "std::int64") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
@@ -792,6 +794,18 @@ function getSharedParentScalar<A extends $.ScalarType, B extends $.ScalarType>(a
     }
   if (a.__name__ === "default::IpAddress") {
     if(b.__name__ === "default::IpAddress") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "default::ClusterNodeIndex") {
+    if(b.__name__ === "default::ClusterNodeIndex") {
+      return b;
+    }
+    throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
+    }
+  if (a.__name__ === "std::int64") {
+    if(b.__name__ === "std::int64") {
       return b;
     }
     throw new Error(`Types are not castable: ${a.__name__}, ${b.__name__}`);
