@@ -61,7 +61,10 @@
 
 
 <Panel position="top-right">
-	<button on:click={onClick}>
+	<button
+		class="small"
+		on:click={onClick}
+	>
 		Download
 	</button>
 </Panel>
