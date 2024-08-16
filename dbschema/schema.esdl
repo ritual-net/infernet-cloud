@@ -207,8 +207,8 @@ module default {
 
     state := (
       select (
-        id := <str>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index, 'id'),
-        ip := <IpAddress>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index, 'ip')
+        id := <str>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index ?? '0', 'id'),
+        ip := <IpAddress>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index ?? '0', 'ip')
       )
       if exists(InfernetNode.cluster.latest_deployment.tfstate)
       else {}
