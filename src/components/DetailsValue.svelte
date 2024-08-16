@@ -3,6 +3,11 @@
 	export let value: Record<string, any>
 
 
+	// Internal state
+	// (Recursive)
+	export let level = 0
+
+
 	// Components
 	import Collapsible from './Collapsible.svelte'
 </script>
@@ -17,7 +22,7 @@
 		</div>
 	{/each}
 {:else if typeof value === 'object'}
-	<dl class="card column">
+	<dl class="card column" data-level={level}>
 		{#each Object.entries(value) as [key, subvalue] (key)}
 			{#if (
 				Array.isArray(subvalue)
@@ -28,20 +33,19 @@
 					tagName="div"
 				>
 					<svelte:fragment slot="trigger">
-						<header>
-							<dt class="row" data-after="▾">
+						<header class="row" data-after="▾">
+							<dt>
 								{key}
 							</dt>
 						</header>
 					</svelte:fragment>
 
-					<section>
-						<dd>
-							<svelte:self
-								value={subvalue}
-							/>
-						</dd>
-					</section>
+					<dd>
+						<svelte:self
+							value={subvalue}
+							level={level + 1}
+						/>
+					</dd>
 				</Collapsible>
 			{:else}
 				<section class="row wrap">
@@ -67,5 +71,37 @@
 	[data-empty]:before {
 		content: '–';
 		opacity: 0.5;
+	}
+
+	.card {
+		--card-level: 0;
+
+		&[data-level="1"] {
+			--card-level: 1;
+		}
+
+		&[data-level="2"] {
+			--card-level: 2;
+		}
+
+		&[data-level="3"] {
+			--card-level: 3;
+		}
+
+		&[data-level="4"] {
+			--card-level: 4;
+		}
+
+		&[data-level="5"] {
+			--card-level: 5;
+		}
+
+		&[data-level="6"] {
+			--card-level: 6;
+		}
+
+		:is(header, section, footer) {
+			padding-left: calc(var(--card-paddingX) * (var(--card-level) + 1));
+		}
 	}
 </style>
