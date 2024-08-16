@@ -273,7 +273,12 @@
 		</div>
 
 		{#if !nodeConfiguration.hasGpu && container.gpu}
-			<p>Note: <u>node is not currently configured with a GPU.</u> This container may not operate correctly. Choose a machine type with GPU support.</p>
+			<div
+				class="card warning row"
+				data-before="⚠️"
+			>
+				<p>Note: <u>node is not currently configured with a GPU.</u> This container may not operate correctly. Choose a machine type with GPU support.</p>
+			</div>
 		{/if}
 	</section>
 
@@ -674,7 +679,12 @@
 				</div>
 
 				{#if container.generates_proofs}
-					<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. If using this, be sure to permission the node by setting allowed Addresses and Delegate Addresses under Firewall.</p>
+					<div
+						class="card warning row"
+						data-before="⚠️"
+					>
+						<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. If using this, be sure to permission the node by setting allowed Addresses and Delegate Addresses under Firewall.</p>
+					</div>
 				{/if}
 			</section>
 		<!-- </Collapsible>
