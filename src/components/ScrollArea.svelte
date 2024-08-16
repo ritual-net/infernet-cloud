@@ -72,6 +72,7 @@
 
 		[data-melt-scroll-area-viewport] {
 			padding: 1px;
+			border-radius: 0.5em;
 
 			[data-melt-scroll-area-content] {
 				display: block !important;
@@ -90,7 +91,7 @@
 			[data-melt-scroll-area-thumb] {
 				--melt-scroll-area-thumb-width: 0.4em;
 				background-color: #c8c8c875;
-				border-radius: 11em;
+				border-radius: 1em;
 			}
 		}
 	}
