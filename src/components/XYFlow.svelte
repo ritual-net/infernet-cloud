@@ -100,6 +100,8 @@
 		defaultEdgeOptions={{ type: 'smoothstep', animated: true }}
 	>
 		<Background />
+
+		<slot />
 	</SvelteFlow>
 </div>
 
