@@ -372,6 +372,10 @@ button, .button {
 	&.column:has(:is(header, section, footer)) {
 		row-gap: var(--card-borderWidth);
 	}
+
+	.card {
+		margin: -1px;
+	}
 }
 
 .annotation {
