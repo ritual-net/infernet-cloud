@@ -253,7 +253,7 @@
 							<p>Loading nodes...</p>
 						</div>
 					{:catch error}
-						<div class="card" transition:scale>
+						<div class="card error" transition:scale>
 							<p>Failed to load nodes.</p>
 							<pre><output><code>{error}</code></output></pre>
 						</div>
