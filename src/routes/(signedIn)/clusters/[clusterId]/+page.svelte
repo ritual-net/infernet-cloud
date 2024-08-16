@@ -249,7 +249,7 @@
 			<div class="stack">
 				{#if !nodesWithInfo}
 					{#await nodesWithInfoPromise}
-						<div class="card" transition:scale>
+						<div class="card loading" transition:scale>
 							<p>Loading nodes...</p>
 						</div>
 					{:catch error}
