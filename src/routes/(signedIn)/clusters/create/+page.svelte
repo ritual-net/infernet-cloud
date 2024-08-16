@@ -442,6 +442,7 @@
 	.loading-status {
 		position: relative;
 		place-self: center;
+		cursor: progress;
 	}
 
 	.icon {
