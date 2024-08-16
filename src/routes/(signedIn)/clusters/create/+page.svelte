@@ -375,8 +375,11 @@
 							<Collapsible
 								open
 							>
-								<svelte:fragment slot="trigger">
-									<header class="row">
+								<svelte:fragment slot="trigger" let:open>
+									<header
+										class="row"
+										data-after={open ? '▴' : '▾'}
+									>
 										<h3 class="annotation">
 											Node #{i + 1}
 										</h3>
