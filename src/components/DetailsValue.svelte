@@ -22,44 +22,48 @@
 		</div>
 	{/each}
 {:else if typeof value === 'object'}
-	<dl class="card column" data-level={level}>
-		{#each Object.entries(value) as [key, subvalue] (key)}
-			{#if (
-				Array.isArray(subvalue)
-					? !Array.isArray(subvalue[0]) && typeof subvalue[0] === 'object'
-					: typeof subvalue === 'object'
-			)}
-				<Collapsible
-					tagName="div"
-				>
-					<svelte:fragment slot="trigger">
-						<header class="row" data-after="▾">
-							<dt>
-								{key}
-							</dt>
-						</header>
-					</svelte:fragment>
+	{#if Object.keys(value).length}
+		<dl class="card column" data-level={level}>
+			{#each Object.entries(value) as [key, subvalue] (key)}
+				{#if (
+					Array.isArray(subvalue)
+						? !Array.isArray(subvalue[0]) && typeof subvalue[0] === 'object'
+						: typeof subvalue === 'object'
+				)}
+					<Collapsible
+						tagName="div"
+					>
+						<svelte:fragment slot="trigger">
+							<header class="row" data-after="▾">
+								<dt>
+									{key}
+								</dt>
+							</header>
+						</svelte:fragment>
 
-					<dd>
-						<svelte:self
-							value={subvalue}
-							level={level + 1}
-						/>
-					</dd>
-				</Collapsible>
-			{:else}
-				<section class="row wrap">
-					<dt>{key}</dt>
+						<dd>
+							<svelte:self
+								value={subvalue}
+								level={level + 1}
+							/>
+						</dd>
+					</Collapsible>
+				{:else}
+					<section class="row wrap">
+						<dt>{key}</dt>
 
-					<dd>
-						<svelte:self
-							value={subvalue}
-						/>
-					</dd>
-				</section>
-			{/if}
-		{/each}
-	</dl>
+						<dd>
+							<svelte:self
+								value={subvalue}
+							/>
+						</dd>
+					</section>
+				{/if}
+			{/each}
+		</dl>
+	{:else}
+		<span data-empty></span>
+	{/if}
 {:else if value}
 	<output><code>{value}</code></output>
 {:else}
