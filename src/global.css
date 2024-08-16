@@ -409,3 +409,7 @@ hr {
 [data-after]::after {
 	content: attr(data-after);
 }
+
+.loading {
+	cursor: progress;
+}

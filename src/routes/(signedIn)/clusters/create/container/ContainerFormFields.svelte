@@ -627,7 +627,7 @@
 
 			<!-- {#if !nodeConfiguration.chainId}
 				<div
-					class="loading-status card row"
+					class="floating-status card row warning"
 					transition:scale
 				>
 					<p>Specify a Chain ID at the node level first.</p>
@@ -635,7 +635,7 @@
 			{:else if !nodeConfiguration.isPaymentsEnabled} -->
 			{#if !nodeConfiguration.isPaymentsEnabled}
 				<div
-					class="loading-status card row"
+					class="floating-status card row warning"
 					transition:scale
 				>
 					{#if chainsByChainId.has(nodeConfiguration.chainId)}
@@ -707,10 +707,9 @@
 		--input-paddingY: 0.75rem;
 	}
 
-	.loading-status {
+	.floating-status {
 		position: relative;
 		place-self: center;
-		cursor: progress;
 	}
 
 	.icon {

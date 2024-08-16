@@ -447,7 +447,7 @@
 
 	{#if !serviceAccount}
 		<div
-			class="loading-status card row"
+			class="floating-status card warning"
 			transition:scale|global
 		>
 			<p>Choose a cloud account first.</p>
@@ -455,7 +455,7 @@
 	{:else}
 		{#if $regionsQuery.isPending}
 			<div
-				class="loading-status card row"
+				class="floating-status card loading row"
 				transition:scale|global
 			>
 				<img class="icon" src={providers[serviceAccount.provider].icon} />
@@ -463,7 +463,7 @@
 			</div>
 		{:else if $regionsQuery.isError}
 			<div
-				class="loading-status card row"
+				class="floating-status card error row"
 				transition:scale|global
 			>
 				<img class="icon" src={providers[serviceAccount.provider].icon} />
@@ -475,10 +475,9 @@
 
 
 <style>
-	.loading-status {
+	.floating-status {
 		position: relative;
 		place-self: center;
-		cursor: progress;
 	}
 
 	.icon {
