@@ -5,6 +5,7 @@
 
 
 	// Inputs
+	export let clusterName: string
 	export let provider: ProviderTypeEnum
 	export let deployment: TerraformDeployment
 	export let isSummary = false
@@ -102,7 +103,9 @@
 						ranksep: 60,
 					}}
 				>
-					<XYFlowDownload />
+					<XYFlowDownload
+						fileName={`${clusterName}-resources-${deployment.action}-${deployment.timestamp}`}
+					/>
 				</XYFlow>
 			{/if}
 

@@ -382,6 +382,7 @@
 				{/if}
 
 				<TerraformDeployment
+					clusterName={cluster.name}
 					provider={cluster.service_account.provider}
 					deployment={cluster.latest_deployment}
 					isSummary
@@ -462,6 +463,7 @@
 									</section>
 
 									<TerraformDeployment
+										clusterName={cluster.name}
 										provider={cluster.service_account.provider}
 										deployment={snapshot}
 									/>
