@@ -261,7 +261,7 @@
 					</label>
 				</h3>
 
-				<p>Determine if GPU-enabled.</p>
+				<p>Specify if the container requires a GPU to run jobs.</p>
 			</div>
 
 			<Switch
@@ -277,7 +277,7 @@
 				class="card warning row"
 				data-before="⚠️"
 			>
-				<p>Note: <u>node is not currently configured with a GPU.</u> This container may not operate correctly. Choose a machine type with GPU support.</p>
+				<p>Note: This container may not operate correctly as the node is not currently configured with a GPU. Be sure to choose a zone / machine type with GPU support.</p>
 			</div>
 		{/if}
 	</section>
