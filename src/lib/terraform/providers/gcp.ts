@@ -49,7 +49,7 @@ export class GCPTerraform extends BaseTerraform {
 
 			nodes: Object.fromEntries(
 				cluster.nodes.map((node, i) => [
-					`infernet-node-${node.id}`,
+					node.provider_id,
 					{
 						region: node.region || cluster.region,
 						zone: node.zone || cluster.zone,

@@ -49,7 +49,7 @@ export class AWSTerraform extends BaseTerraform {
 			nodes: Object.fromEntries(
 				cluster.nodes
 					.map((node) => [
-						`infernet-node-${node.id}`,
+						node.provider_id,
 						{
 							zone: node.zone || cluster.zone,
 							machine_type: node.machine_type,

@@ -192,8 +192,6 @@ module default {
 
     allowed_sim_errors: array<str>;
 
-    provider_id: str;
-
     snapshot_sync_sleep: float32;
 
     snapshot_sync_batch_size: int16;
@@ -205,10 +203,12 @@ module default {
       on source delete delete target;
     }
 
+    provider_id := 'infernet-node-' ++ <str>.id;
+
     state := (
       select (
-        id := <str>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index ?? '0', 'id'),
-        ip := <IpAddress>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', <str>InfernetNode.cluster@node_index ?? '0', 'ip')
+        id := <str>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', InfernetNode.provider_id, 'id'),
+        ip := <IpAddress>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', InfernetNode.provider_id, 'ip')
       )
       if exists(InfernetNode.cluster.latest_deployment.tfstate)
       else {}
@@ -221,8 +221,6 @@ module default {
     access policy insertion
       allow insert
   }
-
-  scalar type ClusterNodeIndex extending sequence;
 
   abstract type Cluster {
     required name: str;
@@ -248,8 +246,6 @@ module default {
     multi nodes: InfernetNode {
       constraint exclusive;
       on source delete delete target;
-
-      node_index: ClusterNodeIndex;
     }
 
     multi deployments := .<cluster[is TerraformDeployment];

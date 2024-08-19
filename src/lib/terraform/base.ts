@@ -223,7 +223,7 @@ const createNodeConfigFiles = async (
 
 	// Create node config files under configs/
 	for (const node of nodes) {
-		const nodeId = `infernet-node-${node.id}`;
+		const nodeId = node.provider_id;
 
 		const jsonConfig = formatNodeConfig(node);
 

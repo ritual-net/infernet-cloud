@@ -88,7 +88,6 @@ export interface InfernetNode extends std.$Object {
   "chain_enabled": boolean;
   "forward_stats": boolean;
   "max_gas_limit"?: number | null;
-  "provider_id"?: string | null;
   "rpc_url"?: string | null;
   "trail_head_blocks"?: number | null;
   "docker_account"?: DockerAccount | null;
@@ -102,6 +101,7 @@ export interface InfernetNode extends std.$Object {
   "machine_type": string;
   "region": string;
   "zone": string;
+  "provider_id": string;
   "state"?: {id: string, ip: string} | null;
 }
 export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
