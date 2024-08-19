@@ -122,76 +122,15 @@
 								{formatResourceType(resource.type)}: {resource.name}
 							</dt>
 
-						<dd>
-							{#each resource.instances as instance}
-								<dl
-									class="card column"
-								>
-									{#if instance.attributes?.tags?.Name}
-										<section class="row wrap">
-											<dt>Tag</dt>
-											<dd>{instance.attributes.tags.Name}</dd>
-										</section>
-									{/if}
-
-									{#if instance.attributes?.id}
-										<section class="row wrap">
-											<dt>ID</dt>
-											<dd>
-												{#if instance.attributes.self_link}
-													<a
-														href={getGcpConsoleLink(instance.attributes.self_link)}
-														target="_blank"
-														class="row inline with-icon"
-													>
-														<img
-															src={providers[ProviderTypeEnum.GCP].icon}
-															width="20"
-															height="20"
-														/>
-
-														<output><code>{instance.attributes.id}</code></output>
-													</a>
-												{:else}
-													<output><code>{instance.attributes.id}</code></output>
-												{/if}
-											</dd>
-										</section>
-									{/if}
-
-									{#if instance.attributes?.arn}
-										<section class="row wrap">
-											<dt>ARN</dt>
-											<dd>
-												<p>
-													<a
-														href={getAwsConsoleLink(instance.attributes.arn)}
-														target="_blank"
-														class="row inline with-icon"
-													>
-														<img
-															src={providers[ProviderTypeEnum.AWS].icon}
-															width="20"
-															height="20"
-														/>
-
-														{instance.attributes.arn}
-													</a>
-												</p>
-											</dd>
-										</section>
-									{/if}
-
-									{#each Object.entries(instance.attributes) as [key, value]}
-										{#if (
-											!['tags', 'tags_all', 'id', 'arn'].includes(key)
-											&& value !== null && !(Array.isArray(value) && value.length === 0)
-										)}
+							<dd>
+								{#each resource.instances as instance}
+									<dl
+										class="card column"
+									>
+										{#if instance.attributes?.tags?.Name}
 											<section class="row wrap">
 												<dt>Tag</dt>
-												<dd>
-													<p>{instance.attributes.tags.Name}</p>
-												</dd>
+												<dd>{instance.attributes.tags.Name}</dd>
 											</section>
 										{/if}
 
@@ -199,7 +138,23 @@
 											<section class="row wrap">
 												<dt>ID</dt>
 												<dd>
-													<output><code>{instance.attributes.id}</code></output>
+													{#if instance.attributes.self_link}
+														<a
+															href={getGcpConsoleLink(instance.attributes.self_link)}
+															target="_blank"
+															class="row inline with-icon"
+														>
+															<img
+																src={providers[ProviderTypeEnum.GCP].icon}
+																width="20"
+																height="20"
+															/>
+
+															<output><code>{instance.attributes.id}</code></output>
+														</a>
+													{:else}
+														<output><code>{instance.attributes.id}</code></output>
+													{/if}
 												</dd>
 											</section>
 										{/if}
