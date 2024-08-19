@@ -221,35 +221,6 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		if (cluster.router && action == TFAction.Apply && tfstate?.outputs?.router?.value)
 			await routerAction(client, tfstate.outputs.router.value.id, NodeAction.restart)
 
-		// Update node provider IDs
-		const nodeInfo = tfstate?.outputs?.nodes?.value;
-		if (nodeInfo) {
-			await e
-				.params(
-					{
-						nodeInfo: e.array(
-							e.tuple({
-								id: e.str,
-								ip: e.str,
-								key: e.uuid,
-							})
-						),
-					},
-					(params) =>
-						e.for(e.array_unpack(params.nodeInfo), (nodeInfo) =>
-							e.update(e.InfernetNode, () => ({
-								filter_single: { id: nodeInfo.key },
-								set: {
-									provider_id: nodeInfo.id,
-								},
-							}))
-						)
-				)
-				.run(client, {
-					nodeInfo,
-				})
-		}
-
 		return {
 			snapshots: insertedSnapshots,
 			error,
