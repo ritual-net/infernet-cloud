@@ -3,6 +3,7 @@ import { ProviderTypeEnum } from '$/types/provider';
 import type { BaseNodeClient } from '$/lib/clients/node/base';
 import type { GCPServiceAccount } from '$schema/interfaces';
 import type { NodeInfo } from '$/types/provider';
+import type { google } from '@google-cloud/compute/build/protos/protos';
 
 export class GCPNodeClient implements BaseNodeClient {
 	client: InstancesClient;
@@ -73,21 +74,25 @@ export class GCPNodeClient implements BaseNodeClient {
 	 * @param args - Additional arguments needed to get node info (project id, zone)
 	 * @returns Flat array of node info objects
 	 */
-	async getNodesInfo(ids: string[], args: object): Promise<NodeInfo[]> {
+	async getNodesInfo(
+		ids: string[],
+		args: google.cloud.compute.v1.IGetInstanceRequest,
+	): Promise<NodeInfo[]> {
 		return Promise.all(
 			ids
-			.map((id) => (
-				this.client
-					.get({
-						...args,
-						instance: id,
-					})
-					.then((result) => ({
+				.map(async (id, i) => {
+					const result = await this.client
+						.get({
+							...args,
+							instance: id,
+						})	
+
+					return {
 						id: id,
 						status: result[0]?.status ?? undefined,
 						ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
-					}))
-			))
-		);
+					}
+				})
+		)
 	}
 }
