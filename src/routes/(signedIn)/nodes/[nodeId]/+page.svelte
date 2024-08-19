@@ -270,7 +270,17 @@
 				</dd>
 			</section>
 
-			{#if info?.ip}
+			{#if node.state?.ip}
+				<section class="row wrap">
+					<dt>IP</dt>
+
+					<dd>
+						{node.state.ip}
+					</dd>
+				</section>
+			{/if}
+
+			<!-- {#if info?.ip}
 				<section class="row wrap">
 					<dt>IP</dt>
 
@@ -278,9 +288,9 @@
 						{info.ip}
 					</dd>
 				</section>
-			{/if}
+			{/if} -->
 
-			{#if infoError}
+			<!-- {#if infoError}
 				<section class="column">
 					<dt>Error</dt>
 
@@ -290,7 +300,7 @@
 						</output>
 					</dd>
 				</section>
-			{/if}
+			{/if} -->
 		</dl>
 	</section>
 
