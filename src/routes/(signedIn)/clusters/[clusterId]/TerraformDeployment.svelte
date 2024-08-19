@@ -11,7 +11,7 @@
 
 
 	// Functions
-	import { formatResourceType, getAwsConsoleLink } from '$/lib/terraform/format'
+	import { formatResourceType, getAwsConsoleLink, getGcpConsoleLink } from '$/lib/terraform/format'
 
 
 	// Components
@@ -127,7 +127,23 @@
 										<section class="row wrap">
 											<dt>ID</dt>
 											<dd>
-												<output><code>{instance.attributes.id}</code></output>
+												{#if instance.attributes.self_link}
+													<a
+														href={getGcpConsoleLink(instance.attributes.self_link)}
+														target="_blank"
+														class="row inline with-icon"
+													>
+														<img
+															src={providers[ProviderTypeEnum.GCP].icon}
+															width="20"
+															height="20"
+														/>
+
+														<output><code>{instance.attributes.id}</code></output>
+													</a>
+												{:else}
+													<output><code>{instance.attributes.id}</code></output>
+												{/if}
 											</dd>
 										</section>
 									{/if}
