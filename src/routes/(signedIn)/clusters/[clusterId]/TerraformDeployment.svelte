@@ -23,6 +23,7 @@
 	import XYFlowDownload from '$/components/XYFlowDownload.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
 	import TerraformResourceNode from './TerraformResourceNode.svelte'
+	import TerraformResourceTypeNode from './TerraformResourceTypeNode.svelte'
 </script>
 
 
@@ -51,44 +52,63 @@
 		<dt>Cloud resources</dt>
 
 		<dd class="column">
-			{#if deployment.tfstate?.resources?.flatMap(resource => resource.instances).length}
+			{#if deployment.tfstate?.resources?.flatMap(resourceType => resourceType.instances).length}
 				<XYFlow
 					nodeTypes={{
+						'resourceType': TerraformResourceTypeNode,
 						'resource': TerraformResourceNode,
 					}}
 					nodes={
 						deployment.tfstate.resources
-							.flatMap(resource => (
-								resource.instances
-									.map(instance => ({
-										id: `${resource.type}.${resource.name}`,
-										type: 'resource',
-										data: {
-											provider,
-											resource,
-										},
-									}))
-							))
+							.flatMap(resourceType => {
+								const parentNode = {
+									id: `resourceType.${resourceType.type}`,
+									type: 'resourceType',
+									data: {
+										provider,
+										resourceType,
+									},
+									width: 700,
+									height: 150,
+								}
+
+								const childNodes = (
+									resourceType.instances
+										.map(resource => ({
+											id: `resource.${resource.attributes.id}`,
+											type: 'resource',
+											data: {
+												provider,
+												resourceType,
+												resource,
+											},
+											parentId: `resourceType.${resourceType.type}`,
+											extent: 'parent',
+										}))
+								)
+
+								return [parentNode, ...childNodes]
+							})
 					}
 					edges={
 						deployment.tfstate.resources
-							.flatMap(resource => (
-								resource.instances
-									.flatMap(instance => (
-										instance.dependencies
+							.flatMap(resourceType => (
+								resourceType.instances
+									.flatMap(resource => (
+										resource.dependencies
 											?.map(dependencyId => {
-												const [type, name] = dependencyId.split('.')
-												return { type, name }
+												const [dependencyResourceType, dependencyName] = dependencyId.split('.')
+
+												return {
+													id: `resource.${resource.attributes.id}-${dependencyResourceType}.${dependencyName}`,
+													source: `resource.${resource.attributes.id}`,
+													target: `resourceType.${dependencyResourceType}`,
+													type: ConnectionLineType.Bezier,
+													markerEnd: {
+														type: MarkerType.ArrowClosed,
+													},
+												};
 											})
-											.map(dependency => ({
-												id: `${resource.type}.${resource.name}-${dependency.type}.${dependency.name}`,
-												source: `${resource.type}.${resource.name}`,
-												target: `${dependency.type}.${dependency.name}`,
-												type: ConnectionLineType.Bezier,
-												markerEnd: {
-													type: MarkerType.ArrowClosed,
-												},
-											}))
 										?? []
 									))
 							))
