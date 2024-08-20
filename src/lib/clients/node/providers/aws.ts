@@ -39,43 +39,54 @@ export class AWSNodeClient extends BaseNodeClient {
 	/**
 	 * Start set of AWS infernet nodes.
 	 *
-	 * @param ids - List of node ids to start
+	 * @param nodeConfigIds - List of node ids to start
 	 */
-	async startNodes(ids: string[]): Promise<void> {
-		const command = new StartInstancesCommand({ InstanceIds: ids });
-		await this.client.send(command);
+	async startNodes(nodeConfigIds: string[]): Promise<void> {
+		const command = new StartInstancesCommand({
+			InstanceIds: nodeConfigIds.map(this.toInstanceId),
+		})
+
+		await this.client.send(command)
 	}
 
 	/**
 	 * Stop set of AWS infernet nodes.
 	 *
-	 * @param ids - List of node ids to stop
+	 * @param nodeConfigIds - List of node ids to stop
 	 */
-	async stopNodes(ids: string[]): Promise<void> {
-		const command = new StopInstancesCommand({ InstanceIds: ids });
-		await this.client.send(command);
+	async stopNodes(nodeConfigIds: string[]): Promise<void> {
+		const command = new StopInstancesCommand({
+			InstanceIds: nodeConfigIds.map(this.toInstanceId),
+		})
+
+		await this.client.send(command)
 	}
 
 	/**
 	 * Restart set of AWS infernet nodes.
 	 *
-	 * @param ids - List of node ids to restart
+	 * @param nodeConfigIds - List of node ids to restart
 	 */
-	async restartNodes(ids: string[]): Promise<void> {
-		const command = new RebootInstancesCommand({ InstanceIds: ids });
-		await this.client.send(command);
+	async restartNodes(nodeConfigIds: string[]): Promise<void> {
+		const command = new RebootInstancesCommand({
+			InstanceIds: nodeConfigIds.map(this.toInstanceId),
+		})
+
+		await this.client.send(command)
 	}
 
 	/**
 	 * Get status and ip of set of AWS infernet nodes.
 	 *
-	 * @param ids - List of node ids to get status and ip of
+	 * @param nodeConfigIds - List of node ids to get status and ip of
 	 * @returns Flat array of node info objects
 	 */
-	async getNodesInfo(ids: string[]): Promise<NodeInfo[]> {
-		const command = new DescribeInstancesCommand({ InstanceIds: ids });
+	async getNodesInfo(nodeConfigIds: string[]): Promise<NodeInfo[]> {
+		const command = new DescribeInstancesCommand({
+			InstanceIds: nodeConfigIds.map(this.toInstanceId),
+		})
 
-		const result = await this.client.send(command);
+		const result = await this.client.send(command)
 
 		return (
 			result.Reservations
@@ -90,6 +101,6 @@ export class AWSNodeClient extends BaseNodeClient {
 					?? []
 				))
 			?? []
-		);
+		)
 	}
 }
