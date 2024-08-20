@@ -16,6 +16,7 @@
 
 
 	// Components
+	import Collapsible from '$/components/Collapsible.svelte'
 	import DetailsValue from '$/components/DetailsValue.svelte'
 	import ScrollArea from '$/components/ScrollArea.svelte'
 	import XYFlow from '$/components/XYFlow.svelte'
@@ -114,19 +115,43 @@
 			>
 				<div class="resources card column">
 					{#each deployment.tfstate.resources as resource}
-						<section
-							id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
-							class="column"
-						>
-							<dt>
-								{formatResourceType(resource.type)}: {resource.name}
-							</dt>
-
-							<dd>
-								{#each resource.instances as instance}
-									<dl
-										class="card column"
+						{#each resource.instances as instance}
+							<Collapsible>
+								<svelte:fragment slot="trigger"
+									let:open
+								>
+									<header
+										class="row wrap"
+										data-after={open ? '▴' : '▾'}
 									>
+										<div class="row inline with-icon">
+											<img
+												src={providers[provider].icon}
+												width="30"
+												height="30"
+											/>
+
+											<div class="column inline">
+												<h4>{formatResourceType(resource.type)}</h4>
+												<p>{instance.attributes.name}</p>
+											</div>
+										</div>
+
+										<a
+											href={provider === ProviderTypeEnum.GCP ? getGcpConsoleLink(instance.attributes.self_link) : getAwsConsoleLink(instance.attributes.arn)}
+											target="_blank"
+											class="button"
+										>
+											Console
+										</a>
+									</header>
+								</svelte:fragment>
+
+								<section
+									id="terraform-resource-{deployment.id}-{resource.type}-{instance.attributes.id}"
+									class="column"
+								>
+									<dl class="card column">
 										{#if instance.attributes?.tags?.Name}
 											<section class="row wrap">
 												<dt>Tag</dt>
@@ -215,15 +240,15 @@
 											</section>
 										{/if}
 									</dl>
-								{:else}
-									<div class="card column">
-										<p>No resources found.</p>
-									</div>
-								{/each}
-							</dd>
-						</section>
+								</section>
+							</Collapsible>
+						{:else}
+							<div class="card column">
+								<p>No resources found.</p>
+							</div>
+						{/each}
 					{/each}
-				<!-- </div> -->
+				</div>
 			</ScrollArea>
 		</dd>
 	</section>
