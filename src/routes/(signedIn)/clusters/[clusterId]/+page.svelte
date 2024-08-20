@@ -343,18 +343,24 @@
 					{cluster.router ? 'Yes' : 'No'}
 				</dd>
 			</section>
+		</dl>
+	</section>
 
-			{#if cluster.router_status?.ip}
+	{#if cluster.router_status?.ip}
+		<section class="column">
+			<h3>Router</h3>
+
+			<dl class="card column">
 				<section class="row wrap">
-					<dt>Router IP</dt>
+					<dt>IP</dt>
 
 					<dd>
 						{cluster.router_status.ip}
 					</dd>
 				</section>
-			{/if}
-		</dl>
-	</section>
+			</dl>
+		</section>
+	{/if}
 
 	<section class="column">
 		<h3>Deployment</h3>
