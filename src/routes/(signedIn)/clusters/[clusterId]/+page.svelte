@@ -79,6 +79,7 @@
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import Status from '$/views/Status.svelte'
 	import TerraformDeployment from './TerraformDeployment.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 
 
 	// Transitions
@@ -281,11 +282,11 @@
 						})}
 						class="row inline with-icon"
 					>
-						<img
-							class="icon"
-							src={providers[cluster.service_account.provider].icon}
-						/>
-						{cluster.service_account.name}
+						<WithIcon
+							icon={providers[cluster.service_account.provider].icon}
+						>
+							{cluster.service_account.name}
+						</WithIcon>
 					</a>
 				</dd>
 			</section>
@@ -294,17 +295,21 @@
 				<dt>Region / Zone</dt>
 
 				<dd>
-					{#if 'region' in cluster}
-						{cluster.region}
-					{/if}
+					<WithIcon
+						icon={providers[cluster.service_account.provider].icon}
+					>
+						{#if 'region' in cluster}
+							{cluster.region}
+						{/if}
 
-					{#if 'region' in cluster && 'zone' in cluster}
-						/
-					{/if}
+						{#if 'region' in cluster && 'zone' in cluster}
+							/
+						{/if}
 
-					{#if 'zone' in cluster}
-						{cluster.zone}
-					{/if}
+						{#if 'zone' in cluster}
+							{cluster.zone}
+						{/if}
+					</WithIcon>
 				</dd>
 			</section>
 
