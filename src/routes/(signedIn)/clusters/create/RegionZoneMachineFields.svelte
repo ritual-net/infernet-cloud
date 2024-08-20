@@ -192,6 +192,7 @@
 	import Combobox from '$/components/Combobox.svelte'
 	import DetailsValue from '$/components/DetailsValue.svelte'
 	import ScrollArea from '$/components/ScrollArea.svelte'
+	import SizeTransition from '$/components/SizeTransition.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 
@@ -364,92 +365,94 @@
 		</section>
 
 		{#if entityType !== 'cluster'}
-			<section class="column">
-				<div class="row wrap">
-					<div class="column inline">
-						<h3>
-							<label for="{namePrefix}.machine_type">
-								Machine type
-							</label>
-						</h3>
+			<SizeTransition>
+				<section class="column">
+					<div class="row wrap">
+						<div class="column inline">
+							<h3>
+								<label for="{namePrefix}.machine_type">
+									Machine type
+								</label>
+							</h3>
 
-						<p>Select the type of machine you would like to deploy.</p>
+							<p>Select the type of machine you would like to deploy.</p>
+						</div>
+
+						<Combobox
+							id="{namePrefix}.machine_type"
+							name="{namePrefix}.machine_type"
+							labelText="Machine type"
+							bind:value={machineId}
+							{...!machines
+								? {
+									placeholder: (
+										$machinesQuery.isPending
+											? 'Loading available machine types...'
+											: 'Choose a zone first.'
+									),
+									items: [
+										machineId && {
+											value: machineId,
+											label: machineId,
+										}
+									].filter(Boolean),
+									loading: true,
+									visuallyDisabled: true,
+								}
+								: {
+									placeholder: 'Choose machine type...',
+									items: (
+										Array.from(
+											(
+												Map.groupBy(
+													machines,
+													machineConfig => machineConfig.hasGpu
+												)
+													.entries()
+											),
+											([hasGpu, machineConfigs]) => ({
+												value: hasGpu,
+												label: hasGpu ? 'GPU-Enabled' : 'No GPU',
+												items: machineConfigs.map(machineConfig => ({
+													value: machineConfig.id,
+													label: `${machineConfig.name}${machineConfig.description ? ` (${machineConfig.description})` : ''}`,
+												}))
+											})
+										)
+									),
+								}
+							}
+							{...constraints?.machine_type}
+						/>
 					</div>
 
-					<Combobox
-						id="{namePrefix}.machine_type"
-						name="{namePrefix}.machine_type"
-						labelText="Machine type"
-						bind:value={machineId}
-						{...!machines
-							? {
-								placeholder: (
-									$machinesQuery.isPending
-										? 'Loading available machine types...'
-										: 'Choose a zone first.'
-								),
-								items: [
-									machineId && {
-										value: machineId,
-										label: machineId,
-									}
-								].filter(Boolean),
-								loading: true,
-								visuallyDisabled: true,
-							}
-							: {
-								placeholder: 'Choose machine type...',
-								items: (
-									Array.from(
-										(
-											Map.groupBy(
-												machines,
-												machineConfig => machineConfig.hasGpu
-											)
-												.entries()
-										),
-										([hasGpu, machineConfigs]) => ({
-											value: hasGpu,
-											label: hasGpu ? 'GPU-Enabled' : 'No GPU',
-											items: machineConfigs.map(machineConfig => ({
-												value: machineConfig.id,
-												label: `${machineConfig.name}${machineConfig.description ? ` (${machineConfig.description})` : ''}`,
-											}))
-										})
-									)
-								),
-							}
-						}
-						{...constraints?.machine_type}
-					/>
-				</div>
-
-				{#if machineInfo?.info}
-					<Collapsible
-						class="card"
-					>
-						<svelte:fragment slot="trigger">
-							<header class="row" data-after="▾">
-								<WithIcon
-									icon={serviceAccount && providers[serviceAccount.provider].icon}
-								>
-									{selectedMachine?.id}
-								</WithIcon>
-							</header>
-						</svelte:fragment>
-
-						<ScrollArea
-							layout="inline"
+					{#if machineInfo?.info}
+						<Collapsible
+							class="card"
 						>
-							<div>
-								<DetailsValue
-									value={machineInfo.info}
-								/>
-							</div>
-						</ScrollArea>
-					</Collapsible>
-				{/if}
-			</section>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={serviceAccount && providers[serviceAccount.provider].icon}
+									>
+										{selectedMachine?.id}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							<ScrollArea
+								layout="inline"
+							>
+								<div>
+									<DetailsValue
+										value={machineInfo.info}
+									/>
+								</div>
+							</ScrollArea>
+						</Collapsible>
+					{/if}
+				</section>
+			</SizeTransition>
 		{/if}
 	</fieldset>
 
