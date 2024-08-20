@@ -193,6 +193,7 @@
 	import DetailsValue from '$/components/DetailsValue.svelte'
 	import ScrollArea from '$/components/ScrollArea.svelte'
 	import Switch from '$/components/Switch.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 
 
 	// Transitions/animations
@@ -429,7 +430,11 @@
 					>
 						<svelte:fragment slot="trigger">
 							<header class="row" data-after="▾">
-								Details
+								<WithIcon
+									icon={serviceAccount && providers[serviceAccount.provider].icon}
+								>
+									{selectedMachine?.id}
+								</WithIcon>
 							</header>
 						</svelte:fragment>
 
