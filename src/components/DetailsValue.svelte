@@ -113,4 +113,11 @@
 			padding-left: calc(var(--card-paddingX) * (var(--card-level) + 1));
 		}
 	}
+
+	output {
+		display: block;
+		overflow: auto;
+		max-height: 15em;
+		max-height: 10lh;
+	}
 </style>

@@ -66,6 +66,7 @@
 		"@tanstack/svelte-query": "^5.28.9",
 		"@xyflow/svelte": "^0.1.8",
 		"async-cleanup": "^1.0.0",
+		"autoprefixer": "^10.4.20",
 		"aws-sdk": "^2.1588.0",
 		"edgedb": "^1.4.1",
 		"googleapis": "^131.0.0",
