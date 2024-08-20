@@ -46,7 +46,7 @@
 							</header>
 						</svelte:fragment>
 
-						<dd>
+						<dd class="column">
 							<svelte:self
 								value={subvalue}
 								level={level + 1}
