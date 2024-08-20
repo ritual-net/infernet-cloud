@@ -211,6 +211,10 @@ pre {
 			flex-basis: 20rem;
 		}
 	}
+
+	> :first-child {
+		text-align: start;
+	}
 }
 
 .column {
