@@ -146,15 +146,9 @@
 
 	// (Computed)
 	$: filteredItems =
-		inputValue !== undefined
+		inputValue !== undefined && $touchedInput
 			? filterItems(items, inputValue)
 			: items
-	// $: filteredItems = $touchedInput
-	// 	? filterItems(items, inputValue)
-	// 	: items
-	// $: filteredItems = $touchedInput
-	// 	? filterItems(items, inputValue)
-	// 	: items
 </script>
 
 
