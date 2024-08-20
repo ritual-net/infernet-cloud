@@ -1,14 +1,16 @@
 import compute, { InstancesClient } from '@google-cloud/compute';
 import { ProviderTypeEnum } from '$/types/provider';
-import type { BaseNodeClient } from '$/lib/clients/node/base';
+import { BaseNodeClient } from '$/lib/clients/node/base';
 import type { GCPServiceAccount } from '$schema/interfaces';
 import type { NodeInfo } from '$/types/provider';
 import type { google } from '@google-cloud/compute/build/protos/protos';
 
-export class GCPNodeClient implements BaseNodeClient {
+export class GCPNodeClient extends BaseNodeClient {
 	client: InstancesClient;
 
 	constructor(credentials: GCPServiceAccount['creds']) {
+		super()
+
 		this.client = new compute.InstancesClient({
 			projectId: credentials.project_id,
 			credentials: {
@@ -80,6 +82,9 @@ export class GCPNodeClient implements BaseNodeClient {
 	): Promise<NodeInfo[]> {
 		return Promise.all(
 			ids
+				.map(id => (
+					`node-${id}`
+				))
 				.map(async (id, i) => {
 					const result = await this.client
 						.get({

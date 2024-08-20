@@ -8,13 +8,15 @@ import {
 import { ProviderTypeEnum } from '$/types/provider';
 import type { AWSServiceAccount } from '$schema/interfaces';
 import type { EC2ClientConfig } from '@aws-sdk/client-ec2';
-import type { BaseNodeClient } from '$/lib/clients/node/base';
+import { BaseNodeClient } from '$/lib/clients/node/base';
 import type { NodeInfo } from '$/types/provider';
 
-export class AWSNodeClient implements BaseNodeClient {
+export class AWSNodeClient extends BaseNodeClient {
 	client: EC2Client;
 
 	constructor(credentials: AWSServiceAccount['creds'], region: string) {
+		super()
+
 		const config: EC2ClientConfig = {
 			region: region,
 			credentials: {
