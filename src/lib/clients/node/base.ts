@@ -5,10 +5,18 @@ export abstract class BaseNodeClient {
 	 * Client object for interacting with nodes
 	 */
 	client: unknown;
+
 	/**
 	 * Helper utility to map client instance to type
 	 */
 	abstract type(): ProviderTypeEnum;
+
+	/**
+	 * Convert node config ID to node instance ID
+	 */
+	toInstanceId(nodeConfigId: string) {
+		return `node-${id}`
+	}
 
 	/**
 	 * Start set of infernet nodes.

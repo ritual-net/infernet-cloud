@@ -32,14 +32,14 @@ export class GCPNodeClient extends BaseNodeClient {
 	/**
 	 * Start set of GCP infernet nodes.
 	 *
-	 * @param ids - List of node ids to start
+	 * @param nodeConfigIds - List of node ids to start
 	 * @param args - Additional arguments needed to start nodes (project id, zone)
 	 */
-	async startNodes(ids: string[], args: object): Promise<void> {
-		for (const id of ids) {
+	async startNodes(nodeConfigIds: string[], args: object): Promise<void> {
+		for (const nodeConfigId of nodeConfigIds) {
 			await this.client.start({
 				...args,
-				instance: id,
+				instance: this.toInstanceId(nodeConfigId),
 			});
 		}
 	}
@@ -47,14 +47,14 @@ export class GCPNodeClient extends BaseNodeClient {
 	/**
 	 * Stop set of GCP infernet nodes.
 	 *
-	 * @param ids - List of node ids to stop
+	 * @param nodeConfigIds - List of node ids to stop
 	 * @param args - Additional arguments needed to stop nodes (project id, zone)
 	 */
-	async stopNodes(ids: string[], args: object): Promise<void> {
-		for (const id of ids) {
+	async stopNodes(nodeConfigIds: string[], args: object): Promise<void> {
+		for (const nodeConfigId of nodeConfigIds) {
 			await this.client.stop({
 				...args,
-				instance: id,
+				instance: nodeConfigId,
 			});
 		}
 	}
@@ -62,38 +62,42 @@ export class GCPNodeClient extends BaseNodeClient {
 	/**
 	 * Restart set of GCP infernet nodes.
 	 *
-	 * @param ids - List of node ids to restart
+	 * @param nodeConfigIds - List of node ids to restart
 	 * @param args - Additional arguments needed to restart nodes (project id, zone)
 	 */
-	async restartNodes(ids: string[], args: object): Promise<void> {
-		await Promise.all(ids.map((id) => this.client.reset({ ...args, instance: id })));
+	async restartNodes(nodeConfigIds: string[], args: object): Promise<void> {
+		await Promise.all(
+			nodeConfigIds.map(async (nodeConfigId) => {
+				await this.client.reset({
+					...args,
+					instance: nodeConfigId,
+				})
+			})
+		)
 	}
 
 	/**
 	 * Get status and ip of set of GCP infernet nodes.
 	 *
-	 * @param ids - List of node ids to get status and ip of
+	 * @param nodeConfigIds - List of node ids to get status and ip of
 	 * @param args - Additional arguments needed to get node info (project id, zone)
 	 * @returns Flat array of node info objects
 	 */
 	async getNodesInfo(
-		ids: string[],
+		nodeConfigIds: string[],
 		args: google.cloud.compute.v1.IGetInstanceRequest,
 	): Promise<NodeInfo[]> {
 		return Promise.all(
-			ids
-				.map(id => (
-					`node-${id}`
-				))
-				.map(async (id, i) => {
+			nodeConfigIds
+				.map(async (nodeConfigId, i) => {
 					const result = await this.client
 						.get({
 							...args,
-							instance: id,
-						})	
+							instance: this.toInstanceId(nodeConfigId),
+						})
 
 					return {
-						id: id,
+						id: this.toInstanceId(nodeConfigId),
 						status: result[0]?.status ?? undefined,
 						ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
 					}
