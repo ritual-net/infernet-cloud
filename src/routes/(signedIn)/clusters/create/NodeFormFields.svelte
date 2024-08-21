@@ -517,6 +517,7 @@
 						label: dockerAccount.username,
 					}))
 				],
+				disabled: dockerAccounts.length === 0,
 			}
 		}
 		{...constraints?.dockerAccountUsername}
