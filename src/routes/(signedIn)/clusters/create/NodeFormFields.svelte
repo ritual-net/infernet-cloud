@@ -481,7 +481,7 @@
 			<span class="annotation">Optional</span>
 		</h3>
 
-		<p><a href="/cloud-accounts/docker/connect">Connect</a> your Docker Hub account to allow the node to access private Docker images.</p>
+		<p><a href="/cloud-accounts/docker/connect" target="_blank">Connect</a> your Docker Hub account to allow the node to access private Docker images.</p>
 	</div>
 
 	<Select
@@ -517,6 +517,7 @@
 						label: dockerAccount.username,
 					}))
 				],
+				disabled: dockerAccounts.length === 0,
 			}
 		}
 		{...constraints?.dockerAccountUsername}
