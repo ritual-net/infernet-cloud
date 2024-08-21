@@ -34,8 +34,8 @@ export class GCPTerraform extends BaseTerraform {
 				cluster.router ?
 					{
 						deploy: true,
-						region: cluster.router.region,
-						zone: cluster.router.zone,
+						region: cluster.router.region || cluster.region,
+						zone: cluster.router.zone || cluster.zone,
 						machine_type: cluster.router.machine_type,
 					}
 				:
