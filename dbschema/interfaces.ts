@@ -30,8 +30,8 @@ export interface Cluster extends std.$Object {
   "region": string;
   "zone": string;
   "router"?: {region: string, zone: string, machine_type: string} | null;
-  "router_state"?: {id: string, ip: string} | null;
   "nodes": InfernetNode[];
+  "router_state"?: {id: string, ip: string} | null;
 }
 export interface AWSCluster extends Cluster {
   "region": string;

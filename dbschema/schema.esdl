@@ -271,9 +271,11 @@ module default {
     );
 
     router_state := (
+      with router := json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value')
       select (
-        id := <str>json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value', 'id'),
-        ip := <IpAddress>json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value', 'ip')
+        id := <str>json_get(router, 'id'),
+        ip := <str>json_get(router, 'ip') ?? ''
+        # ip := <IpAddress>json_get(router_data, 'ip')
       )
       if exists(Cluster.latest_deployment.tfstate)
       else {}
