@@ -214,7 +214,7 @@ export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
-  "state": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: $IpAddress}>, $.Cardinality.AtMostOne, false, true, false, false>;
+  "state": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, true, false, false>;
   "<nodes[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
