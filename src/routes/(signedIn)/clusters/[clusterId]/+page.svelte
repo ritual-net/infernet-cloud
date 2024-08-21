@@ -269,7 +269,7 @@
 	</section>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Configuration</h3>
 
 		<dl class="card column">
 			<section class="row wrap">

@@ -156,7 +156,7 @@
 	</header>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Configuration</h3>
 
 		<dl class="card column">
 			<section class="row wrap">
@@ -168,7 +168,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Chain Enabled?</dt>
+				<dt>Chain enabled?</dt>
 
 				<dd>
 					{node.chain_enabled ? 'Yes' : 'No'}
