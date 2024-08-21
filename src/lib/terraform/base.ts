@@ -200,10 +200,14 @@ export const createTerraformVarsFile = async (
 	tempDir: string,
 	tfVars: Record<string, any>,
 ): Promise<void> => {
+	const formattedTfVars = formatTfVars(tfVars)
+
+	console.log({ formattedTfVars })
+
 	await fs.writeFile(
 		path.join(tempDir, 'terraform.tfvars'),
-		formatTfVars(tfVars)
-	);
+		formattedTfVars
+	)
 };
 
 /**
