@@ -262,6 +262,9 @@ module default {
     required locked: bool {
       default := false;
     }
+
+    provider_id := 'ic-' ++ <str>.id;
+
     status := (
       'updating' if .locked else
       'unhealthy' if exists(.latest_deployment) and .latest_deployment.status = 'failed' else

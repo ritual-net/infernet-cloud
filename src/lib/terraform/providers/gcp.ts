@@ -24,7 +24,7 @@ export class GCPTerraform extends BaseTerraform {
 			service_account_email: serviceAccount.creds.client_email,
 			project: serviceAccount.creds.project_id,
 
-			name: `ic-${cluster.id}`,
+			name: cluster.provider_id,
 			is_production: true,
 			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
 			ip_allow_http: cluster.ip_allow_http ?? [],
