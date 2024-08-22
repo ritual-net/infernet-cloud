@@ -229,6 +229,17 @@
 	</section>
 {/if}
 
+{#if !isSummary && deployment.tfvars}
+	<section class="column">
+		<dt>Terraform input variables</dt>
+
+		<dd class="log-container scrollable">
+			<output><code>{deployment.tfvars}</code></output>
+		</dd>
+	</section>
+{/if}
+
+
 {#if !isSummary && deployment.tfstate}
 	<section class="column">
 		<dt>Terraform state</dt>

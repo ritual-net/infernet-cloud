@@ -4,22 +4,18 @@ import { ProviderTypeEnum } from '$/types/provider';
 import * as SystemUtils from '$/lib/utils/system';
 import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 
+
+// Functions
+import { formatTfVars } from '../utils';
+
 export class GCPTerraform extends BaseTerraform {
 	public readonly type = ProviderTypeEnum.GCP;
 
-	/**
-	 * Writes Terraform files to the temporary directory.
-	 *
-	 * @param tempDir The path to the temporary directory.
-	 * @param cluster The GCPCluster to deploy.
-	 * @param serviceAccount The GCPServiceAccount to use for deployment.
-	 */
-	protected override async writeTerraformFiles(
-		tempDir: string,
+	public override getTerraformVars(
 		cluster: GCPCluster,
 		serviceAccount: GCPServiceAccount
-	): Promise<void> {
-		const terraformVars = {
+	): string {
+		return formatTfVars({
 			gcp_credentials_file_path: 'ritual-deployer-key.json',
 			service_account_email: serviceAccount.creds.client_email,
 			project: serviceAccount.creds.project_id,
@@ -61,11 +57,24 @@ export class GCPTerraform extends BaseTerraform {
 					}
 				])
 			),
-		}
+		})
+	}
 
+	/**
+	 * Writes Terraform files to the temporary directory.
+	 *
+	 * @param tempDir The path to the temporary directory.
+	 * @param cluster The GCPCluster to deploy.
+	 * @param serviceAccount The GCPServiceAccount to use for deployment.
+	 */
+	protected override async writeTerraformFiles(
+		tempDir: string,
+		cluster: GCPCluster,
+		serviceAccount: GCPServiceAccount
+	): Promise<void> {
 		await createTerraformVarsFile(
 			tempDir,
-			terraformVars
+			this.getTerraformVars(cluster, serviceAccount)
 		)
 
 		// Write service account credentials to file

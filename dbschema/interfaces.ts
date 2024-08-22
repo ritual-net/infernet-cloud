@@ -117,6 +117,7 @@ export interface TerraformDeployment extends std.$Object {
   "cluster": Cluster;
   "command"?: string | null;
   "status": string;
+  "tfvars"?: string | null;
 }
 export interface current_user extends User {}
 export namespace ext {

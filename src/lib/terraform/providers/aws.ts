@@ -2,22 +2,18 @@ import { ProviderTypeEnum } from '$/types/provider';
 import { BaseTerraform, createTerraformVarsFile } from '$/lib/terraform/base';
 import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 
+
+// Functions
+import { formatTfVars } from '../utils';
+
 export class AWSTerraform extends BaseTerraform {
 	public readonly type = ProviderTypeEnum.AWS;
 
-	/**
-	 * Writes Terraform files to the temporary directory.
-	 *
-	 * @param tempDir The path to the temporary directory.
-	 * @param cluster The AWSCluster to deploy.
-	 * @param serviceAccount The AWSServiceAccount to use for deployment.
-	 */
-	protected override async writeTerraformFiles(
-		tempDir: string,
+	public override getTerraformVars(
 		cluster: AWSCluster,
 		serviceAccount: AWSServiceAccount
-	): Promise<void> {
-		const terraformVars = {
+	): string {
+		return formatTfVars({
 			access_key_id: serviceAccount.creds.access_key_id,
 			secret_access_key: serviceAccount.creds.secret_access_key,
 			region: cluster.region,
@@ -63,9 +59,22 @@ export class AWSTerraform extends BaseTerraform {
 						}
 					])
 			),
-		}
+		})
+	}
 
-		console.log({terraformVars})
+	/**
+	 * Writes Terraform files to the temporary directory.
+	 *
+	 * @param tempDir The path to the temporary directory.
+	 * @param cluster The AWSCluster to deploy.
+	 * @param serviceAccount The AWSServiceAccount to use for deployment.
+	 */
+	protected override async writeTerraformFiles(
+		tempDir: string,
+		cluster: AWSCluster,
+		serviceAccount: AWSServiceAccount
+	): Promise<void> {
+		const terraformVars = this.getTerraformVars(cluster, serviceAccount)
 
 		await createTerraformVarsFile(tempDir, terraformVars)
 	}
