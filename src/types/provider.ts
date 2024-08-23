@@ -82,7 +82,7 @@ export type NodeInfo = {
 };
 
 export type InfernetNodeWithInfo = {
-	node: InfernetNode;
+	node?: InfernetNode;
 	info?: NodeInfo;
 	infoError?: string | undefined;
 }
