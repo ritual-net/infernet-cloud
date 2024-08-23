@@ -167,6 +167,50 @@
 
 		<dl class="card column">
 			<section class="row wrap">
+				<dt>Region / Zone</dt>
+
+				<dd>
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{#if 'region' in node}
+							{node.region}
+						{/if}
+
+						{#if 'region' in node && 'zone' in node}
+							/
+						{/if}
+
+						{#if 'zone' in node}
+							{node.zone}
+						{/if}
+					</WithIcon>
+				</dd>
+			</section>
+
+			<section class="row wrap">
+				<dt>Machine type</dt>
+
+				<dd>
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{node.machine_type}
+					</WithIcon>
+				</dd>
+			</section>
+
+			{#if node.docker_account}
+				<section class="row wrap">
+					<dt>Docker Hub Account</dt>
+
+					<dd>
+						{node.docker_account.username}
+					</dd>
+				</section>
+			{/if}
+
+			<section class="row wrap">
 				<dt>Forward stats?</dt>
 
 				<dd>
@@ -181,16 +225,6 @@
 					{node.chain_enabled ? 'Yes' : 'No'}
 				</dd>
 			</section>
-
-			{#if node.docker_account}
-				<section class="row wrap">
-					<dt>Docker Hub Account</dt>
-
-					<dd>
-						{node.docker_account.username}
-					</dd>
-				</section>
-			{/if}
 		</dl>
 	</section>
 
