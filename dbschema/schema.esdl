@@ -203,6 +203,10 @@ module default {
       on source delete delete target;
     }
 
+    provider := (
+      .cluster.service_account.provider
+    );
+
     provider_id := 'infernet-node-' ++ <str>.id;
 
     state := (
