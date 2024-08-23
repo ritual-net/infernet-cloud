@@ -2,7 +2,6 @@ import compute, { InstancesClient } from '@google-cloud/compute';
 import { ProviderTypeEnum } from '$/types/provider';
 import { BaseNodeClient } from '$/lib/clients/node/base';
 import type { GCPServiceAccount } from '$schema/interfaces';
-import type { NodeInfo } from '$/types/provider';
 import type { google } from '@google-cloud/compute/build/protos/protos';
 
 export class GCPNodeClient extends BaseNodeClient {
@@ -86,22 +85,39 @@ export class GCPNodeClient extends BaseNodeClient {
 	async getNodesInfo(
 		nodeConfigIds: string[],
 		args: google.cloud.compute.v1.IGetInstanceRequest,
-	): Promise<NodeInfo[]> {
-		return Promise.all(
-			nodeConfigIds
-				.map(async (nodeConfigId, i) => {
-					const result = await this.client
-						.get({
-							...args,
-							instance: this.toInstanceId(nodeConfigId),
-						})
+	) {
+		return new Map(
+			// @ts-ignore
+			await Promise.all(
+				nodeConfigIds
+					.map(nodeConfigId => this.toInstanceId(nodeConfigId))
+					.map(async nodeInstanceId => {
+						try {
+							const result = await this.client
+								.get({
+									...args,
+									instance: nodeInstanceId,
+								})
 
-					return {
-						id: this.toInstanceId(nodeConfigId),
-						status: result[0]?.status ?? undefined,
-						ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
-					}
-				})
+							return [
+								nodeInstanceId,
+								{
+									instanceId: nodeInstanceId,
+									status: result[0]?.status ?? undefined,
+									ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
+								}
+							] as const
+
+						} catch (error) {
+							return [
+								nodeInstanceId,
+								{
+									error,
+								}
+							] as const
+						}
+					})
+			)
 		)
 	}
 }

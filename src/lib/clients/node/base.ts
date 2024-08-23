@@ -49,5 +49,5 @@ export abstract class BaseNodeClient {
 	 * @param args - Additional arguments needed to get node info
 	 * @returns Flat array of node info objects
 	 */
-	abstract getNodesInfo(nodeConfigIds: string[], args: object): Promise<NodeInfo[]>;
+	abstract getNodesInfo(nodeConfigIds: string[], args: object): Promise<Map<string, NodeInfo | { error: unknown }>>;
 }
