@@ -145,7 +145,7 @@
 	>
 		<section class="column">
 			<div class="column inline">
-				<h3>Chain Configuration</h3>
+				<h3>Chain configuration</h3>
 			</div>
 
 			<div class="row equal wrap">
@@ -189,7 +189,7 @@
 				<div class="column">
 					<div class="column inline">
 						<label for="{namePrefix}.config.registry_address">
-							Registry Address
+							Registry address
 						</label>
 		
 						<p>The address of the <a href="https://docs.ritual.net/infernet/sdk/reference/Registry" target="_blank">Infernet SDK Registry</a> smart contract.</p>
@@ -233,7 +233,7 @@
 					<div class="column inline">
 						<span class="row inline">
 							<label for="{namePrefix}.config.trail_head_blocks">
-								Trail Head Blocks
+								Trail head blocks
 							</label>
 	
 							<span class="annotation">Optional</span>
@@ -256,7 +256,7 @@
 
 		<section class="column">
 			<div class="column inline">
-				<h3>Wallet and Transactions</h3>
+				<h3>Wallet and transactions</h3>
 			</div>
 
 			<div class="row equal wrap">
@@ -264,7 +264,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.private_key">
-								Private Key
+								Private key
 							</label>
 						</div>
 
@@ -286,7 +286,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.max_gas_limit">
-								Max Gas Limit
+								Max gas limit
 							</label>
 
 							<span class="annotation">Optional</span>
@@ -310,7 +310,7 @@
 				<div class="column inline">
 					<h3 class="row inline">
 						<label for="{namePrefix}.config.allowed_sim_errors">
-							Ignored Errors
+							Ignored errors
 						</label>
 					</h3>
 
@@ -340,7 +340,7 @@
 				<div class="column inline">
 					<h3 class="row inline">
 						<label for="{namePrefix}|isPaymentsEnabled">
-							Accept Payments?
+							Accept payments?
 						</label>
 					</h3>
 
@@ -367,7 +367,7 @@
 						<div class="column inline">
 							<div class="row inline">
 								<label for="{namePrefix}.config.payment_address">
-									Payment Address
+									Payment address
 								</label>
 							</div>
 
@@ -393,7 +393,7 @@
 			<div class="column inline">
 				<h3>
 					<span>
-						Snapshot Syncing
+						Snapshot syncing
 					</span>
 				</h3>
 
@@ -405,7 +405,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.snapshot_sync_sleep">
-								Sleep Duration
+								Sleep duration
 							</label>
 
 							<span class="annotation">Optional</span>
@@ -429,7 +429,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.snapshot_sync_batch_size">
-								Batch Size
+								Batch size
 							</label>
 
 							<span class="annotation">Optional</span>

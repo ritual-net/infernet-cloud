@@ -62,19 +62,19 @@
 			),
 		},
 		{
-			header: 'Payment Address',
+			header: 'Payment address',
 			accessor: nodeWithInfo => (
 				nodeWithInfo.node?.payment_address ?? '–'
 			),
 		},
 		// {
-		// 	header: 'Ignored Simulation Errors',
+		// 	header: 'Ignored simulation errors',
 		// 	accessor: nodeWithInfo => (
 		// 		nodeWithInfo.node.allowed_sim_errors?.length ? `${nodeWithInfo.node.allowed_sim_errors.length} substrings` : '–',
 		// 	),
 		// },
 		{
-			header: 'Docker Account',
+			header: 'Docker account',
 			accessor: nodeWithInfo => (
 				nodeWithInfo.node?.docker_account ? nodeWithInfo.node.docker_account.username : '–'
 			),
