@@ -48,11 +48,16 @@
 		}
 
 		&:before {
-			transition: color 0.3s;
+			transition: background-color 0.3s;
 
-			content: '⏺';
+			content: '';
+			display: inline-flex;
 			margin-right: 0.33em;
-			color: var(--status-color);
+			width: 0.55em;
+			height: 0.55em;
+			border-radius: 50%;
+			vertical-align: 0.05em;
+			background-color: var(--status-color);
 		}
 	}
 </style>
