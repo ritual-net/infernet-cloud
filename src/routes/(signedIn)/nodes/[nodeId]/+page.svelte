@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Types/constants
+	import { providers } from '$/types/provider'
+
+
 	// Context
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
@@ -35,9 +39,12 @@
 
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
+	import DetailsValue from '$/components/DetailsValue.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import Status from '$/views/Status.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
@@ -280,27 +287,41 @@
 				</section>
 			{/if}
 
-			<!-- {#if info?.ip}
-				<section class="row wrap">
-					<dt>IP</dt>
-
-					<dd>
-						{info.ip}
-					</dd>
-				</section>
-			{/if} -->
-
-			<!-- {#if infoError}
+			{#if info?.instanceInfo || infoError}
 				<section class="column">
-					<dt>Error</dt>
+					<dt>Instance info</dt>
 
 					<dd>
-						<output>
-							<pre><code>{infoError}</code></pre>
-						</output>
+						<Collapsible
+							class="card"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={node.provider && providers[node.provider].icon}
+									>
+										{node?.state?.id ?? 'Instance'}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							{#if info?.instanceInfo}
+								<DetailsValue
+									value={info?.instanceInfo}
+								/>
+							{/if}
+
+							{#if infoError}
+								<div class="card column error">
+									<output>
+								<pre><code>{infoError}</code></pre>
+									</output>
+								</div>
+							{/if}
+						</Collapsible>
 					</dd>
 				</section>
-			{/if} -->
+			{/if}
 		</dl>
 	</section>
 
