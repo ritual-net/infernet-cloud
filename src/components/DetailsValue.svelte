@@ -60,6 +60,7 @@
 						<dd>
 							<svelte:self
 								value={subvalue}
+								level={level + 1}
 							/>
 						</dd>
 					</section>
@@ -112,5 +113,12 @@
 		:is(header, section, footer) {
 			padding-left: calc(var(--card-paddingX) * (var(--card-level) + 1));
 		}
+	}
+
+	output {
+		display: block;
+		overflow: auto;
+		max-height: 15em;
+		max-height: 10lh;
 	}
 </style>

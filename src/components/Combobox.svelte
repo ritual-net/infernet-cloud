@@ -146,12 +146,9 @@
 
 	// (Computed)
 	$: filteredItems =
-		inputValue !== undefined
+		inputValue !== undefined && $touchedInput
 			? filterItems(items, inputValue)
 			: items
-	// $: filteredItems = $touchedInput
-	// 	? filterItems(items, inputValue)
-	// 	: items
 </script>
 
 
@@ -281,8 +278,13 @@
 		cursor: context-menu;
 
 		&:after {
+			--combobox-indicator-inset: 1px;
+
 			margin: var(--borderWidth);
-			padding: var(--combobox-paddingY) calc(var(--combobox-paddingX) - 0.25em);
+			padding:
+				calc(var(--combobox-paddingY) - var(--combobox-indicator-inset))
+				calc(var(--combobox-paddingX) - 0.25em - var(--combobox-indicator-inset))
+			;
 			overflow: hidden;
 			border-radius: 0.33em;
 
