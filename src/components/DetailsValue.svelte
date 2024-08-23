@@ -60,6 +60,7 @@
 						<dd>
 							<svelte:self
 								value={subvalue}
+								level={level + 1}
 							/>
 						</dd>
 					</section>
