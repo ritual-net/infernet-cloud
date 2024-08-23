@@ -203,12 +203,20 @@ module default {
       on source delete delete target;
     }
 
+    provider := (
+      .cluster.service_account.provider
+    );
+
     provider_id := 'infernet-node-' ++ <str>.id;
 
     state := (
+      with node := (
+        select json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', InfernetNode.provider_id)
+      )
       select (
-        id := <str>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', InfernetNode.provider_id, 'id'),
-        ip := <IpAddress>json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', InfernetNode.provider_id, 'ip')
+        id := <str>json_get(node, 'id'),
+        ip := <str>json_get(node, 'ip') ?? ''
+        # ip := <IpAddress>json_get(node, 'ip')
       )
       if exists(InfernetNode.cluster.latest_deployment.tfstate)
       else {}
@@ -258,6 +266,9 @@ module default {
     required locked: bool {
       default := false;
     }
+
+    provider_id := 'ic-' ++ <str>.id;
+
     status := (
       'updating' if .locked else
       'unhealthy' if exists(.latest_deployment) and .latest_deployment.status = 'failed' else
@@ -267,9 +278,11 @@ module default {
     );
 
     router_state := (
+      with router := json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value')
       select (
-        id := <str>json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value', 'id'),
-        ip := <IpAddress>json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value', 'ip')
+        id := <str>json_get(router, 'id'),
+        ip := <str>json_get(router, 'ip') ?? ''
+        # ip := <IpAddress>json_get(router_data, 'ip')
       )
       if exists(Cluster.latest_deployment.tfstate)
       else {}
@@ -327,6 +340,7 @@ module default {
 
     config: json;
     command: str;
+    tfvars: str;
     error: str;
     tfstate: json;
     stdout: array<json>;

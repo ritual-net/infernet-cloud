@@ -22,8 +22,15 @@
 
 
 {#if cellType === CellType.IpAndId}
-	<p>{nodeWithInfo.node.state?.ip ?? nodeWithInfo?.info?.ip ?? '–'}</p>  
-	<p><span class="node-id">{nodeWithInfo.node.state?.id ?? nodeWithInfo.node.provider_id ?? '–'}</span></p>
+	{#if nodeWithInfo.node}
+		<p>{nodeWithInfo.node.state?.ip ?? nodeWithInfo?.info?.ip ?? '–'}</p>  
+		<p><span class="node-id">{nodeWithInfo.node.state?.id ?? nodeWithInfo.node?.provider_id ?? '–'}</span></p>
+	{:else}
+		<div class="card error">
+			<p>Error fetching node info.</p>
+		</div>
+	{/if}
+
 
 {:else if cellType === CellType.Status}
 	<div class="row">

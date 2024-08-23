@@ -75,14 +75,14 @@ export type ZoneInfo = {
 
 // Node client types
 export type NodeInfo = {
-	id: string;
+	instanceId: string;
 	status?: string;
 	ip?: string;
-	node?: InfernetNode;
+	instanceInfo: any;
 };
 
 export type InfernetNodeWithInfo = {
-	node: InfernetNode;
+	node?: InfernetNode;
 	info?: NodeInfo;
 	infoError?: string | undefined;
 }

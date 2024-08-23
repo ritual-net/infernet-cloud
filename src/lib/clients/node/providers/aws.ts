@@ -9,7 +9,6 @@ import { ProviderTypeEnum } from '$/types/provider';
 import type { AWSServiceAccount } from '$schema/interfaces';
 import type { EC2ClientConfig } from '@aws-sdk/client-ec2';
 import { BaseNodeClient } from '$/lib/clients/node/base';
-import type { NodeInfo } from '$/types/provider';
 
 export class AWSNodeClient extends BaseNodeClient {
 	client: EC2Client;
@@ -81,26 +80,40 @@ export class AWSNodeClient extends BaseNodeClient {
 	 * @param nodeConfigIds - List of node ids to get status and ip of
 	 * @returns Flat array of node info objects
 	 */
-	async getNodesInfo(nodeConfigIds: string[]): Promise<NodeInfo[]> {
-		const command = new DescribeInstancesCommand({
-			InstanceIds: nodeConfigIds.map(this.toInstanceId),
-		})
+	async getNodesInfo(nodeConfigIds: string[]) {
+		try {
+			const command = new DescribeInstancesCommand({
+				InstanceIds: nodeConfigIds.map(this.toInstanceId),
+			})
 
-		const result = await this.client.send(command)
+			const result = await this.client.send(command)
 
-		return (
-			result.Reservations
-				?.flatMap(reservation => (
-					reservation
-						.Instances
-						?.map(instance => ({
-							id: instance.InstanceId!,
-							status: instance.State?.Name,
-							ip: instance.PublicIpAddress,
-						}))
-					?? []
-				))
-			?? []
-		)
+			return new Map(
+				result.Reservations
+					?.flatMap(reservation => (
+						reservation
+							.Instances
+							?.map(instance => [
+								instance.InstanceId!,
+								{
+									instanceId: instance.InstanceId!,
+									status: instance.State?.Name,
+									ip: instance.PublicIpAddress,
+									instanceInfo: instance,
+								}
+							] as const)
+						?? []
+					))
+				?? []
+			)
+		} catch (error) {
+			return new Map(
+				nodeConfigIds
+					.map(nodeConfigId => [
+						nodeConfigId,
+						{ error }
+					] as const)
+			)
+		}
 	}
 }

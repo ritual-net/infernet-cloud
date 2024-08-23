@@ -88,6 +88,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 			results
 				.map(result => ({
 					action: result.action,
+					tfvars: result.tfvars,
 					timestamp: new Date(result.timestamp).toISOString(),
 					command: result.command,
 					error: result.output.error,
@@ -197,6 +198,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 							filter_single: { id: clusterId },
 						})),
 						command: snapshot.command,
+						...snapshot.tfvars && { tfstate: snapshot.tfvars },
 						...snapshot.error && { error: snapshot.error },
 						...snapshot.tfstate && { tfstate: snapshot.tfstate },
 						...snapshot.stdout && { stdout: snapshot.stdout },

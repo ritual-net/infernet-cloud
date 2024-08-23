@@ -5,7 +5,6 @@ import { NodeAction } from '$/types/provider';
 import type { Client } from 'edgedb';
 import type {
 	InfernetNodeWithInfo,
-	NodeInfo,
 	ProviderServiceAccount,
 	ProviderServiceAccountCreds,
 } from '$/types/provider';
@@ -72,22 +71,27 @@ export const nodeAction = async <
 		case NodeAction.info:
 			let infoError: Error | undefined;
 
-			const nodesInfo = await nodeClient
+			const nodesProviderInfo = await nodeClient
 				.getNodesInfo(providerIds, functionArgs)
-				.catch(error => {
-					console.error(error);
-					infoError = error;
-					return [];
-				});
-
-			const nodeInfoByProviderId = new Map(nodesInfo.map(node => [node.id, node]));
 
 			return {
 				nodes: nodes
-					.map(node => ({
-						node,
-						info: node.provider_id ? nodeInfoByProviderId.get(node.provider_id) : undefined,
-					} as InfernetNodeWithInfo)),
+					.map(node => {
+						const nodeProviderInfo = node.state?.id && nodesProviderInfo.get(node.state?.id)
+
+						return {
+							node,
+							...nodeProviderInfo && (
+								'error' in nodeProviderInfo
+									? {
+										infoError: nodeProviderInfo.error ?? '',
+									}
+									: {
+										info: nodeProviderInfo,
+									}
+							),
+						} as InfernetNodeWithInfo
+					}),
 				infoError,
 			};
 

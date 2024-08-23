@@ -6,6 +6,8 @@
 	// Inputs
 	export let nodesWithInfo: InfernetNodeWithInfo[]
 
+	$: console.log({nodesWithInfo})
+
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
@@ -49,31 +51,45 @@
 		},
 		{
 			header: 'Onchain?',
-			accessor: ({ node }) => node.chain_enabled ? 'Yes' : 'No',
+			accessor: nodeWithInfo => (
+				nodeWithInfo.node?.chain_enabled ? 'Yes' : 'No'
+			),
 		},
 		{
 			header: 'Containers',
-			accessor: ({ node }) => node.containers.length,
+			accessor: nodeWithInfo => (
+				nodeWithInfo.node?.containers.length
+			),
 		},
 		{
-			header: 'Payment Address',
-			accessor: ({ node }) => node.payment_address ?? '–',
+			header: 'Payment address',
+			accessor: nodeWithInfo => (
+				nodeWithInfo.node?.payment_address ?? '–'
+			),
 		},
 		// {
-		// 	header: 'Ignored Simulation Errors',
-		// 	accessor: ({ node }) => node.allowed_sim_errors?.length ? `${node.allowed_sim_errors.length} substrings` : '–',
+		// 	header: 'Ignored simulation errors',
+		// 	accessor: nodeWithInfo => (
+		// 		nodeWithInfo.node.allowed_sim_errors?.length ? `${nodeWithInfo.node.allowed_sim_errors.length} substrings` : '–',
+		// 	),
 		// },
 		{
-			header: 'Docker Account',
-			accessor: ({ node }) => node.docker_account ? node.docker_account.username : '–',
+			header: 'Docker account',
+			accessor: nodeWithInfo => (
+				nodeWithInfo.node?.docker_account ? nodeWithInfo.node.docker_account.username : '–'
+			),
 		},
 	]}
-	getRowLink={({ node }) => (
-		resolveRoute(`/nodes/[nodeId]`, {
-			nodeId: node.id,
+	getRowLink={nodeWithInfo => (
+		nodeWithInfo.node && resolveRoute(`/nodes/[nodeId]`, {
+			nodeId: nodeWithInfo.node.id,
 		})
 	)}
-	contextMenu={({ node }) => {
+	contextMenu={nodeWithInfo => {
+		const { node } = nodeWithInfo
+
+		if(!node) return []
+
 		const nodeRoute = resolveRoute(`/nodes/[nodeId]`, {
 			nodeId: node.id,
 		})
