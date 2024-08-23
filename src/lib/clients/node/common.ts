@@ -5,7 +5,6 @@ import { NodeAction } from '$/types/provider';
 import type { Client } from 'edgedb';
 import type {
 	InfernetNodeWithInfo,
-	NodeInfo,
 	ProviderServiceAccount,
 	ProviderServiceAccountCreds,
 } from '$/types/provider';

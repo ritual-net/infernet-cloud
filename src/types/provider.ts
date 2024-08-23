@@ -78,6 +78,7 @@ export type NodeInfo = {
 	instanceId: string;
 	status?: string;
 	ip?: string;
+	instanceInfo: any;
 };
 
 export type InfernetNodeWithInfo = {

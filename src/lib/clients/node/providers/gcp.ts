@@ -105,6 +105,26 @@ export class GCPNodeClient extends BaseNodeClient {
 									instanceId: nodeInstanceId,
 									status: result[0]?.status ?? undefined,
 									ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
+									instanceInfo: (
+										Object.fromEntries(
+											Object.entries(result[0] ?? {})
+												.filter(([key, value]) => (
+													!key.startsWith('_')
+												))
+												.map(([key, value]) => ([
+													key,
+													typeof value === 'object' ?
+														Object.fromEntries(
+															Object.entries(value ?? {})
+																.filter(([key, value]) => (
+																	!key.startsWith('_')
+																))
+														)
+													:
+														value
+												]))
+										)
+									),
 								}
 							] as const
 

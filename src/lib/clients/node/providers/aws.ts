@@ -99,6 +99,7 @@ export class AWSNodeClient extends BaseNodeClient {
 									instanceId: instance.InstanceId!,
 									status: instance.State?.Name,
 									ip: instance.PublicIpAddress,
+									instanceInfo: instance,
 								}
 							] as const)
 						?? []
