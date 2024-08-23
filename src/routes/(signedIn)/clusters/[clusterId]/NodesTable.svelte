@@ -56,15 +56,15 @@
 			accessor: ({ node }) => node.containers.length,
 		},
 		{
-			header: 'Payment Address',
+			header: 'Payment address',
 			accessor: ({ node }) => node.payment_address ?? '–',
 		},
 		// {
-		// 	header: 'Ignored Simulation Errors',
+		// 	header: 'Ignored simulation errors',
 		// 	accessor: ({ node }) => node.allowed_sim_errors?.length ? `${node.allowed_sim_errors.length} substrings` : '–',
 		// },
 		{
-			header: 'Docker Account',
+			header: 'Docker account',
 			accessor: ({ node }) => node.docker_account ? node.docker_account.username : '–',
 		},
 	]}
