@@ -78,7 +78,7 @@ export const nodeAction = async <
 			return {
 				nodes: nodes
 					.map(node => {
-						const nodeProviderInfo = nodesProviderInfo.get(node.provider_id)
+						const nodeProviderInfo = node.state?.id && nodesProviderInfo.get(node.state?.id)
 
 						return {
 							node,
