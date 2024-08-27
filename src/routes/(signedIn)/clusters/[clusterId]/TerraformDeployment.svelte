@@ -125,12 +125,12 @@
 				</XYFlow>
 			{/if}
 
-			<ScrollArea
+			<!-- <ScrollArea
 				tagName="dl"
 				containerProps={{
 					class: 'card',
 				}}
-			>
+			> -->
 				<div class="resources card column">
 					{#each deployment.tfstate.resources as resourceType}
 						{#each resourceType.instances as resource}
@@ -147,7 +147,7 @@
 						{/each}
 					{/each}
 				</div>
-			</ScrollArea>
+			<!-- </ScrollArea> -->
 		</dd>
 	</section>
 {/if}
