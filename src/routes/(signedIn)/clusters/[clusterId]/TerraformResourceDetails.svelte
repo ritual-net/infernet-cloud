@@ -43,9 +43,13 @@
 
 			<div class="row">
 				<a
-					href={provider === ProviderTypeEnum.GCP ? getGcpConsoleLink(instance.attributes.self_link) : getAwsConsoleLink(instance.attributes.arn)}
+					href={
+						provider === ProviderTypeEnum.GCP
+							? getGcpConsoleLink(instance.attributes.self_link)
+							: getAwsConsoleLink(instance.attributes.arn)
+					}
 					target="_blank"
-					class="button"
+					class="button small"
 				>
 					Console
 				</a>
