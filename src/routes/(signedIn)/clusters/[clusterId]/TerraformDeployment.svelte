@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { TerraformDeployment } from '$schema/interfaces'
-	import { providers, ProviderTypeEnum } from '$/types/provider'
+	import { ProviderTypeEnum } from '$/types/provider'
 
 
 	// Inputs
@@ -11,14 +11,9 @@
 	export let isSummary = false
 
 
-	// Functions
-	import { formatResourceType, getAwsConsoleLink, getGcpConsoleLink } from '$/lib/terraform/format'
-
-
 	// Components
-	import Collapsible from '$/components/Collapsible.svelte'
-	import DetailsValue from '$/components/DetailsValue.svelte'
 	import ScrollArea from '$/components/ScrollArea.svelte'
+	import TerraformResourceDetails from './TerraformResourceDetails.svelte'
 	import XYFlow from '$/components/XYFlow.svelte'
 	import XYFlowDownload from '$/components/XYFlowDownload.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
@@ -139,135 +134,12 @@
 				<div class="resources card column">
 					{#each deployment.tfstate.resources as resource}
 						{#each resource.instances as instance}
-							<Collapsible>
-								<svelte:fragment slot="trigger"
-									let:open
-								>
-									<header
-										class="row wrap"
-									>
-										<div class="row inline with-icon">
-											<img
-												src={providers[provider].icon}
-												width="30"
-												height="30"
-											/>
-
-											<div class="column inline">
-												<h4>{formatResourceType(resource.type)}</h4>
-												<p>{instance.attributes.name}</p>
-											</div>
-										</div>
-
-										<div class="row">
-											<a
-												href={provider === ProviderTypeEnum.GCP ? getGcpConsoleLink(instance.attributes.self_link) : getAwsConsoleLink(instance.attributes.arn)}
-												target="_blank"
-												class="button"
-											>
-												Console
-											</a>
-
-											<span data-after={open ? '▴' : '▾'}></span>
-										</div>
-									</header>
-								</svelte:fragment>
-
-								<section
-									id="terraform-resource-{deployment.id}-{resource.type}-{instance.attributes.id}"
-									class="column"
-								>
-									<dl class="card column">
-										{#if instance.attributes?.tags?.Name}
-											<section class="row wrap">
-												<dt>Tag</dt>
-												<dd>{instance.attributes.tags.Name}</dd>
-											</section>
-										{/if}
-
-										{#if instance.attributes?.id}
-											<section class="row wrap">
-												<dt>ID</dt>
-												<dd>
-													{#if instance.attributes.self_link}
-														<a
-															href={getGcpConsoleLink(instance.attributes.self_link)}
-															target="_blank"
-															class="row inline with-icon"
-														>
-															<img
-																src={providers[ProviderTypeEnum.GCP].icon}
-																width="20"
-																height="20"
-															/>
-
-															<output><code>{instance.attributes.id}</code></output>
-														</a>
-													{:else}
-														<output><code>{instance.attributes.id}</code></output>
-													{/if}
-												</dd>
-											</section>
-										{/if}
-
-										{#if instance.attributes?.arn}
-											<section class="row wrap">
-												<dt>ARN</dt>
-												<dd>
-													<p>
-														<a
-															href={getAwsConsoleLink(instance.attributes.arn)}
-															target="_blank"
-															class="row inline with-icon"
-														>
-															<img
-																src={providers[ProviderTypeEnum.AWS].icon}
-																width="20"
-																height="20"
-															/>
-
-															{instance.attributes.arn}
-														</a>
-													</p>
-												</dd>
-											</section>
-										{/if}
-
-										{#each Object.entries(instance.attributes) as [key, value]}
-											{#if (
-												!['tags', 'tags_all', 'id', 'arn'].includes(key)
-												&& value !== null && !(Array.isArray(value) && value.length === 0)
-											)}
-												<section class="row wrap">
-													<dt>{key}</dt>
-													<dd>
-														<DetailsValue
-															{value}
-														/>
-													</dd>
-												</section>
-											{/if}
-										{/each}
-
-										{#if instance.dependencies?.length}
-											<section class="row wrap">
-												<dt>Dependencies</dt>
-												<dd>
-													{#each instance.dependencies as dependency}
-														{@const [type, name] = dependency.split('.')}
-
-														<p>
-															<a href="#terraform-resource-{deployment.id}-{type}-{name}">
-																{name} ({type})
-															</a>
-														</p>
-													{/each}
-												</dd>
-											</section>
-										{/if}
-									</dl>
-								</section>
-							</Collapsible>
+							<TerraformResourceDetails
+								deploymentId={deployment.id}
+								{provider}
+								{resource}
+								{instance}
+							/>
 						{:else}
 							<div class="card column">
 								<p>No resources found.</p>
