@@ -7,8 +7,8 @@
 	// Inputs
 	export let deploymentId: string
 	export let provider: ProviderTypeEnum
-	export let resource: TFState['resources'][number]
-	export let instance: TFState['resources'][number]['instances'][number]
+	export let resourceType: TFState['resources'][number]
+	export let resource: TFState['resources'][number]['instances'][number]
 
 
 	// Functions
@@ -36,9 +36,9 @@
 				/>
 
 				<div>
-					<h4>{formatResourceType(resource.type)}</h4>
+					<h4>{formatResourceType(resourceType.type)}</h4>
 
-					<p>{instance.attributes.name}</p>
+					<p>{resource.attributes.name}</p>
 				</div>
 			</div>
 
@@ -46,8 +46,8 @@
 				<a
 					href={
 						provider === ProviderTypeEnum.GCP
-							? getGcpConsoleLink(instance.attributes.self_link)
-							: getAwsConsoleLink(instance.attributes.arn)
+							? getGcpConsoleLink(resource.attributes.self_link)
+							: getAwsConsoleLink(resource.attributes.arn)
 					}
 					target="_blank"
 					class="button small"
@@ -61,24 +61,24 @@
 	</svelte:fragment>
 
 	<section
-		id="terraform-resource-{deploymentId}-{resource.type}-{instance.attributes.id}"
+		id="terraform-resource-{deploymentId}-{resourceType.type}-{resource.attributes.id}"
 		class="column"
 	>
 		<dl class="card column">
-			{#if instance.attributes?.tags?.Name}
+			{#if resource.attributes?.tags?.Name}
 				<section class="row wrap">
 					<dt>Tag</dt>
-					<dd>{instance.attributes.tags.Name}</dd>
+					<dd>{resource.attributes.tags.Name}</dd>
 				</section>
 			{/if}
 
-			{#if instance.attributes?.id}
+			{#if resource.attributes?.id}
 				<section class="row wrap">
 					<dt>ID</dt>
 					<dd>
-						{#if instance.attributes.self_link}
+						{#if resource.attributes.self_link}
 							<a
-								href={getGcpConsoleLink(instance.attributes.self_link)}
+								href={getGcpConsoleLink(resource.attributes.self_link)}
 								target="_blank"
 								class="row inline with-icon"
 							>
@@ -88,22 +88,22 @@
 									height="20"
 								/>
 
-								<output><code>{instance.attributes.id}</code></output>
+								<output><code>{resource.attributes.id}</code></output>
 							</a>
 						{:else}
-							<output><code>{instance.attributes.id}</code></output>
+							<output><code>{resource.attributes.id}</code></output>
 						{/if}
 					</dd>
 				</section>
 			{/if}
 
-			{#if instance.attributes?.arn}
+			{#if resource.attributes?.arn}
 				<section class="row wrap">
 					<dt>ARN</dt>
 					<dd>
 						<p>
 							<a
-								href={getAwsConsoleLink(instance.attributes.arn)}
+								href={getAwsConsoleLink(resource.attributes.arn)}
 								target="_blank"
 								class="row inline with-icon"
 							>
@@ -113,14 +113,14 @@
 									height="20"
 								/>
 
-								{instance.attributes.arn}
+								{resource.attributes.arn}
 							</a>
 						</p>
 					</dd>
 				</section>
 			{/if}
 
-			{#each Object.entries(instance.attributes) as [key, value]}
+			{#each Object.entries(resource.attributes) as [key, value]}
 				{#if (
 					!['tags', 'tags_all', 'id', 'arn'].includes(key)
 					&& value !== null && !(Array.isArray(value) && value.length === 0)
@@ -136,11 +136,11 @@
 				{/if}
 			{/each}
 
-			{#if instance.dependencies?.length}
+			{#if resource.dependencies?.length}
 				<section class="row wrap">
 					<dt>Dependencies</dt>
 					<dd>
-						{#each instance.dependencies as dependency}
+						{#each resource.dependencies as dependency}
 							{@const [type, name] = dependency.split('.')}
 
 							<p>

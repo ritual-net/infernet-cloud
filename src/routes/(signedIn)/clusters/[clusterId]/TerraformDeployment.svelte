@@ -132,13 +132,13 @@
 				}}
 			>
 				<div class="resources card column">
-					{#each deployment.tfstate.resources as resource}
-						{#each resource.instances as instance}
+					{#each deployment.tfstate.resources as resourceType}
+						{#each resourceType.instances as resource}
 							<TerraformResourceDetails
 								deploymentId={deployment.id}
 								{provider}
+								{resourceType}
 								{resource}
-								{instance}
 							/>
 						{:else}
 							<div class="card column">
