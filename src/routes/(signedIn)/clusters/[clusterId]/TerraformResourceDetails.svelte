@@ -41,7 +41,7 @@
 						<span class="annotation">{resourceType.name}</span>
 					</h4>
 
-					<p>{resource.attributes.name}</p>
+					<p class="annotation">{resource.attributes.name}</p>
 				</div>
 			</div>
 
