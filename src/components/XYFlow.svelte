@@ -49,6 +49,8 @@
 				}
 			)
 
+		dagre.layout(dagreGraph)
+
 		for(const node of nodes)
 			if (node.parentId)
 				try {
@@ -60,13 +62,23 @@
 					console.warn(e)
 				}
 
+		try {
+			dagre.layout(dagreGraph)
+		}catch(e){
+			console.warn(e)
+		}
+
 		for(const edge of edges)
 			dagreGraph.setEdge(
 				edge.source,
 				edge.target
 			)
 
-		dagre.layout(dagreGraph)
+		try {
+			dagre.layout(dagreGraph)
+		}catch(e){
+			console.warn(e)
+		}
 
 		return nodes.map(node => {
 			const { x, y } = dagreGraph.node(node.id)
