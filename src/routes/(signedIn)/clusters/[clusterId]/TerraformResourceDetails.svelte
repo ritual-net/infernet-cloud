@@ -28,15 +28,16 @@
 		<header
 			class="row wrap"
 		>
-			<div class="row inline with-icon">
+			<div class="row">
 				<img
 					src={providers[provider].icon}
 					width="30"
 					height="30"
 				/>
 
-				<div class="column inline">
+				<div>
 					<h4>{formatResourceType(resource.type)}</h4>
+
 					<p>{instance.attributes.name}</p>
 				</div>
 			</div>
