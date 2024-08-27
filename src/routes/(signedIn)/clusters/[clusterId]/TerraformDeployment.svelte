@@ -145,7 +145,6 @@
 								>
 									<header
 										class="row wrap"
-										data-after={open ? '▴' : '▾'}
 									>
 										<div class="row inline with-icon">
 											<img
@@ -160,13 +159,17 @@
 											</div>
 										</div>
 
-										<a
-											href={provider === ProviderTypeEnum.GCP ? getGcpConsoleLink(instance.attributes.self_link) : getAwsConsoleLink(instance.attributes.arn)}
-											target="_blank"
-											class="button"
-										>
-											Console
-										</a>
+										<div class="row">
+											<a
+												href={provider === ProviderTypeEnum.GCP ? getGcpConsoleLink(instance.attributes.self_link) : getAwsConsoleLink(instance.attributes.arn)}
+												target="_blank"
+												class="button"
+											>
+												Console
+											</a>
+
+											<span data-after={open ? '▴' : '▾'}></span>
+										</div>
 									</header>
 								</svelte:fragment>
 
