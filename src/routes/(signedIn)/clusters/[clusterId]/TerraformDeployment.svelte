@@ -132,6 +132,9 @@
 
 			<ScrollArea
 				tagName="dl"
+				containerProps={{
+					class: 'card',
+				}}
 			>
 				<div class="resources card column">
 					{#each deployment.tfstate.resources as resource}
