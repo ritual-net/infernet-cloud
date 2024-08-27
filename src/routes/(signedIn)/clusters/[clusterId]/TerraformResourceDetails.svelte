@@ -36,7 +36,10 @@
 				/>
 
 				<div>
-					<h4>{formatResourceType(resourceType.type)}</h4>
+					<h4>
+						{formatResourceType(resourceType.type)}
+						<span class="annotation">{resourceType.name}</span>
+					</h4>
 
 					<p>{resource.attributes.name}</p>
 				</div>
