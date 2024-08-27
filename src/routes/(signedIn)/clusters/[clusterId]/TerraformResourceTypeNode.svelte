@@ -10,7 +10,6 @@
 		resourceType: TFState['resources'][number],
 	}
 
-	$: console.log('TerraformResourceTypeNode', {data})
 
 	// Functions
 	import { formatResourceType } from '$/lib/terraform/format'
@@ -21,10 +20,7 @@
 </script>
 
 
-<div
-	class="node row"
-	data-after="↗"
->
+<div class="node">
 	<div class="row">
 		<img
 			src={providers[data.provider].icon}
