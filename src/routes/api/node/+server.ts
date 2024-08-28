@@ -12,8 +12,8 @@ import { type FormData, setDefaultNodeValues } from '$/routes/(signedIn)/cluster
 import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
 import { getClusterById } from '$/lib/db/queries';
-// import { createNodeParams, insertNodeQuery } from '$/lib/db/components'
-import { insertNodeJsonQuery } from '$/lib/db/components';
+// import { createNodeParams, nodeQueryFields } from '$/lib/db/components'
+import { nodeJsonQueryFields } from '$/lib/db/components';
 import { e } from '$/lib/db';
 
 /**
@@ -54,8 +54,8 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					e.update(e.Cluster, () => ({
 						set: {
 							nodes: {
-								// '+=': insertNodeQuery(node),
-								'+=': insertNodeJsonQuery(node),
+								// '+=': e.insert(e.InfernetNode, nodeueryFields(node)),
+								'+=': e.insert(e.InfernetNode, nodeJsonQueryFields(node)),
 							},
 						},
 						filter_single: { id: clusterId },
