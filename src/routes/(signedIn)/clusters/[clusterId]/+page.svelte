@@ -262,12 +262,12 @@
 		</SizeTransition>
 	</section>
 
-	{#if cluster.router || cluster.router_state?.ip}
+	{#if cluster.router || cluster.router_state}
 		<section class="column">
 			<h3>Router</h3>
 
-			<dl class="card column">
-				{#if cluster.router_state?.ip}
+			{#if cluster.router_state?.ip}
+				<dl class="card column">
 					<section class="row wrap">
 						<dt>IP</dt>
 
@@ -275,9 +275,11 @@
 							{cluster.router_state.ip}
 						</dd>
 					</section>
-				{/if}
+				</dl>
+			{/if}
 
-				{#if cluster.router}
+			{#if cluster.router}
+				<dl class="card column">
 					<section class="row wrap">
 						<dt>Region / Zone</dt>
 
@@ -289,7 +291,9 @@
 							</WithIcon>
 						</dd>
 					</section>
+				</dl>
 
+				<dl class="card column">
 					<section class="row wrap">
 						<dt>Machine type</dt>
 
@@ -301,8 +305,8 @@
 							</WithIcon>
 						</dd>
 					</section>
-				{/if}
-			</dl>
+				</dl>
+			{/if}
 		</section>
 	{/if}
 
