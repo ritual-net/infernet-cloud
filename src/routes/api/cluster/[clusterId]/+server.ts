@@ -85,25 +85,37 @@ export const POST: RequestHandler = async ({
  * 					- ip_allow_ssh: string[]
  * @returns Updated cluster ID.
  */
-export const PATCH: RequestHandler = async ({ locals: { client }, params, request }) => {
+export const PATCH: RequestHandler = async ({
+	locals: { client },
+	params,
+	request,
+}) => {
 	const id = params.clusterId;
-	if (!id) {
-		return error(400, 'Cluster id is required');
-	}
+	if (!id)
+		return error(400, 'Cluster id is required')
 
-	const body = await request.json();
-	if (!body) {
-		return error(400, 'Body is required');
-	}
+	const body = await request.json()
+	if (!body)
+		return error(400, 'Body is required')
+
+	const { config, router } = body
+
+	const { deploy_router, ...clusterConfig } = config
 
 	// Update cluster
 	const updatedCluster = await e
 		.update(e.Cluster, (c) => ({
 			set: {
-				// Updatable fields, default to current value if not provided
-				name: body.name,
-				ip_allow_http: body.ip_allow_http,
-				ip_allow_ssh: body.ip_allow_ssh,
+				...clusterConfig,
+				router: (
+					deploy_router
+						? e.tuple({
+							region: router.region,
+							zone: router.zone,
+							machine_type: router.machine_type,
+						})
+						: e.set()
+				),
 			},
 			filter_single: { id },
 		}))

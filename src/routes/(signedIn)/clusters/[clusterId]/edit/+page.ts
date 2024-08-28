@@ -18,7 +18,14 @@ export const load: PageLoad = async ({
 			deploy_router: cluster.deploy_router,
 			ip_allow_http: cluster.ip_allow_http,
 			ip_allow_ssh: cluster.ip_allow_ssh,
-		},	
+			region: cluster.region,
+			zone: cluster.zone,
+		},
+		router: {
+			region: cluster.router?.region,
+			zone: cluster.router?.zone,
+			machine_type: cluster.router?.machine_type,
+		}
 	}, yup(FormData))
 
 	return {
