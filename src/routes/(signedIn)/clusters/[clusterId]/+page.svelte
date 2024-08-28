@@ -257,7 +257,7 @@
 		</SizeTransition>
 	</section>
 
-	{#if cluster.router || cluster.router_state}
+	{#if cluster.router || cluster.router_state?.ip}
 		<section class="column">
 			<h3>Router</h3>
 
