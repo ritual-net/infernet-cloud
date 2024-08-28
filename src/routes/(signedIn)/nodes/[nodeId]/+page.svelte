@@ -243,6 +243,16 @@
 					</section>
 				{/if}
 
+				{#if node.chain_id}
+					<section class="row wrap">
+						<dt>Chain ID</dt>
+
+						<dd>
+							{node.chain_id}
+						</dd>
+					</section>
+				{/if}
+
 				{#if node.registry_address}
 					<section class="row wrap">
 						<dt>Registry address</dt>
