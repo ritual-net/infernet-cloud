@@ -235,6 +235,10 @@
 					opacity: var(--active-opacity);
 					scale: var(--active-scale);
 
+					&:active {
+						--borderColor: transparent;
+					}
+
 					box-shadow: none;
 
 					& td.sticky {
