@@ -37,8 +37,6 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, `Cluster ID ${clusterId} does not exist`);
 	}
 
-	console.log('Add node to cluster', { clusterId, node })
-
 	let updatedCluster: {
 		id: string;
 	} | null

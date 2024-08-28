@@ -159,7 +159,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 						snapshots: e.json,
 					},
 					({ snapshots }) => (
-						e.for(e.json_array_unpack(snapshots), (snapshot) =>console.log('snapshot', JSON.stringify(snapshot))||console.log('snapshot action', snapshot['action'])||console.log('snapshot error', snapshot['error'])||console.log('snapshot output', snapshot['output'])||
+						e.for(e.json_array_unpack(snapshots), (snapshot) => (
 							e.insert(
 								e.TerraformDeployment,
 								{

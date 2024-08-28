@@ -6,8 +6,6 @@
 	// Inputs
 	export let nodesWithInfo: InfernetNodeWithInfo[]
 
-	$: console.log({nodesWithInfo})
-
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
