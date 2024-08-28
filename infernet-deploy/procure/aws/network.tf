@@ -1,6 +1,11 @@
 locals {
   # Extract all zones and include router zone, ensuring uniqueness
-  all_zones = toset(concat([for node in var.nodes : node.zone], [var.router.zone]))
+  all_zones = toset(
+    concat(
+      [for node in var.nodes : node.zone if node.zone != ""],
+      var.router.zone != "" ? [var.router.zone] : []
+    )
+  )
 
   # Generate unique CIDR blocks for each zone.
   # This assumes you have a limited number of zones and a /16 network allows for 256 /24 subnets.
