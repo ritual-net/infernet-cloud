@@ -15,7 +15,7 @@ export const load: PageLoad = async ({
 	const formData = await superValidate({
 		config: {
 			name: cluster.name,
-			deploy_router: cluster.deploy_router,
+			deploy_router: Boolean(cluster.router),
 			ip_allow_http: cluster.ip_allow_http,
 			ip_allow_ssh: cluster.ip_allow_ssh,
 			region: cluster.region,
