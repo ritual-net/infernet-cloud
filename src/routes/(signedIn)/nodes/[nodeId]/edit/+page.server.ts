@@ -50,8 +50,6 @@ export const actions: Actions = {
 			)
 		}
 
-		const result = await response.json()
-
 		return flashRedirect(
 			303,
 			resolveRoute('/nodes/[nodeId]', { nodeId }),
