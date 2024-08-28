@@ -115,6 +115,7 @@ export const insertNodeJsonQuery = (
 		chain_enabled: e.cast(e.bool, e.json_get(node, 'config', 'chain_enabled')),
 		trail_head_blocks: e.cast(e.int16, e.json_get(node, 'config', 'trail_head_blocks')),
 		rpc_url: e.cast(e.str, e.json_get(node, 'config', 'rpc_url')),
+		chain_id: e.cast(e.int64, e.json_get(node, 'config', 'chain_id')),
 		registry_address: e.cast(e.Address, e.json_get(node, 'config', 'registry_address')),
 		allowed_sim_errors: e.cast(e.array(e.str), e.json_get(node, 'config', 'allowed_sim_errors')),
 		payment_address: e.cast(e.Address, e.json_get(node, 'config', 'payment_address')),

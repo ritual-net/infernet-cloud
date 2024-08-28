@@ -199,6 +199,19 @@ export const NodeConfig = z
 				),
 			),
 
+		'chain_id': z
+			.number()
+			.integer()
+			.positive()
+			.when(
+				'chain_enabled',
+				([chain_enabled]: boolean[], _) => (
+					chain_enabled
+						? _.required()
+						: _.notRequired()
+				),
+			),
+
 		'registry_address':
 			Address
 			.when(

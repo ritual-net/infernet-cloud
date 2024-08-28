@@ -182,6 +182,8 @@ module default {
 
     rpc_url: str;
 
+    chain_id: int64;
+
     registry_address: Address;
 
     max_gas_limit: int64;
