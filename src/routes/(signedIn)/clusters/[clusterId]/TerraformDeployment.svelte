@@ -50,7 +50,7 @@
 			{#if deployment.tfstate?.resources?.flatMap(resourceType => resourceType.instances).length}
 				<XYFlow
 					nodeTypes={{
-						'resourceType': TerraformResourceTypeNode,
+						'group': TerraformResourceTypeNode,
 						'resource': TerraformResourceNode,
 					}}
 					nodes={
@@ -58,7 +58,7 @@
 							.flatMap(resourceType => {
 								const parentNode = {
 									id: `resourceType.${resourceType.type}`,
-									type: 'resourceType',
+									type: 'group',
 									data: {
 										provider,
 										resourceType,
