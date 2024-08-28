@@ -124,7 +124,7 @@ export abstract class BaseTerraform {
 					},
 					[TFAction.Plan, TFAction.Apply, TFAction.Destroy].includes(action) && {
 						action: TFAction.Plan,
-						command: action === TFAction.Plan ? `terraform plan -json -no-color` : `terraform plan -destroy -json -no-color`,
+						command: action === TFAction.Destroy ? `terraform plan -destroy -json -no-color` : `terraform plan -json -no-color`,
 						statusMessage: 'Creating Terraform plan...',
 						errorMessage: 'Error creating Terraform plan.',
 					},
