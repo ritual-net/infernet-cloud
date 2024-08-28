@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import { providers } from '$/types/provider'
+	import { chainsByChainId } from '$/lib/chains'
 
 
 	// Context
@@ -245,10 +246,18 @@
 
 				{#if node.chain_id}
 					<section class="row wrap">
-						<dt>Chain ID</dt>
+						<dt>Chain</dt>
 
 						<dd>
-							{node.chain_id}
+							{#if chainsByChainId[node.chain_id]}
+								<WithIcon
+									icon={chainsByChainId[node.chain_id].icon}
+								>
+									{chainsByChainId[node.chain_id].name}
+								</WithIcon>
+							{:else}
+								{node.chain_id}
+							{/if}
 						</dd>
 					</section>
 				{/if}
