@@ -13,6 +13,9 @@ export const load: PageServerLoad = async ({
 	fetch,
 	url,
 }) => {
+	const imagesPromise = fetch(`/api/images/ritual`)
+		.then(response => response.json()) as Promise<string[]>
+
 	const fromContainerTemplate = url.searchParams.has('fromContainerTemplate')
 		? await e.select(e.ContainerTemplate, () => ({
 			...e.ContainerTemplate['*'],
@@ -38,9 +41,6 @@ export const load: PageServerLoad = async ({
 			}, yup(FormData))
 			: superValidate(yup(FormData))
 	])
-
-	const imagesPromise = fetch(`/api/images/ritual`)
-		.then(response => response.json()) as Promise<string[]>
 
 	return {
 		dockerAccounts,
