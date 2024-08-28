@@ -230,7 +230,7 @@
 
 	{#if node.chain_enabled}
 		<section class="column">
-			<h3>Onchain details</h3>
+			<h3>Onchain configuration</h3>
 
 			<dl class="card column">
 				{#if node.rpc_url}
