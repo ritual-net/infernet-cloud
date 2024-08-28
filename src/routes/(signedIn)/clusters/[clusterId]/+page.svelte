@@ -340,19 +340,51 @@
 		</dl>
 	</section>
 
-	{#if cluster.router_state?.ip}
+	{#if cluster.router || cluster.router_state}
 		<section class="column">
 			<h3>Router</h3>
 
-			<dl class="card column">
-				<section class="row wrap">
-					<dt>IP</dt>
+			{#if cluster.router_state?.ip}
+				<dl class="card column">
+					<section class="row wrap">
+						<dt>IP</dt>
 
-					<dd>
-						{cluster.router_state.ip}
-					</dd>
-				</section>
-			</dl>
+						<dd>
+							{cluster.router_state.ip}
+						</dd>
+					</section>
+				</dl>
+			{/if}
+
+			{#if cluster.router}
+				<dl class="card column">
+					<section class="row wrap">
+						<dt>Region / Zone</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.region} / {cluster.router.zone}
+							</WithIcon>
+						</dd>
+					</section>
+				</dl>
+
+				<dl class="card column">
+					<section class="row wrap">
+						<dt>Machine type</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.machine_type}
+							</WithIcon>
+						</dd>
+					</section>
+				</dl>
+			{/if}
 		</section>
 	{/if}
 
