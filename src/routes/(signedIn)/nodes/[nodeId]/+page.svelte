@@ -20,7 +20,7 @@
 	$: nodeStatus = (
 		info?.status
 			? {
-				'RUNNING': 'healthy',
+				'RUNNING': 'running',
 				'TERMINATED': 'terminated',
 			}[info.status] || info.status
 			: 'unknown'

@@ -35,8 +35,11 @@ export const actions: Actions = {
 		return message(
 			{},
 			{
-				title: `Starting node.`,
+				title: `Started node.`,
 				description: result,
+			},
+			{
+				status: response.status,
 			},
 		)
 	},
@@ -72,8 +75,11 @@ export const actions: Actions = {
 		return message(
 			{},
 			{
-				title: `Stopping node.`,
+				title: `Stopped node.`,
 				description: result,
+			},
+			{
+				status: response.status,
 			},
 		)
 	},
