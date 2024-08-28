@@ -237,19 +237,15 @@ module default {
       readonly := true;
     };
 
-    required region: str {
-      readonly := true;
-    }
-    required zone: str {
-      readonly := true;
-    }
+    required region: str;
+
+    required zone: str;
 
     ip_allow_http: array<IpAddressWithMask>;
+
     ip_allow_ssh: array<IpAddressWithMask>;
 
-    router: tuple<region: str, zone: str, machine_type: str> {
-      readonly := true;
-    };
+    router: tuple<region: str, zone: str, machine_type: str>;
 
     multi nodes: InfernetNode {
       constraint exclusive;
@@ -295,25 +291,19 @@ module default {
   }
 
   type GCPCluster extending Cluster {
-    overloaded required region: str {
-      # e.g. "us-east2"
-      readonly := true;
-    }
-    overloaded required zone: str {
-      # e.g. "us-east2-a"
-      readonly := true;
-    }
+    # e.g. "us-east2"
+    # overloaded required region: str;
+
+    # e.g. "us-east2-a"
+    # overloaded required zone: str;
   }
 
   type AWSCluster extending Cluster {
-    overloaded required region: str {
-      # e.g. "us-east-2"
-      readonly := true;
-    }
-    overloaded required zone: str {
-      # e.g. "us-east-2a"
-      readonly := true;
-    }
+    # e.g. "us-east-2"
+    # overloaded required region: str;
+
+    # e.g. "us-east-2a"
+    # overloaded required zone: str;
   }
 
   type TerraformDeployment {

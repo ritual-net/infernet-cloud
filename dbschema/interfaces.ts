@@ -34,10 +34,7 @@ export interface Cluster extends std.$Object {
   "router_state"?: {id: string, ip: string} | null;
   "provider_id": string;
 }
-export interface AWSCluster extends Cluster {
-  "region": string;
-  "zone": string;
-}
+export interface AWSCluster extends Cluster {}
 export interface ServiceAccount extends std.$Object {
   "user": User;
   "name": string;
@@ -76,10 +73,7 @@ export interface DockerAccount extends std.$Object {
   "username": string;
   "password": string;
 }
-export interface GCPCluster extends Cluster {
-  "region": string;
-  "zone": string;
-}
+export interface GCPCluster extends Cluster {}
 export interface GCPServiceAccount extends ServiceAccount {
   "creds": {type: string, project_id: string, private_key_id: string, private_key: string, client_email: string, client_id: string, auth_uri: string, token_uri: string, auth_provider_x509_cert_url: string, client_x509_cert_url: string, universe_domain: string};
   "provider": CloudProvider;
