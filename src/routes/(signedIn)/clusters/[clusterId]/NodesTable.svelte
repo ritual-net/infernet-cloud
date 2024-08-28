@@ -11,6 +11,7 @@
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
+	import { isTruthy } from '$/lib/utils/isTruthy'
 
 
 	// Actions
@@ -86,7 +87,7 @@
 		})
 	)}
 	contextMenu={nodeWithInfo => {
-		const { node } = nodeWithInfo
+		const { node, info } = nodeWithInfo
 
 		if(!node) return []
 
@@ -95,7 +96,7 @@
 		})
 
 		return [
-			{
+			info?.status === 'TERMINATED' && {
 				value: 'start',
 				label: 'Start node',
 				formAction: `${nodeRoute}?/start`,
@@ -121,7 +122,7 @@
 					}
 				},
 			},
-			{
+			info?.status === 'RUNNING' && {
 				value: 'stop',
 				label: 'Stop node',
 				formAction: `${nodeRoute}?/stop`,
@@ -148,6 +149,7 @@
 				},
 			},
 		]
+			.filter(isTruthy)
 	}}
 >
 	<p>No nodes configured.</p>
