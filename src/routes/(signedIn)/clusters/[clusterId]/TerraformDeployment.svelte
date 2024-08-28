@@ -140,10 +140,10 @@
 								{resourceType}
 								{resource}
 							/>
-						{:else}
+						<!-- {:else}
 							<div class="card column">
 								<p>No resources found.</p>
-							</div>
+							</div> -->
 						{/each}
 					{/each}
 				</div>
