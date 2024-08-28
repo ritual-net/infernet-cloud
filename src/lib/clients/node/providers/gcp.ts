@@ -53,7 +53,7 @@ export class GCPNodeClient extends BaseNodeClient {
 		for (const nodeConfigId of nodeConfigIds) {
 			await this.client.stop({
 				...args,
-				instance: nodeConfigId,
+				instance: this.toInstanceId(nodeConfigId),
 			});
 		}
 	}
@@ -69,7 +69,7 @@ export class GCPNodeClient extends BaseNodeClient {
 			nodeConfigIds.map(async (nodeConfigId) => {
 				await this.client.reset({
 					...args,
-					instance: nodeConfigId,
+					instance: this.toInstanceId(nodeConfigId),
 				})
 			})
 		)
