@@ -22,42 +22,54 @@ export const load: PageLoad = async ({
 	if(!node)
 		throw new Error(`Node was not found.`)
 
-	const formData = await superValidate(
-		{
-			node: {
-				config: {
-					region: node.region,
-					zone: node.zone,
-					machine_type: node.machine_type,
-					chain_enabled: node.chain_enabled,
-					trail_head_blocks: node.trail_head_blocks,
-					rpc_url: node.rpc_url,
-					chain_id: node.chain_id,
-					registry_address: node.registry_address,
-					max_gas_limit: node.max_gas_limit,
-					private_key: node.private_key,
-					payment_address: node.payment_address,
-					allowed_sim_errors: node.allowed_sim_errors,
-					forward_stats: node.forward_stats,
-					snapshot_sync_sleep: node.snapshot_sync_sleep,
-					snapshot_sync_batch_size: node.snapshot_sync_batch_size,
+	const [
+		formData,
+		cluster,
+		dockerAccounts,
+	] = await Promise.all([
+		superValidate(
+			{
+				node: {
+					config: {
+						region: node.region,
+						zone: node.zone,
+						machine_type: node.machine_type,
+						chain_enabled: node.chain_enabled,
+						trail_head_blocks: node.trail_head_blocks,
+						rpc_url: node.rpc_url,
+						chain_id: node.chain_id,
+						registry_address: node.registry_address,
+						max_gas_limit: node.max_gas_limit,
+						private_key: node.private_key,
+						payment_address: node.payment_address,
+						allowed_sim_errors: node.allowed_sim_errors,
+						forward_stats: node.forward_stats,
+						snapshot_sync_sleep: node.snapshot_sync_sleep,
+						snapshot_sync_batch_size: node.snapshot_sync_batch_size,
+					},
 				},
 			},
-		},
-		yup(FormData)
-	)
+			yup(FormData)
+		),
 
-	const cluster = (
-		await fetch(
-			resolveRoute('/api/node/[nodeId]/cluster', {
-				nodeId,
-			})
-		)
-			.then(response => response.json() as ReturnType<typeof getClusterByNodeIds>)
-	)
+		(
+			fetch(
+				resolveRoute('/api/node/[nodeId]/cluster', {
+					nodeId,
+				})
+			)
+				.then(response => response.json() as ReturnType<typeof getClusterByNodeIds>)
+		),
+
+		(	
+			fetch('/api/docker-accounts')
+				.then(result => result.json())
+		),
+	])
 
 	return {
 		formData,
 		cluster,
+		dockerAccounts,
 	}
 }
