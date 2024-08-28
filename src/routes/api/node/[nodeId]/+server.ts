@@ -6,6 +6,7 @@ import { getClusterByNodeIds } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
 import { NodeAction, type InfernetNodeWithInfo } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
+import { nodeJsonQueryFields } from '$/lib/db/components'
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -66,13 +67,18 @@ export const PATCH: RequestHandler = async ({
 	// Update node
 	const updatedNode = (
 		await e
-			.update(e.InfernetNode, () => ({
-				filter_single: { id: node.id },
-				set: {
-					...node,
+			.params(
+				{
+					node: e.json,
 				},
-			}))
-			.run(client)
+				({ node }) => (
+					e.update(e.InfernetNode, () => ({
+						filter_single: { id: e.cast(e.uuid, nodeId) },
+						set: nodeJsonQueryFields(node),
+					}))
+				)
+			)
+			.run(client, { node })
 	)
 
 	if(!updatedNode)
