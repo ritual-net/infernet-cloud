@@ -41,7 +41,9 @@
 						<span class="annotation">{resourceType.name}</span>
 					</h4>
 
-					<p class="annotation">{resource.attributes.name}</p>
+					{#if resource.attributes.name}
+						<p class="annotation">{resource.attributes.name}</p>
+					{/if}
 				</div>
 			</div>
 

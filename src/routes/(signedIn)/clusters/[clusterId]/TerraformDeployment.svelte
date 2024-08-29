@@ -14,6 +14,7 @@
 	// Components
 	import ScrollArea from '$/components/ScrollArea.svelte'
 	import TerraformResourceDetails from './TerraformResourceDetails.svelte'
+	import Mermaid from '$/components/Mermaid.svelte'
 	import XYFlow from '$/components/XYFlow.svelte'
 	import XYFlowDownload from '$/components/XYFlowDownload.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
@@ -48,9 +49,9 @@
 
 		<dd class="column">
 			{#if deployment.tfstate?.resources?.flatMap(resourceType => resourceType.instances).length}
-				<XYFlow
+				<!-- <XYFlow
 					nodeTypes={{
-						'resourceType': TerraformResourceTypeNode,
+						'group': TerraformResourceTypeNode,
 						'resource': TerraformResourceNode,
 					}}
 					nodes={
@@ -58,7 +59,7 @@
 							.flatMap(resourceType => {
 								const parentNode = {
 									id: `resourceType.${resourceType.type}`,
-									type: 'resourceType',
+									type: 'group',
 									data: {
 										provider,
 										resourceType,
@@ -122,7 +123,50 @@
 					<XYFlowDownload
 						fileName={`${clusterName}-resources-${deployment.action}-${deployment.timestamp}`}
 					/>
-				</XYFlow>
+				</XYFlow> -->
+
+				<Mermaid
+					init={{
+						'flowchart': {
+							'defaultRenderer': 'forceGraph',
+						},
+						'theme': 'base',
+						'themeVariables': { 
+							'nodeBorder': '1px #0000001a solid',
+							'mainBkg': '#fff',
+							'nodeBorderRadius': '10px',
+							'nodeShadow': '0 0 0 1px #0000001a,0 0 0 2px #0003',
+							'nodeTextPadding': '0px',
+							'nodePadding': '0px',
+						}
+					}}
+					diagram={`
+						flowchart BT
+							${deployment.tfstate.resources.map(resourceType => `
+								subgraph resourceType.${resourceType.type} [
+									${resourceType.type}
+								]
+									${resourceType.instances.map(resource => `
+										resource.${resource.attributes.id}(
+											${resource.attributes.id}
+										)
+									`).join('\n')}
+								end
+							`).join('\n')}
+
+							${deployment.tfstate?.resources.flatMap(resourceType =>
+								resourceType.instances?.flatMap(resource => (
+									resource.dependencies?.map(dependencyId => {
+										const [dependencyResourceType, dependencyName] = dependencyId.split('.')
+
+										return `
+											resource.${resource.attributes.id} --> resourceType.${dependencyResourceType}
+										`
+									})
+								))
+							).join('\n')}
+					`}
+				/>
 			{/if}
 
 			<!-- <ScrollArea
@@ -140,10 +184,10 @@
 								{resourceType}
 								{resource}
 							/>
-						{:else}
+						<!-- {:else}
 							<div class="card column">
 								<p>No resources found.</p>
-							</div>
+							</div> -->
 						{/each}
 					{/each}
 				</div>
