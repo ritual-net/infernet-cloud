@@ -210,16 +210,6 @@ module default {
     }
     ip_allow_http: array<IpAddressWithMask>;
     ip_allow_ssh: array<IpAddressWithMask>;
-    required healthy: bool {
-      default := true;
-    }
-    required locked: bool {
-      default := false;
-    }
-    tfstate: str;
-    multi terraform_logs: json;
-    router: tuple<id: str, ip: str>;
-    error: str;
 
     required service_account: ServiceAccount {
       readonly := true;
@@ -228,6 +218,30 @@ module default {
       constraint exclusive;
       on source delete delete target;
     }
+
+    multi deployments := .<cluster[is TerraformDeployment];
+    latest_deployment := (
+      select .deployments
+      order by .timestamp desc
+      limit 1
+    );
+
+    required locked: bool {
+      default := false;
+    }
+    status := (
+      'updating' if .locked else
+      'unhealthy' if exists(.latest_deployment.error) else
+      'destroyed' if .latest_deployment.action = TerraformAction.Destroy else
+      'healthy' if exists(.latest_deployment.tfstate) else
+      'unknown'
+    );
+    router: tuple<id: str, ip: str>;
+
+    # router := (
+    #   .latest_deployment.tfstate. if exists(.latest_deployment.tfstate)
+    #   else {}
+    # );
 
     constraint exclusive on ((.name, .service_account));
     access policy only_owner
@@ -260,4 +274,33 @@ module default {
       readonly := true;
     }
   }
+
+  type TerraformDeployment {
+    index on ((.cluster, .timestamp));
+
+    required action: TerraformAction;
+
+    required timestamp: datetime {
+      readonly := true;
+      default := std::datetime_current();
+    }
+
+    required cluster: Cluster {
+      readonly := true;
+      on target delete delete source;
+    }
+
+    config: json;
+    error: str;
+    tfstate: json;
+    stdout: array<json>;
+    stderr: array<json>;
+  }
+
+  scalar type TerraformAction extending enum<
+    Init,
+    Plan,
+    Apply,
+    Destroy
+  >;
 }

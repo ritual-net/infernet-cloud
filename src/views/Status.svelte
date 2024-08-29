@@ -4,6 +4,7 @@
 		'healthy': 'Healthy',
 		'updating': 'Updating',
 		'unhealthy': 'Unhealthy',
+		'destroyed': 'Destroyed',
 		'unknown': 'Unknown',
 		'TERMINATED': 'Terminated',
 	}
@@ -18,7 +19,7 @@
 	class="status"
 	data-status={status}
 >
-	{statusLabels[status] ?? status}
+	{statusLabels[status] ?? status ?? 'Unknown'}
 </div>
 
 
@@ -37,6 +38,7 @@
 			--status-color: #b33d16;
 		}
 
+		&[data-status="destroyed"],
 		&[data-status="unknown"] {
 			--status-color: gray;
 		}

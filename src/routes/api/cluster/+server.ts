@@ -103,14 +103,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			);
 		} catch (e) {
 			console.error(e)
-
-			// return error(500, JSON.stringify(e))
 		}
-
-		// const { success, error: errorMessage } = result
-
-		// if(!success)
-		// 	return error(500, errorMessage)
 	})();
 
 	return json({

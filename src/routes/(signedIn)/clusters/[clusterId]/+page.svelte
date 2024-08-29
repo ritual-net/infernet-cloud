@@ -17,14 +17,6 @@
 	let nodesWithInfo: Awaited<typeof nodesWithInfoPromise> | undefined
 	$: nodesWithInfoPromise.then(_ => nodesWithInfo = _)
 
-	$: clusterStatus = (
-		cluster.locked
-			? 'updating'
-			: cluster.healthy
-				? 'healthy'
-				: 'unhealthy'
-	)
-
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
@@ -97,7 +89,7 @@
 					<dt>Status</dt>
 					<dd>
 						<Status
-							status={clusterStatus}
+							status={cluster.status}
 						/>
 					</dd>
 				</div>
@@ -131,13 +123,22 @@
 					},
 					{
 						value: 'apply',
-						label: 'Trigger Update',
+						label: (
+							cluster.status !== 'destroyed'
+								? 'Trigger Update'
+								: 'Recreate Cluster'
+						), 
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
 							const toast = addToast({
 								data: {
 									type: 'default',
-									title: `Applying changes to cluster "${cluster.name}"...`,
+									title: (
+										cluster.status !== 'destroyed' ?
+											`Applying changes to cluster "${cluster.name}"...`
+										:
+											`Recreating cluster "${cluster.name}"...`
+									)
 								},
 							})
 
@@ -155,25 +156,53 @@
 							}
 						},
 					},
-					{
-						value: 'delete',
-						label: 'Delete Cluster',
-						formAction: `?/delete`,
-						formSubmit: async (e) => {
-							const toast = addToast({
-								data: {
-									type: 'default',
-									title: `Deleting cluster "${cluster.name}"...`,
+					(
+						cluster.status !== 'destroyed'
+							? {
+								value: 'destroy',
+								label: 'Destroy Cluster',
+								formAction: `?/destroy`,
+								formSubmit: async (e) => {
+									const toast = addToast({
+										data: {
+											type: 'default',
+											title: `Destroying cluster "${cluster.name}"...`,
+										},
+									})
+
+									return async ({ result }) => {
+										await applyAction(result)
+
+										if(result.type === 'success')
+											invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+
+										removeToast(toast.id)
+									}
 								},
-							})
-
-							return async ({ result }) => {
-								await applyAction(result)
-
-								removeToast(toast.id)
 							}
-						},
-					},
+							: {
+								value: 'delete',
+								label: 'Delete Cluster',
+								formAction: `?/delete`,
+								formSubmit: async (e) => {
+									const toast = addToast({
+										data: {
+											type: 'default',
+											title: `Deleting cluster "${cluster.name}"...`,
+										},
+									})
+
+									return async ({ result }) => {
+										await applyAction(result)
+
+										if(result.type === 'success')
+											invalidate(`/api/cluster`)
+
+										removeToast(toast.id)
+									}
+								},
+							}
+					),
 				]}
 			/>
 		</div>
@@ -220,7 +249,7 @@
 						href={resolveRoute(`/cloud-accounts/[serviceAccountId]`, {
 							serviceAccountId: cluster.service_account.id,
 						})}
-						class="row"
+						class="row inline with-icon"
 					>
 						<img
 							class="icon"
@@ -306,7 +335,7 @@
 	</section>
 
 	<section class="column">
-		<h3>Status</h3>
+		<h3>Deployment</h3>
 
 		<dl class="card column">
 			<section class="row wrap">
@@ -314,52 +343,103 @@
 
 				<dd>
 					<Status
-						status={clusterStatus}
+						status={cluster.status}
 					/>
 				</dd>
 			</section>
 
-			{#if cluster.tfstate}
-				<section class="column">
-					<dt>Terraform State</dt>
-	
-					<dd>
-						<output>
-							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
-						</output>
-					</dd>
-				</section>
-			{/if}
+			{#if cluster.latest_deployment}
+				{#if cluster.latest_deployment.timestamp}
+					<section class="row wrap">
+						<dt>Last Updated</dt>
 
-			{#if cluster.terraform_logs?.length}
-				<section class="column">
-					<dt>Terraform Logs</dt>
-	
-					<dd>
-						{#each cluster.terraform_logs as log}
-							<output
-								class="log"
-								data-type={log['type']} 
-								data-level={log['@level']}
-								data-module={log['@module']}
-							>
-								<pre><date date={log['@timestamp']}>{log['@timestamp']}</date> <code>{log['type']}</code> <code>{log['@message']}</code> {#if log['@hook']}<code>{JSON.stringify(log['hook'])}</code>{/if}</pre>
-							</output>
-						{/each}
-					</dd>
-				</section>
-			{/if}
+						<dd>
+							<date>{new Date(cluster.latest_deployment.timestamp).toLocaleString()}</date>
+						</dd>
+					</section>
+				{/if}
 
-			{#if cluster.error}
-				<section class="column">
-					<dt>Error</dt>
-	
-					<dd>
-						<output>
-							<pre><code>{cluster.error}</code></pre>
-						</output>
-					</dd>
-				</section>
+				{#if cluster.latest_deployment.error}
+					<section class="column">
+						<dt>Error</dt>
+		
+						<dd class="scrollable">
+							<output><code>{cluster.latest_deployment.error}</code></output>
+						</dd>
+					</section>
+				{/if}
+
+				{#if cluster.latest_deployment.tfstate}
+					<section class="column">
+						<dt>Terraform State</dt>
+		
+						<dd class="scrollable">
+							<output><code>{JSON.stringify(cluster.latest_deployment.tfstate, null, '\t')}</code></output>
+						</dd>
+					</section>
+				{/if}
+
+				{#if cluster.latest_deployment.stdout?.length}
+					<section class="column">
+						<dt>Terraform Logs</dt>
+		
+						<dd class="scrollable log-container">
+							{#each cluster.latest_deployment.stdout as log, i}
+								{@const previousLog = cluster.latest_deployment.stdout[i - 1]}
+
+								{#if previousLog && previousLog['@type'] !== log['@type']}
+									<hr>
+								{/if}
+
+								<div
+									class="log"
+									data-type={log['type']} 
+									data-level={log['@level']}
+									data-module={log['@module']}
+								>
+									<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+
+									{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
+										<div class="diagnostic-log">
+											{#if log.diagnostic.detail}
+												<output><code>{log.diagnostic.detail}</code></output>
+											{/if}
+
+											{#if log.diagnostic.snippet?.code}
+												<blockquote>
+													<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+												</blockquote>
+											{/if}
+										</div>
+									{/if}
+								</div>
+							{/each}
+						</dd>
+					</section>
+				{/if}
+
+				{#if cluster.latest_deployment.stderr?.length}
+					<section class="column">
+						<dt>Terraform Error Logs</dt>
+		
+						<dd class="scrollable log-container">
+							{#each cluster.latest_deployment.stderr as log, i}
+								{@const previousLog = cluster.latest_deployment.stderr[i - 1]}
+
+								{#if previousLog && previousLog['@type'] !== log['@type']}
+									<hr>
+								{/if}
+
+								<output
+									class="log"
+									data-type={log['type']} 
+									data-level={log['@level']}
+									data-module={log['@module']}
+								><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+							{/each}
+						</dd>
+					</section>
+				{/if}
 			{/if}
 		</dl>
 	</section>
@@ -388,20 +468,62 @@
 		color: #fff;
 	}
 
+	.scrollable {
+		overflow: auto;
+		padding: 0.66em 1em;
+
+		resize: vertical;
+		&:not([style*="height"]) {
+			max-height: 19.6rem;
+		}
+
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
+	}
+
+	blockquote {
+		padding: 0.5em 0.75em;
+		font-size: smaller;
+		margin-block: 0.5em;
+
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
+	}
+
 	output {
 		font-size: 0.75em;
+	}
 
-		& pre {
-			max-height: 15.6rem;
-			padding: 1em;
+	code {
+		white-space: pre-wrap;
+		word-break: break-word;
+		tab-size: 2;
+	}
 
-			background: rgba(0, 0, 0, 0.05);
-			border-radius: 0.5em;
+	.log-container {
+		display: grid;
 
-			& code {
-				white-space: pre-wrap;
-				word-break: break-word;
+		.log {
+			margin-inline: -1rem;
+			padding-inline: 1rem;
+			padding-block: 0.1rem;
+
+			&[data-level="error"] {
+				background-color: rgb(255, 246, 246);
+				color: rgb(150, 0, 0);
 			}
+		}
+
+		date {
+			position: sticky;
+			right: 0;
+			float: right;
+			font-size: smaller;
+			opacity: 0.5;
+		}
+
+		code {
+			white-space: pre-line;
 		}
 	}
 </style>

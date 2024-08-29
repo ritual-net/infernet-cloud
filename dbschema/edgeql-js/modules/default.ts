@@ -25,6 +25,14 @@ const IpAddressWithMask: $.scalarTypeWithConstructor<_std.$str, never> = $.makeT
 export type $Secp256k1PrivateKey = $.ScalarType<"std::str", string>;
 const Secp256k1PrivateKey: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "2c0eccd2-29a7-11ef-b85d-657974a7810a", _.syntax.literal);
 
+export type $TerraformAction = {
+  "Init": $.$expr_Literal<$TerraformAction>;
+  "Plan": $.$expr_Literal<$TerraformAction>;
+  "Apply": $.$expr_Literal<$TerraformAction>;
+  "Destroy": $.$expr_Literal<$TerraformAction>;
+} & $.EnumType<"default::TerraformAction", ["Init", "Plan", "Apply", "Destroy"]>;
+const TerraformAction: $TerraformAction = $.makeType<$TerraformAction>(_.spec, "085f6934-2f58-11ef-9dbd-67fb1c9b5a2d", _.syntax.literal);
+
 export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "identity": $.LinkDesc<_auth.$Identity, $.Cardinality.One, {}, false, false,  false, false>;
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
@@ -47,16 +55,16 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "nodes": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, true, false,  false, false>;
   "service_account": $.LinkDesc<$ServiceAccount, $.Cardinality.One, {}, false, false,  true, false>;
   "deploy_router": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
-  "error": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "healthy": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "locked": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "router": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
-  "tfstate": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "terraform_logs": $.PropertyDesc<_std.$json, $.Cardinality.Many, false, false, false, false>;
   "ip_allow_http": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "ip_allow_ssh": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "deployments": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, true,  false, false>;
+  "latest_deployment": $.LinkDesc<$TerraformDeployment, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
+  "status": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, true, false, false>;
   "<cluster[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<cluster[is TerraformDeployment]": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $Cluster = $.ObjectType<"default::Cluster", $ClusterλShape, null, [
@@ -215,6 +223,31 @@ const $InfernetNode = $.makeType<$InfernetNode>(_.spec, "1577c6e0-29a7-11ef-8263
 
 const InfernetNode: $.$expr_PathNode<$.TypeSet<$InfernetNode, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($InfernetNode, $.Cardinality.Many), null);
 
+export type $TerraformDeploymentλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
+  "config": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "error": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "stderr": $.PropertyDesc<$.ArrayType<_std.$json>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "stdout": $.PropertyDesc<$.ArrayType<_std.$json>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "tfstate": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "action": $.PropertyDesc<$TerraformAction, $.Cardinality.One, false, false, false, false>;
+  "timestamp": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
+  "cluster": $.LinkDesc<$Cluster, $.Cardinality.One, {}, false, false,  true, false>;
+  "<deployments[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<deployments[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<deployments[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<latest_deployment[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<latest_deployment[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<latest_deployment[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<deployments": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<latest_deployment": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+}>;
+type $TerraformDeployment = $.ObjectType<"default::TerraformDeployment", $TerraformDeploymentλShape, null, [
+  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
+]>;
+const $TerraformDeployment = $.makeType<$TerraformDeployment>(_.spec, "943777e4-2dc8-11ef-9d04-4734cc0e8a45", _.syntax.literal);
+
+const TerraformDeployment: $.$expr_PathNode<$.TypeSet<$TerraformDeployment, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($TerraformDeployment, $.Cardinality.Many), null);
+
 export type $current_userλShape = $.typeutil.flatten<$UserλShape & {
 }>;
 type $current_user = $.ObjectType<"default::current_user", $current_userλShape, null, [
@@ -235,7 +268,7 @@ const $default__globals: {  current_user: _.syntax.$expr_Global<
 
 
 
-export { Address, BigIntString, CloudProvider, IpAddress, IpAddressWithMask, Secp256k1PrivateKey, $User, User, $Cluster, Cluster, $AWSCluster, AWSCluster, $ServiceAccount, ServiceAccount, $AWSServiceAccount, AWSServiceAccount, $Container, Container, $ContainerTemplate, ContainerTemplate, $DockerAccount, DockerAccount, $GCPCluster, GCPCluster, $GCPServiceAccount, GCPServiceAccount, $InfernetNode, InfernetNode, $current_user, current_user };
+export { Address, BigIntString, CloudProvider, IpAddress, IpAddressWithMask, Secp256k1PrivateKey, TerraformAction, $User, User, $Cluster, Cluster, $AWSCluster, AWSCluster, $ServiceAccount, ServiceAccount, $AWSServiceAccount, AWSServiceAccount, $Container, Container, $ContainerTemplate, ContainerTemplate, $DockerAccount, DockerAccount, $GCPCluster, GCPCluster, $GCPServiceAccount, GCPServiceAccount, $InfernetNode, InfernetNode, $TerraformDeployment, TerraformDeployment, $current_user, current_user };
 
 type __defaultExports = {
   "Address": typeof Address;
@@ -244,6 +277,7 @@ type __defaultExports = {
   "IpAddress": typeof IpAddress;
   "IpAddressWithMask": typeof IpAddressWithMask;
   "Secp256k1PrivateKey": typeof Secp256k1PrivateKey;
+  "TerraformAction": typeof TerraformAction;
   "User": typeof User;
   "Cluster": typeof Cluster;
   "AWSCluster": typeof AWSCluster;
@@ -255,6 +289,7 @@ type __defaultExports = {
   "GCPCluster": typeof GCPCluster;
   "GCPServiceAccount": typeof GCPServiceAccount;
   "InfernetNode": typeof InfernetNode;
+  "TerraformDeployment": typeof TerraformDeployment;
   "current_user": typeof current_user;
   "global": typeof $default__globals
 };
@@ -265,6 +300,7 @@ const __defaultExports: __defaultExports = {
   "IpAddress": IpAddress,
   "IpAddressWithMask": IpAddressWithMask,
   "Secp256k1PrivateKey": Secp256k1PrivateKey,
+  "TerraformAction": TerraformAction,
   "User": User,
   "Cluster": Cluster,
   "AWSCluster": AWSCluster,
@@ -276,6 +312,7 @@ const __defaultExports: __defaultExports = {
   "GCPCluster": GCPCluster,
   "GCPServiceAccount": GCPServiceAccount,
   "InfernetNode": InfernetNode,
+  "TerraformDeployment": TerraformDeployment,
   "current_user": current_user,
   "global": $default__globals
 };

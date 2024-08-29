@@ -103,6 +103,7 @@ export const getClusterById = async (
 		includeServiceAccountCredentials,
 		includeNodeDetails,
 		includeDockerAccountCredentials,
+		includeTerraformDeploymentDetails,
 	}: {
 		/**
 		 * Whether to include sensitive Service Account credentials
@@ -118,6 +119,11 @@ export const getClusterById = async (
 		 * Whether to include Docker Credentials from Nodes
 		 */
 		includeDockerAccountCredentials?: boolean,
+
+		/**
+		 * Whether to include Terraform Deployment details
+		 */
+		includeTerraformDeploymentDetails?: boolean,
 	},
 ): Promise<ProviderCluster | null> => {
 	// Get cloud provider from generic cluster
@@ -142,6 +148,7 @@ export const getClusterById = async (
 				includeServiceAccountCredentials,
 				includeNodeDetails,
 				includeDockerAccountCredentials,
+				includeTerraformDeploymentDetails,
 			}),
 			filter_single: { id },
 		}))
@@ -256,7 +263,7 @@ export const getClustersForUser = async (
 			id: true,
 			name: true,
 			node_count: e.count(cluster.nodes),
-			healthy: true,
+			status: true,
 			locked: true,
 		}))
 		.run(client)
