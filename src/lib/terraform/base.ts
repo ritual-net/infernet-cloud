@@ -90,10 +90,13 @@ export abstract class BaseTerraform {
 				}
 			)
 
-			// Copy the Docker Compose files
-			console.log(`Copying Docker Compose files...`, tempDir)
-			console.log(`cp "${cwd}/infernet-deploy/deploy.tar.gz" "${tempDir}/deploy.tar.gz"`)
-			await fs.copyFile(`${cwd}/infernet-deploy/deploy.tar.gz`, `${tempDir}/deploy.tar.gz`)
+			// Copy the Docker Compose files as a .tar.gz file
+			console.log(`Copying Docker Compose files...`)
+
+			await SystemUtils.executeCommands(
+				`${cwd}/infernet-deploy/deploy`,
+				`tar --numeric-owner --exclude=".DS_Store" -czvf "${tempDir}/deploy.tar.gz" *`
+			)
 
 			// Create terraform files
 			const terraformVariables = this.getTerraformVars(cluster, serviceAccount)
