@@ -87,13 +87,6 @@ export type InfernetNodeWithInfo = {
 	infoError?: string | undefined;
 }
 
-export enum NodeAction {
-	start = 'start',
-	stop = 'stop',
-	info = 'info',
-	restart = 'restart',
-}
-
 
 import { AWSIcon, GCPIcon } from '../icons'
 
