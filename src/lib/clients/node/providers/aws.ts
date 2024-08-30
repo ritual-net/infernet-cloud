@@ -71,10 +71,13 @@ export class AWSNodeClient extends BaseNodeClient {
 
 		const instance = result.Reservations?.[0]?.Instances?.[0]
 
+		if (!instance)
+			throw new Error(`Instance ${this.instanceId} not found.`)
+
 		return {
-			instanceId: instance?.InstanceId,
-			status: instance?.State?.Name,
-			ip: instance?.PublicIpAddress,
+			instanceId: instance.InstanceId!,
+			status: instance.State?.Name,
+			ip: instance.PublicIpAddress,
 			instanceInfo: instance,
 		}
 	}
