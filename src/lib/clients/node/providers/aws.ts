@@ -81,4 +81,8 @@ export class AWSNodeClient extends BaseNodeClient {
 			instanceInfo: instance,
 		}
 	}
+
+	async getLogs() {
+		return []
+	}
 }

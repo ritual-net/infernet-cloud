@@ -93,4 +93,48 @@ export class GCPNodeClient extends BaseNodeClient {
 			),
 		}
 	}
+
+	async getLogs(start?: number) {
+		const result = await this.client.getSerialPortOutput({
+			project: this.projectId,
+			zone: this.zone,
+			instance: this.instanceId,
+			port: 1,
+			start,
+		}, {
+			autoPaginate: true,
+		})
+
+		const { contents, ...output } = result[0]
+
+		return {
+			start: output.start,
+			next: output.next,
+			logs: (
+				contents
+					?.split('\r\n')
+					.slice(1)
+					.map(log => {
+						const match = log.match(/^(?<timestamp>\w+ \d+ \d+:\d+:\d+) (?<hostname>\S+) (?<process>\S+)\[(?<pid>\d+)\]: (?<message>.*)$/)
+
+						if(!match?.groups) {
+							return {
+								text: log,
+							}
+						}
+
+						if (match && match.groups) {
+							const { timestamp, process, pid, message } = match.groups
+
+							return {
+								timestamp: new Date(`${timestamp} ${new Date().getFullYear()}`).getTime(),
+								source: `${process}[${pid}]`,
+								text: message,
+							}
+						}
+					})
+				?? []
+			),
+		}
+	}
 }

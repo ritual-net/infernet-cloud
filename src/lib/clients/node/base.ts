@@ -30,4 +30,17 @@ export abstract class BaseNodeClient {
 	 * Get status and IP of Infernet node.
 	 */
 	abstract getInfo(): Promise<NodeInfo>
+
+	/**
+	 * Get logs from Infernet node.
+	 */
+	abstract getLogs(start?: number): Promise<{
+		start?: number,
+		next?: number,
+		logs: {
+			timestamp: number,
+			source: number,
+			text: string,
+		}[],
+	}>
 }
