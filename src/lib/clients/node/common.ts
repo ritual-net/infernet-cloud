@@ -7,11 +7,11 @@ import { AWSNodeClient } from './providers/aws'
 
 export const getNodeClient = async (
 	databaseClient: Client,
-	nodeConfigId: string,
+	nodeId: string,
 ) => {
 	const [node] = await getNodesByIds(
 		databaseClient,
-		[nodeConfigId],
+		[nodeId],
 	)
 
 	if (!node)
@@ -19,7 +19,7 @@ export const getNodeClient = async (
 
 	const cluster = await getClusterByNodeIds(
 		databaseClient,
-		[nodeConfigId],
+		[nodeId],
 		true
 	)
 
@@ -31,13 +31,13 @@ export const getNodeClient = async (
 			new GCPNodeClient(
 				(cluster.service_account as GCPServiceAccount).creds,
 				node.zone || cluster.zone,
-				nodeConfigId,
+				node.provider_id,
 			)
 		: cluster.service_account.provider === ProviderTypeEnum.AWS ?
 			new AWSNodeClient(
 				(cluster.service_account as AWSServiceAccount).creds,
 				node.region || cluster.region,
-				nodeConfigId,
+				node.provider_id,
 			)
 		:
 			undefined
