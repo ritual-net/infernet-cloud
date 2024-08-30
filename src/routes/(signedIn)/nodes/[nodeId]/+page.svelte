@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { BaseNodeClient } from '$/lib/clients/node/base'
-	import { providers } from '$/types/provider'
+	import { providers, ProviderTypeEnum } from '$/types/provider'
 	import { chainsByChainId } from '$/lib/chains'
 
 
@@ -448,44 +448,46 @@
 				</dd>
 			</section>
 
-			<section class="column">
-				<dt>Serial Port 1</dt>
+			{#if node.provider === ProviderTypeEnum.GCP}
+				<section class="column">
+					<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
 
-				<dd>
-					{#if $logsQuery.isLoading}
-						<div class="card loading">
-							<p>Loading logs...</p>
-						</div>
-					{:else if $logsQuery.isError}
-						<div class="card error">
-							<p>Error loading logs: {$logsQuery.error.message}</p>
-						</div>
-					{:else if $logsQuery.data}
-						{@const logs = $logsQuery.data}
-
-						<ScrollArea>
-							<div class="log-container">
-								{#each logs as log, i}
-									{@const previousLog = logs[i - 1]}
-
-									{#if previousLog && previousLog.source !== log.source}
-										<hr>
-									{/if}
-
-									<div
-										class="log"
-										data-source={log.source}
-									>
-										<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> <span>{log.source}</span><code>{log.text}</code></output>
-									</div>
-								{/each}
+					<dd>
+						{#if $logsQuery.isLoading}
+							<div class="card loading">
+								<p>Loading logs...</p>
 							</div>
-						</ScrollArea>
-					{:else}
-						<p>No logs available.</p>
-					{/if}
-				</dd>
-			</section>
+						{:else if $logsQuery.isError}
+							<div class="card error">
+								<p>Error loading logs: {$logsQuery.error.message}</p>
+							</div>
+						{:else if $logsQuery.data}
+							{@const logs = $logsQuery.data}
+
+							<ScrollArea>
+								<div class="log-container">
+									{#each logs as log, i}
+										{@const previousLog = logs[i - 1]}
+
+										{#if previousLog && previousLog.source !== log.source}
+											<hr>
+										{/if}
+
+										<div
+											class="log"
+											data-source={log.source}
+										>
+											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> <span>{log.source}</span><code>{log.text}</code></output>
+										</div>
+									{/each}
+								</div>
+							</ScrollArea>
+						{:else}
+							<p>No logs available.</p>
+						{/if}
+					</dd>
+				</section>
+			{/if}
 		</dl>
 	</section>
 
