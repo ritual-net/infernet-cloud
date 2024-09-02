@@ -163,12 +163,14 @@ module default {
     required region: str {
       # default := .cluster.region;
     }
+
     required zone: str {
       # default := .cluster.zone;
     }
-    required machine_type: str {
-      # default := .cluster.machine_type;
-    }
+
+    required machine_type: str;
+
+    required machine_image: str;
 
     required chain_enabled: bool {
       default := false;

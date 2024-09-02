@@ -100,6 +100,7 @@ export interface InfernetNode extends std.$Object {
   "state"?: {id: string, ip: string} | null;
   "provider"?: CloudProvider | null;
   "chain_id"?: number | null;
+  "machine_image": string;
 }
 export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {
