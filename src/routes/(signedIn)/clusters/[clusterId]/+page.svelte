@@ -77,6 +77,11 @@
 </script>
 
 
+<svelte:head>
+	<title>{cluster.name || cluster.id} | Cluster | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">

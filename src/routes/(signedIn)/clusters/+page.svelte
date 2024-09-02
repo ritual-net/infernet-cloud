@@ -34,6 +34,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Clusters | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="column">
 	<header class="row">
 		<h2>Clusters</h2>

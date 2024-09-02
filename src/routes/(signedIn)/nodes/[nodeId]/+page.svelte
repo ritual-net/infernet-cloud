@@ -86,6 +86,11 @@
 </script>
 
 
+<svelte:head>
+	<title>{node?.id ?? 'Node'} | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">

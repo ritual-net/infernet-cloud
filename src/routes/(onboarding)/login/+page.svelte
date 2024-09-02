@@ -96,6 +96,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Log in | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container">
 	<Tabs
 		bind:value={currentForm}

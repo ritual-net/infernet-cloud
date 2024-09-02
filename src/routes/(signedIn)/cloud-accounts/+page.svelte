@@ -14,6 +14,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Cloud Accounts | Infernet Cloud</title>
+</svelte:head>
+
+
 <section class="column">
 	<header class="row">
 		<h2>Cloud accounts</h2>

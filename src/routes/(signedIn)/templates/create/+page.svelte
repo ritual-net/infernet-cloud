@@ -103,6 +103,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Create Container Template | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header>
 		<h2>New container template</h2>

@@ -64,6 +64,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Add Node | {cluster.name || cluster.id} | Cluster | Infernet Cloud</title>
+</svelte:head>
+
+
 <form
 	method="POST"
 	use:enhance
