@@ -249,7 +249,7 @@ module default {
 
     ip_allow_ssh: array<IpAddressWithMask>;
 
-    router: tuple<region: str, zone: str, machine_type: str>;
+    router: tuple<region: str, zone: str, machine_type: str, machine_image: str>;
 
     multi nodes: InfernetNode {
       constraint exclusive;
