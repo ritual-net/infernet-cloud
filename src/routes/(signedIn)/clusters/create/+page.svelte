@@ -78,22 +78,20 @@
 
 	// (Firewall)
 	let httpFirewallMode: 'all' | 'allowlist' | 'none' = (
-		$form.config.ip_allow_http ?
-			$form.config.ip_allow_http.length > 0 ?
-				'allowlist'
-			:
-				'none'
-		:
+		!$form.config.ip_allow_http || $form.config.ip_allow_http.length === 1 && $form.config.ip_allow_http[0] === '0.0.0.0/0' ?
 			'all'
+		: $form.config.ip_allow_http.length > 0 ?
+			'allowlist'
+		:
+			'none'
 	)
 	let sshFirewallMode: 'all' | 'allowlist' | 'none' = (
-		$form.config.ip_allow_ssh ?
-			$form.config.ip_allow_ssh.length > 0 ?
-				'allowlist'
-			:
-				'none'
-		:
+		!$form.config.ip_allow_ssh || $form.config.ip_allow_ssh.length === 1 && $form.config.ip_allow_ssh[0] === '0.0.0.0/0' ?
 			'all'
+		: $form.config.ip_allow_ssh.length > 0 ?
+			'allowlist'
+		:
+			'none'
 	)
 
 	let httpAllowlist = $form.config.ip_allow_http ?? []
