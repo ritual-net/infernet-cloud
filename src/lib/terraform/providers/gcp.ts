@@ -33,6 +33,7 @@ export class GCPTerraform extends BaseTerraform {
 						region: cluster.router.region || cluster.region,
 						zone: cluster.router.zone || cluster.zone,
 						machine_type: cluster.router.machine_type,
+						image: cluster.router.machine_image || 'ubuntu-2004-focal-v20231101',
 					}
 				:
 					{
@@ -40,6 +41,7 @@ export class GCPTerraform extends BaseTerraform {
 						region: '',
 						zone: '',
 						machine_type: '',
+						image: '',
 					}
 			),
 
@@ -50,7 +52,7 @@ export class GCPTerraform extends BaseTerraform {
 						region: node.region || cluster.region,
 						zone: node.zone || cluster.zone,
 						machine_type: node.machine_type,
-						image: 'ubuntu-2004-focal-v20231101',
+						image: node.machine_image || 'ubuntu-2004-focal-v20231101',
 
 						// image: node.has_gpu ? 'nvidia-tesla-t4' : 'ubuntu-2004-focal-v20231101',
 						// has_gpu: node.has_gpu,
