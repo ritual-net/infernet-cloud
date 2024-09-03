@@ -56,6 +56,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		includeServiceAccountCredentials: true,
 		includeNodeDetails: true,
 		includeDockerAccountCredentials: true,
+		includeTerraformDeploymentDetails: true,
 	});
 
 	if (!cluster)
@@ -74,12 +75,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		await lockCluster(client, clusterId)
 
 		// Perform Terraform action
-		const {
-			error,
-			tfstate,
-			stdout,
-			stderr,
-		} = await (
+		const results = await (
 			ProviderTerraform[cluster.service_account.provider]
 				.action(
 					cluster,
@@ -88,26 +84,138 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 				)
 		)
 
-		// Store state in the database
-		const queriedCluster = e.select(e.Cluster, () => ({
-			filter_single: { id: clusterId },
-		}))
+		const snapshots = (
+			results
+				.map(result => ({
+					action: result.action,
+					timestamp: new Date(result.timestamp).toISOString(),
+					command: result.command,
+					error: result.output.error,
+					tfstate: result.output.tfstate,
+					stdout: result.output.stdout,
+					stderr: result.output.stderr,
+				}))
+		)
 
-		const deployment = (
+		// Store state in the database
+
+		// https://github.com/edgedb/edgedb-js/issues/554
+
+		/*
+		const snapshots = (
 			await e
-				.insert(e.TerraformDeployment, {
-					cluster: queriedCluster,
-					action: ({
-						[TFAction.Apply]: e.TerraformAction.Apply,
-						[TFAction.Destroy]: e.TerraformAction.Destroy,
-					} as const)[action],
-					error,
-					tfstate: tfstate ?? queriedCluster.latest_deployment.tfstate,
-					stdout,
-					stderr,
+				.params(
+					{
+						snapshots: e.array(
+							e.tuple({
+								action: e.TerraformAction,
+								error: e.str,
+								tfstate: e.json,
+								stdout: e.array(e.json),
+								stderr: e.array(e.json),
+							})
+						), 
+					},
+					({ snapshots }) => (
+						e.for(e.array_unpack(snapshots), (snapshot) =>
+							e.insert(
+								e.TerraformDeployment,
+								{
+									cluster: e.select(e.Cluster, () => ({
+										filter_single: { id: clusterId },
+									})),
+									action: e.cast(e.TerraformAction, action),
+									error: snapshot.error,
+									tfstate: snapshot.tfstate,
+									stdout: snapshot.stdout,
+									stderr: snapshot.stderr,
+								}
+							)
+						)
+					)
+				)
+				.run(client, {
+					snapshots: (
+						results
+							.map(result => ({
+								action: result.action,
+								error: result.output.error ?? '',
+								tfstate: result.output.tfstate,
+								stdout: result.output.stdout,
+								stderr: result.output.stderr,
+							}))
+					),
 				})
 		)
-			.run(client)
+		*/
+
+		// InvalidValueError: JSON index 'error' is out of bounds
+		/*
+		const insertedSnapshots = (
+			await e
+				.params(
+					{
+						snapshots: e.json,
+					},
+					({ snapshots }) => (
+						e.for(e.json_array_unpack(snapshots), (snapshot) =>console.log('snapshot', JSON.stringify(snapshot))||console.log('snapshot action', snapshot['action'])||console.log('snapshot error', snapshot['error'])||console.log('snapshot output', snapshot['output'])||
+							e.insert(
+								e.TerraformDeployment,
+								{
+									action: e.cast(e.TerraformAction, snapshot['action']),
+									timestamp: e.cast(e.datetime, snapshot['timestamp']),
+									cluster: e.select(e.Cluster, () => ({
+										filter_single: { id: clusterId },
+									})),
+									command: e.cast(e.str, snapshot['command']),
+									error: e.cast(e.str, snapshot['error']),
+									tfstate: e.cast(e.json, snapshot['tfstate']),
+									stdout: e.cast(e.array(e.json), snapshot['stdout']),
+									stderr: e.cast(e.array(e.json), snapshot['stderr']),
+								}
+							)
+						)
+					)
+				)
+				.run(client, {
+					snapshots,
+				})
+		)
+		*/
+
+		// Insert snapshots individually
+		const insertedSnapshots = []
+		
+		for (const snapshot of snapshots) {
+			const insertedSnapshot = await e
+				.insert(
+					e.TerraformDeployment,
+					{
+						action: e.cast(e.TerraformAction, snapshot.action),
+						timestamp: e.cast(e.datetime, snapshot.timestamp),
+						cluster: e.select(e.Cluster, () => ({
+							filter_single: { id: clusterId },
+						})),
+						command: snapshot.command,
+						...snapshot.error && { error: snapshot.error },
+						...snapshot.tfstate && { tfstate: snapshot.tfstate },
+						...snapshot.stdout && { stdout: snapshot.stdout },
+						...snapshot.stderr && { stderr: snapshot.stderr }, 
+					}
+				)
+				.run(client)
+
+			insertedSnapshots.push(insertedSnapshot)
+		}
+
+		const {
+			output: {
+				error,
+				tfstate,
+				stdout,
+				stderr,
+			},
+		} = results[results.length - 1]
 
 		// Restart router to apply any changes to IP address list
 		if (cluster.deploy_router && action == TFAction.Apply && tfstate?.outputs?.router?.value) {
@@ -144,7 +252,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		}
 
 		return {
-			deployment,
+			snapshots: insertedSnapshots,
 			error,
 		}
 	}finally{

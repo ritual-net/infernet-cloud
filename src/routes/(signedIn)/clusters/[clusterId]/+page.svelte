@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import { providers } from '$/types/provider'
+	import { TFAction } from '$/types/terraform'
 
 
 	// Context
@@ -20,6 +21,17 @@
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
+
+	export const formatResourceType = (resourceType: string): string => (
+		resourceType
+			.split('_')
+			.map((word, i) => (
+				word.length <= 3 && i <= 1
+					? word.toUpperCase()
+					: `${word[0].toUpperCase()}${word.slice(1)}`
+			))
+			.join(' ')
+	)
 
 
 	// Actions
@@ -52,10 +64,12 @@
 
 
 	// Components
+	import Collapsible from '$/components/Collapsible.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodesTable from './NodesTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import Status from '$/views/Status.svelte'
+	import TerraformDeployment from './TerraformDeployment.svelte'
 
 
 	// Transitions
@@ -225,9 +239,16 @@
 		<SizeTransition>
 			<div class="stack">
 				{#if !nodesWithInfo}
-					<div class="card" transition:scale>
-						<p>Loading nodes...</p>
-					</div>
+					{#await nodesWithInfoPromise}
+						<div class="card" transition:scale>
+							<p>Loading nodes...</p>
+						</div>
+					{:catch error}
+						<div class="card" transition:scale>
+							<p>Failed to load nodes.</p>
+							<pre><output><code>{error}</code></output></pre>
+						</div>
+					{/await}
 				{:else}
 					<NodesTable
 						{nodesWithInfo}
@@ -359,89 +380,95 @@
 					</section>
 				{/if}
 
-				{#if cluster.latest_deployment.error}
-					<section class="column">
-						<dt>Error</dt>
-		
-						<dd class="scrollable">
-							<output><code>{cluster.latest_deployment.error}</code></output>
-						</dd>
-					</section>
-				{/if}
-
-				{#if cluster.latest_deployment.tfstate}
-					<section class="column">
-						<dt>Terraform State</dt>
-		
-						<dd class="scrollable">
-							<output><code>{JSON.stringify(cluster.latest_deployment.tfstate, null, '\t')}</code></output>
-						</dd>
-					</section>
-				{/if}
-
-				{#if cluster.latest_deployment.stdout?.length}
-					<section class="column">
-						<dt>Terraform Logs</dt>
-		
-						<dd class="scrollable log-container">
-							{#each cluster.latest_deployment.stdout as log, i}
-								{@const previousLog = cluster.latest_deployment.stdout[i - 1]}
-
-								{#if previousLog && previousLog['@type'] !== log['@type']}
-									<hr>
-								{/if}
-
-								<div
-									class="log"
-									data-type={log['type']} 
-									data-level={log['@level']}
-									data-module={log['@module']}
-								>
-									<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
-
-									{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
-										<div class="diagnostic-log">
-											{#if log.diagnostic.detail}
-												<output><code>{log.diagnostic.detail}</code></output>
-											{/if}
-
-											{#if log.diagnostic.snippet?.code}
-												<blockquote>
-													<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
-												</blockquote>
-											{/if}
-										</div>
-									{/if}
-								</div>
-							{/each}
-						</dd>
-					</section>
-				{/if}
-
-				{#if cluster.latest_deployment.stderr?.length}
-					<section class="column">
-						<dt>Terraform Error Logs</dt>
-		
-						<dd class="scrollable log-container">
-							{#each cluster.latest_deployment.stderr as log, i}
-								{@const previousLog = cluster.latest_deployment.stderr[i - 1]}
-
-								{#if previousLog && previousLog['@type'] !== log['@type']}
-									<hr>
-								{/if}
-
-								<output
-									class="log"
-									data-type={log['type']} 
-									data-level={log['@level']}
-									data-module={log['@module']}
-								><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
-							{/each}
-						</dd>
-					</section>
-				{/if}
+				<TerraformDeployment
+					provider={cluster.service_account.provider}
+					deployment={cluster.latest_deployment}
+					isSummary
+				/>
 			{/if}
 		</dl>
+	</section>
+
+	<section class="column">
+		<h3 class="row inline">
+			History
+			<span class="annotation">
+				{cluster.deployments.length}
+			</span>
+		</h3>
+
+		{#each (
+			// Group by "init" actions
+			cluster.deployments
+				.toReversed()
+				.reduce((groups, snapshot, i) => {
+					if(snapshot.action === TFAction.Init || i === 0)
+						groups.push([snapshot])
+					else
+						groups[groups.length - 1].push(snapshot)
+					return groups
+				}, [])
+				.toReversed()
+		) as group (group[0]?.id)}
+			<div class="column card">
+				{#each group as snapshot (snapshot.id)}
+					<Collapsible
+						class="card"
+					>
+						<svelte:fragment slot="trigger">
+							<header class="row wrap">
+								<h4>{snapshot.action}</h4>
+
+								<div class="column inline">
+									<dd>
+										<Status
+											status={snapshot.status}
+										/>
+									</dd>
+
+									<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
+								</div>
+							</header>
+						</svelte:fragment>
+
+						<dl
+							class="snapshot-details card column"
+						>
+							<section class="row wrap">
+								<dt>Status</dt>
+
+								<dd>
+									<Status
+										status={snapshot.status}
+									/>
+								</dd>
+							</section>
+
+							<section class="row wrap">
+								<dt>Timestamp</dt>
+
+								<dd>
+									{new Date(snapshot.timestamp).toLocaleString()}
+								</dd>
+							</section>
+
+							<TerraformDeployment
+								provider={cluster.service_account.provider}
+								deployment={snapshot}
+							/>
+						</dl>
+					</Collapsible>
+				{:else}
+					<div class="card">
+						<p>No deployments found.</p>
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<div class="card">
+				<p>No deployments found.</p>
+			</div>
+		{/each}
 	</section>
 </div>
 
@@ -449,7 +476,6 @@
 <style>
 	.container {
 		gap: 2rem;
-		margin-bottom: 20dvh;
 	}
 
 	.icon {
@@ -468,26 +494,12 @@
 		color: #fff;
 	}
 
-	.scrollable {
-		overflow: auto;
-		padding: 0.66em 1em;
-
-		resize: vertical;
-		&:not([style*="height"]) {
-			max-height: 19.6rem;
-		}
-
-		background: rgba(0, 0, 0, 0.05);
-		border-radius: 0.5em;
+	header.row > :last-child {
+		text-align: end;
 	}
 
-	blockquote {
-		padding: 0.5em 0.75em;
-		font-size: smaller;
-		margin-block: 0.5em;
-
-		background: rgba(0, 0, 0, 0.05);
-		border-radius: 0.5em;
+	.snapshot-details {
+		background-color: rgba(0, 0, 0, 0.03);
 	}
 
 	output {
@@ -498,32 +510,5 @@
 		white-space: pre-wrap;
 		word-break: break-word;
 		tab-size: 2;
-	}
-
-	.log-container {
-		display: grid;
-
-		.log {
-			margin-inline: -1rem;
-			padding-inline: 1rem;
-			padding-block: 0.1rem;
-
-			&[data-level="error"] {
-				background-color: rgb(255, 246, 246);
-				color: rgb(150, 0, 0);
-			}
-		}
-
-		date {
-			position: sticky;
-			right: 0;
-			float: right;
-			font-size: smaller;
-			opacity: 0.5;
-		}
-
-		code {
-			white-space: pre-line;
-		}
 	}
 </style>

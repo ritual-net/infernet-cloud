@@ -304,7 +304,7 @@ button, .button {
 		}
 	}
 
-	.column:has(:is(header, section, footer)) {
+	&.column:has(:is(header, section, footer)) {
 		row-gap: var(--card-borderWidth);
 	}
 }

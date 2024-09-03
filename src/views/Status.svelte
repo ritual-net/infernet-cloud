@@ -5,6 +5,8 @@
 		'updating': 'Updating',
 		'unhealthy': 'Unhealthy',
 		'destroyed': 'Destroyed',
+		'failed': 'Failed',
+		'succeeded': 'Succeeded',
 		'unknown': 'Unknown',
 		'TERMINATED': 'Terminated',
 	}
@@ -25,6 +27,7 @@
 
 <style>
 	.status {
+		&[data-status="succeeded"],
 		&[data-status="healthy"] {
 			--status-color: #16B371;
 		}
@@ -33,6 +36,7 @@
 			--status-color: #b3a316;
 		}
 
+		&[data-status="failed"],
 		&[data-status="unhealthy"],
 		&[data-status="terminated"] {
 			--status-color: #b33d16;
