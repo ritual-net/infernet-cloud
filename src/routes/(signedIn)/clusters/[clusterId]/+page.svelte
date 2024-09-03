@@ -301,6 +301,18 @@
 							</WithIcon>
 						</dd>
 					</section>
+
+					<section class="row wrap">
+						<dt>Machine image</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.machine_image}
+							</WithIcon>
+						</dd>
+					</section>
 				{/if}
 			</dl>
 		</section>
