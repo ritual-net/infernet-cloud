@@ -34,6 +34,7 @@ export const load: PageLoad = async ({
 						region: node.region,
 						zone: node.zone,
 						machine_type: node.machine_type,
+						machine_image: node.machine_image,
 						chain_enabled: node.chain_enabled,
 						trail_head_blocks: node.trail_head_blocks,
 						rpc_url: node.rpc_url,

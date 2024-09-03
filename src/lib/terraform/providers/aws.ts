@@ -32,7 +32,7 @@ export class AWSTerraform extends BaseTerraform {
 						region: cluster.router.region || cluster.region,
 						zone: cluster.router.zone || cluster.zone,
 						machine_type: cluster.router.machine_type,
-						image: cluster.router.machine_image || 'ami-0b4750268a88e78e0',
+						image: cluster.router.machine_image,
 					}
 				:
 					{
@@ -50,7 +50,7 @@ export class AWSTerraform extends BaseTerraform {
 						{
 							zone: node.zone || cluster.zone,
 							machine_type: node.machine_type,
-							image: node.machine_image ?? 'ami-05fb0b8c1424f266b',
+							image: node.machine_image,
 							has_gpu: false,
 
 							// image: node.has_gpu ? 'ami-0b4750268a88e78e0' : 'ami-05fb0b8c1424f266b',
