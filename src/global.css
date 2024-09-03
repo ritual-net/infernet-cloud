@@ -255,7 +255,7 @@ textarea {
 	transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
 
 	&.small {
-		font-size: 0.8em;
+		font-size: 0.9em;
 	}
 
 	&.smaller {

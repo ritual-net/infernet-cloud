@@ -366,10 +366,12 @@
 			<section class="row wrap">
 				<dt>IPs allowed (HTTP)</dt>
 
-				{#if cluster.ip_allow_http?.length}
+				{#if cluster.ip_allow_http}
 					<dd class="column inline">
 						{#each cluster.ip_allow_http as ip}
 							<p>{ip}</p>
+						{:else}
+							None
 						{/each}
 					</dd>
 				{:else}
@@ -380,10 +382,12 @@
 			<section class="row wrap">
 				<dt>IPs allowed (SSH)</dt>
 
-				{#if cluster.ip_allow_ssh?.length}
+				{#if cluster.ip_allow_ssh}
 					<dd class="column inline">
 						{#each cluster.ip_allow_ssh as ip}
 							<p>{ip}</p>
+						{:else}
+							None
 						{/each}
 					</dd>
 				{:else}

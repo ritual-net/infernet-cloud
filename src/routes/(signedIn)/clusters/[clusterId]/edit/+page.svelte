@@ -59,14 +59,14 @@
 
 
 	// (Firewall)
-	let hasFirewall = (
-		Boolean($form.config.ip_allow_http?.length || $form.config.ip_allow_ssh?.length)
-	)
+	let hasHttpFirewall = Boolean($form.config.ip_allow_http)
+	let hasSshFirewall = Boolean($form.config.ip_allow_ssh)
+
 	let ip_allow_http = $form.config.ip_allow_http ?? []
 	let ip_allow_ssh = $form.config.ip_allow_ssh ?? []
 
-	$: $form.config.ip_allow_http = hasFirewall ? ip_allow_http : []
-	$: $form.config.ip_allow_ssh = hasFirewall ? ip_allow_ssh : []
+	$: $form.config.ip_allow_http = hasHttpFirewall ? ip_allow_http : undefined
+	$: $form.config.ip_allow_ssh = hasSshFirewall ? ip_allow_ssh : undefined
 
 
 	// Functions
@@ -77,7 +77,6 @@
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Select from '$/components/Select.svelte'
-	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import RegionZoneMachineFields from '../../create/RegionZoneMachineFields.svelte'
@@ -134,82 +133,97 @@
 		</section>
 
 		<section class="column wrap">
-			<div class="row wrap">
-				<div class="column inline">
-					<h3 class="row inline">
-						<label for="hasFirewall">
-							Firewall
-						</label>
-					</h3>
+			<h3>Firewall</h3>
+			
+			<div class="row equal align-start wrap">
+				<div class="column">
+					<div class="column inline">
+						<h4>
+							<label for="hasHttpFirewall">
+								HTTP
+							</label>
+						</h4>
 
-					<p>Determine which IP addresses will have permissions to this cluster.</p>
+						<p>Specify which IPs can make HTTP requests to this cluster.</p>
+					</div>
+
+					<Select
+						required
+						id="hasHttpFirewall"
+						name="hasHttpFirewall"
+						labelText="HTTP Firewall"
+						bind:value={hasHttpFirewall}
+						items={[
+							{
+								value: false,
+								label: 'All IPs',
+							},
+							{
+								value: true,
+								label: 'Only allowed IPs',
+							}
+						]}
+					/>
+
+					{#if hasHttpFirewall}
+						<Textarea
+							id="config.ip_allow_http"
+							name="config.ip_allow_http"
+							rows="2"
+							placeholder={`Comma-separated IPv4 addresses / CIDR blocks...\n0.0.0.0/1, 0.0.0.0/2`}
+							value={serializeCommaSeparated(ip_allow_http)}
+							onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
+							{...$constraints.config?.ip_allow_http}
+							pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+							class="small"
+						/>
+					{/if}
 				</div>
 
-				<Select
-					required
-					id="hasFirewall"
-					name="hasFirewall"
-					labelText="Firewall"
-					bind:value={hasFirewall}
-					items={[
-						{
-							value: false,
-							label: 'All IPs',
-						},
-						{
-							value: true,
-							label: 'Only allowed IPs',
-						}
-					]}
-				/>
+				<div class="column">
+					<div class="column inline">
+						<h4>
+							<label for="hasSshFirewall">
+								SSH
+							</label>
+						</h4>
+
+						<p>Specify which IPs can connect to this cluster via SSH.</p>
+					</div>
+
+					<Select
+						required
+						id="hasSshFirewall"
+						name="hasSshFirewall"
+						labelText="SSH Firewall"
+						bind:value={hasSshFirewall}
+						items={[
+							{
+								value: false,
+								label: 'All IPs',
+							},
+							{
+								value: true,
+								label: 'Only allowed IPs',
+							}
+						]}
+					/>
+
+					{#if hasSshFirewall}
+						<Textarea
+							id="config.ip_allow_ssh"
+							name="config.ip_allow_ssh"
+							rows="2"
+							placeholder={`Comma-separated IPv4 addresses / CIDR blocks...\n0.0.0.0/1, 0.0.0.0/2`}
+							value={serializeCommaSeparated(ip_allow_ssh)}
+							onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
+							{...$constraints.config?.ip_allow_ssh}
+							pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+							class="small"
+						/>
+					{/if}
+				</div>
 			</div>
-
-			{#if hasFirewall}
-				<Tabs
-					value={0}
-					items={[
-						{
-							id: 0,
-							label: 'HTTP',
-						},
-						{
-							id: 1,
-							label: 'SSH',
-						},
-					]}
-				>
-					<svelte:fragment slot="content"
-						let:item
-					>
-						{#if item.id === 0}
-							<Textarea
-								id="config.ip_allow_http"
-								name="config.ip_allow_http"
-								rows="2"
-								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								value={serializeCommaSeparated(ip_allow_http)}
-								onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
-								{...$constraints.config?.ip_allow_http}
-								pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
-								disabled={!hasFirewall}
-							/>
-
-						{:else}
-							<Textarea
-								id="config.ip_allow_ssh"
-								name="config.ip_allow_ssh"
-								rows="2"
-								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								value={serializeCommaSeparated(ip_allow_ssh)}
-								onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
-								{...$constraints.config?.ip_allow_ssh}
-								pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
-								disabled={!hasFirewall}
-							/>
-						{/if}
-					</svelte:fragment>
-				</Tabs>
-			{/if}
 		</section>
 
 		<fieldset

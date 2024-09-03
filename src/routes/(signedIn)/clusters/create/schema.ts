@@ -18,7 +18,7 @@ export const ClusterConfig = z
 			)
 			.optional()
 			.nullable()
-			.default([]),
+			.default(undefined),
 
 		'ip_allow_ssh': z
 			.array(
@@ -26,7 +26,7 @@ export const ClusterConfig = z
 			)
 			.optional()
 			.nullable()
-			.default([]),
+			.default(undefined),
 
 		'region': z
 			.string()
@@ -102,7 +102,7 @@ export const Container = z
 			)
 			.optional()
 			.nullable()
-			.default([]),
+			.default(undefined),
 
 		'allowed_delegate_addresses': z
 			.array(
@@ -110,7 +110,7 @@ export const Container = z
 			)
 			.optional()
 			.nullable()
-			.default([]),
+			.default(undefined),
 
 		'allowed_ips': z
 			.array(
@@ -118,7 +118,7 @@ export const Container = z
 			)
 			.optional()
 			.nullable()
-			.default([]),
+			.default(undefined),
 
 		'command': z
 			.string()
