@@ -385,6 +385,7 @@
 							name="{namePrefix}.region"
 							value={regionId ?? ''}
 							disabled
+							hidden={selectedRegion?.info}
 						/>
 					{/if}
 
@@ -484,6 +485,7 @@
 							name="{namePrefix}.zone"
 							value={zoneId ?? ''}
 							disabled
+							hidden={selectedZone?.info}
 						/>
 					{/if}
 
