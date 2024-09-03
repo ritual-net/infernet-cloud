@@ -304,7 +304,7 @@
 				{/if}
 			</div>
 
-			<div class="row equal wrap">
+			<div class="row equal align-start wrap">
 				<div class="column">
 					<div class="column inline">
 						<h4>
@@ -475,7 +475,7 @@
 						</div>
 					</div>
 
-					<div class="row equal wrap">
+					<div class="row equal align-start wrap">
 						<div class="column">
 							<div class="column inline">
 								<h4>
@@ -542,7 +542,7 @@
 
 							{#if machineTypeInfo?.info}
 								<Collapsible
-									class="card"
+									class="card smaller"
 								>
 									<svelte:fragment slot="trigger">
 										<header class="row" data-after="▾">
@@ -618,7 +618,7 @@
 
 							{#if machineImageInfo?.info}
 								<Collapsible
-									class="card"
+									class="card smaller"
 								>
 									<svelte:fragment slot="trigger">
 										<header class="row" data-after="▾">
