@@ -387,6 +387,32 @@
 							disabled
 						/>
 					{/if}
+
+					{#if selectedRegion?.info}
+						<Collapsible
+							class="card smaller"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={serviceAccount && providers[serviceAccount.provider].icon}
+									>
+										{selectedRegion?.name ?? selectedRegion?.id}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							<ScrollArea
+								layout="nested"
+							>
+								<div>
+									<DetailsValue
+										value={selectedRegion.info}
+									/>
+								</div>
+							</ScrollArea>
+						</Collapsible>
+					{/if}
 				</div>
 
 				<div class="column">
@@ -459,6 +485,32 @@
 							value={zoneId ?? ''}
 							disabled
 						/>
+					{/if}
+
+					{#if selectedZone?.info}
+						<Collapsible
+							class="card smaller"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={serviceAccount && providers[serviceAccount.provider].icon}
+									>
+										{selectedZone?.name ?? selectedZone?.id}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							<ScrollArea
+								layout="nested"
+							>
+								<div>
+									<DetailsValue
+										value={selectedZone.info}
+									/>
+								</div>
+							</ScrollArea>
+						</Collapsible>
 					{/if}
 				</div>
 			</div>
