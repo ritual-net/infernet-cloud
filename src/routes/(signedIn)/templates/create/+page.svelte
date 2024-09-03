@@ -150,7 +150,7 @@
 				Node configuration
 			</header>
 
-			<section class="row wrap">
+			<section class="row">
 				<div class="column inline">
 					<h3>
 						<label for="containerTemplate.chain_enabled">

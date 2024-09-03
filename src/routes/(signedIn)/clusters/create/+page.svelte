@@ -370,7 +370,7 @@
 
 				{:else if item.id === Fieldset.ConfigureRouter}
 					<div class="card column">
-						<section class="row wrap">
+						<section class="row">
 							<div class="column inline">
 								<h3>
 									<label for="config.deploy_router">

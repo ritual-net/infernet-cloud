@@ -72,6 +72,7 @@
 			/ 0fr auto 1fr
 		;
 
+		flex: 0 0 auto;
 		width: var(--switch-width);
 		height: var(--switch-height);
 		padding: var(--switch-padding);

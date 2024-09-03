@@ -122,7 +122,7 @@
 	}}
 />
 
-<section class="row wrap">
+<section class="row">
 	<div class="column inline">
 		<h3>
 			<label for="{namePrefix}.config.chain_enabled">
@@ -339,7 +339,7 @@
 		</section>
 
 		<section class="column">
-			<div class="row wrap">
+			<div class="row">
 				<div class="column inline">
 					<h3 class="row inline">
 						<label for="{namePrefix}|isPaymentsEnabled">
@@ -455,7 +455,7 @@
 	</fieldset>
 </Collapsible>
 
-<section class="row wrap">
+<section class="row">
 	<div class="column inline">
 		<h3 class="row inline">
 			<label for="{namePrefix}.config.forward_stats">
