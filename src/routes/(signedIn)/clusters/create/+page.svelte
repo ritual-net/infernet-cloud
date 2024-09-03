@@ -439,24 +439,27 @@
 								<svelte:fragment slot="trigger" let:open>
 									<header
 										class="row"
-										data-after={open ? '▴' : '▾'}
 									>
 										<h3 class="annotation">
 											Node #{i + 1}
 										</h3>
 								
-										{#if $form.nodes.length > 1}
-											<button
-												type="button"
-												class="small destructive"
-												on:click={() => {
-													$form.nodes = $form.nodes.toSpliced(i, 1)
-												}}
-												transition:scale
-											>
-												Delete
-											</button>
-										{/if}
+										<div class="row">
+											{#if $form.nodes.length > 1}
+												<button
+													type="button"
+													class="small destructive"
+													on:click={() => {
+														$form.nodes = $form.nodes.toSpliced(i, 1)
+													}}
+													transition:scale
+												>
+													Delete
+												</button>
+											{/if}
+
+											<span data-after={open ? '▴' : '▾'} />
+										</div>
 									</header>
 								</svelte:fragment>
 
