@@ -19,6 +19,7 @@
 		states,
 		options,
 	} = createSwitch({
+		defaultChecked: checked,
 		checked: _checked,
 		disabled,
 	})
