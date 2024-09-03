@@ -20,7 +20,7 @@ import { isTruthy } from '$/lib/utils/isTruthy'
 /**
  * Amazon Web Services extension of BaseResourceClient abstract class.
  */
-export class AWSResourceClient extends BaseResourceClient {
+export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> {
 	amazonCompute!: EC2Client;
 	creds!: AWSServiceAccount['creds'];
 
@@ -94,7 +94,9 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @returns A flat array of zone names.
 	 * Example return value: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 	 */
-	async getZones(regionId: string) {
+	async getZones(
+		regionId: string,
+	) {
 		this.amazonCompute = await this.createInstance(regionId)
 
 		const command = new DescribeAvailabilityZonesCommand({});
@@ -105,8 +107,8 @@ export class AWSResourceClient extends BaseResourceClient {
 			response
 				.AvailabilityZones
 				?.map(zone => ({
-					id: zone.ZoneName,
-					name: zone.ZoneName,
+					id: zone.ZoneName!,
+					name: zone.ZoneName!,
 					info: zone,
 				}))
 				.filter(isTruthy)
@@ -149,7 +151,6 @@ export class AWSResourceClient extends BaseResourceClient {
 				?.map(offering => ({
 					id: offering.InstanceType!,
 					name: offering.InstanceType!,
-					info: offering.LocationType,
 				}))
 			?? []
 		)
@@ -172,6 +173,6 @@ export class AWSResourceClient extends BaseResourceClient {
 			name: machineId,
 			hasGpu: instanceTypeInfo?.GpuInfo ? true : false,
 			info: instanceTypeInfo,
-		} as Machine<ProviderTypeEnum.AWS>
+		}
 	}
 }
