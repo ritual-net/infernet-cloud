@@ -131,8 +131,8 @@ export const PATCH: RequestHandler = async ({
 
 	// Apply Terraform changes to updated cluster
 	// (Run in background - don't block API response)
-	(async () => {
-		let result: Awaited<ReturnType<typeof clusterAction>>
+	;(async () => {
+		let result: Awaited<ReturnType<typeof clusterAction>> | undefined
 
 		try {
 			result = await clusterAction(
