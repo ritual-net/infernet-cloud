@@ -52,6 +52,10 @@ export const RouterConfig = z
 		'machine_type': z
 			.string()
 			.required(),
+
+		'machine_image': z
+			.string()
+			.required(),
 	})
 
 export const ContainerPayment = z
@@ -172,6 +176,10 @@ export const NodeConfig = z
 			.nullable(),
 
 		'machine_type': z
+			.string()
+			.required(),
+
+		'machine_image': z
 			.string()
 			.required(),
 
@@ -331,8 +339,6 @@ export const FormData = z
 			.array(
 				Node,
 			)
-			.optional()
-			.nullable()
 			.default(() => (
 				[
 					Node.getDefault(),
