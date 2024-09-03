@@ -5,7 +5,7 @@ export const serializeCommaSeparated = (stringArray: string[]) => (
 
 export const parseCommaSeparated = (commaSeparatedString: string) => (
 	commaSeparatedString
-		.split(',')
+		.split(/[,\n]/)
 		.map(item => item.trim())
 		.filter(Boolean)
 )
