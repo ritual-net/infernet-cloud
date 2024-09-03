@@ -26,7 +26,8 @@ export const load: PageLoad = async ({
 				region: cluster.router?.region,
 				zone: cluster.router?.zone,
 				machine_type: cluster.router?.machine_type,
-			}
+				machine_image: cluster.router?.machine_image,
+			},
 		},
 		yup(FormData)
 	)
