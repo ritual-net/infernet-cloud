@@ -215,7 +215,7 @@
 
 				{#if defaults}
 					<label class="row">
-						<span class="annotation">Override Cluster</span>
+						<span class="annotation">Override Default</span>
 
 						<Switch
 							id="{namePrefix}.region.override"
@@ -232,16 +232,28 @@
 					<div class="column inline">
 						<h4>
 							<label for="{namePrefix}.region">
-								Region
+								{#if entityType === 'cluster'}
+									Default region
+								{:else}
+									Region
+								{/if}
 							</label>
 						</h4>
 
 						<p>
 							Select the
+							{#if entityType === 'cluster'}
+								default
+							{/if}
 							<a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">
 								{serviceAccount ? `${serviceAccount.provider} ` : ''}region
 							</a>
-							to deploy your {entityType} to.
+							to deploy
+							{#if entityType === 'cluster'}
+								router/nodes to.
+							{:else}
+								your {entityType} to.
+							{/if}
 						</p>
 					</div>
 
@@ -304,16 +316,27 @@
 					<div class="column inline">
 						<h4>
 							<label for="{namePrefix}.zone">
-								Zone
+								{#if entityType === 'cluster'}
+									Default zone
+								{:else}
+									Zone
+								{/if}
 							</label>
 						</h4>
 
 						<p>
 							Select the
+							{#if entityType === 'cluster'}
+								default
+							{/if}
 							<a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">
 								{serviceAccount ? `${serviceAccount.provider} ` : ''}zone
 							</a>
-							to deploy your {entityType} to.
+							{#if entityType === 'cluster'}
+								to deploy router/nodes to.
+							{:else}
+								to deploy your {entityType} to.
+							{/if}
 						</p>
 					</div>
 
