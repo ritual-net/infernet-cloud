@@ -8,21 +8,17 @@
 
 
 	// Internal state
-	import { writable } from 'svelte/store'
 	import { melt, createSwitch, createSync } from '@melt-ui/svelte'
-
-	const _checked = writable(checked)
-	$: checked = $_checked
 	
 	const {
 		elements: { root, input },
 		states,
 		options,
 	} = createSwitch({
-		defaultChecked: checked,
-		checked: _checked,
 		disabled,
 	})
+
+	$: createSync(states).checked(checked, _ => { checked = _ })
 
 	$: createSync(options).disabled(disabled, _ => { disabled = _ })
 
