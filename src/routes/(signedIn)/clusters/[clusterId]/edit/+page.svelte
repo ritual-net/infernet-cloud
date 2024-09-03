@@ -264,6 +264,7 @@
 					bind:regionId={$form.router.region}
 					bind:zoneId={$form.router.zone}
 					bind:machineId={$form.router.machine_type}
+					bind:machineImageId={$form.router.machine_image}
 					constraints={$constraints.router}
 				/>
 			</Collapsible>
