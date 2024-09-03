@@ -59,14 +59,48 @@
 
 
 	// (Firewall)
-	let hasHttpFirewall = Boolean($form.config.ip_allow_http)
-	let hasSshFirewall = Boolean($form.config.ip_allow_ssh)
+	let httpFirewallMode: 'all' | 'allowlist' | 'none' = (
+		$form.config.ip_allow_http ?
+			$form.config.ip_allow_http.length > 0 ?
+				'allowlist'
+			:
+				'none'
+		:
+			'all'
+	)
+	let sshFirewallMode: 'all' | 'allowlist' | 'none' = (
+		$form.config.ip_allow_ssh ?
+			$form.config.ip_allow_ssh.length > 0 ?
+				'allowlist'
+			:
+				'none'
+		:
+			'all'
+	)
 
-	let ip_allow_http = $form.config.ip_allow_http ?? []
-	let ip_allow_ssh = $form.config.ip_allow_ssh ?? []
+	let httpAllowlist = $form.config.ip_allow_http ?? []
+	let sshAllowlist = $form.config.ip_allow_ssh ?? []
 
-	$: $form.config.ip_allow_http = hasHttpFirewall ? ip_allow_http : undefined
-	$: $form.config.ip_allow_ssh = hasSshFirewall ? ip_allow_ssh : undefined
+	$: $form.config.ip_allow_http = (
+		httpFirewallMode === 'all' ?
+			undefined
+		: httpFirewallMode === 'allowlist' ?
+			httpAllowlist
+		: httpFirewallMode === 'none' ?
+			[]
+		:
+			undefined
+	)
+	$: $form.config.ip_allow_ssh = (
+		sshFirewallMode === 'all' ?
+			undefined
+		: sshFirewallMode === 'allowlist' ?
+			sshAllowlist
+		: sshFirewallMode === 'none' ?
+			[]
+		:
+			undefined
+	)
 
 
 	// Functions
@@ -152,27 +186,31 @@
 						id="hasHttpFirewall"
 						name="hasHttpFirewall"
 						labelText="HTTP Firewall"
-						bind:value={hasHttpFirewall}
+						bind:value={httpFirewallMode}
 						items={[
 							{
-								value: false,
+								value: 'all',
 								label: 'All IPs',
 							},
 							{
-								value: true,
+								value: 'allowlist',
 								label: 'Only allowed IPs',
+							},
+							{
+								value: 'none',
+								label: 'None (disabled)',
 							}
 						]}
 					/>
 
-					{#if hasHttpFirewall}
+					{#if httpFirewallMode === 'allowlist'}
 						<Textarea
 							id="config.ip_allow_http"
 							name="config.ip_allow_http"
 							rows="2"
 							placeholder={`Comma-separated IPv4 addresses / CIDR blocks...\n0.0.0.0/1, 0.0.0.0/2`}
-							value={serializeCommaSeparated(ip_allow_http)}
-							onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
+							value={serializeCommaSeparated(httpAllowlist)}
+							onblur={e => { httpAllowlist = parseCommaSeparated(e.currentTarget.value) }}
 							{...$constraints.config?.ip_allow_http}
 							pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
 							class="small"
@@ -196,27 +234,31 @@
 						id="hasSshFirewall"
 						name="hasSshFirewall"
 						labelText="SSH Firewall"
-						bind:value={hasSshFirewall}
+						bind:value={sshFirewallMode}
 						items={[
 							{
-								value: false,
+								value: 'all',
 								label: 'All IPs',
 							},
 							{
-								value: true,
+								value: 'allowlist',
 								label: 'Only allowed IPs',
-							}
+							},
+							{
+								value: 'none',
+								label: 'None (disabled)',
+							},
 						]}
 					/>
 
-					{#if hasSshFirewall}
+					{#if sshFirewallMode === 'allowlist'}
 						<Textarea
 							id="config.ip_allow_ssh"
 							name="config.ip_allow_ssh"
 							rows="2"
 							placeholder={`Comma-separated IPv4 addresses / CIDR blocks...\n0.0.0.0/1, 0.0.0.0/2`}
-							value={serializeCommaSeparated(ip_allow_ssh)}
-							onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
+							value={serializeCommaSeparated(sshAllowlist)}
+							onblur={e => { sshAllowlist = parseCommaSeparated(e.currentTarget.value) }}
 							{...$constraints.config?.ip_allow_ssh}
 							pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
 							class="small"
