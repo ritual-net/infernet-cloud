@@ -342,7 +342,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Region / Zone</dt>
+				<dt>Default region / zone</dt>
 
 				<dd>
 					<WithIcon
