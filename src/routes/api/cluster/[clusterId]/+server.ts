@@ -1,3 +1,5 @@
+import z from 'yup'
+import type { FormData } from '$/routes/(signedIn)/clusters/[clusterId]/edit/schema'
 import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
 import { e } from '$/lib/db';
@@ -98,20 +100,22 @@ export const PATCH: RequestHandler = async ({
 	if (!body)
 		return error(400, 'Body is required')
 
-	const { config, router } = body
-
-	const { deploy_router, ...clusterConfig } = config
+	const { config, router } = body as z.InferType<typeof FormData>
 
 	// Update cluster
 	const updatedCluster = await e
 		.update(e.Cluster, (c) => ({
 			set: {
-				...clusterConfig,
+				name: config.name,
+				ip_allow_http: config.ip_allow_http ?? undefined,
+				ip_allow_ssh: config.ip_allow_ssh ?? undefined,
+				region: config.region,
+				zone: config.zone,
 				router: (
-					deploy_router
+					config.deploy_router
 						? e.tuple({
-							region: router.region,
-							zone: router.zone,
+							region: router.region!,
+							zone: router.zone!,
 							machine_type: router.machine_type,
 							machine_image: router.machine_image,
 						})
@@ -120,10 +124,10 @@ export const PATCH: RequestHandler = async ({
 			},
 			filter_single: { id },
 		}))
-		.run(client);
+		.run(client)
 
 	if (!updatedCluster)
-		return error(500, 'Failed to update cluster');
+		return error(500, 'Failed to update cluster')
 
 	// Apply Terraform changes to updated cluster
 	// (Run in background - don't block API response)
