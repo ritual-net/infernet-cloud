@@ -48,6 +48,8 @@ export const load: PageLoad = async ({
 						snapshot_sync_sleep: node.snapshot_sync_sleep,
 						snapshot_sync_batch_size: node.snapshot_sync_batch_size,
 					},
+					dockerAccountUsername: node.docker_account?.username,
+					containers: node.containers,
 				},
 			},
 			yup(FormData)
