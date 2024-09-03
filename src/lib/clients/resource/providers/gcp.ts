@@ -160,4 +160,41 @@ export class GCPResourceClient extends BaseResourceClient<ProviderTypeEnum.GCP> 
 			info: machine,
 		}
 	}
+
+	async getMachineImages(
+		machineId: string,
+		zoneId: string,
+	) {
+		const response = await this.googleCompute.images.list({
+			project: 'ubuntu-os-cloud',
+			filter: 'status=READY',
+		})
+
+		return (
+			response.data.items
+				?.map(image => ({
+					id: image.name!,
+					name: image.name!,
+					description: image.description || '',
+				}))
+				.sort((a, b) => a.name.localeCompare(b.name))
+			?? []
+		)
+	}
+
+	async getMachineImageInfo(
+		imageId: string,
+	) {
+		const response = await this.googleCompute.images.get({
+			project: 'ubuntu-os-cloud',
+			image: imageId,
+		})
+
+		return {
+			id: imageId,
+			name: response.data.name!,
+			description: response.data.description || '',
+			info: response.data,
+		}
+	}
 }

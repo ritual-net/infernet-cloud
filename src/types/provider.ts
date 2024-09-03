@@ -60,6 +60,20 @@ export type Machine<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = 
 	);
 }
 
+export type MachineImage<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = {
+	id: string;
+	name: string;
+	description: string;
+	info?: (
+		ProviderType extends ProviderTypeEnum.AWS ?
+			Image
+		: ProviderType extends ProviderTypeEnum.GCP ?
+			compute_v1.Schema$Image
+		:
+			never
+	);
+}
+
 export type ProviderInfo = {
 	region: {
 		id: string;

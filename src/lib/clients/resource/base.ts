@@ -1,5 +1,5 @@
 // Types
-import type { Machine, ProviderInfo, Region, Zone, ZoneInfo } from '$/types/provider'
+import type { Machine, ProviderInfo, Region, Zone, ZoneInfo, MachineImage } from '$/types/provider'
 import type { ProviderTypeEnum } from '$/types/provider'
 
 // Functions
@@ -72,4 +72,9 @@ export abstract class BaseResourceClient<T extends ProviderTypeEnum> {
 		machineId: string,
 		zoneId: string,
 	): Promise<Machine<T>>
+
+	abstract getMachineImages(
+		machineId: string,
+		zoneId: string,
+	): Promise<MachineImage<T>[]>
 }

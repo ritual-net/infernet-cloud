@@ -1,7 +1,7 @@
 // Types
 import type { AWSServiceAccount } from '$schema/interfaces'
 import type { _InstanceType } from '@aws-sdk/client-ec2'
-import { ProviderTypeEnum, type Machine } from '$/types/provider'
+import { ProviderTypeEnum, type Machine, type MachineImage } from '$/types/provider'
 import { getRegionName } from '$/lib/utils/providers/common'
 
 
@@ -12,6 +12,7 @@ import {
 	DescribeAvailabilityZonesCommand,
 	DescribeInstanceTypeOfferingsCommand,
 	DescribeInstanceTypesCommand,
+	DescribeImagesCommand,
 } from '@aws-sdk/client-ec2'
 import { BaseResourceClient } from '$/lib/clients/resource/base'
 
@@ -173,6 +174,59 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 			name: machineId,
 			hasGpu: instanceTypeInfo?.GpuInfo ? true : false,
 			info: instanceTypeInfo,
+		}
+	}
+
+	async getMachineImages(
+		machineId: _InstanceType,
+		zoneId: string,
+	): Promise<MachineImage[]> {
+		const response = await this.amazonCompute.send(
+			new DescribeImagesCommand({
+				Filters: [
+					{
+						Name: 'state',
+						Values: ['available'],
+					},
+					{
+						Name: 'architecture',
+						Values: [machineId.startsWith('a1') ? 'arm64' : 'x86_64'],
+					},
+				],
+				Owners: ['amazon'],
+			})
+		)
+
+		return (
+			response.Images
+				?.map(image => ({
+					id: image.ImageId!,
+					name: image.Name || image.ImageId!,
+					description: image.Description || '',
+				}))
+				.sort((a, b) => a.name.localeCompare(b.name))
+			?? []
+		)
+	}
+
+	async getMachineImageInfo(
+		imageId: string,
+	) {
+		const response = await this.amazonCompute.send(
+			new DescribeImagesCommand({
+				ImageIds: [imageId],
+			})
+		)
+
+		const image = response.Images?.[0]
+		if (!image)
+			throw new Error(`Image with ID ${imageId} not found`)
+
+		return {
+			id: image.ImageId!,
+			name: image.Name || image.ImageId!,
+			description: image.Description || '',
+			info: image,
 		}
 	}
 }
