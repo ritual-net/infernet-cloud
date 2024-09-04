@@ -106,7 +106,7 @@
 			<section class="row">
 				<dt>Chain</dt>
 
-				<dd>
+				<dd class="row">
 					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
 						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
 
