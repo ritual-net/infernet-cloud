@@ -167,7 +167,7 @@ export class GCPResourceClient extends BaseResourceClient<ProviderTypeEnum.GCP> 
 	) {
 		const response = await this.googleCompute.images.list({
 			project: 'ubuntu-os-cloud',
-			filter: 'status=READY',
+			filter: '(status = READY)',
 		})
 
 		return (
