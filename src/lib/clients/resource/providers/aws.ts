@@ -194,7 +194,7 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 					},
 					{
 						Name: 'name',
-						Values: ['ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*'],
+						Values: ['ubuntu/images/hvm-ssd/ubuntu-*'],
 					},
 				],
 				Owners: ['amazon'],
