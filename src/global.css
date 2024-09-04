@@ -216,7 +216,7 @@ pre {
 		}
 	}
 
-	> :first-child {
+	&:not(.equal) > :first-child {
 		text-align: start;
 	}
 
