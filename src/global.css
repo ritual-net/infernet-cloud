@@ -108,6 +108,10 @@ a {
 	}
 }
 
+strong, b {
+	font-weight: bold;
+}
+
 ol, ul {
 	padding-inline-start: 1.5em;
 
