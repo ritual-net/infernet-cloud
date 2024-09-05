@@ -238,6 +238,7 @@
 
 	footer {
 		grid-area: footer;
+		padding-block: 1.5rem;
 		
 		/* z-index: 1;
 		position: sticky;
@@ -246,7 +247,7 @@
 		/* backdrop-filter: var(--backdropFilter); */
 
 		.logo {
-			--accentColor: light-dark(var(--color-ritualGreen-dark), var(--color-ritualGreen-light));
+			--accentColor: var(--color-ritualGreen-dark);
 
 			font-size: 1.1em;
 			line-height: 1;
