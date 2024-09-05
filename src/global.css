@@ -4,6 +4,18 @@
 
 	--color-ritualBlack: #000;
 	--color-ritualGreen: #40FFAF;
+	--color-ritualGreen-light: #46E28E;
+	--color-ritualGreen-dark: #28C470;
+	--color-ritualPurple: #8840FF;
+	--color-ritualPurple-light: #8E6EFF;
+	--color-ritualPurple-dark: #6E4EF1;
+	--color-ritualOrange: #E88239;
+	--color-ritualOrange-light: #FF9C3A;
+	--color-ritualOrange-dark: #E97E1C;
+
+	--color-accent: var(--color-ritualPurple);
+	--color-accent-light: var(--color-ritualPurple-light);
+	--color-accent-dark: var(--color-ritualPurple-dark);
 	
 	--textColor: var(--color-ritualBlack);
 
