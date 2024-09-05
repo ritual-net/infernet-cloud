@@ -75,6 +75,10 @@
 		}
 	}
 
+	let currentTheme: Theme
+	$: if(browser)
+		globalThis.document.documentElement.style.colorScheme = currentTheme
+
 
 	// Components
 	import Toaster from '$/components/Toaster.svelte'
@@ -83,6 +87,7 @@
 	import InfernetCloudLogo from '$/icons/InfernetCloudLogo.svelte'
 
 	import Nav from './Nav.svelte'
+	import ThemeSwitch, { type Theme } from './ThemeSwitch.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
@@ -120,20 +125,27 @@
 				</ul>
 			</div>
 
-			<span class="annotation">
-				<a
-					href="https://github.com/ritual-net/infernet-cloud"
-					target="_blank"
-				>
-					<WithIcon>
-						<svelte:fragment slot="icon">
-							<InfernetCloudLogo />
-						</svelte:fragment>
+			<div class="row">
+				<label class="theme-switch-label row">
+					Theme
+					<ThemeSwitch bind:currentTheme />
+				</label>
 
-						Infernet Cloud v1.0.0
-					</WithIcon>
-				</a>
-			</span>
+				<span class="annotation">
+					<a
+						href="https://github.com/ritual-net/infernet-cloud"
+						target="_blank"
+					>
+						<WithIcon>
+							<svelte:fragment slot="icon">
+								<InfernetCloudLogo />
+							</svelte:fragment>
+
+							Infernet Cloud v1.0.0
+						</WithIcon>
+					</a>
+				</span>
+			</div>
 		</nav>
 	</footer>
 
@@ -226,6 +238,12 @@
 
 	footer {
 		grid-area: footer;
+		
+		/* z-index: 1;
+		position: sticky;
+		bottom: 0; */
+
+		/* backdrop-filter: var(--backdropFilter); */
 
 		.logo {
 			--accentColor: var(--color-ritualGreen-dark);
@@ -246,6 +264,10 @@
 		ul {
 			font-size: 0.8em;
 			padding: 0;
+		}
+
+		.theme-switch-label {
+			font-size: 0.8em;
 		}
 	}
 </style>
