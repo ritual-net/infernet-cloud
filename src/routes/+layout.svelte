@@ -238,7 +238,7 @@
 
 	footer {
 		grid-area: footer;
-		padding-block: 1.5rem;
+		padding-block: clamp(1rem, 100vw - (50rem + 1rem), 1.5rem);
 		
 		/* z-index: 1;
 		position: sticky;
