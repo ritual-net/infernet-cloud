@@ -246,9 +246,13 @@
 
 		/* backdrop-filter: var(--backdropFilter); */
 
-		.logo {
-			--accentColor: var(--color-ritualGreen-dark);
+		nav {
+			> :first-child {
+				--accentColor: var(--color-ritualGreen-dark);
+			}
+		}
 
+		.logo {
 			font-size: 1.1em;
 			line-height: 1;
 
