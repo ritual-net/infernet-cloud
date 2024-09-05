@@ -1,10 +1,18 @@
 <script lang="ts">
+	// Types
+	import type { ChangeFn } from '@melt-ui/svelte/internal/helpers'
+
+
 	// Inputs
 	export let id: string | undefined
 	export let name: string | undefined
 	export let checked = false
 	export let labelText: string | undefined
 	export let disabled = false
+
+
+	// Events
+	export let onChange: ChangeFn<boolean>
 
 
 	// Internal state
@@ -16,6 +24,7 @@
 		options,
 	} = createSwitch({
 		disabled,
+		onCheckedChange: onChange,
 	})
 
 	$: createSync(states).checked(checked, _ => { checked = _ })
