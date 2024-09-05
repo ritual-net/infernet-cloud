@@ -77,8 +77,13 @@
 
 
 	// Components
-	import Nav from './Nav.svelte'
 	import Toaster from '$/components/Toaster.svelte'
+
+	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import InfernetCloudLogo from '$/icons/InfernetCloudLogo.svelte'
+
+	import Nav from './Nav.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
@@ -91,7 +96,46 @@
 		<slot />
 	</div>
 
-	<!-- <footer></footer> -->
+	<footer>
+		<nav class="row wrap">
+			<div class="row wrap">
+				<a
+					class="logo row wrap"
+					href="https://ritual.net"
+					target="_blank"
+				>
+					<RitualLogo />
+					<b>Ritual</b>
+				</a>
+
+				<ul class="row">
+					<li class="row">
+						<a
+							href="https://docs.ritual.net/infernet/about"
+							target="_blank"
+						>
+							Infernet Docs
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			<span class="annotation">
+				<a
+					href="https://github.com/ritual-net/infernet-cloud"
+					target="_blank"
+				>
+					<WithIcon>
+						<svelte:fragment slot="icon">
+							<InfernetCloudLogo />
+						</svelte:fragment>
+
+						Infernet Cloud v1.0.0
+					</WithIcon>
+				</a>
+			</span>
+		</nav>
+	</footer>
 
 	<Toaster />
 </QueryClientProvider>
@@ -182,11 +226,26 @@
 
 	footer {
 		grid-area: footer;
-		z-index: 1;
 
-		position: sticky;
-		bottom: 0;
+		.logo {
+			--accentColor: var(--color-ritualGreen-dark);
 
-		backdrop-filter: var(--backdropFilter);
+			font-size: 1.1em;
+			line-height: 1;
+
+			gap: 0.5em;
+
+			letter-spacing: 0.09em;
+			text-transform: uppercase;
+
+			:global(svg) {
+				width: 1.737em;
+			}
+		}
+
+		ul {
+			font-size: 0.8em;
+			padding: 0;
+		}
 	}
 </style>
