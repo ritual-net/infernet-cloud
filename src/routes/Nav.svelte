@@ -42,7 +42,7 @@
 
 
 	// Components
-	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import InfernetCloudLogo from '$/icons/InfernetCloudLogo.svelte'
 </script>
 
 
@@ -52,11 +52,13 @@
 		aria-current={$page.url.pathname === '/' ? 'page' : undefined}
 		class="home row"
 	>
-		<RitualLogo />
+		<h1 class="logotype">
+			<InfernetCloudLogo />
 
-		<h1>
-			Infernet Cloud
-			<span class="annotation">by Ritual</span>
+			<span>
+				<span>Infernet</span>
+				<span>Cloud</span>
+			</span>
 		</h1>
 	</a>
 
@@ -85,27 +87,53 @@
 		--nav-link-default-opacity: 0.66;
 	}
 
+	.logotype {
+		display: flex;
+		align-items: center;
+
+		font-size: 1.33em;
+		line-height: 1;
+
+		gap: 0.33em;
+		font-family: var(--fontFamily-display);
+
+		> :global(svg) {
+			height: 1.75em;
+		}
+
+		> span {
+			display: inline-grid;
+			gap: 0.25em;
+
+			> :first-child {
+				font-weight: 400;
+			}
+
+			> :last-child {
+				font-size: 0.5em;
+				font-weight: 400;
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				opacity: 0.66;
+			}
+		}
+	}
+
 	a {
 		display: inline-flex;
 
-		transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+		transition-property: color, opacity, scale;
+		transition-duration: var(--active-transitionOutDuration);
+		transition-timing-function: var(--transition-easeOutExpo);
+
+		&.home:hover:not(:active) {
+			scale: 1.033;
+		}
 
 		&:active {
 			transition-duration: var(--active-transitionInDuration);
 			opacity: var(--active-opacity);
 			scale: var(--active-scale);
-		}
-
-		&[href="/"] {
-			font-size: 1.5em;
-
-			gap: 0.33em;
-			font-family: var(--fontFamily-display);
-
-			& :global(svg) {
-				flex-shrink: 0;
-				height: 1.25em;
-			}
 		}
 	}
 
