@@ -127,7 +127,7 @@
 
 			<div class="row">
 				<label class="theme-switch-label row">
-					Theme
+					Dark Mode
 					<ThemeSwitch bind:currentTheme />
 				</label>
 
