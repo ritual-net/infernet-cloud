@@ -107,15 +107,15 @@
 		items={[
 			{
 				id: FormAction.SignUp,
-				label: 'Sign Up',
+				label: 'Sign up',
 			},
 			{
 				id: FormAction.LogIn,
-				label: 'Log In',
+				label: 'Log in',
 			},
 			{
 				id: FormAction.ResetPassword,
-				label: 'Reset Password',
+				label: 'Reset password',
 			},
 		]}
 	>
