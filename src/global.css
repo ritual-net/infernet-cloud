@@ -13,9 +13,9 @@
 	--color-ritualOrange-light: #FF9C3A;
 	--color-ritualOrange-dark: #E97E1C;
 
-	--color-accent: var(--color-ritualPurple);
-	--color-accent-light: var(--color-ritualPurple-light);
-	--color-accent-dark: var(--color-ritualPurple-dark);
+	--accentColor: var(--color-ritualPurple);
+	--accentColor-light: var(--color-ritualPurple-light);
+	--accentColor-dark: var(--color-ritualPurple-dark);
 	
 	--textColor: var(--color-ritualBlack);
 
@@ -41,7 +41,7 @@
 	--input-default-backgroundColor: #fbfbfb;
 	--input-default-textColor: var(--textColor);
 
-	--card-default-backgroundColor: #fff;
+	--card-default-backgroundColor: rgba(255, 255, 255, 0.9);
 	--card-default-textColor: var(--textColor);
 
 	--card-typeSuccess-backgroundColor: rgb(246, 255, 246);
@@ -64,6 +64,7 @@
 	color: inherit;
 	font: inherit;
 	font-style: normal;
+	outline-color: inherit;
 	text-align: inherit;
 	text-decoration: none;
 
@@ -74,6 +75,8 @@
 	background-color: var(--page-backgroundColor);
 
 	color: var(--textColor);
+	accent-color: var(--accentColor);
+	outline-color: var(--accentColor);
 
 	font-family: var(--fontFamily-base);
 	font-size: 18px;
@@ -98,14 +101,21 @@ p {
 }
 
 a {
+	color: var(--textColor);
 	transition: 0.2s color;
-
-	/* &:hover {
-		color: #000;
-	} */
 
 	p &:not(.button) {
 		text-decoration: underline;
+
+		&:hover {
+			--textColor: var(--accentColor);
+		}
+	}
+
+	nav & {
+		&:hover {
+			--textColor: var(--accentColor);
+		}
 	}
 
 	&[aria-disabled="true"]  {
@@ -153,7 +163,7 @@ ol {
 			height: 1.66em;
 			padding: 0.33em;
 			
-			background-color: hsl(from var(--color-ritualGreen) h s l / 20%);
+			background-color: hsl(from var(--accentColor) h s l / 20%);
 			border-radius: 50%;
 			
 			line-height: 1.66em;

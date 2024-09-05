@@ -54,7 +54,7 @@
 <style>
 	:root {
 		--switch-default-backgroundColor: #D9D9D940;
-		--switch-checked-backgroundColor: var(--color-ritualBlack);
+		--switch-checked-backgroundColor: var(--accentColor);
 		--switch-backgroundColor: #D9D9D988;
 		--switch-thumb-backgroundColor: #fff;
 		--switch-width: 2.5em;

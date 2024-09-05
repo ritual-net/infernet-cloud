@@ -121,6 +121,8 @@
 
 <style>
 	[data-melt-tabs] {
+		--tabs-accentColor: var(--accentColor);
+
 		isolation: isolate;
 
 		display: grid;
@@ -166,10 +168,10 @@
 			pointer-events: none;
 		}
 		&[data-orientation="horizontal"] .trigger-indicator {
-			border-bottom: var(--color-ritualBlack) 2px solid;
+			border-bottom: var(--tabs-accentColor) 2px solid;
 		}
 		&[data-orientation="vertical"] .trigger-indicator {
-			border-right: var(--color-ritualBlack) 2px solid;
+			border-right: var(--tabs-accentColor) 2px solid;
 		}
 	}
 

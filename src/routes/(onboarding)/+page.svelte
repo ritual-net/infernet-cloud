@@ -104,9 +104,9 @@
 			& .icon {
 				align-self: start;
 				display: flex;
-				background-color: hsl(from var(--color-ritualGreen) h s l / 20%);
+				background-color: hsl(from var(--accentColor) h s l / 20%);
 				padding: 0.5em;
-				color: #16B371;
+				color: var(--accentColor);
 				border-radius: 50%;
 
 				> :global(*) {
