@@ -105,6 +105,7 @@
 				align-self: start;
 				display: flex;
 				background-color: hsl(from var(--accentColor) h s l / 20%);
+				background-color: color-mix(in oklch, var(--accentColor) 20%, transparent);
 				padding: 0.5em;
 				color: var(--accentColor);
 				border-radius: 50%;

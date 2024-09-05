@@ -158,7 +158,7 @@
 		--table-layoutDefault-backgroundColor: transparent;
 		--table-layoutDefault-outerBorderColor: transparent;
 
-		--table-layoutCard-backgroundColor: #fff;
+		--table-layoutCard-backgroundColor: light-dark(#fff, #1a1a1a);
 		--table-layoutCard-outerBorderColor: var(--borderColor);
 	}
 
@@ -205,7 +205,7 @@
 
 	tbody {
 		& tr {
-			--table-row-backgroundColor: rgba(0, 0, 0, 0.03);
+			--table-row-backgroundColor: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.03));
 
 			box-shadow: 0 var(--borderWidth) var(--borderColor), 0 calc(-1 * var(--borderWidth)) var(--borderColor);
 
@@ -227,7 +227,7 @@
 				}
 
 				&:hover {
-					--table-row-backgroundColor: rgba(0, 0, 0, 0.05);
+					--table-row-backgroundColor: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 				}
 
 				&:active:not(:has([tabindex="0"]:active)) {

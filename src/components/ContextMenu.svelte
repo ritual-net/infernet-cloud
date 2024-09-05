@@ -124,13 +124,13 @@
 		--contextMenu-paddingX: 1em;
 		--contextMenu-paddingY: 0.5em;
 
-		--contextMenu-backgroundColor: rgb(255 255 255 / 0.75);
+		--contextMenu-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
 		--contextMenu-backdropFilter: blur(3px);
 		--contextMenu-borderColor: var(--borderColor);
 		--contextMenu-borderWidth: var(--borderWidth);
 		--contextMenu-cornerRadius: 0.33em;
 
-		--contextMenu-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--contextMenu-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 		
 		--contextMenu-textColor: var(--textColor);
 	}

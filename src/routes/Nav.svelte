@@ -84,7 +84,7 @@
 
 <style>
 	:root {
-		--nav-link-default-opacity: 0.66;
+		--nav-link-default-opacity: 66%;
 	}
 
 	.logotype {
@@ -122,7 +122,7 @@
 	a {
 		display: inline-flex;
 
-		transition-property: color, opacity, scale;
+		transition-property: background-color, color, opacity, scale;
 		transition-duration: var(--active-transitionOutDuration);
 		transition-timing-function: var(--transition-easeOutExpo);
 
@@ -145,9 +145,13 @@
 
 			a:not([aria-current="page"]) {
 				color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
+				color: color-mix(in oklch, var(--textColor) var(--nav-link-default-opacity), transparent);
 
-				@supports not (color: hsl(from #000 h s l)) {
-					filter: opacity(0.7);
+				@supports not (
+					(color: hsl(from #000 h s l))
+					or (color: color-mix(in oklch, #000, transparent))
+				) {
+					filter: var(--nav-link-default-opacity);
 				}
 			}
 		}

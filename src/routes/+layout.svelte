@@ -201,7 +201,7 @@
 			overflow: hidden;
 
 			backdrop-filter: blur(8px);
-			background-color: rgba(255, 255, 255, 0.85);
+			background-color: light-dark(rgba(255, 255, 255, 0.85), rgba(0, 0, 0, 0.85));
 
 			transition-property: height;
 			transition-duration: 0.3s;
@@ -246,7 +246,7 @@
 		/* backdrop-filter: var(--backdropFilter); */
 
 		.logo {
-			--accentColor: var(--color-ritualGreen-dark);
+			--accentColor: light-dark(var(--color-ritualGreen-dark), var(--color-ritualGreen-light));
 
 			font-size: 1.1em;
 			line-height: 1;

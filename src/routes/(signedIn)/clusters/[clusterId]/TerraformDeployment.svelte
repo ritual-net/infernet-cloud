@@ -317,7 +317,7 @@
 		align-items: center;
 
 		padding: 0.66em 1em;
-		background: rgba(0, 0, 0, 0.05);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 		border-radius: 0.5em;
 
 		.log {
@@ -326,8 +326,8 @@
 			padding-block: 0.1rem;
 
 			&[data-level="error"] {
-				background-color: rgb(255, 246, 246);
-				color: rgb(150, 0, 0);
+				background-color: light-dark(rgb(255, 246, 246), rgb(50, 0, 0));
+				color: light-dark(rgb(150, 0, 0), rgb(255, 100, 100));
 			}
 		}
 
@@ -349,6 +349,6 @@
 
 	.resources {
 		font-size: 0.9em;
-		background-color: #0000000d;
+		background-color: light-dark(#0000000d, #ffffff0d);
 	}
 </style>

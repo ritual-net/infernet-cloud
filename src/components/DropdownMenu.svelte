@@ -131,13 +131,13 @@
 		--dropdownMenu-paddingX: 1em;
 		--dropdownMenu-paddingY: 0.5em;
 
-		--dropdownMenu-backgroundColor: rgb(255 255 255 / 0.75);
+		--dropdownMenu-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
 		--dropdownMenu-backdropFilter: blur(3px);
 		--dropdownMenu-borderColor: var(--borderColor);
 		--dropdownMenu-borderWidth: var(--borderWidth);
 		--dropdownMenu-cornerRadius: 0.33em;
 
-		--dropdownMenu-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--dropdownMenu-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 		
 		--dropdownMenu-textColor: var(--textColor);
 	}
