@@ -159,12 +159,20 @@
 
 	@media (width <= 50rem) {
 		nav {
-			display: grid !important;
+			display: grid;
 			justify-content: stretch;
-			gap: 1rem;
+			gap: 1.5rem;
+
+			> :last-child {
+				display: block;
+			}
 
 			li {
-				display: grid !important;
+				display: grid;
+
+				a:not(.button) {
+					padding: 0.25em;
+				}
 			}
 
 			&:after {
