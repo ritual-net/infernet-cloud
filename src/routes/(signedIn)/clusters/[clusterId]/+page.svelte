@@ -14,11 +14,6 @@
 	} = $page.data as PageData)
 
 
-	// Internal state
-	let nodesWithInfo: Awaited<typeof nodesWithInfoPromise> | undefined
-	$: nodesWithInfoPromise.then(_ => nodesWithInfo = _)
-
-
 	// Functions
 	import { resolveRoute } from '$app/paths'
 
@@ -240,26 +235,9 @@
 			</a>
 		</div>
 
-		<SizeTransition>
-			<div class="stack">
-				{#if !nodesWithInfo}
-					{#await nodesWithInfoPromise}
-						<div class="card loading" transition:scale>
-							<p>Loading nodes...</p>
-						</div>
-					{:catch error}
-						<div class="card error" transition:scale>
-							<p>Failed to load nodes.</p>
-							<pre><output><code>{error}</code></output></pre>
-						</div>
-					{/await}
-				{:else}
-					<NodesTable
-						{nodesWithInfo}
-					/>
-				{/if}
-			</div>
-		</SizeTransition>
+		<NodesTable
+			nodesWithInfo={nodesWithInfoPromise}
+		/>
 	</section>
 
 	{#if cluster.router || cluster.router_state?.ip}

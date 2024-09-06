@@ -5,7 +5,7 @@
 
 
 	// Inputs
-	export let containers: InferType<typeof Container>[]
+	export let containers: Promise<InferType<typeof Container>[]>
 
 
 	// Events
@@ -110,5 +110,15 @@
 	]}
 	layout="card"
 >
-	<p>No containers configured.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading containers...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load containers.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>You have not yet configured any containers.</p>
+	</svelte:fragment>
 </Table>

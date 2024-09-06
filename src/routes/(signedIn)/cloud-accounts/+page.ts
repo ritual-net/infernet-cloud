@@ -1,23 +1,17 @@
+import type { ServiceAccount } from '$schema/interfaces'
 import type { PageLoad } from './$types'
 
 export const load: PageLoad = async ({
 	data,
 	fetch,
-	parent,
 }) => {
-	const [
-		parentData,
-		serviceAccounts,
-	] = await Promise.all([
-		parent(),
-
+	const serviceAccountsPromise = (
 		fetch(`/api/service_account`)
-			.then(response => response.json())
-	])
+			.then(response => response.json()) as Promise<ServiceAccount[]>
+	)
 
 	return {
-		...parentData,
 		...data,
-		serviceAccounts,
+		serviceAccountsPromise,
 	}
 }

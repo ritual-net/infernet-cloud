@@ -2,7 +2,9 @@
 	// Context
 	import { page } from '$app/stores'
 
-	$: clusters = $page.data.clusters
+	$: ({
+		clustersPromise,
+	} = $page.data)
 
 
 	// Actions
@@ -77,7 +79,7 @@
 
 	<section>
 		<ClustersTable
-			{clusters}
+			clusters={clustersPromise}
 		/>
 	</section>
 </div>

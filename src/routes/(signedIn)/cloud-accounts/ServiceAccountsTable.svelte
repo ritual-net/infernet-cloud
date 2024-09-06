@@ -5,7 +5,7 @@
 
 
 	// Inputs
-	export let serviceAccounts: QueriedServiceAccount[]
+	export let serviceAccounts: Promise<QueriedServiceAccount[]>
 
 
 	// Functions
@@ -21,6 +21,7 @@
 
 <Table
 	data={serviceAccounts}
+	getId={serviceAccount => serviceAccount.id}
 	columns={[
 		{
 			header: 'Name',
@@ -44,5 +45,15 @@
 		})
 	)}
 >
-	<p>No cloud accounts configured.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading cloud accounts...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load cloud accounts.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>You have not yet configured any cloud accounts.</p>
+	</svelte:fragment>
 </Table>

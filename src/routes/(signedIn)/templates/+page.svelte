@@ -3,7 +3,7 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		containerTemplates,
+		containerTemplatesPromise,
 	} = $page.data)
 
 
@@ -61,7 +61,7 @@
 
 	<section>
 		<ContainerTemplatesTable
-			{containerTemplates}
+			data={containerTemplatesPromise}
 		/>
 	</section>
 </div>

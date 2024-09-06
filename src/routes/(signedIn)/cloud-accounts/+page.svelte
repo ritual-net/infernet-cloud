@@ -3,8 +3,8 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		serviceAccounts,
-		dockerAccounts,
+		serviceAccountsPromise,
+		dockerAccountsPromise,
 	} = $page.data)
 
 
@@ -30,7 +30,7 @@
 	</header>
 
 	<ServiceAccountsTable
-		{serviceAccounts}
+		serviceAccounts={serviceAccountsPromise}
 	/>
 </section>
 
@@ -47,6 +47,6 @@
 	</header>
 
 	<DockerAccountsTable
-		{dockerAccounts}
+		dockerAccounts={dockerAccountsPromise}
 	/>
 </section>
