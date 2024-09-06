@@ -47,7 +47,7 @@
 	--card-typeSuccess-backgroundColor: light-dark(rgb(246, 255, 246), rgb(16, 42, 16));
 	--card-typeSuccess-borderColor: light-dark(rgba(0, 160, 0, 0.2), rgba(0, 200, 0, 0.2));
 
-	--card-typeWarning-backgroundColor: light-dark(rgb(255, 255, 246), rgb(42, 42, 16));
+	--card-typeWarning-backgroundColor: light-dark(rgb(255, 255, 246), rgb(42, 35, 16));
 	--card-typeWarning-borderColor: light-dark(rgba(160, 152, 0, 0.2), rgba(200, 190, 0, 0.2));
 
 	--card-typeError-backgroundColor: light-dark(rgb(255, 246, 246), rgb(42, 16, 16));
@@ -308,6 +308,10 @@ textarea {
 }
 :user-invalid {
 	outline-color: red;
+}
+::-webkit-input-placeholder {
+	color: inherit;
+	opacity: 0.5;
 }
 
 

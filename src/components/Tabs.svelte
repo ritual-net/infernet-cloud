@@ -211,7 +211,7 @@
 				--button-paddingX: 5px;
 				--button-paddingY: 5px;
 				/* --button-backgroundColor: hsl(from var(--textColor) h s l / 0.16); */
-				--button-backgroundColor: rgba(0, 0, 0, 0.16);
+				--button-backgroundColor: light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.16));
 				--button-borderWidth: 0;
 				--button-cornerRadius: 100%;
 
