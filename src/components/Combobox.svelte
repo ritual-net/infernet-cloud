@@ -30,11 +30,14 @@
 	// Functions
 	import { findMenuItem } from '$lib/menus'
 
-	const itemMatchesInput = (
+	const itemMatchesInputValue = (
 		item: MenuItem<Value>,
-		input: string | undefined,
+		inputValue: string | undefined,
 	) => {
-		const normalizedInput = input?.toLowerCase().trim()
+		if(!inputValue)
+			return true
+
+		const normalizedInput = inputValue.toLowerCase().trim()
 
 		return (
 			String(item.value).toLowerCase().includes(String(normalizedInput))
@@ -54,16 +57,16 @@
 
 	const filterItems = (
 		items: MenuItems<Value>,
-		input: string,
+		inputValue: string | undefined,
 	): MenuItems<Value> => (
 		items
 			.map(item => (
 				'items' in item ?
 					{
 						...item,
-						items: filterItems(item.items, input),
+						items: filterItems(item.items, inputValue),
 					}
-				: itemMatchesInput(item, input) ?
+				: itemMatchesInputValue(item, inputValue) ?
 					item
 				:
 					undefined
@@ -146,10 +149,14 @@
 	)
 
 	// (Computed)
-	$: filteredItems =
-		inputValue !== undefined && $touchedInput
-			? filterItems(items, inputValue)
-			: items
+	$: filteredItems = (
+		filterItems(
+			items,
+			inputValue !== undefined && $touchedInput
+				? inputValue
+				: undefined
+		)
+	)
 </script>
 
 
