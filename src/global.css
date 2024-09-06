@@ -38,7 +38,7 @@
 	--button-primary-backgroundColor: var(--color-ritualBlack);
 	--button-primary-textColor: light-dark(#fff, #000);
 
-	--input-default-backgroundColor: light-dark(#fbfbfb, #222);
+	--input-default-backgroundColor: light-dark(#fbfbfb, #191919);
 	--input-default-textColor: var(--textColor);
 
 	--card-default-backgroundColor: light-dark(rgba(255, 255, 255, 0.9), rgba(40, 40, 40, 0.9));
