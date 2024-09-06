@@ -338,6 +338,10 @@
 
 	[data-melt-combobox-input] {
 		width: 100%;
+
+		&.loading {
+			cursor: progress;
+		}
 	}
 
 	[data-melt-combobox-option] {
