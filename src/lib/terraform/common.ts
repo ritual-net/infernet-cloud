@@ -88,6 +88,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 			results
 				.map(result => ({
 					action: result.action,
+					tfvars: result.tfvars,
 					timestamp: new Date(result.timestamp).toISOString(),
 					command: result.command,
 					error: result.output.error,
@@ -197,6 +198,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 							filter_single: { id: clusterId },
 						})),
 						command: snapshot.command,
+						...snapshot.tfvars && { tfstate: snapshot.tfvars },
 						...snapshot.error && { error: snapshot.error },
 						...snapshot.tfstate && { tfstate: snapshot.tfstate },
 						...snapshot.stdout && { stdout: snapshot.stdout },
@@ -220,35 +222,6 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		// Restart router to apply any changes to IP address list
 		if (cluster.router && action == TFAction.Apply && tfstate?.outputs?.router?.value)
 			await routerAction(client, tfstate.outputs.router.value.id, NodeAction.restart)
-
-		// Update node provider IDs
-		const nodeInfo = tfstate?.outputs?.nodes?.value;
-		if (nodeInfo) {
-			await e
-				.params(
-					{
-						nodeInfo: e.array(
-							e.tuple({
-								id: e.str,
-								ip: e.str,
-								key: e.uuid,
-							})
-						),
-					},
-					(params) =>
-						e.for(e.array_unpack(params.nodeInfo), (nodeInfo) =>
-							e.update(e.InfernetNode, () => ({
-								filter_single: { id: nodeInfo.key },
-								set: {
-									provider_id: nodeInfo.id,
-								},
-							}))
-						)
-				)
-				.run(client, {
-					nodeInfo,
-				})
-		}
 
 		return {
 			snapshots: insertedSnapshots,

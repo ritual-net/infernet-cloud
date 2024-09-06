@@ -2,27 +2,23 @@ import { ProviderTypeEnum } from '$/types/provider';
 import { BaseTerraform, createTerraformVarsFile } from '$/lib/terraform/base';
 import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
 
+
+// Functions
+import { formatTfVars } from '../utils';
+
 export class AWSTerraform extends BaseTerraform {
 	public readonly type = ProviderTypeEnum.AWS;
 
-	/**
-	 * Writes Terraform files to the temporary directory.
-	 *
-	 * @param tempDir The path to the temporary directory.
-	 * @param cluster The AWSCluster to deploy.
-	 * @param serviceAccount The AWSServiceAccount to use for deployment.
-	 */
-	protected override async writeTerraformFiles(
-		tempDir: string,
+	public override getTerraformVars(
 		cluster: AWSCluster,
 		serviceAccount: AWSServiceAccount
-	): Promise<void> {
-		const terraformVars = {
+	): string {
+		return formatTfVars({
 			access_key_id: serviceAccount.creds.access_key_id,
 			secret_access_key: serviceAccount.creds.secret_access_key,
 			region: cluster.region,
 
-			name: `ic-${cluster.id}`,
+			name: cluster.provider_id,
 			is_production: true,
 			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
 			ip_allow_http: cluster.ip_allow_http ?? [],
@@ -33,8 +29,8 @@ export class AWSTerraform extends BaseTerraform {
 				cluster.router ?
 					{
 						deploy: true,
-						region: cluster.router.region,
-						zone: cluster.router.zone,
+						region: cluster.router.region || cluster.region,
+						zone: cluster.router.zone || cluster.zone,
 						machine_type: cluster.router.machine_type,
 					}
 				:
@@ -49,7 +45,7 @@ export class AWSTerraform extends BaseTerraform {
 			nodes: Object.fromEntries(
 				cluster.nodes
 					.map((node) => [
-						`infernet-node-${node.id}`,
+						node.provider_id,
 						{
 							zone: node.zone || cluster.zone,
 							machine_type: node.machine_type,
@@ -63,9 +59,22 @@ export class AWSTerraform extends BaseTerraform {
 						}
 					])
 			),
-		}
+		})
+	}
 
-		console.log({terraformVars})
+	/**
+	 * Writes Terraform files to the temporary directory.
+	 *
+	 * @param tempDir The path to the temporary directory.
+	 * @param cluster The AWSCluster to deploy.
+	 * @param serviceAccount The AWSServiceAccount to use for deployment.
+	 */
+	protected override async writeTerraformFiles(
+		tempDir: string,
+		cluster: AWSCluster,
+		serviceAccount: AWSServiceAccount
+	): Promise<void> {
+		const terraformVars = this.getTerraformVars(cluster, serviceAccount)
 
 		await createTerraformVarsFile(tempDir, terraformVars)
 	}

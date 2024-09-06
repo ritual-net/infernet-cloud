@@ -351,7 +351,7 @@
 		</dl>
 	</section>
 
-	{#if cluster.router_status?.ip}
+	{#if cluster.router_state?.ip}
 		<section class="column">
 			<h3>Router</h3>
 
@@ -360,7 +360,7 @@
 					<dt>IP</dt>
 
 					<dd>
-						{cluster.router_status.ip}
+						{cluster.router_state.ip}
 					</dd>
 				</section>
 			</dl>

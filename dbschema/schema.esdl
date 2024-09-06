@@ -192,8 +192,6 @@ module default {
 
     allowed_sim_errors: array<str>;
 
-    provider_id: str;
-
     snapshot_sync_sleep: float32;
 
     snapshot_sync_batch_size: int16;
@@ -204,6 +202,25 @@ module default {
       constraint exclusive;
       on source delete delete target;
     }
+
+    provider := (
+      .cluster.service_account.provider
+    );
+
+    provider_id := 'infernet-node-' ++ <str>.id;
+
+    state := (
+      with node := (
+        select json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', InfernetNode.provider_id)
+      )
+      select (
+        id := <str>json_get(node, 'id'),
+        ip := <str>json_get(node, 'ip') ?? ''
+        # ip := <IpAddress>json_get(node, 'ip')
+      )
+      if exists(InfernetNode.cluster.latest_deployment.tfstate)
+      else {}
+    );
 
     access policy only_owner
       allow all
@@ -249,6 +266,9 @@ module default {
     required locked: bool {
       default := false;
     }
+
+    provider_id := 'ic-' ++ <str>.id;
+
     status := (
       'updating' if .locked else
       'unhealthy' if exists(.latest_deployment) and .latest_deployment.status = 'failed' else
@@ -256,12 +276,17 @@ module default {
       'healthy' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' else
       'unknown'
     );
-    router_status: tuple<id: str, ip: str>;
 
-    # router := (
-    #   .latest_deployment.tfstate. if exists(.latest_deployment.tfstate)
-    #   else {}
-    # );
+    router_state := (
+      with router := json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value')
+      select (
+        id := <str>json_get(router, 'id'),
+        ip := <str>json_get(router, 'ip') ?? ''
+        # ip := <IpAddress>json_get(router_data, 'ip')
+      )
+      if exists(Cluster.latest_deployment.tfstate)
+      else {}
+    );
 
     constraint exclusive on ((.name, .service_account));
     access policy only_owner
@@ -315,6 +340,7 @@ module default {
 
     config: json;
     command: str;
+    tfvars: str;
     error: str;
     tfstate: json;
     stdout: array<json>;

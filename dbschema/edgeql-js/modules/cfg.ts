@@ -54,6 +54,7 @@ export type $AbstractConfigλShape = $.typeutil.flatten<$ConfigObjectλShape & {
   "allow_user_specified_id": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, true>;
   "cors_allow_origins": $.PropertyDesc<_std.$str, $.Cardinality.Many, false, false, false, false>;
   "auto_rebuild_query_cache": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, true>;
+  "auto_rebuild_query_cache_timeout": $.PropertyDesc<_std.$duration, $.Cardinality.AtMostOne, false, false, false, true>;
   "query_cache_mode": $.PropertyDesc<$QueryCacheMode, $.Cardinality.AtMostOne, false, false, false, true>;
   "shared_buffers": $.PropertyDesc<$memory, $.Cardinality.AtMostOne, false, false, false, false>;
   "query_work_mem": $.PropertyDesc<$memory, $.Cardinality.AtMostOne, false, false, false, false>;

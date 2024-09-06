@@ -19,7 +19,6 @@ export interface User extends std.$Object {
   "email": string;
 }
 export interface Cluster extends std.$Object {
-  "nodes": InfernetNode[];
   "service_account": ServiceAccount;
   "locked": boolean;
   "name": string;
@@ -30,8 +29,10 @@ export interface Cluster extends std.$Object {
   "status"?: string | null;
   "region": string;
   "zone": string;
-  "router_status"?: {id: string, ip: string} | null;
   "router"?: {region: string, zone: string, machine_type: string} | null;
+  "nodes": InfernetNode[];
+  "router_state"?: {id: string, ip: string} | null;
+  "provider_id": string;
 }
 export interface AWSCluster extends Cluster {
   "region": string;
@@ -88,7 +89,6 @@ export interface InfernetNode extends std.$Object {
   "chain_enabled": boolean;
   "forward_stats": boolean;
   "max_gas_limit"?: number | null;
-  "provider_id"?: string | null;
   "rpc_url"?: string | null;
   "trail_head_blocks"?: number | null;
   "docker_account"?: DockerAccount | null;
@@ -102,6 +102,9 @@ export interface InfernetNode extends std.$Object {
   "machine_type": string;
   "region": string;
   "zone": string;
+  "provider_id": string;
+  "state"?: {id: string, ip: string} | null;
+  "provider"?: CloudProvider | null;
 }
 export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {
@@ -115,6 +118,7 @@ export interface TerraformDeployment extends std.$Object {
   "cluster": Cluster;
   "command"?: string | null;
   "status": string;
+  "tfvars"?: string | null;
 }
 export interface current_user extends User {}
 export namespace ext {
@@ -267,6 +271,7 @@ export namespace cfg {
     "allow_user_specified_id"?: boolean | null;
     "cors_allow_origins": string[];
     "auto_rebuild_query_cache"?: boolean | null;
+    "auto_rebuild_query_cache_timeout"?: edgedb.Duration | null;
     "query_cache_mode"?: QueryCacheMode | null;
     "shared_buffers"?: edgedb.ConfigMemory | null;
     "query_work_mem"?: edgedb.ConfigMemory | null;

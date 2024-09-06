@@ -21,7 +21,7 @@ export const getNodesByIds = async (
 	} = {}
 ) => {
 	return await e
-		.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		.params({ nodeIds: e.array(e.uuid) }, ({ nodeIds }) =>
 			e.select(e.InfernetNode, (node) => ({
 				...e.InfernetNode['*'],
 				...includeClusterBacklink && {
@@ -36,10 +36,12 @@ export const getNodesByIds = async (
 				containers: {
 					...e.Container['*'],
 				},
-				filter: e.op(node.id, 'in', e.array_unpack(ids)),
+				filter: e.op(node.id, 'in', e.array_unpack(nodeIds)),
 			}))
 		)
-		.run(client, { ids: nodeIds });
+		.run(client, {
+			nodeIds,
+		});
 };
 
 /**
@@ -224,7 +226,7 @@ export const getClusterByRouterId = async (
 			service_account: {
 				provider: true,
 			},
-			filter_single: e.op(cluster.router_status.id, '=', id),
+			filter_single: e.op(cluster.router_state?.id, '=', id),
 		}))
 		.run(client);
 

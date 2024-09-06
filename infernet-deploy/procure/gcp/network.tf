@@ -1,6 +1,11 @@
 locals {
   # Extract all regions and include router, ensuring uniqueness
-  all_regions = toset(concat([for node in var.nodes : node.region], [var.router.region]))
+  all_regions = toset(
+    concat(
+      [for node in var.nodes : node.region if node.region != ""],
+      var.router.region != "" ? [var.router.region] : []
+    )
+  )
 
   # Generate unique CIDR blocks for each zone.
   subnets_cidr = { for idx, region in tolist(local.all_regions) : region => cidrsubnet("192.168.0.0/16", 8, idx) }

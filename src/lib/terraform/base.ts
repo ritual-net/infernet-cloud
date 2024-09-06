@@ -36,6 +36,18 @@ export abstract class BaseTerraform {
 	): Promise<void>;
 
 	/**
+	 * Returns formatted Terraform input variables for the given cluster and service account.
+	 *
+	 * @param cluster The ProviderCluster to use.
+	 * @param serviceAccount The ProviderServiceAccount to use.
+	 * @returns The Terraform variables as a string.
+	 */
+	public abstract getTerraformVars(
+		cluster: ProviderCluster,
+		serviceAccount: ProviderServiceAccount
+	): string;
+
+	/**
 	 * Applies a Terraform action:
 	 * 	- Creates a temporary directory
 	 *  - Writes terraform files and configuration files
@@ -87,6 +99,8 @@ export abstract class BaseTerraform {
 			)
 
 			// Create terraform files
+			const terraformVariables = this.getTerraformVars(cluster, serviceAccount)
+
 			console.log(`Writing Terraform files for cluster "${cluster.id}" and service account "${serviceAccount.id}"...`, tempDir);
 			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
 
@@ -166,6 +180,7 @@ export abstract class BaseTerraform {
 					timestamp: Date.now(),
 					action: command.action,
 					command: command.command,
+					tfvars: terraformVariables,
 					output: {
 						error: error?.message,
 						tfstate,
@@ -201,12 +216,12 @@ export abstract class BaseTerraform {
  */
 export const createTerraformVarsFile = async (
 	tempDir: string,
-	tfVars: Record<string, any>,
+	formattedTfVars: string,
 ): Promise<void> => {
 	await fs.writeFile(
 		path.join(tempDir, 'terraform.tfvars'),
-		formatTfVars(tfVars)
-	);
+		formattedTfVars
+	)
 };
 
 /**
@@ -226,7 +241,7 @@ const createNodeConfigFiles = async (
 
 	// Create node config files under configs/
 	for (const node of nodes) {
-		const nodeId = `infernet-node-${node.id}`;
+		const nodeId = node.provider_id;
 
 		const jsonConfig = formatNodeConfig(node);
 

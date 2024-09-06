@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Types/constants
+	import { providers } from '$/types/provider'
+
+
 	// Context
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
@@ -35,9 +39,12 @@
 
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
+	import DetailsValue from '$/components/DetailsValue.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import Status from '$/views/Status.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
@@ -160,6 +167,50 @@
 
 		<dl class="card column">
 			<section class="row wrap">
+				<dt>Region / Zone</dt>
+
+				<dd>
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{#if 'region' in node}
+							{node.region}
+						{/if}
+
+						{#if 'region' in node && 'zone' in node}
+							/
+						{/if}
+
+						{#if 'zone' in node}
+							{node.zone}
+						{/if}
+					</WithIcon>
+				</dd>
+			</section>
+
+			<section class="row wrap">
+				<dt>Machine type</dt>
+
+				<dd>
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{node.machine_type}
+					</WithIcon>
+				</dd>
+			</section>
+
+			{#if node.docker_account}
+				<section class="row wrap">
+					<dt>Docker Hub Account</dt>
+
+					<dd>
+						{node.docker_account.username}
+					</dd>
+				</section>
+			{/if}
+
+			<section class="row wrap">
 				<dt>Forward stats?</dt>
 
 				<dd>
@@ -174,16 +225,6 @@
 					{node.chain_enabled ? 'Yes' : 'No'}
 				</dd>
 			</section>
-
-			{#if node.docker_account}
-				<section class="row wrap">
-					<dt>Docker Hub Account</dt>
-
-					<dd>
-						{node.docker_account.username}
-					</dd>
-				</section>
-			{/if}
 		</dl>
 	</section>
 
@@ -270,24 +311,48 @@
 				</dd>
 			</section>
 
-			{#if info?.ip}
+			{#if node.state?.ip}
 				<section class="row wrap">
 					<dt>IP</dt>
 
 					<dd>
-						{info.ip}
+						{node.state.ip}
 					</dd>
 				</section>
 			{/if}
 
-			{#if infoError}
+			{#if info?.instanceInfo || infoError}
 				<section class="column">
-					<dt>Error</dt>
+					<dt>Instance info</dt>
 
 					<dd>
-						<output>
-							<pre><code>{infoError}</code></pre>
-						</output>
+						<Collapsible
+							class="card"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={node.provider && providers[node.provider].icon}
+									>
+										{node?.state?.id ?? 'Instance'}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							{#if info?.instanceInfo}
+								<DetailsValue
+									value={info?.instanceInfo}
+								/>
+							{/if}
+
+							{#if infoError}
+								<div class="card column error">
+									<output>
+								<pre><code>{infoError}</code></pre>
+									</output>
+								</div>
+							{/if}
+						</Collapsible>
 					</dd>
 				</section>
 			{/if}

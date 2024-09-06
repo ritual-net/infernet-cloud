@@ -189,9 +189,7 @@
 										)}
 											<section class="row wrap">
 												<dt>Tag</dt>
-												<dd>
-													<p>{instance.attributes.tags.Name}</p>
-												</dd>
+												<dd>{instance.attributes.tags.Name}</dd>
 											</section>
 										{/if}
 
@@ -199,7 +197,23 @@
 											<section class="row wrap">
 												<dt>ID</dt>
 												<dd>
-													<output><code>{instance.attributes.id}</code></output>
+													{#if instance.attributes.self_link}
+														<a
+															href={getGcpConsoleLink(instance.attributes.self_link)}
+															target="_blank"
+															class="row inline with-icon"
+														>
+															<img
+																src={providers[ProviderTypeEnum.GCP].icon}
+																width="20"
+																height="20"
+															/>
+
+															<output><code>{instance.attributes.id}</code></output>
+														</a>
+													{:else}
+														<output><code>{instance.attributes.id}</code></output>
+													{/if}
 												</dd>
 											</section>
 										{/if}
@@ -273,6 +287,17 @@
 		</dd>
 	</section>
 {/if}
+
+{#if !isSummary && deployment.tfvars}
+	<section class="column">
+		<dt>Terraform input variables</dt>
+
+		<dd class="log-container scrollable">
+			<output><code>{deployment.tfvars}</code></output>
+		</dd>
+	</section>
+{/if}
+
 
 {#if !isSummary && deployment.tfstate}
 	<section class="column">
