@@ -12,7 +12,18 @@
 
 
 	// Functions
-	import { formatResourceType, getAwsConsoleLink } from '$/lib/terraform/format'
+	import { formatResourceType, getAwsConsoleLink, getGcpConsoleLink } from '$/lib/terraform/format'
+
+
+	// Internal state
+	$: link = (
+		data.provider === ProviderTypeEnum.AWS && data.resource.instances?.[0]?.attributes?.arn ?
+			getAwsConsoleLink(data.resource.instances[0].attributes.arn)
+		: data.provider === ProviderTypeEnum.GCP && data.resource.instances?.[0]?.attributes?.self_link ?
+			getGcpConsoleLink(data.resource.instances[0].attributes.self_link)
+		:
+			''
+	)
 
 
 	// Components
@@ -24,7 +35,7 @@
 	class="node"
 >
 	<a
-		href={data.resource.instances?.[0]?.attributes?.arn && getAwsConsoleLink(data.resource.instances[0].attributes.arn)}
+		href={link}
 		target="_blank"
 		class="row"
 	>
