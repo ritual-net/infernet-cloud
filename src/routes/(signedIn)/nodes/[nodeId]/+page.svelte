@@ -110,7 +110,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row wrap">
 			<dl class="status-container card row">
 				<dt>Status</dt>
 
