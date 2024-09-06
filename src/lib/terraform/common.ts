@@ -197,7 +197,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 							filter_single: { id: clusterId },
 						})),
 						command: snapshot.command,
-						...snapshot.tfvars && { tfstate: snapshot.tfvars },
+						...snapshot.tfvars && { tfvars: snapshot.tfvars },
 						...snapshot.error && { error: snapshot.error },
 						...snapshot.tfstate && { tfstate: snapshot.tfstate },
 						...snapshot.stdout && { stdout: snapshot.stdout },
