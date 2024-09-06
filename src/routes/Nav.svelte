@@ -163,6 +163,10 @@
 			justify-content: stretch;
 			gap: 1.5rem;
 
+			> :first-child {
+				margin-inline-end: auto;
+			}
+
 			> :last-child {
 				display: block;
 			}
