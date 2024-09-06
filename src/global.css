@@ -174,7 +174,7 @@ ol {
 			
 			line-height: 1.66em;
 			font-weight: bold;
-			color: #16B371;
+			color: var(--accentColor-dark);
 			text-align: center;
 		}
 	}
