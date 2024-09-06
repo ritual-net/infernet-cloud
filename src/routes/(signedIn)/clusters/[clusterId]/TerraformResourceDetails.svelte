@@ -163,15 +163,6 @@
 
 
 <style>
-	blockquote {
-		padding: 0.5em 0.75em;
-		font-size: smaller;
-		margin-block: 0.5em;
-
-		background: rgba(0, 0, 0, 0.05);
-		border-radius: 0.5em;
-	}
-
 	output {
 		font-size: 0.75em;
 	}
@@ -180,45 +171,5 @@
 		white-space: pre-wrap;
 		word-break: break-word;
 		tab-size: 2;
-	}
-
-	.log-container {
-		display: grid;
-		align-items: center;
-
-		padding: 0.66em 1em;
-		background: rgba(0, 0, 0, 0.05);
-		border-radius: 0.5em;
-
-		.log {
-			margin-inline: -1rem;
-			padding-inline: 1rem;
-			padding-block: 0.1rem;
-
-			&[data-level="error"] {
-				background-color: rgb(255, 246, 246);
-				color: rgb(150, 0, 0);
-			}
-		}
-
-		date {
-			position: sticky;
-			top: 0.25em;
-			right: 0;
-			float: right;
-			margin-left: 1em;
-			line-height: 2.4;
-			font-size: smaller;
-			opacity: 0.5;
-		}
-
-		/* code {
-			white-space: pre-line;
-		} */
-	}
-
-	.resources {
-		font-size: 0.9em;
-		background-color: #0000000d;
 	}
 </style>
