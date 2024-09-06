@@ -254,13 +254,13 @@
 		--combobox-paddingY: 0.5em;
 		--combobox-groupItem-indentX: 1em;
 
-		--combobox-backgroundColor: rgb(255 255 255 / 0.75);
+		--combobox-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
 		--combobox-backdropFilter: blur(3px);
 		--combobox-borderColor: var(--borderColor);
 		--combobox-borderWidth: var(--borderWidth);
 		--combobox-cornerRadius: 0.33em;
 
-		--combobox-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--combobox-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 
 		--combobox-textColor: var(--textColor);
 	}
