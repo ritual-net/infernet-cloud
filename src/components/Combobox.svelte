@@ -255,7 +255,7 @@
 		--combobox-groupItem-indentX: 1em;
 
 		--combobox-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
-		--combobox-backdropFilter: blur(3px);
+		--combobox-backdropFilter: blur(20px);
 		--combobox-borderColor: var(--borderColor);
 		--combobox-borderWidth: var(--borderWidth);
 		--combobox-cornerRadius: 0.33em;

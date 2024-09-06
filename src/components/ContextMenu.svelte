@@ -125,7 +125,7 @@
 		--contextMenu-paddingY: 0.5em;
 
 		--contextMenu-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
-		--contextMenu-backdropFilter: blur(3px);
+		--contextMenu-backdropFilter: blur(20px);
 		--contextMenu-borderColor: var(--borderColor);
 		--contextMenu-borderWidth: var(--borderWidth);
 		--contextMenu-cornerRadius: 0.33em;
