@@ -182,13 +182,13 @@
 		--select-paddingY: 0.5em;
 		--select-groupItem-indentX: 1em;
 
-		--select-backgroundColor: rgb(255 255 255 / 0.75);
+		--select-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
 		--select-backdropFilter: blur(3px);
 		--select-borderColor: var(--borderColor);
 		--select-borderWidth: var(--borderWidth);
 		--select-cornerRadius: 0.33em;
 
-		--select-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--select-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 		
 		--select-textColor: var(--textColor);
 	}
