@@ -153,7 +153,7 @@ export class GCPResourceClient extends BaseResourceClient<ProviderTypeEnum.GCP> 
 		return {
 			id: machineId,
 			name: machine.name!,
-			description: machine.description,
+			description: machine.description ?? undefined,
 			link: machine.selfLink,
 			// https://cloud.google.com/compute/docs/gpus/#gpus_for_compute_workloads
 			hasGpu: /^(a3|a2|g2|n1)-/.test(machine.name!),
@@ -167,7 +167,7 @@ export class GCPResourceClient extends BaseResourceClient<ProviderTypeEnum.GCP> 
 	) {
 		const response = await this.googleCompute.images.list({
 			project: 'ubuntu-os-cloud',
-			filter: 'status=READY',
+			filter: '(status = READY)',
 		})
 
 		return (
