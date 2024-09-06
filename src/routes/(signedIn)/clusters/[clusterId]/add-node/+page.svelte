@@ -10,6 +10,7 @@
 	const {
 		cluster,
 		formData,
+		serviceAccount,
 		dockerAccounts,
 	} = $page.data as PageData
 
@@ -76,8 +77,11 @@
 		class="card column"
 	>
 		<NodeFormFields
+			defaultRegionId={cluster.region}
+			defaultZoneId={cluster.zone}
 			bind:node={$form.node}
 			constraints={$constraints.node}
+			{serviceAccount}
 			{dockerAccounts}
 		/>
 	</article>

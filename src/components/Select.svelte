@@ -175,7 +175,7 @@
 	:root {
 		--select-paddingX: 1em;
 		--select-paddingY: 0.5em;
-		--select-groupItem-indentX: 1.5em;
+		--select-groupItem-indentX: 1em;
 
 		--select-backgroundColor: rgb(255 255 255 / 0.75);
 		--select-backdropFilter: blur(3px);

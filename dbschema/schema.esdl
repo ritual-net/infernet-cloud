@@ -158,6 +158,18 @@ module default {
   }
 
   type InfernetNode {
+    cluster := .<nodes[is Cluster];
+
+    required region: str {
+      # default := .cluster.region;
+    }
+    required zone: str {
+      # default := .cluster.zone;
+    }
+    required machine_type: str {
+      # default := .cluster.machine_type;
+    }
+
     required chain_enabled: bool {
       default := false;
     }
@@ -188,8 +200,6 @@ module default {
 
     docker_account: DockerAccount;
 
-    cluster := .<nodes[is Cluster];
-
     multi containers: Container {
       constraint exclusive;
       on source delete delete target;
@@ -205,15 +215,25 @@ module default {
 
   abstract type Cluster {
     required name: str;
-    required deploy_router: bool {
-      default := false;
-    }
-    ip_allow_http: array<IpAddressWithMask>;
-    ip_allow_ssh: array<IpAddressWithMask>;
 
     required service_account: ServiceAccount {
       readonly := true;
     };
+
+    required region: str {
+      readonly := true;
+    }
+    required zone: str {
+      readonly := true;
+    }
+
+    ip_allow_http: array<IpAddressWithMask>;
+    ip_allow_ssh: array<IpAddressWithMask>;
+
+    router: tuple<region: str, zone: str, machine_type: str> {
+      readonly := true;
+    };
+
     multi nodes: InfernetNode {
       constraint exclusive;
       on source delete delete target;
@@ -236,7 +256,7 @@ module default {
       'healthy' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' else
       'unknown'
     );
-    router: tuple<id: str, ip: str>;
+    router_status: tuple<id: str, ip: str>;
 
     # router := (
     #   .latest_deployment.tfstate. if exists(.latest_deployment.tfstate)
@@ -250,27 +270,23 @@ module default {
   }
 
   type GCPCluster extending Cluster {
-    required region: str {
+    overloaded required region: str {
       # e.g. "us-east2"
       readonly := true;
     }
-    required zone: str {
+    overloaded required zone: str {
       # e.g. "us-east2-a"
-      readonly := true;
-    }
-    required machine_type: str {
-      # e.g. "e2-standard-2"
       readonly := true;
     }
   }
 
   type AWSCluster extending Cluster {
-    required region: str {
+    overloaded required region: str {
       # e.g. "us-east-2"
       readonly := true;
     }
-    required machine_type: str {
-      # e.g. "t2.medium"
+    overloaded required zone: str {
+      # e.g. "us-east-2a"
       readonly := true;
     }
   }

@@ -249,7 +249,7 @@
 		--combobox-minWidth: 20rem;
 		--combobox-paddingX: 1em;
 		--combobox-paddingY: 0.5em;
-		--combobox-groupItem-indentX: 1.5em;
+		--combobox-groupItem-indentX: 1em;
 
 		--combobox-backgroundColor: rgb(255 255 255 / 0.75);
 		--combobox-backdropFilter: blur(3px);

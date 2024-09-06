@@ -293,7 +293,8 @@ button, .button {
 		font-size: 0.888em;
 	}
 
-	&:has(:is(header, section, footer)) {
+	&:has(:is(header, section, footer)),
+	:has(> :is(header, section, footer)) {
 		padding: 0;
 		row-gap: var(--card-borderWidth);
 

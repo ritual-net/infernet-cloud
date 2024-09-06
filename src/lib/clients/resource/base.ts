@@ -1,4 +1,8 @@
-import type { Machine, ProviderInfo, ZoneInfo } from '$/types/provider';
+// Types
+import type { Machine, ProviderInfo, Region, Zone, ZoneInfo } from '$/types/provider'
+
+
+// Functions
 
 /**
  * Base abstract class for fetching data from cloud providers.
@@ -18,23 +22,23 @@ export abstract class BaseResourceClient {
 	 *
 	 * @returns Flat array of all region IDs.
 	 */
-	abstract getRegionIds(): Promise<string[]>;
+	abstract getRegions(): Promise<Region[]>;
 
 	/**
 	 * Get the list of zones in a region.
 	 *
-	 * @param region The name of the region.
+	 * @param regionId The name of the region.
 	 * @returns Flat array of all zones in the region.
 	 */
-	abstract getZones(region: string): Promise<string[]>;
+	abstract getZones(regionId: string): Promise<Zone[]>;
 
 	/**
 	 * Get the list of machine types in a zone.
 	 *
-	 * @param region The name of the zone.
+	 * @param zoneId The name of the zone.
 	 * @returns Flat array of all machine types in a zone.
 	 */
-	abstract getMachines(zone: string): Promise<Machine[]>;
+	abstract getMachines(zoneId: string): Promise<Machine[]>;
 
 	/**
 	 * End to end method to get all provider info (regions, zones, machines).
@@ -43,29 +47,29 @@ export abstract class BaseResourceClient {
 	 * @returns Flat array of ProviderInfo objects.
 	 */
 	async getProviderInfo(credentials: Record<string, any>): Promise<ProviderInfo[]> {
-		await this.auth(credentials);
+		await this.auth(credentials)
 
-		const regionIds = await this.getRegionIds();
+		const regions = await this.getRegions()
 
 		return await Promise.all(
-			regionIds.map(async (regionId) => {
-				const zones = await this.getZones(regionId);
+			regions.map(async (region) => {
+				const zones = await this.getZones(region.id)
 
 				return {
-					region: {
-						id: regionId,
-					},
+					region,
 					zones: await Promise.all(
-						zones.map(
-							async (zone) =>
-								({
-									name: zone,
-									machines: await this.getMachines(zone),
-								}) as ZoneInfo
-						)
+						zones.map(async (zone) => ({
+							name: zone.name,
+							machines: await this.getMachines(zone.id),
+						}) as ZoneInfo)
 					),
-				} as ProviderInfo;
+				} as ProviderInfo
 			})
 		);
 	}
+
+	abstract getMachineInfo(
+		machineId: string,
+		zoneId: string,
+	): Promise<Machine>
 }

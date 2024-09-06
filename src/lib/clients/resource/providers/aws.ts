@@ -1,15 +1,25 @@
+// Types
+import type { AWSServiceAccount } from '$schema/interfaces'
+import type { _InstanceType } from '@aws-sdk/client-ec2'
+import { ProviderTypeEnum, type Machine } from '$/types/provider'
+import { getRegionName } from '$/lib/utils/providers/common'
+
+
+// Functions
 import {
 	EC2Client,
 	DescribeRegionsCommand,
 	DescribeAvailabilityZonesCommand,
 	DescribeInstanceTypeOfferingsCommand,
-} from '@aws-sdk/client-ec2';
-import { BaseResourceClient } from '$/lib/clients/resource/base';
-import type { AWSServiceAccount } from '$schema/interfaces';
-import type { EC2ClientConfig } from '@aws-sdk/client-ec2';
-import type { Machine } from '$/types/provider';
+	DescribeInstanceTypesCommand,
+} from '@aws-sdk/client-ec2'
+import { BaseResourceClient } from '$/lib/clients/resource/base'
 
-// Amazon Web Services extension of BaseResourceClient abstract class.
+import { isTruthy } from '$/lib/utils/isTruthy'
+
+/**
+ * Amazon Web Services extension of BaseResourceClient abstract class.
+ */
 export class AWSResourceClient extends BaseResourceClient {
 	amazonCompute!: EC2Client;
 	creds!: AWSServiceAccount['creds'];
@@ -20,15 +30,14 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @param region - AWS region name
 	 * @returns EC2 instance
 	 */
-	async createInstance(region: string): Promise<EC2Client> {
-		const config: EC2ClientConfig = {
+	async createInstance(region: string) {
+		return new EC2Client({
 			region: region,
 			credentials: {
 				accessKeyId: this.creds.access_key_id,
 				secretAccessKey: this.creds.secret_access_key,
 			},
-		};
-		return new EC2Client(config);
+		})
 	}
 
 	/**
@@ -39,12 +48,12 @@ export class AWSResourceClient extends BaseResourceClient {
 	async auth(creds: AWSServiceAccount['creds']) {
 		try {
 			// initial region does not matter
-			this.creds = creds;
-			this.amazonCompute = await this.createInstance('us-east-1');
+			this.creds = creds
+			this.amazonCompute = await this.createInstance('us-east-1')
 			// sanity check to enusure creds are valid
-			await this.getRegionIds();
+			await this.getRegions()
 		} catch (error) {
-			throw new Error(`Error during AWS authentication: ${(error as Error).message}`);
+			throw new Error(`Error during AWS authentication: ${(error as Error).message}`)
 		}
 	}
 
@@ -54,34 +63,61 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @returns A flat array of region IDs.
 	 * Example return value: ['us-east-1', 'us-west-2', 'eu-west-1']
 	 */
-	async getRegionIds(): Promise<string[]> {
-		const command = new DescribeRegionsCommand({});
-		const response = await this.amazonCompute.send(command);
-		return (response.Regions?.map((region) => region.RegionName) ?? []).filter(
-			(name): name is string => !!name
-		);
+	async getRegions() {
+		const command = new DescribeRegionsCommand({})
+		const response = await this.amazonCompute.send(command)
+
+		return (
+			response
+				.Regions
+				?.map(region => {
+					const id = region.RegionName!
+					const name = getRegionName(id, ProviderTypeEnum.AWS)
+					const continent = name.match(/^(.+) \(.+\)/)?.[1]
+
+					return {
+						id,
+						name,
+						continent,
+						info: region,
+					}
+				})
+				.filter(isTruthy)
+			?? []
+		)
 	}
 
 	/**
 	 * Returns a list of all zone names in a given region.
 	 *
-	 * @param region - AWS region name
+	 * @param regionId - AWS region name
 	 * @returns A flat array of zone names.
 	 * Example return value: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 	 */
-	async getZones(region: string): Promise<string[]> {
-		this.amazonCompute = await this.createInstance(region);
+	async getZones(regionId: string) {
+		this.amazonCompute = await this.createInstance(regionId)
+
 		const command = new DescribeAvailabilityZonesCommand({});
-		const response = await this.amazonCompute.send(command);
-		return (response.AvailabilityZones?.map((zone) => zone.ZoneName) ?? []).filter(
-			(name): name is string => !!name
-		);
+
+		const response = await this.amazonCompute.send(command)
+
+		return (
+			response
+				.AvailabilityZones
+				?.map(zone => ({
+					id: zone.ZoneName,
+					name: zone.ZoneName,
+					info: zone,
+				}))
+				.filter(isTruthy)
+			?? []
+		)
 	}
 
 	/**
 	 * Returns a list of all machine types in a given zone.
 	 *
-	 * @param zone - AWS zone name
+	 * @param zoneId - AWS zone name
 	 * @returns A flat array of machine types.
 	 * Example return value: [
 	 *   {
@@ -91,17 +127,51 @@ export class AWSResourceClient extends BaseResourceClient {
 	 *     "link": "https://aws.amazon.com/ec2/instance-types/"
 	 *   }, ...]
 	 */
-	async getMachines(zone: string): Promise<Machine[]> {
-		this.amazonCompute = await this.createInstance(zone.slice(0, -1)); // AWS api uses region name
-		const command = new DescribeInstanceTypeOfferingsCommand({});
-		const response = await this.amazonCompute.send(command);
+	async getMachines(zoneId: string): Promise<Machine[]> {
+		const regionId = zoneId.slice(0, -1)
+
+		this.amazonCompute = await this.createInstance(regionId)
+	
+		const response = await this.amazonCompute.send(
+			new DescribeInstanceTypeOfferingsCommand({
+				LocationType: 'availability-zone',
+				Filters: [
+					{
+						Name: 'location',
+						Values: [zoneId],
+					},
+				],
+			})
+		)
+
 		return (
-			response.InstanceTypeOfferings?.map((offering) => ({
-				id: offering.InstanceType!,
-				name: offering.InstanceType!,
-				description: offering.InstanceType!,
-				link: 'https://aws.amazon.com/ec2/instance-types/',
-			})) ?? []
-		);
+			response.InstanceTypeOfferings
+				?.map(offering => ({
+					id: offering.InstanceType!,
+					name: offering.InstanceType!,
+					info: offering.LocationType,
+				}))
+			?? []
+		)
+	}
+
+	async getMachineInfo(
+		machineId: _InstanceType,
+		zoneId: string,
+	) {
+		const detailsResponse = await this.amazonCompute.send(
+			new DescribeInstanceTypesCommand({
+				InstanceTypes: [machineId],
+			})
+		)
+
+		const instanceTypeInfo = detailsResponse.InstanceTypes?.[0]
+
+		return {
+			id: machineId,
+			name: machineId,
+			hasGpu: instanceTypeInfo?.GpuInfo ? true : false,
+			info: instanceTypeInfo,
+		} as Machine<ProviderTypeEnum.AWS>
 	}
 }

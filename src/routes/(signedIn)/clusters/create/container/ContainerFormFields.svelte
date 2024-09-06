@@ -15,6 +15,7 @@
 	export let constraints: InputConstraints<typeof container> | undefined
 	export let images: string[] | undefined
 	export let nodeConfiguration: {
+		hasGpu: boolean
 		isOnchain: boolean
 		chainId?: number
 		isPaymentsEnabled?: boolean
@@ -244,23 +245,29 @@
 		/>
 	</section>
 
-	<section class="row wrap">
-		<div class="column inline">
-			<h3>
-				<label for="container.gpu">
-					Has GPU?
-				</label>
-			</h3>
+	<section class="column">
+		<div class="row wrap">
+			<div class="column inline">
+				<h3>
+					<label for="container.gpu">
+						Uses GPU?
+					</label>
+				</h3>
 
-			<p>Determine if GPU-enabled.</p>
+				<p>Determine if GPU-enabled.</p>
+			</div>
+
+			<Switch
+				id="container.gpu"
+				name="container.gpu"
+				bind:checked={container.gpu}
+				labelText="Has GPU?"
+			/>
 		</div>
 
-		<Switch
-			id="container.gpu"
-			name="container.gpu"
-			bind:checked={container.gpu}
-			labelText="Has GPU?"
-		/>
+		{#if !nodeConfiguration.hasGpu && container.gpu}
+			<p>Note: <u>node is not currently configured with a GPU.</u> This container may not operate correctly. Choose a machine type with GPU support.</p>
+		{/if}
 	</section>
 
 	<section class="column wrap">

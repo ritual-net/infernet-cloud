@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
  * @returns Cluster ID, success boolean, and Terraform message.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
-	const { serviceAccountId, config, nodes } = await request.json() as z.InferType<typeof CreateClusterFormData>;
+	const { serviceAccountId, config, router, nodes } = await request.json() as z.InferType<typeof CreateClusterFormData>;
 
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
@@ -57,11 +57,9 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 
 	console.log('Create cluster', { serviceAccountId, config, nodes })
 
-	try {
-		// Exclude zone (unused by backend)
-		if(serviceAccount.provider === 'AWS')
-			delete config.zone
+	const { deploy_router, ...clusterConfig } = config
 
+	try {
 		// Insert cluster
 		cluster = await e
 			.params(
@@ -69,10 +67,17 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					nodes: e.array(e.json), 
 				},
 				({ nodes }) => e.insert(ClusterTypeByProvider[serviceAccount.provider], {
-					...config,
+					...clusterConfig,
 					service_account: e.select(e.ServiceAccount, () => ({
 						filter_single: { id: serviceAccountId },
 					})),
+					...deploy_router && {
+						router: e.tuple({
+							region: router.region,
+							zone: router.zone,
+							machine_type: router.machine_type,
+						}),
+					},
 					// nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
 					nodes: e.for(e.array_unpack(nodes), (node) => (
 						insertNodeJsonQuery(node)

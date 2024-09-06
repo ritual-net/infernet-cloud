@@ -300,14 +300,6 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Machine Type</dt>
-
-				<dd>
-					{cluster.machine_type}
-				</dd>
-			</section>
-
-			<section class="row wrap">
 				<dt>IPs Allowed (HTTP)</dt>
 
 				{#if cluster.ip_allow_http?.length}
@@ -339,16 +331,16 @@
 				<dt>Has Deployed Router?</dt>
 
 				<dd>
-					{cluster.deploy_router ? 'Yes' : 'No'}
+					{cluster.router ? 'Yes' : 'No'}
 				</dd>
 			</section>
 
-			{#if cluster.router?.ip}
+			{#if cluster.router_status?.ip}
 				<section class="row wrap">
 					<dt>Router IP</dt>
 
 					<dd>
-						{cluster.router.ip}
+						{cluster.router_status.ip}
 					</dd>
 				</section>
 			{/if}

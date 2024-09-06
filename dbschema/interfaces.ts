@@ -21,19 +21,21 @@ export interface User extends std.$Object {
 export interface Cluster extends std.$Object {
   "nodes": InfernetNode[];
   "service_account": ServiceAccount;
-  "deploy_router": boolean;
   "locked": boolean;
   "name": string;
-  "router"?: {id: string, ip: string} | null;
   "ip_allow_http"?: string[] | null;
   "ip_allow_ssh"?: string[] | null;
   "deployments": TerraformDeployment[];
   "latest_deployment"?: TerraformDeployment | null;
   "status"?: string | null;
+  "region": string;
+  "zone": string;
+  "router_status"?: {id: string, ip: string} | null;
+  "router"?: {region: string, zone: string, machine_type: string} | null;
 }
 export interface AWSCluster extends Cluster {
-  "machine_type": string;
   "region": string;
+  "zone": string;
 }
 export interface ServiceAccount extends std.$Object {
   "user": User;
@@ -74,7 +76,6 @@ export interface DockerAccount extends std.$Object {
   "password": string;
 }
 export interface GCPCluster extends Cluster {
-  "machine_type": string;
   "region": string;
   "zone": string;
 }
@@ -98,6 +99,9 @@ export interface InfernetNode extends std.$Object {
   "allowed_sim_errors"?: string[] | null;
   "payment_address"?: string | null;
   "private_key"?: string | null;
+  "machine_type": string;
+  "region": string;
+  "zone": string;
 }
 export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {

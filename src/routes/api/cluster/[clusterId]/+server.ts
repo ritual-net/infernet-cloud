@@ -102,7 +102,6 @@ export const PATCH: RequestHandler = async ({ locals: { client }, params, reques
 			set: {
 				// Updatable fields, default to current value if not provided
 				name: body.name,
-				deploy_router: body.deploy_router,
 				ip_allow_http: body.ip_allow_http,
 				ip_allow_ssh: body.ip_allow_ssh,
 			},

@@ -29,24 +29,33 @@ export class AWSTerraform extends BaseTerraform {
 			ip_allow_http_from_port: 4000,
 			ip_allow_http_to_port: 4000,
 
-			router: {
-				deploy: cluster.deploy_router,
-				zone: `${cluster.region}a`,
-				machine_type: cluster.machine_type,
-			},
+			router: (	
+				cluster.router ?
+					{
+						deploy: true,
+						region: cluster.router.region,
+						zone: cluster.router.zone,
+						machine_type: cluster.router.machine_type,
+					}
+				:
+					{
+						deploy: false,
+						region: '',
+						zone: '',
+						machine_type: '',
+					}
+			),
 
 			nodes: Object.fromEntries(
 				cluster.nodes
 					.map((node) => [
 						`infernet-node-${node.id}`,
 						{
-							zone: `${cluster.region}a`, 
-							machine_type: cluster.machine_type,
+							zone: node.zone || cluster.zone,
+							machine_type: node.machine_type,
 							image: 'ami-05fb0b8c1424f266b',
 							has_gpu: false,
 
-							// zone: node.zone,
-							// machine_type: node.machine_type,
 							// image: node.has_gpu ? 'ami-0b4750268a88e78e0' : 'ami-05fb0b8c1424f266b',
 							// has_gpu: node.has_gpu,
 							// gpu_type: node.gpu_type,

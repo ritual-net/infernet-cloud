@@ -204,25 +204,6 @@
 				</Tabs>
 			{/if}
 		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3>
-					<label for="config.deploy_router">
-						Deploy Router?
-					</label>
-				</h3>
-
-				<p>Determine whether your cluster will be deployed with a router.</p>
-			</div>
-
-			<Switch
-				id="config.deploy_router"
-				name="config.deploy_router"
-				bind:checked={$form.config.deploy_router}
-				labelText="Deploy Router?"
-			/>
-		</section>
 	</div>
 
 	<footer class="row">

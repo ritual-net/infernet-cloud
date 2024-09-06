@@ -30,24 +30,32 @@ export class GCPTerraform extends BaseTerraform {
 			ip_allow_http: cluster.ip_allow_http ?? [],
 			ip_allow_http_ports: ["4000"],
 
-			router: {
-				deploy: cluster.deploy_router,
-				zone: cluster.zone,
-				machine_type: cluster.machine_type,
-			},
+			router: (	
+				cluster.router ?
+					{
+						deploy: true,
+						region: cluster.router.region,
+						zone: cluster.router.zone,
+						machine_type: cluster.router.machine_type,
+					}
+				:
+					{
+						deploy: false,
+						region: '',
+						zone: '',
+						machine_type: '',
+					}
+			),
 
 			nodes: Object.fromEntries(
 				cluster.nodes.map((node, i) => [
 					`infernet-node-${node.id}`,
 					{
-						region: cluster.region,
-						zone: cluster.zone,
-						machine_type: cluster.machine_type,
+						region: node.region || cluster.region,
+						zone: node.zone || cluster.zone,
+						machine_type: node.machine_type,
 						image: 'ubuntu-2004-focal-v20231101',
 
-						// region: node.region,
-						// zone: node.zone,
-						// machine_type: node.machine_type,
 						// image: node.has_gpu ? 'nvidia-tesla-t4' : 'ubuntu-2004-focal-v20231101',
 						// has_gpu: node.has_gpu,
 					}

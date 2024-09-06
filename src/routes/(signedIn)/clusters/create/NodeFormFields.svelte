@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { InputConstraints } from 'sveltekit-superforms'
+	import type { ServiceAccount } from '$schema/interfaces'
 	import * as z from 'yup'
 	import { chainsByChainId } from '$/lib/chains'
 	import { infernetDeployments } from '$/lib/infernet-sdk'
@@ -24,6 +25,10 @@
 	export let namePrefix = 'node'
 	export let constraints: InputConstraints<z.InferType<typeof Node>> | undefined
 
+	export let defaultRegionId: string | undefined
+	export let defaultZoneId: string | undefined
+
+	export let serviceAccount: ServiceAccount | undefined
 	export let dockerAccounts: {
 		username: string
 	}[]
@@ -32,6 +37,10 @@
 
 
 	// Internal state
+	// (GPU)
+	let hasGpu: boolean = false
+
+
 	// (Chain)
 	$: client = node.config.rpc_url && createPublicClient({ 
 		transport: http(node.config.rpc_url),
@@ -51,6 +60,9 @@
 	// (Containers)
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
+			...hasGpu && {
+				hasGpu: 'true',
+			},
 			...node.config.chain_enabled && {
 				isOnchain: 'true',
 				chainId: chainId?.toString(),
@@ -80,12 +92,32 @@
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import ContainerForm from './container/+page.svelte'
 	import Textarea from '$/components/Textarea.svelte'
+	import RegionZoneMachineFields from './RegionZoneMachineFields.svelte'
 
 
 	// Shallow Routes
 	import { preloadData, goto, pushState } from '$app/navigation'
 </script>
 
+
+<RegionZoneMachineFields
+	entityType="node"
+	namePrefix={namePrefix}
+	{serviceAccount}
+	defaults={{
+		region: defaultRegionId,
+		zone: defaultZoneId,
+	}}
+	bind:regionId={node.config.region}
+	bind:zoneId={node.config.zone}
+	bind:machineId={node.config.machine_type}
+	bind:hasGpu
+	constraints={{
+		region: constraints?.config?.region,
+		zone: constraints?.config?.zone,
+		machine_type: constraints?.config?.machine_type,
+	}}
+/>
 
 <section class="row wrap">
 	<div class="column inline">

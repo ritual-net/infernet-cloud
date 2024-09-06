@@ -54,15 +54,17 @@ const User: $.$expr_PathNode<$.TypeSet<$User, $.Cardinality.Many>, null> = _.syn
 export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "nodes": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, true, false,  false, false>;
   "service_account": $.LinkDesc<$ServiceAccount, $.Cardinality.One, {}, false, false,  true, false>;
-  "deploy_router": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "locked": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "router": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
   "ip_allow_http": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "ip_allow_ssh": $.PropertyDesc<$.ArrayType<$IpAddressWithMask>, $.Cardinality.AtMostOne, false, false, false, false>;
   "deployments": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, true,  false, false>;
   "latest_deployment": $.LinkDesc<$TerraformDeployment, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
   "status": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, true, false, false>;
+  "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+  "router_status": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "router": $.PropertyDesc<$.NamedTupleType<{region: _std.$str, zone: _std.$str, machine_type: _std.$str}>, $.Cardinality.AtMostOne, false, false, true, false>;
   "<cluster[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster[is TerraformDeployment]": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -76,9 +78,9 @@ const $Cluster = $.makeType<$Cluster>(_.spec, "159f2820-29a7-11ef-948d-0590ba893
 
 const Cluster: $.$expr_PathNode<$.TypeSet<$Cluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Cluster, $.Cardinality.Many), null);
 
-export type $AWSClusterλShape = $.typeutil.flatten<$ClusterλShape & {
-  "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+export type $AWSClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "region" | "zone"> & {
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
 }>;
 type $AWSCluster = $.ObjectType<"default::AWSCluster", $AWSClusterλShape, null, [
   ...$Cluster['__exclusives__'],
@@ -171,8 +173,7 @@ const $DockerAccount = $.makeType<$DockerAccount>(_.spec, "2908f594-29a7-11ef-81
 
 const DockerAccount: $.$expr_PathNode<$.TypeSet<$DockerAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($DockerAccount, $.Cardinality.Many), null);
 
-export type $GCPClusterλShape = $.typeutil.flatten<$ClusterλShape & {
-  "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+export type $GCPClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "region" | "zone"> & {
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
 }>;
@@ -210,6 +211,9 @@ export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5
   "allowed_sim_errors": $.PropertyDesc<$.ArrayType<_std.$str>, $.Cardinality.AtMostOne, false, false, false, false>;
   "payment_address": $.PropertyDesc<$Address, $.Cardinality.AtMostOne, false, false, false, false>;
   "private_key": $.PropertyDesc<$Secp256k1PrivateKey, $.Cardinality.AtMostOne, false, false, false, false>;
+  "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "<nodes[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;

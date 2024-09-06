@@ -34,6 +34,18 @@ export const Config = z
 
 		'zone': z
 			.string()
+			.required(),
+	})
+
+export const RouterConfig = z
+	.object({
+		'region': z
+			.string()
+			.optional()
+			.nullable(),
+
+		'zone': z
+			.string()
 			.optional()
 			.nullable(),
 
@@ -149,6 +161,20 @@ export const Container = z
 
 export const NodeConfig = z
 	.object({
+		'region': z
+			.string()
+			.optional()
+			.nullable(),
+
+		'zone': z
+			.string()
+			.optional()
+			.nullable(),
+
+		'machine_type': z
+			.string()
+			.required(),
+
 		'chain_enabled': z
 			.boolean()
 			.required()
@@ -266,6 +292,27 @@ export const FormData = z
 			.uuid(),
 
 		'config': Config,
+
+		'router': RouterConfig
+			.when(
+				'config',
+				([config], _) => (
+					config?.deploy_router
+						? _.required()
+						: _.shape(
+							Object.fromEntries(
+								Object.entries(RouterConfig.fields)
+									.map(([key, value]) => (
+										[
+											key,
+											value.optional(),
+										]
+									))
+							)
+						)
+							.notRequired()
+				),
+			),
 
 		'nodes': z
 			.array(
