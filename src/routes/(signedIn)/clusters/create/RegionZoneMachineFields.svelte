@@ -38,7 +38,7 @@
 
 
 	// Internal state
-	let overrideDefaultRegionAndZone = false
+	let overrideDefaultRegionAndZone = defaults?.region !== regionId || defaults?.zone !== zoneId
 
 	$: if(defaults && !overrideDefaultRegionAndZone)
 		regionId = defaults.region

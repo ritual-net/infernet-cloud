@@ -192,6 +192,10 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 						Name: 'architecture',
 						Values: [machineId.startsWith('a1') ? 'arm64' : 'x86_64'],
 					},
+					{
+						Name: 'name',
+						Values: ['ubuntu/images/hvm-ssd/ubuntu-*'],
+					},
 				],
 				Owners: ['amazon'],
 			})
