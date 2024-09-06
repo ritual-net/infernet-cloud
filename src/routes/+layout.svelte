@@ -197,7 +197,8 @@
 
 		@media (width <= 50rem) {
 			isolation: isolate;
-			display: grid !important;
+			display: grid;
+			grid-template-columns: 1fr;
 			overflow: hidden;
 
 			backdrop-filter: blur(8px);

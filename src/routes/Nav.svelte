@@ -64,7 +64,7 @@
 
 	<div class="row wrap">
 		{#each navItems as items}
-			<ul class="row">
+			<ul class="row wrap">
 				{#each items as item}
 					<li>
 						<a	
@@ -161,7 +161,6 @@
 		nav {
 			display: grid !important;
 			justify-content: stretch;
-			justify-items: start;
 			gap: 1rem;
 
 			li {
@@ -181,8 +180,8 @@
 				}
 			}
 
-			> :last-child {
-				justify-self: stretch;
+			ul {
+				flex-direction: column;
 			}
 		}
 	}
