@@ -60,7 +60,7 @@
 	</section>
 </div>
 
-<div class="row equal">
+<div class="row equal wrap">
 	{#if !$page.data.user}
 		<a
 			class="button"
