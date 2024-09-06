@@ -9,7 +9,11 @@
 
 	$: ({
 		serviceAccount,
+		clusters: clustersPromise,
 	} = $page.data as PageData)
+
+	let clusters: Awaited<typeof clustersPromise> | undefined
+	$: clustersPromise.then(_ => { clusters = _ })
 
 
 	// Functions
@@ -17,7 +21,7 @@
 
 
 	// Components
-	// import ClustersTable from '$/routes/clusters/ClustersTable.svelte'
+	import ClustersTable from '$/routes/(signedIn)/clusters/ClustersTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
 
@@ -82,13 +86,30 @@
 		</dl>
 	</section>
 
-	<!-- <div>
-		<h3>Clusters</h3>
+	<section class="column">
+		<header class="row">
+			<h3>Clusters</h3>
+
+			<a
+				class="button primary"
+				href={`/clusters/create?${new URLSearchParams({
+					serviceAccountId: serviceAccount.id,
+				})}`}
+			>
+				Create cluster
+			</a>
+		</header>
 
 		<ClustersTable
-			clusters={[]}
-		/>
-	</div> -->
+			clusters={clusters ?? []}
+		>
+			{#await clusters}
+				Loading clusters...
+			{:then}
+				No clusters found.
+			{/await}
+		</ClustersTable>
+	</section>
 </div>
 
 

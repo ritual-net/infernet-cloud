@@ -15,7 +15,7 @@ import { e, ClusterTypeByProvider } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
 // import { createNodeParams, insertNodeQuery } from '$/lib/db/components'
 import { insertNodeJsonQuery } from '$/lib/db/components'
-import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
+import { getServiceAccountById, getClusters } from '$/lib/db/queries';
 
 
 /**
@@ -24,11 +24,16 @@ import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
  * @param locals - The locals object contains the client.
  * @returns Array of Cluster objects.
  */
-export const GET: RequestHandler = async ({ locals: { client } }) => {
-	// Get all clusters for user
-	const result = await getClustersForUser(client)
+export const GET: RequestHandler = async ({
+	locals: { client },
+	url,
+}) => {
+	const serviceAccountId = url.searchParams.get('serviceAccountId')
 
-	return json(result);
+	// Get all clusters (optionally by service account)
+	const result = await getClusters(client, serviceAccountId)
+
+	return json(result)
 };
 
 /**

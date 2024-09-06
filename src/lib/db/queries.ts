@@ -246,15 +246,21 @@ export const getClusterByRouterId = async (
 };
 
 /**
- * Get clusters owned by user
+ * Get clusters
  *
+ * @param client The database client
+ * @param {optional} serviceAccountId filter by clusters created with service account
  * @returns Cluster array
  */
-export const getClustersForUser = async (
-	client: Client
+export const getClusters = async (
+	client: Client,
+	serviceAccountId?: string,
 ) => (
 	await e
 		.select(e.Cluster, (cluster) => ({
+			...serviceAccountId && {
+				filter: e.op(cluster.service_account.id, '=', e.uuid(serviceAccountId)),
+			},
 			service_account: {
 				id: true,
 				name: true,
