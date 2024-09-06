@@ -106,7 +106,7 @@
 			align-content: end;
 
 			& [data-melt-toast-content] {
-				--toast-backgroundColor: #fff;
+				--toast-backgroundColor: light-dark(#fff, #000);
 				--toast-borderColor: var(--borderColor);
 
 				&[data-type="success"] {
