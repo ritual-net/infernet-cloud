@@ -58,7 +58,7 @@
 		<FormSubmitButton
 			allErrors={$allErrors}
 			submitting={$submitting}
-			submitLabel="Set Password"
+			submitLabel="Set password"
 		/>
 	</form>
 </div>

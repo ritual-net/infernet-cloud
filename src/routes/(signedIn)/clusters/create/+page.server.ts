@@ -13,7 +13,6 @@ import type { PageServerLoad } from './$types'
 import { e } from '$/lib/db'
 
 export const load: PageServerLoad = async ({
-	parent,
 	fetch,
 	locals: { client },
 	url,
@@ -21,13 +20,10 @@ export const load: PageServerLoad = async ({
 	const serviceAccountId = url.searchParams.get('serviceAccountId')
 
 	const [
-		parentData,
 		serviceAccounts,
 		dockerAccounts,
 		formData,
 	] = await Promise.all([
-		parent(),
-
 		fetch(`/api/service_account`)
 			.then<QueriedServiceAccount[]>(response => response.json()),
 
@@ -45,7 +41,6 @@ export const load: PageServerLoad = async ({
 	])
 
 	return {
-		...parentData,
 		serviceAccounts,
 		dockerAccounts,
 		formData,

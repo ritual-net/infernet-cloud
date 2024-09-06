@@ -145,7 +145,7 @@
 	>
 		<section class="column">
 			<div class="column inline">
-				<h3>Chain Configuration</h3>
+				<h3>Chain configuration</h3>
 			</div>
 
 			<div class="row equal wrap">
@@ -189,7 +189,7 @@
 				<div class="column">
 					<div class="column inline">
 						<label for="{namePrefix}.config.registry_address">
-							Registry Address
+							Registry address
 						</label>
 		
 						<p>The address of the <a href="https://docs.ritual.net/infernet/sdk/reference/Registry" target="_blank">Infernet SDK Registry</a> smart contract.</p>
@@ -233,14 +233,14 @@
 					<div class="column inline">
 						<span class="row inline">
 							<label for="{namePrefix}.config.trail_head_blocks">
-								Trail Head Blocks
+								Trail head blocks
 							</label>
 	
 							<span class="annotation">Optional</span>
 						</span>	
 					</div>
 
-					<p>Number of blocks to delay chain syncing. Added latency may help avoid failed transactions due to reorganizations.</p>
+					<p><a href="https://docs.ritual.net/infernet/node/configuration/v1_1_0#trail_head_blocks-integer" target="_blank">Number of blocks</a> to delay chain syncing. Added latency may help avoid failed transactions due to reorganizations.</p>
 	
 					<input
 						type="number"
@@ -256,7 +256,7 @@
 
 		<section class="column">
 			<div class="column inline">
-				<h3>Wallet and Transactions</h3>
+				<h3>Wallet and transactions</h3>
 			</div>
 
 			<div class="row equal wrap">
@@ -264,7 +264,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.private_key">
-								Private Key
+								Private key
 							</label>
 						</div>
 
@@ -286,7 +286,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.max_gas_limit">
-								Max Gas Limit
+								Max gas limit
 							</label>
 
 							<span class="annotation">Optional</span>
@@ -310,7 +310,7 @@
 				<div class="column inline">
 					<h3 class="row inline">
 						<label for="{namePrefix}.config.allowed_sim_errors">
-							Ignored Errors
+							Ignored errors
 						</label>
 					</h3>
 
@@ -340,7 +340,7 @@
 				<div class="column inline">
 					<h3 class="row inline">
 						<label for="{namePrefix}|isPaymentsEnabled">
-							Accept Payments?
+							Accept payments?
 						</label>
 					</h3>
 
@@ -367,7 +367,7 @@
 						<div class="column inline">
 							<div class="row inline">
 								<label for="{namePrefix}.config.payment_address">
-									Payment Address
+									Payment address
 								</label>
 							</div>
 
@@ -393,7 +393,7 @@
 			<div class="column inline">
 				<h3>
 					<span>
-						Snapshot Syncing
+						Snapshot syncing
 					</span>
 				</h3>
 
@@ -405,7 +405,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.snapshot_sync_sleep">
-								Sleep Duration
+								Sleep duration
 							</label>
 
 							<span class="annotation">Optional</span>
@@ -429,7 +429,7 @@
 					<div class="column inline">
 						<div class="row inline">
 							<label for="{namePrefix}.config.snapshot_sync_batch_size">
-								Batch Size
+								Batch size
 							</label>
 
 							<span class="annotation">Optional</span>
@@ -456,7 +456,7 @@
 	<div class="column inline">
 		<h3 class="row inline">
 			<label for="{namePrefix}.config.forward_stats">
-				Forward Stats?
+				Forward stats?
 			</label>
 		</h3>
 
@@ -467,7 +467,7 @@
 		id="{namePrefix}.config.forward_stats"
 		name="{namePrefix}.config.forward_stats"
 		bind:checked={node.config.forward_stats}
-		labelText="Forward Stats?"
+		labelText="Forward stats?"
 	/>
 </section>
 
@@ -475,19 +475,19 @@
 	<div class="column inline">
 		<h3 class="row inline">
 			<label for="{namePrefix}.dockerAccountUsername">
-				Docker Hub Account
+				Docker Hub account
 			</label>
 
 			<span class="annotation">Optional</span>
 		</h3>
 
-		<p><a href="/cloud-accounts/docker/connect">Connect your Docker Hub account</a> to allow the node to access private Docker images.</p>
+		<p><a href="/cloud-accounts/docker/connect" target="_blank">Connect</a> your Docker Hub account to allow the node to access private Docker images.</p>
 	</div>
 
 	<Select
 		id="{namePrefix}.dockerAccountUsername"
 		name="{namePrefix}.dockerAccountUsername"
-		labelText="Docker Hub Username"
+		labelText="Docker Hub username"
 		bind:value={node.dockerAccountUsername}
 		{...!dockerAccounts
 			? {
@@ -502,6 +502,7 @@
 						label: node.dockerAccountUsername,
 					}
 				].filter(Boolean),
+				loading: true,
 				visuallyDisabled: true,
 			}
 			: {
@@ -516,6 +517,7 @@
 						label: dockerAccount.username,
 					}))
 				],
+				disabled: dockerAccounts.length === 0,
 			}
 		}
 		{...constraints?.dockerAccountUsername}
@@ -577,7 +579,7 @@
 				removeToast(loadingToast.id)
 			}}
 		>
-			Add Container
+			Add container
 		</a>
 	</div>
 
@@ -623,7 +625,7 @@
 				$page.state.showContainerForm === 'create' ?
 				// $page.url.hash === '#/container/create' ?
 					{
-						submitLabel: 'Add Container',
+						submitLabel: 'Add container',
 
 						onSubmit: ({ container }) => {
 							node.containers.push(container)
@@ -635,7 +637,7 @@
 				: $page.state.showContainerForm === 'edit' ?
 				// : $page.url.hash === '#/container/edit' ?
 					{
-						submitLabel: 'Save Changes',
+						submitLabel: 'Save changes',
 
 						onSubmit: ({ container }) => {
 							node.containers[

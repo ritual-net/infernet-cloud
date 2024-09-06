@@ -117,15 +117,15 @@
 		items={[
 			{
 				id: Fieldset.CreateCluster,
-				label: 'Create a Cluster',
+				label: 'Create a cluster',
 			},
 			{
 				id: Fieldset.ConfigureRouter,
-				label: 'Configure Router',
+				label: 'Configure router',
 			},
 			{
 				id: Fieldset.AddNodes,
-				label: 'Add Nodes',
+				label: 'Add nodes',
 			},
 		]}
 		layout="tooltip-dots"
@@ -150,7 +150,7 @@
 							<div class="column inline">
 								<h3>
 									<label for="serviceAccountId">
-										Cloud Account
+										Cloud account
 									</label>
 								</h3>
 
@@ -161,7 +161,7 @@
 								required
 								id="serviceAccountId"
 								name="serviceAccountId"
-								labelText="Cloud Account"
+								labelText="Cloud account"
 								bind:value={$form.serviceAccountId}
 								items={serviceAccounts.map(serviceAccount => ({
 									icon: providers[serviceAccount.provider].icon,
@@ -192,90 +192,90 @@
 							/>
 						</section>
 
+						<section class="column wrap">
+							<div class="row wrap">
+								<div class="column inline">
+									<h3 class="row inline">
+										<label for="hasFirewall">
+											Firewall
+										</label>
+									</h3>
+
+									<p>Determine which IP addresses will have permissions to this cluster.</p>
+								</div>
+
+								<Select
+									required
+									id="hasFirewall"
+									name="hasFirewall"
+									labelText="Firewall"
+									bind:value={hasFirewall}
+									items={[
+										{
+											value: false,
+											label: 'All IPs',
+										},
+										{
+											value: true,
+											label: 'Only allowed IPs',
+										}
+									]}
+								/>
+							</div>
+
+							{#if hasFirewall}
+								<Tabs
+									value={0}
+									items={[
+										{
+											id: 0,
+											label: 'HTTP',
+										},
+										{
+											id: 1,
+											label: 'SSH',
+										},
+									]}
+								>
+									<svelte:fragment slot="content"
+										let:item
+									>
+										{#if item.id === 0}
+											<Textarea
+												id="config.ip_allow_http"
+												name="config.ip_allow_http"
+												rows="2"
+												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+												value={serializeCommaSeparated(ip_allow_http)}
+												onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
+												{...$constraints.config?.ip_allow_http}
+												pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+												disabled={!hasFirewall}
+											/>
+
+										{:else}
+											<Textarea
+												id="config.ip_allow_ssh"
+												name="config.ip_allow_ssh"
+												rows="2"
+												placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
+												value={serializeCommaSeparated(ip_allow_ssh)}
+												onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
+												{...$constraints.config?.ip_allow_ssh}
+												pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+												disabled={!hasFirewall}
+											/>
+										{/if}
+									</svelte:fragment>
+								</Tabs>
+							{/if}
+						</section>
+
 						<Collapsible open={serviceAccount?.provider}>
 							<fieldset
 								class="column"
 								disabled={!(serviceAccount?.provider)}
 							>
-								<section class="column wrap">
-									<div class="row wrap">
-										<div class="column inline">
-											<h3 class="row inline">
-												<label for="hasFirewall">
-													Firewall
-												</label>
-											</h3>
-
-											<p>Determine which IP addresses will have permissions to this cluster.</p>
-										</div>
-
-										<Select
-											required
-											id="hasFirewall"
-											name="hasFirewall"
-											labelText="Firewall"
-											bind:value={hasFirewall}
-											items={[
-												{
-													value: false,
-													label: 'All IPs',
-												},
-												{
-													value: true,
-													label: 'Only allowed IPs',
-												}
-											]}
-										/>
-									</div>
-
-									{#if hasFirewall}
-										<Tabs
-											value={0}
-											items={[
-												{
-													id: 0,
-													label: 'HTTP',
-												},
-												{
-													id: 1,
-													label: 'SSH',
-												},
-											]}
-										>
-											<svelte:fragment slot="content"
-												let:item
-											>
-												{#if item.id === 0}
-													<Textarea
-														id="config.ip_allow_http"
-														name="config.ip_allow_http"
-														rows="2"
-														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={serializeCommaSeparated(ip_allow_http)}
-														onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
-														{...$constraints.config?.ip_allow_http}
-														pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
-														disabled={!hasFirewall}
-													/>
-
-												{:else}
-													<Textarea
-														id="config.ip_allow_ssh"
-														name="config.ip_allow_ssh"
-														rows="2"
-														placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-														value={serializeCommaSeparated(ip_allow_ssh)}
-														onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
-														{...$constraints.config?.ip_allow_ssh}
-														pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
-														disabled={!hasFirewall}
-													/>
-												{/if}
-											</svelte:fragment>
-										</Tabs>
-									{/if}
-								</section>
-
 								<RegionZoneMachineFields
 									entityType="cluster"
 									namePrefix="config"
@@ -318,7 +318,7 @@
 									</label>
 								</h3>
 
-								<p>Determine whether your cluster will be deployed with a router.</p>
+								<p>Determine whether your cluster will be deployed with an <a href="https://docs.ritual.net/infernet/router/introduction" target="_blank">Infernet Router</a>.</p>
 							</div>
 
 							<Switch
@@ -372,34 +372,43 @@
 							transition:scale={{ start: 0.8 }}
 							animate:flip={{ duration: 300 }}
 						>
-							<header class="row">
-								<h3 class="annotation">
-									Node #{i + 1}
-								</h3>
-						
-								{#if $form.nodes.length > 1}
-									<button
-										type="button"
-										class="small"
-										on:click={() => {
-											$form.nodes = $form.nodes.toSpliced(i, 1)
-										}}
-										transition:scale
+							<Collapsible
+								open
+							>
+								<svelte:fragment slot="trigger" let:open>
+									<header
+										class="row"
+										data-after={open ? '▴' : '▾'}
 									>
-										Delete
-									</button>
-								{/if}
-							</header>
+										<h3 class="annotation">
+											Node #{i + 1}
+										</h3>
+								
+										{#if $form.nodes.length > 1}
+											<button
+												type="button"
+												class="small destructive"
+												on:click={() => {
+													$form.nodes = $form.nodes.toSpliced(i, 1)
+												}}
+												transition:scale
+											>
+												Delete
+											</button>
+										{/if}
+									</header>
+								</svelte:fragment>
 
-							<NodeFormFields
-								defaultRegionId={$form.config.region}
-								defaultZoneId={$form.config.zone}
-								bind:node
-								namePrefix="nodes.{i}"
-								constraints={$constraints.nodes}
-								{serviceAccount}
-								{dockerAccounts}
-							/>
+								<NodeFormFields
+									defaultRegionId={$form.config.region}
+									defaultZoneId={$form.config.zone}
+									bind:node
+									namePrefix="nodes.{i}"
+									constraints={$constraints.nodes}
+									{serviceAccount}
+									{dockerAccounts}
+								/>
+							</Collapsible>
 						</article>
 					{/each}
 
@@ -415,13 +424,13 @@
 								type="button"
 								on:click={() => $form.nodes = [...$form.nodes, Node.getDefault()]}
 							>
-								Add Node
+								Add node
 							</button>
 
 							<FormSubmitButton
 								submitting={$submitting}
 								allErrors={$allErrors}
-								submitLabel="Create Cluster"
+								submitLabel="Create cluster"
 							/>
 						</div>
 					</footer>
@@ -436,6 +445,7 @@
 	.loading-status {
 		position: relative;
 		place-self: center;
+		cursor: progress;
 	}
 
 	.icon {

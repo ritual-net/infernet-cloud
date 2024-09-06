@@ -33,6 +33,15 @@
 			.join(' ')
 	)
 
+	const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	})
+
 
 	// Actions
 	import { addToast, removeToast } from '$/components/Toaster.svelte'
@@ -70,6 +79,7 @@
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import Status from '$/views/Status.svelte'
 	import TerraformDeployment from './TerraformDeployment.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 
 
 	// Transitions
@@ -92,21 +102,20 @@
 					{cluster.name || cluster.id}
 				</h2>
 
-				<p>Infernet Cluster</p>
+				<p>Infernet cluster</p>
 				<!-- <p>Created {cluster.created}</p> -->
 			</div>
 		</div>
 
 		<div class="row">
-			<dl class="card inline">
-				<div class="row">
-					<dt>Status</dt>
-					<dd>
-						<Status
-							status={cluster.status}
-						/>
-					</dd>
-				</div>
+			<dl class="status-container card row">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={cluster.status}
+					/>
+				</dd>
 			</dl>
 
 			<a
@@ -114,14 +123,14 @@
 					clusterId: $page.params.clusterId,
 				})}
 				class="button primary"
-			>Edit Cluster</a>
+			>Edit cluster</a>
 
 			<DropdownMenu
-				labelText="Cluster Actions"
+				labelText="Cluster actions"
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -139,8 +148,8 @@
 						value: 'apply',
 						label: (
 							cluster.status !== 'destroyed'
-								? 'Trigger Update'
-								: 'Recreate Cluster'
+								? 'Trigger update'
+								: 'Recreate cluster'
 						), 
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
@@ -174,7 +183,7 @@
 						cluster.status !== 'destroyed'
 							? {
 								value: 'destroy',
-								label: 'Destroy Cluster',
+								label: 'Destroy cluster',
 								formAction: `?/destroy`,
 								formSubmit: async (e) => {
 									const toast = addToast({
@@ -196,7 +205,8 @@
 							}
 							: {
 								value: 'delete',
-								label: 'Delete Cluster',
+								label: 'Delete cluster',
+								isDestructive: true,
 								formAction: `?/delete`,
 								formSubmit: async (e) => {
 									const toast = addToast({
@@ -232,7 +242,7 @@
 				})}
 				class="button"
 			>
-				Add Node
+				Add node
 			</a>
 		</div>
 
@@ -240,11 +250,11 @@
 			<div class="stack">
 				{#if !nodesWithInfo}
 					{#await nodesWithInfoPromise}
-						<div class="card" transition:scale>
+						<div class="card loading" transition:scale>
 							<p>Loading nodes...</p>
 						</div>
 					{:catch error}
-						<div class="card" transition:scale>
+						<div class="card error" transition:scale>
 							<p>Failed to load nodes.</p>
 							<pre><output><code>{error}</code></output></pre>
 						</div>
@@ -259,11 +269,11 @@
 	</section>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Configuration</h3>
 
 		<dl class="card column">
 			<section class="row wrap">
-				<dt>Cloud Account</dt>
+				<dt>Cloud account</dt>
 
 				<dd>
 					<a
@@ -272,11 +282,11 @@
 						})}
 						class="row inline with-icon"
 					>
-						<img
-							class="icon"
-							src={providers[cluster.service_account.provider].icon}
-						/>
-						{cluster.service_account.name}
+						<WithIcon
+							icon={providers[cluster.service_account.provider].icon}
+						>
+							{cluster.service_account.name}
+						</WithIcon>
 					</a>
 				</dd>
 			</section>
@@ -285,22 +295,26 @@
 				<dt>Region / Zone</dt>
 
 				<dd>
-					{#if 'region' in cluster}
-						{cluster.region}
-					{/if}
+					<WithIcon
+						icon={providers[cluster.service_account.provider].icon}
+					>
+						{#if 'region' in cluster}
+							{cluster.region}
+						{/if}
 
-					{#if 'region' in cluster && 'zone' in cluster}
-						/
-					{/if}
+						{#if 'region' in cluster && 'zone' in cluster}
+							/
+						{/if}
 
-					{#if 'zone' in cluster}
-						{cluster.zone}
-					{/if}
+						{#if 'zone' in cluster}
+							{cluster.zone}
+						{/if}
+					</WithIcon>
 				</dd>
 			</section>
 
 			<section class="row wrap">
-				<dt>IPs Allowed (HTTP)</dt>
+				<dt>IPs allowed (HTTP)</dt>
 
 				{#if cluster.ip_allow_http?.length}
 					<dd class="column inline">
@@ -314,7 +328,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>IPs Allowed (SSH)</dt>
+				<dt>IPs allowed (SSH)</dt>
 
 				{#if cluster.ip_allow_ssh?.length}
 					<dd class="column inline">
@@ -328,24 +342,30 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Has Deployed Router?</dt>
+				<dt>Has deployed router?</dt>
 
 				<dd>
 					{cluster.router ? 'Yes' : 'No'}
 				</dd>
 			</section>
+		</dl>
+	</section>
 
-			{#if cluster.router_status?.ip}
+	{#if cluster.router_status?.ip}
+		<section class="column">
+			<h3>Router</h3>
+
+			<dl class="card column">
 				<section class="row wrap">
-					<dt>Router IP</dt>
+					<dt>IP</dt>
 
 					<dd>
 						{cluster.router_status.ip}
 					</dd>
 				</section>
-			{/if}
-		</dl>
-	</section>
+			</dl>
+		</section>
+	{/if}
 
 	<section class="column">
 		<h3>Deployment</h3>
@@ -364,15 +384,16 @@
 			{#if cluster.latest_deployment}
 				{#if cluster.latest_deployment.timestamp}
 					<section class="row wrap">
-						<dt>Last Updated</dt>
+						<dt>Last updated</dt>
 
 						<dd>
-							<date>{new Date(cluster.latest_deployment.timestamp).toLocaleString()}</date>
+							<date>{dateTimeFormat.format(new Date(cluster.latest_deployment.timestamp))}</date>
 						</dd>
 					</section>
 				{/if}
 
 				<TerraformDeployment
+					clusterName={cluster.name}
 					provider={cluster.service_account.provider}
 					deployment={cluster.latest_deployment}
 					isSummary
@@ -389,78 +410,89 @@
 			</span>
 		</h3>
 
-		{#each (
-			// Group by "init" actions
-			cluster.deployments
-				.toReversed()
-				.reduce((groups, snapshot, i) => {
-					if(snapshot.action === TFAction.Init || i === 0)
-						groups.push([snapshot])
-					else
-						groups[groups.length - 1].push(snapshot)
-					return groups
-				}, [])
-				.toReversed()
-		) as group (group[0]?.id)}
-			<div class="column card">
-				{#each group as snapshot (snapshot.id)}
-					<Collapsible
-						class="card"
-					>
-						<svelte:fragment slot="trigger">
-							<header class="row wrap">
-								<h4>{snapshot.action}</h4>
+		<div class="history column">
+			{#each (
+				// Group by "init" actions
+				cluster.deployments
+					.toReversed()
+					.reduce((groups, snapshot, i) => {
+						if(snapshot.action === TFAction.Init || i === 0)
+							groups.push([snapshot])
+						else
+							groups[groups.length - 1].push(snapshot)
+						return groups
+					}, [])
+					.toReversed()
+			) as group (group[0]?.id)}
+				<div class="history-group-container column">
+					<h4 class="annotation">
+						{#if group[0] && group.at(-1)}
+							{dateTimeFormat.formatRange(new Date(group[0].timestamp), new Date(group.at(-1).timestamp))}
+						{:else if group[0]}
+							{dateTimeFormat.format(new Date(group[0].timestamp))}
+						{/if}
+					</h4>
 
-								<div class="column inline">
-									<dd>
-										<Status
-											status={snapshot.status}
-										/>
-									</dd>
+					<div class="column card">
+						{#each group as snapshot (snapshot.id)}
+							<Collapsible
+								class="card"
+							>
+								<svelte:fragment slot="trigger">
+									<header class="row wrap">
+										<h4>{snapshot.action}</h4>
 
-									<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
-								</div>
-							</header>
-						</svelte:fragment>
+										<div class="column inline">
+											<dd>
+												<Status
+													status={snapshot.status}
+												/>
+											</dd>
 
-						<dl
-							class="snapshot-details card column"
-						>
-							<section class="row wrap">
-								<dt>Status</dt>
+											<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
+										</div>
+									</header>
+								</svelte:fragment>
 
-								<dd>
-									<Status
-										status={snapshot.status}
+								<dl class="snapshot-details column">
+									<section class="row wrap">
+										<dt>Status</dt>
+
+										<dd>
+											<Status
+												status={snapshot.status}
+											/>
+										</dd>
+									</section>
+
+									<section class="row wrap">
+										<dt>Timestamp</dt>
+
+										<dd>
+											{dateTimeFormat.format(new Date(snapshot.timestamp))}
+										</dd>
+									</section>
+
+									<TerraformDeployment
+										clusterName={cluster.name}
+										provider={cluster.service_account.provider}
+										deployment={snapshot}
 									/>
-								</dd>
-							</section>
-
-							<section class="row wrap">
-								<dt>Timestamp</dt>
-
-								<dd>
-									{new Date(snapshot.timestamp).toLocaleString()}
-								</dd>
-							</section>
-
-							<TerraformDeployment
-								provider={cluster.service_account.provider}
-								deployment={snapshot}
-							/>
-						</dl>
-					</Collapsible>
-				{:else}
-					<div class="card">
-						<p>No deployments found.</p>
+								</dl>
+							</Collapsible>
+						{:else}
+							<div class="card">
+								<p>No deployments found.</p>
+							</div>
+						{/each}
 					</div>
-				{/each}
-			</div>
-		{:else}
-			<div class="card">
-				<p>No deployments found.</p>
-			</div>
-		{/each}
+				</div>
+			{:else}
+				<div class="card">
+					<p>No deployments found.</p>
+				</div>
+			{/each}
+		</div>
 	</section>
 </div>
 
@@ -490,6 +522,14 @@
 		text-align: end;
 	}
 
+	header .status-container {
+		--card-paddingX: 1.5em;
+		--card-paddingY: 0.75em;
+		--card-backgroundColor: rgba(0, 0, 0, 0.04);
+		--card-borderColor: transparent;
+		font-size: 0.9em;
+	}
+
 	.snapshot-details {
 		background-color: rgba(0, 0, 0, 0.03);
 	}
@@ -502,5 +542,13 @@
 		white-space: pre-wrap;
 		word-break: break-word;
 		tab-size: 2;
+	}
+
+	.history {
+		gap: 1.25em;
+
+		.history-group-container {
+			gap: 0.75em;
+		}
 	}
 </style>

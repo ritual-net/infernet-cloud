@@ -89,17 +89,17 @@
 >
 	<header class="row">
 		<legend>
-			<h2>Edit Cluster</h2>
+			<h2>Edit cluster</h2>
 		</legend>
 	</header>
 
 	<div class="card column">
 		<section class="row wrap">
 			<h3>
-				Cloud Account
+				Cloud account
 			</h3>
 
-			<div class="row">
+			<div class="row inline with-icon">
 				<img class="icon" src={providers[cluster.service_account.provider].icon} />
 				{cluster.service_account.name}
 			</div>
@@ -221,7 +221,7 @@
 			class="primary"
 			disabled={$submitting}
 		>
-			Save and Apply Changes
+			Save and apply changes
 		</button>
 	</footer>
 </form>

@@ -40,7 +40,7 @@
 					{serviceAccount.name || serviceAccount.id}
 				</h2>
 
-				<p>Cloud Account</p>
+				<p>Cloud account</p>
 			</div>
 		</div>
 
@@ -49,15 +49,15 @@
 				serviceAccountId: $page.params.serviceAccountId,
 			})}
 			class="button primary"
-		>Edit Account</a> -->
+		>Edit account</a> -->
 	</header>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Configuration</h3>
 
 		<dl class="card column">
 			<section class="row wrap">
-				<dt>Cloud Provider</dt>
+				<dt>Cloud provider</dt>
 
 				<dd class="row">
 					<img

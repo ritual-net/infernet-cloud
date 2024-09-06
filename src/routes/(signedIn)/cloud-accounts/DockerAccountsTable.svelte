@@ -7,14 +7,10 @@
 	export let dockerAccounts: PageServerData['dockerAccounts']
 
 
-	// Context
-	import { page } from '$app/stores'
-
-
 	// Actions
 	import { addToast, removeToast } from '$/components/Toaster.svelte'
 	import { applyAction } from '$app/forms'
-	import { invalidate } from '$app/navigation'
+	import { invalidateAll } from '$app/navigation'
 
 
 	// Functions
@@ -22,7 +18,10 @@
 
 
 	// Components
+	import { DockerIcon } from '$/icons'
 	import Table from '$/components/Table.svelte'
+	import { createRender } from 'svelte-headless-table'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
@@ -31,7 +30,14 @@
 	columns={[
 		{
 			header: 'Docker Hub Username',
-			accessor: dockerAccount => dockerAccount.username,
+			accessor: dockerAccount => dockerAccount,
+			cell: ({ value: dockerAccount }) => (
+				createRender(WithIcon, {
+					icon: DockerIcon,
+					alt: 'Docker',
+					value: dockerAccount.username,
+				})
+			),
 		},
 	]}
 	contextMenu={dockerAccount => {
@@ -56,7 +62,7 @@
 						await applyAction(result)
 
 						if(result.type === 'success')
-							invalidate($page.url)
+							invalidateAll()
 
 						removeToast(toast.id)
 					}

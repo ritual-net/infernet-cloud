@@ -20,7 +20,7 @@
 	// (View options)
 	export let placement: 'standalone' | 'in-modal' = 'standalone'
 	export let mode: 'create' | 'edit' = 'create'
-	export let submitLabel = 'Add Container'
+	export let submitLabel = 'Add container'
 
 
 	// Schema

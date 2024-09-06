@@ -269,6 +269,8 @@ export const getClusters = async (
 			id: true,
 			name: true,
 			node_count: e.count(cluster.nodes),
+			region: true,
+			zone: true,
 			status: true,
 			locked: true,
 		}))

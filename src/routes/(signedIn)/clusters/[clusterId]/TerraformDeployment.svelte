@@ -5,6 +5,7 @@
 
 
 	// Inputs
+	export let clusterName: string
 	export let provider: ProviderTypeEnum
 	export let deployment: TerraformDeployment
 	export let isSummary = false
@@ -15,7 +16,10 @@
 
 
 	// Components
+	import DetailsValue from '$/components/DetailsValue.svelte'
+	import ScrollArea from '$/components/ScrollArea.svelte'
 	import XYFlow from '$/components/XYFlow.svelte'
+	import XYFlowDownload from '$/components/XYFlowDownload.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
 	import TerraformResourceNode from './TerraformResourceNode.svelte'
 </script>
@@ -25,7 +29,7 @@
 	<section class="column">
 		<dt>Command</dt>
 
-		<dd class="scrollable">
+		<dd class="log-container scrollable">
 			<output><code>{deployment.command}</code></output>
 		</dd>
 	</section>
@@ -35,7 +39,7 @@
 	<section class="column">
 		<dt>Error</dt>
 
-		<dd class="scrollable">
+		<dd class="log-container scrollable">
 			<output><code>{deployment.error}</code></output>
 		</dd>
 	</section>
@@ -43,7 +47,7 @@
 
 {#if deployment.tfstate?.resources?.length}
 	<section class="column">
-		<dt>Cloud Resources</dt>
+		<dt>Cloud resources</dt>
 
 		<dd class="column">
 			{#if deployment.tfstate?.resources?.flatMap(resource => resource.instances).length}
@@ -89,7 +93,7 @@
 							))
 					}
 					direction="BT"
-					nodeWidth={310}
+					nodeWidth={345}
 					nodeHeight={75}
 					layoutOptions={{
 						// ranker: 'tight-tree',
@@ -98,18 +102,25 @@
 						edgesep: 50,
 						ranksep: 60,
 					}}
-				/>
+				>
+					<XYFlowDownload
+						fileName={`${clusterName}-resources-${deployment.action}-${deployment.timestamp}`}
+					/>
+				</XYFlow>
 			{/if}
 
-			<dl class="card scrollable column">
-				{#each deployment.tfstate.resources as resource}
-					<section
-						id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
-						class="column"
-					>
-						<dt>
-							{formatResourceType(resource.type)}: {resource.name}
-						</dt>
+			<ScrollArea
+				tagName="dl"
+			>
+				<div class="resources card column">
+					{#each deployment.tfstate.resources as resource}
+						<section
+							id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
+							class="column"
+						>
+							<dt>
+								{formatResourceType(resource.type)}: {resource.name}
+							</dt>
 
 						<dd>
 							{#each resource.instances as instance}
@@ -177,139 +188,178 @@
 											&& value !== null && !(Array.isArray(value) && value.length === 0)
 										)}
 											<section class="row wrap">
-												<dt>{key}</dt>
+												<dt>Tag</dt>
 												<dd>
-													{#if Array.isArray(value)}
-														{#each value as item}
-															<div>
-																<output><code>{item}</code></output>
-															</div>
-														{/each}
-													{:else}
-														<output><code>{value}</code></output>
-													{/if}
+													<p>{instance.attributes.tags.Name}</p>
 												</dd>
 											</section>
 										{/if}
-									{/each}
 
-									{#if instance.dependencies?.length}
-										<section class="row wrap">
-											<dt>Dependencies</dt>
-											<dd>
-												{#each instance.dependencies as dependency}
-													{@const [type, name] = dependency.split('.')}
+										{#if instance.attributes?.id}
+											<section class="row wrap">
+												<dt>ID</dt>
+												<dd>
+													<output><code>{instance.attributes.id}</code></output>
+												</dd>
+											</section>
+										{/if}
 
+										{#if instance.attributes?.arn}
+											<section class="row wrap">
+												<dt>ARN</dt>
+												<dd>
 													<p>
-														<a href="#terraform-resource-{deployment.id}-{type}-{name}">
-															{name} ({type})
+														<a
+															href={getAwsConsoleLink(instance.attributes.arn)}
+															target="_blank"
+															class="row inline with-icon"
+														>
+															<img
+																src={providers[ProviderTypeEnum.AWS].icon}
+																width="20"
+																height="20"
+															/>
+
+															{instance.attributes.arn}
 														</a>
 													</p>
-												{/each}
-											</dd>
-										</section>
-									{/if}
-								</dl>
-							{:else}
-								<div class="card column">
-									<p>No resources found.</p>
-								</div>
-							{/each}
-						</dd>
-					</section>
-				{/each}
-			</dl>
+												</dd>
+											</section>
+										{/if}
+
+										{#each Object.entries(instance.attributes) as [key, value]}
+											{#if (
+												!['tags', 'tags_all', 'id', 'arn'].includes(key)
+												&& value !== null && !(Array.isArray(value) && value.length === 0)
+											)}
+												<section class="row wrap">
+													<dt>{key}</dt>
+													<dd>
+														<DetailsValue
+															{value}
+														/>
+													</dd>
+												</section>
+											{/if}
+										{/each}
+
+										{#if instance.dependencies?.length}
+											<section class="row wrap">
+												<dt>Dependencies</dt>
+												<dd>
+													{#each instance.dependencies as dependency}
+														{@const [type, name] = dependency.split('.')}
+
+														<p>
+															<a href="#terraform-resource-{deployment.id}-{type}-{name}">
+																{name} ({type})
+															</a>
+														</p>
+													{/each}
+												</dd>
+											</section>
+										{/if}
+									</dl>
+								{:else}
+									<div class="card column">
+										<p>No resources found.</p>
+									</div>
+								{/each}
+							</dd>
+						</section>
+					{/each}
+				<!-- </div> -->
+			</ScrollArea>
 		</dd>
 	</section>
 {/if}
 
 {#if !isSummary && deployment.tfstate}
 	<section class="column">
-		<dt>Terraform State</dt>
+		<dt>Terraform state</dt>
 
-		<dd class="scrollable">
-			<output><code>{JSON.stringify(deployment.tfstate, null, '\t')}</code></output>
-		</dd>
+		<ScrollArea
+			tagName="dd"
+		>
+			<div class="log-container">
+				<output><code>{JSON.stringify(deployment.tfstate, null, '\t')}</code></output>
+			</div>
+		</ScrollArea>
 	</section>
 {/if}
 
 {#if deployment.stdout?.length}
 	<section class="column">
-		<dt>Terraform Logs</dt>
+		<dt>Terraform logs</dt>
 
-		<dd class="scrollable log-container">
-			{#each deployment.stdout as log, i}
-				{@const previousLog = deployment.stdout[i - 1]}
+		<ScrollArea
+			tagName="dd"
+		>
+			<div class="log-container">
+				{#each deployment.stdout as log, i}
+					{@const previousLog = deployment.stdout[i - 1]}
 
-				{#if previousLog && previousLog['@type'] !== log['@type']}
-					<hr>
-				{/if}
-
-				<div
-					class="log"
-					data-type={log['type']} 
-					data-level={log['@level']}
-					data-module={log['@module']}
-				>
-					<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
-
-					{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
-						<div class="diagnostic-log">
-							{#if log.diagnostic.detail}
-								<output><code>{log.diagnostic.detail}</code></output>
-							{/if}
-
-							{#if log.diagnostic.snippet?.code}
-								<blockquote>
-									<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
-								</blockquote>
-							{/if}
-						</div>
+					{#if previousLog && previousLog['@type'] !== log['@type']}
+						<hr>
 					{/if}
-				</div>
-			{/each}
-		</dd>
+
+					<div
+						class="log"
+						data-type={log['type']} 
+						data-level={log['@level']}
+						data-module={log['@module']}
+					>
+						<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+
+						{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
+							<div class="diagnostic-log">
+								{#if log.diagnostic.detail}
+									<output><code>{log.diagnostic.detail}</code></output>
+								{/if}
+
+								{#if log.diagnostic.snippet?.code}
+									<blockquote>
+										<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+									</blockquote>
+								{/if}
+							</div>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</ScrollArea>
 	</section>
 {/if}
 
 {#if deployment.stderr?.length}
 	<section class="column">
-		<dt>Terraform Error Logs</dt>
+		<dt>Terraform error logs</dt>
 
-		<dd class="scrollable log-container">
-			{#each deployment.stderr as log, i}
-				{@const previousLog = deployment.stderr[i - 1]}
+		<ScrollArea
+			tagName="dd"
+		>
+			<div class="log-container">
+				{#each deployment.stderr as log, i}
+					{@const previousLog = deployment.stderr[i - 1]}
 
-				{#if previousLog && previousLog['@type'] !== log['@type']}
-					<hr>
-				{/if}
+					{#if previousLog && previousLog['@type'] !== log['@type']}
+						<hr>
+					{/if}
 
-				<output
-					class="log"
-					data-type={log['type']} 
-					data-level={log['@level']}
-					data-module={log['@module']}
-				><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
-			{/each}
-		</dd>
+					<output
+						class="log"
+						data-type={log['type']} 
+						data-level={log['@level']}
+						data-module={log['@module']}
+					><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+				{/each}
+			</div>
+		</ScrollArea>
 	</section>
 {/if}
 
 
 <style>
-	.scrollable {
-		overflow: auto;
-		padding: 0.66em 1em;
-
-		resize: vertical;
-		&:not([style*="height"]) {
-			max-height: 19.6rem;
-		}
-
-		background: rgba(0, 0, 0, 0.05);
-		border-radius: 0.5em;
-	}
-
 	blockquote {
 		padding: 0.5em 0.75em;
 		font-size: smaller;
@@ -333,6 +383,10 @@
 		display: grid;
 		align-items: center;
 
+		padding: 0.66em 1em;
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
+
 		.log {
 			margin-inline: -1rem;
 			padding-inline: 1rem;
@@ -346,14 +400,22 @@
 
 		date {
 			position: sticky;
+			top: 0.25em;
 			right: 0;
 			float: right;
+			margin-left: 1em;
+			line-height: 2.4;
 			font-size: smaller;
 			opacity: 0.5;
 		}
 
-		code {
+		/* code {
 			white-space: pre-line;
-		}
+		} */
+	}
+
+	.resources {
+		font-size: 0.9em;
+		background-color: #0000000d;
 	}
 </style>

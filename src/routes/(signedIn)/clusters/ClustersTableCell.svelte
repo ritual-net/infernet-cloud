@@ -10,6 +10,19 @@
 	// Types/constants
 	import { providers } from '$/types/provider'
 	import type { getClusters } from '$/lib/db/queries'
+
+
+	// Functions
+	const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	})
+
+
 	
 	
 	// Inputs
@@ -18,20 +31,37 @@
 
 
 	// Components
+	import WithIcon from '$/components/WithIcon.svelte'
 	import Status from '$/views/Status.svelte'
 </script>
 
 
 {#if cellType === CellType.ServiceAccount}
-	<div class="row">
-		<img src={providers[cluster.service_account.provider].icon} />
-		{cluster.service_account.name}
-	</div>
+	<WithIcon
+		icon={providers[cluster.service_account.provider].icon}
+		alt={cluster.service_account.name}
+	>
+		<div>
+			{cluster.service_account.name}
+
+			<p class="annotation">
+				{cluster.region}
+				/
+				{cluster.zone}
+			</p>
+		</div>
+	</WithIcon>
 
 {:else if cellType === CellType.Status}
-	<Status
-		status={cluster.status}
-	/>
+	<div class="column inline">
+		<Status
+			status={cluster.status}
+		/>
+
+		{#if cluster.latest_deployment}
+			<date>{dateTimeFormat.format(new Date(cluster.latest_deployment.timestamp))}</date>
+		{/if}
+	</div>
 {/if}
 
 

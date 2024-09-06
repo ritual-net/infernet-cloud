@@ -196,15 +196,22 @@
 
 					(
 						dockerImagesQueryValue?.trim()
-						&& !images?.some(value => value === dockerImagesQueryValue.trim())
-						&& !dockerImages?.some(image => image.value === dockerImagesQueryValue.trim())
+						&& !(
+							new Set([
+								...images ?? [],
+								...dockerImages?.map(image => image.value) ?? []
+							])
+								.has(
+									dockerImagesQueryValue.trim().toLowerCase()
+								)
+						)
 					) && {
 						value: 'custom',
 						label: 'Custom',
 						items: [
 							{
-								value: dockerImagesQueryValue.trim(),
-								label: dockerImagesQueryValue.trim(),
+								value: dockerImagesQueryValue.trim().toLowerCase(),
+								label: dockerImagesQueryValue.trim().toLowerCase(),
 							}
 						].filter(Boolean),
 					},
@@ -223,7 +230,7 @@
 				</label>
 			</h3>
 
-			<p>Determine if container is publicly accessible.</p>
+			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_1_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
 		</div>
 
 		<Select
@@ -254,7 +261,7 @@
 					</label>
 				</h3>
 
-				<p>Determine if GPU-enabled.</p>
+				<p>Specify if the container requires a GPU to run jobs.</p>
 			</div>
 
 			<Switch
@@ -266,7 +273,12 @@
 		</div>
 
 		{#if !nodeConfiguration.hasGpu && container.gpu}
-			<p>Note: <u>node is not currently configured with a GPU.</u> This container may not operate correctly. Choose a machine type with GPU support.</p>
+			<div
+				class="card warning row"
+				data-before="⚠️"
+			>
+				<p>Note: This container may not operate correctly as the node is not currently configured with a GPU. Be sure to choose a zone / machine type with GPU support.</p>
+			</div>
 		{/if}
 	</section>
 
@@ -370,7 +382,7 @@
 		<div class="column inline">
 			<h3 class="row inline">
 				<label for="container.command">
-					Start Command
+					Start command
 				</label>
 
 				<span class="annotation">Optional</span>
@@ -394,7 +406,7 @@
 		<div class="column inline">
 			<h3 class="row inline">
 				<label for="container.env">
-					Environment Variables
+					Environment variables
 				</label>
 
 				<span class="annotation">Optional</span>
@@ -419,7 +431,7 @@
 		<div class="column inline">
 			<h3>
 				<span>
-					Rate Limiting
+					Rate limiting
 				</span>
 			</h3>
 
@@ -508,7 +520,7 @@
 							];
 						}}
 					>
-						Add Token
+						Add token
 					</button>
 
 					<p>If provided, subscriptions that don't meet these requirements will be skipped; otherwise, no payments will be received.</p>
@@ -579,28 +591,34 @@
 										{/if}
 									</div>
 
-									<input
-										type="number"
-										id="container.accepted_payments.{i}.amount"
-										name="container.accepted_payments.{i}.amount"
-										class="token-amount"
-										value={payment.amount}
-										on:input={e => { payment.amount = e.currentTarget.value }}
-										placeholder="0"
-										step="1"
-										{...constraints?.accepted_payments?.amount}
-									/>
+									<div class="row wrap">
+										<input
+											type="number"
+											id="container.accepted_payments.{i}.amount"
+											name="container.accepted_payments.{i}.amount"
+											class="token-amount"
+											value={payment.amount}
+											on:input={e => { payment.amount = e.currentTarget.value }}
+											placeholder="0"
+											step="1"
+											{...constraints?.accepted_payments?.amount}
+										/>
+									</div>
 								</div>
 
-								<button
-									type="button"
-									class="small destructive"
-									on:click={() => {
-										container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
-									}}
-								>
-									Delete
-								</button>
+								<div class="column inline">
+									<span>&nbsp;</span>
+
+									<button
+										type="button"
+										class="small destructive"
+										on:click={() => {
+											container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
+										}}
+									>
+										Delete
+									</button>
+								</div>
 							</div>
 						{/each}
 					</div>
@@ -609,7 +627,7 @@
 
 			<!-- {#if !nodeConfiguration.chainId}
 				<div
-					class="loading-status card row"
+					class="floating-status card row warning"
 					transition:scale
 				>
 					<p>Specify a Chain ID at the node level first.</p>
@@ -617,7 +635,7 @@
 			{:else if !nodeConfiguration.isPaymentsEnabled} -->
 			{#if !nodeConfiguration.isPaymentsEnabled}
 				<div
-					class="loading-status card row"
+					class="floating-status card row warning"
 					transition:scale
 				>
 					{#if chainsByChainId.has(nodeConfiguration.chainId)}
@@ -630,7 +648,7 @@
 		</section>
 	{/if}
 
-	<div class="card column">
+	<!-- <div class="card column">
 		<Collapsible
 			open={hasAdvancedOptions}
 		>
@@ -638,14 +656,14 @@
 				<header>
 					Advanced
 				</header>
-			</svelte:fragment>
+			</svelte:fragment> -->
 
 			<section class="column">
 				<div class="row wrap">
 					<div class="column inline">
 						<h3>
 							<label for="container.generates_proofs">
-								Generate Proofs?
+								Generates proofs?
 							</label>
 						</h3>
 		
@@ -661,11 +679,16 @@
 				</div>
 
 				{#if container.generates_proofs}
-					<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. If using this, be sure to permission the node by setting allowed Addresses and Delegate Addresses under Firewall.</p>
+					<div
+						class="card warning row"
+						data-before="⚠️"
+					>
+						<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. If using this, be sure to permission the node by setting allowed Addresses and Delegate Addresses under Firewall.</p>
+					</div>
 				{/if}
 			</section>
-		</Collapsible>
-	</div>
+		<!-- </Collapsible>
+	</div> -->
 </fieldset>
 
 
@@ -684,7 +707,7 @@
 		--input-paddingY: 0.75rem;
 	}
 
-	.loading-status {
+	.floating-status {
 		position: relative;
 		place-self: center;
 	}

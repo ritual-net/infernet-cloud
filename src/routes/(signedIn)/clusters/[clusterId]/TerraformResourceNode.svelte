@@ -39,16 +39,20 @@
 		target="_blank"
 		class="row"
 	>
-		<img
-			src={providers[data.provider].icon}
-			width="40"
-			height="40"
-		/>
+		<div class="row">
+			<img
+				src={providers[data.provider].icon}
+				width="40"
+				height="40"
+			/>
 
-		<div>
-			<h5>{data.resource.name}</h5>
-			<span class="annotation">{formatResourceType(data.resource.type)}</span>
+			<div>
+				<h5>{data.resource.name}</h5>
+				<span class="annotation">{formatResourceType(data.resource.type)}</span>
+			</div>
 		</div>
+
+		<span>↗</span>
 	</a>
 
 	<Handle
@@ -75,7 +79,6 @@
 		box-shadow: 0 0 0 1px rgb(0 0 0 / 10%), 0 0 0 2px rgb(0 0 0 / 20%);
 
 		> a {
-			justify-content: start;
 			cursor: pointer;
 		}
 	}

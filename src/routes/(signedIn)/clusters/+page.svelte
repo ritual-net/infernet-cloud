@@ -18,7 +18,7 @@
 				await new Promise(resolve => setTimeout(resolve, 5000))
 				if(!isMounted) return
 
-				await invalidate($page.url)
+				await invalidate('/api/cluster')
 			}
 		})()
 
@@ -43,7 +43,7 @@
 				class="button primary"
 				href="/clusters/create"
 			>
-				Create Cluster
+				Create cluster
 			</a>
 
 			<DropdownMenu
@@ -51,7 +51,7 @@
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {

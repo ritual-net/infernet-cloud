@@ -26,6 +26,9 @@
 			placement,
 			fitViewport: true,
 		},
+
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
 	})
 
 
@@ -69,6 +72,7 @@
 						>
 							<button
 								type="submit"
+								class:destructive={_subitem.isDestructive}
 								use:melt={$item}
 							>
 								<div class="row">
@@ -79,6 +83,7 @@
 					{:else}
 						<div
 							use:melt={$item}
+							class:destructive={_subitem.isDestructive}
 							on:m-click={e => _subitem.onClick?.(_subitem)}
 						>
 							<div class="row">
@@ -97,6 +102,7 @@
 				>
 					<button
 						type="submit"
+						class:destructive={subitem.isDestructive}
 						use:melt={$item}
 					>
 						<div class="row">
@@ -107,6 +113,7 @@
 			{:else}
 				<div
 					use:melt={$item}
+					class:destructive={subitem.isDestructive}
 					on:m-click={e => subitem.onClick?.(subitem)}
 				>
 					<div class="row">
@@ -197,7 +204,9 @@
 		display: contents;
 
 		& button {
-			all: unset;
+			--button-backgroundColor: transparent;
+			--button-borderWidth: 0px;
+			--button-cornerRadius: 0px;
 		}
 	}
 </style>

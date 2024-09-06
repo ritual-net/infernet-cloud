@@ -22,6 +22,7 @@
 	export let multiple: boolean = false
 
 	// (View options)
+	export let loading = false
 	export let visuallyDisabled = false
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
@@ -98,6 +99,9 @@
 			// boundary: document.getElementsByTagName('main')[0],
 		},
 
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
+
 		onOpenChange: ({ curr, next }) => {
 			const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
 
@@ -142,12 +146,9 @@
 
 	// (Computed)
 	$: filteredItems =
-		inputValue !== undefined
+		inputValue !== undefined && $touchedInput
 			? filterItems(items, inputValue)
 			: items
-	// $: filteredItems = $touchedInput
-	// 	? filterItems(items, inputValue)
-	// 	: items
 </script>
 
 
@@ -160,6 +161,7 @@
 	<div class="stack">
 		<input
 			type="text"
+			class:loading
 			aria-disabled={visuallyDisabled ? true : undefined}
 			use:melt={$input}
 			value={inputValue}
@@ -276,8 +278,13 @@
 		cursor: context-menu;
 
 		&:after {
+			--combobox-indicator-inset: 1px;
+
 			margin: var(--borderWidth);
-			padding: var(--combobox-paddingY) calc(var(--combobox-paddingX) - 0.25em);
+			padding:
+				calc(var(--combobox-paddingY) - var(--combobox-indicator-inset))
+				calc(var(--combobox-paddingX) - 0.25em - var(--combobox-indicator-inset))
+			;
 			overflow: hidden;
 			border-radius: 0.33em;
 

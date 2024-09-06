@@ -5,7 +5,7 @@
 	import type { ServiceAccount } from '$schema/interfaces'
 	import type { BaseResourceClient } from '$/lib/clients/resource/base'
 	import type { Config, NodeConfig, RouterConfig } from './schema'
-	import { providers } from '$/types/provider'
+	import { providers, type Machine } from '$/types/provider'
 	import { providerRegionsAndZones } from '$/lib/utils/providers/common'
 
 
@@ -177,7 +177,7 @@
 					})
 				)
 					.then(response => response.json())
-			)
+			) as Machine
 		),
 	})
 
@@ -188,8 +188,13 @@
 
 
 	// Components
+	import Collapsible from '$/components/Collapsible.svelte'
 	import Combobox from '$/components/Combobox.svelte'
+	import DetailsValue from '$/components/DetailsValue.svelte'
+	import ScrollArea from '$/components/ScrollArea.svelte'
+	import SizeTransition from '$/components/SizeTransition.svelte'
 	import Switch from '$/components/Switch.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 
 
 	// Transitions/animations
@@ -231,7 +236,13 @@
 							</label>
 						</h4>
 
-						<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">region</a> where your {entityType} should be deployed.</p>
+						<p>
+							Select the
+							<a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">
+								{serviceAccount ? `${serviceAccount.provider} ` : ''}region
+							</a>
+							to deploy your {entityType} to.
+						</p>
 					</div>
 
 					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
@@ -249,6 +260,7 @@
 											label: regionId,
 										}
 									].filter(Boolean),
+									loading: true,
 									visuallyDisabled: true,
 								}
 								: {
@@ -296,7 +308,13 @@
 							</label>
 						</h4>
 
-						<p>Select the <a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">zone</a> where your {entityType} should be deployed.</p>
+						<p>
+							Select the
+							<a href={serviceAccount ? providerRegionsAndZones[serviceAccount.provider].regionsInfoLink : ''} target="_blank">
+								{serviceAccount ? `${serviceAccount.provider} ` : ''}zone
+							</a>
+							to deploy your {entityType} to.
+						</p>
 					</div>
 
 					{#if defaults?.region ? overrideDefaultRegionAndZone : true}
@@ -318,6 +336,7 @@
 											label: zoneId,
 										}
 									].filter(Boolean),
+									loading: true,
 									visuallyDisabled: true,
 								}
 								: {
@@ -346,71 +365,100 @@
 		</section>
 
 		{#if entityType !== 'cluster'}
-			<section class="column">
-				<div class="row wrap">
-					<div class="column inline">
-						<h3>
-							<label for="{namePrefix}.machine_type">
-								Machine Type
-							</label>
-						</h3>
+			<SizeTransition>
+				<section class="column">
+					<div class="row wrap">
+						<div class="column inline">
+							<h3>
+								<label for="{namePrefix}.machine_type">
+									Machine type
+								</label>
+							</h3>
 
-						<p>Select the type of machine you would like to deploy.</p>
+							<p>Select the type of machine you would like to deploy.</p>
+						</div>
+
+						<Combobox
+							id="{namePrefix}.machine_type"
+							name="{namePrefix}.machine_type"
+							labelText="Machine type"
+							bind:value={machineId}
+							{...!machines
+								? {
+									placeholder: (
+										$machinesQuery.isPending
+											? 'Loading available machine types...'
+											: 'Choose a zone first.'
+									),
+									items: [
+										machineId && {
+											value: machineId,
+											label: machineId,
+										}
+									].filter(Boolean),
+									loading: true,
+									visuallyDisabled: true,
+								}
+								: {
+									placeholder: 'Choose machine type...',
+									items: (
+										Array.from(
+											(
+												Map.groupBy(
+													machines,
+													machineConfig => machineConfig.hasGpu
+												)
+													.entries()
+											),
+											([hasGpu, machineConfigs]) => ({
+												value: hasGpu,
+												label: hasGpu ? 'GPU-Enabled' : 'No GPU',
+												items: machineConfigs.map(machineConfig => ({
+													value: machineConfig.id,
+													label: `${machineConfig.name}${machineConfig.description ? ` (${machineConfig.description})` : ''}`,
+												}))
+											})
+										)
+									),
+								}
+							}
+							{...constraints?.machine_type}
+						/>
 					</div>
 
-					<Combobox
-						id="{namePrefix}.machine_type"
-						name="{namePrefix}.machine_type"
-						labelText="Machine Type"
-						bind:value={machineId}
-						{...!machines
-							? {
-								placeholder: (
-									$machinesQuery.isPending
-										? 'Loading available machine types...'
-										: 'Choose a zone first.'
-								),
-								items: [
-									machineId && {
-										value: machineId,
-										label: machineId,
-									}
-								].filter(Boolean),
-								visuallyDisabled: true,
-							}
-							: {
-								placeholder: 'Choose machine type...',
-								items: (
-									Array.from(
-										(
-											Map.groupBy(
-												machines,
-												machineConfig => machineConfig.hasGpu
-											)
-												.entries()
-										),
-										([hasGpu, machineConfigs]) => ({
-											value: hasGpu,
-											label: hasGpu ? 'GPU-Enabled' : 'No GPU',
-											items: machineConfigs.map(machineConfig => ({
-												value: machineConfig.id,
-												label: `${machineConfig.name} (${machineConfig.description})`,
-											}))
-										})
-									)
-								),
-							}
-						}
-						{...constraints?.machine_type}
-					/>
-				</div>
-			</section>
+					{#if machineInfo?.info}
+						<Collapsible
+							class="card"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={serviceAccount && providers[serviceAccount.provider].icon}
+									>
+										{selectedMachine?.id}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							<ScrollArea
+								layout="inline"
+							>
+								<div>
+									<DetailsValue
+										value={machineInfo.info}
+									/>
+								</div>
+							</ScrollArea>
+						</Collapsible>
+					{/if}
+				</section>
+			</SizeTransition>
 		{/if}
 	</fieldset>
 
 	{#if !serviceAccount}
 		<div
-			class="loading-status card row"
+			class="floating-status card warning"
 			transition:scale|global
 		>
 			<p>Choose a cloud account first.</p>
@@ -418,7 +466,7 @@
 	{:else}
 		{#if $regionsQuery.isPending}
 			<div
-				class="loading-status card row"
+				class="floating-status card loading row"
 				transition:scale|global
 			>
 				<img class="icon" src={providers[serviceAccount.provider].icon} />
@@ -426,7 +474,7 @@
 			</div>
 		{:else if $regionsQuery.isError}
 			<div
-				class="loading-status card row"
+				class="floating-status card error row"
 				transition:scale|global
 			>
 				<img class="icon" src={providers[serviceAccount.provider].icon} />
@@ -438,7 +486,7 @@
 
 
 <style>
-	.loading-status {
+	.floating-status {
 		position: relative;
 		place-self: center;
 	}
@@ -448,4 +496,3 @@
 		height: 1.5em;
 	}
 </style>
-

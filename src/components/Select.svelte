@@ -18,8 +18,9 @@
 	export let required: boolean = false
 	export let disabled: boolean = false
 	export let multiple: boolean = false
-
+	
 	// (View options)
+	export let loading: boolean = false
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
 
@@ -46,6 +47,9 @@
 			placement,
 			fitViewport: true,
 		},
+
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
 	})
 
 	const {
@@ -91,6 +95,7 @@
 		use:melt={$trigger}
 		aria-label={labelText}
 		class="row"
+		class:loading
 		bind:this={triggerElement}
 	>
 		{#if $selected?.icon}

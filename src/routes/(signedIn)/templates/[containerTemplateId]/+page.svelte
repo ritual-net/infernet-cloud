@@ -43,24 +43,25 @@
 					{containerTemplate.name}
 				</h2>
 
-				<p>Container Template</p>
+				<p>Container template</p>
 			</div>
 		</div>
 
 		<div class="row">
 			<DropdownMenu
-				labelText="Container Template Actions"
+				labelText="Container Template actions"
 				items={[
 					{
 						value: 'duplicate',
-						label: 'Duplicate Container Template',
+						label: 'Duplicate container template',
 						onClick: () => {
 							goto(`/templates/create?fromContainerTemplate=${containerTemplate.id}`)
 						},
 					},
 					{
 						value: 'delete',
-						label: 'Delete Container Template',
+						label: 'Delete container template',
+						isDestructive: true,
 						formAction: `?/delete`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -86,7 +87,52 @@
 	</header>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Node details</h3>
+
+		<dl class="card column">
+			<section class="row wrap">
+				<dt>Onchain?</dt>
+
+				<dd>
+					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
+			<section class="row">
+				<dt>Chain</dt>
+
+				<dd>
+					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
+						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
+
+						<span class="row inline with-icon">
+							<img
+								src={chain.icon}
+								alt={chain.name}
+								class="icon"
+							/>
+							{chain.name}
+						</span>
+					{:else}
+						{containerTemplate.chain_id}
+					{/if}
+				</dd>
+			</section>
+
+			{#if containerTemplate.docker_account}
+				<section class="row wrap">
+					<dt>Docker Hub account</dt>
+
+					<dd>
+						{containerTemplate.docker_account.username}
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
+	<section class="column">
+		<h3>Configuration</h3>
 
 		<dl class="card column">
 			<section class="row wrap">
@@ -145,7 +191,7 @@
 
 			{#if containerTemplate.allowed_addresses?.length}
 				<section class="row wrap">
-					<dt>Allowed Addresses</dt>
+					<dt>Allowed addresses</dt>
 
 					<dd>
 						{#each containerTemplate.allowed_addresses as address}
@@ -157,7 +203,7 @@
 
 			{#if containerTemplate.allowed_delegate_addresses?.length}
 				<section class="row wrap">
-					<dt>Allowed Delegate Addresses</dt>
+					<dt>Allowed delegate addresses</dt>
 
 					<dd>
 						{#each containerTemplate.allowed_delegate_addresses as address}
@@ -169,7 +215,7 @@
 
 			{#if containerTemplate.command}
 				<section class="row wrap">
-					<dt>Start Command</dt>
+					<dt>Start command</dt>
 
 					<dd>
 						<pre><code>{containerTemplate.command}</code></pre>
@@ -179,16 +225,28 @@
 
 			{#if containerTemplate.env && Object.entries(containerTemplate.env).length}
 				<section class="column">
-					<dt>Environment Variables</dt>
+					<dt>Environment variables</dt>
 
 					<dd>
-						<pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre>
+						<!-- <pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre> -->
+
+						<dl class="card column">
+							{#each Object.entries(containerTemplate.env) as [key, value] (key)}
+								<section class="row wrap">
+									<dt>{key}</dt>
+
+									<dd>
+										<output>{value}</output>
+									</dd>
+								</section>
+							{/each}
+						</dl>
 					</dd>
 				</section>
 			{/if}
 
 			<section class="row wrap">
-				<dt>Rate Limiting</dt>
+				<dt>Rate limiting</dt>
 
 				<dd>
 					{containerTemplate.rate_limit_num_requests} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests)]}
@@ -250,55 +308,10 @@
 
 			{#if containerTemplate.generates_proofs !== undefined}
 				<section class="row">
-					<dt>Generates Proofs?</dt>
+					<dt>Generates proofs?</dt>
 
 					<dd>
 						{containerTemplate.generates_proofs ? 'Yes' : 'No'}
-					</dd>
-				</section>
-			{/if}
-		</dl>
-	</section>
-
-	<section class="column">
-		<h3>Node Details</h3>
-
-		<dl class="card column">
-			<section class="row wrap">
-				<dt>Onchain?</dt>
-
-				<dd>
-					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
-				</dd>
-			</section>
-
-			<section class="row">
-				<dt>Chain</dt>
-
-				<dd>
-					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
-						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
-
-						<span class="row inline with-icon">
-							<img
-								src={chain.icon}
-								alt={chain.name}
-								class="icon"
-							/>
-							{chain.name}
-						</span>
-					{:else}
-						{containerTemplate.chain_id}
-					{/if}
-				</dd>
-			</section>
-
-			{#if containerTemplate.docker_account}
-				<section class="row wrap">
-					<dt>Docker Hub Account</dt>
-
-					<dd>
-						{containerTemplate.docker_account.username}
 					</dd>
 				</section>
 			{/if}

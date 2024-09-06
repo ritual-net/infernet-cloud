@@ -95,8 +95,7 @@ export enum NodeAction {
 }
 
 
-import AWSIcon from '$/assets/aws.svg'
-import GCPIcon from '$/assets/gcp.svg'
+import { AWSIcon, GCPIcon } from '../icons'
 
 export const providers = {
 	[ProviderTypeEnum.AWS]: {

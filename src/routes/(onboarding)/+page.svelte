@@ -34,8 +34,8 @@
 				</div>
 
 				<div class="column inline">
-					<h3>Customize your infra</h3>
-					<p>Choose the configuration details of your nodes and clusters.</p>
+					<h3>Customize your infrastructure</h3>
+					<p>Configure regions, zones and firewalls for clusters, routers and nodes.</p> 
 				</div>
 			</li>
 
@@ -45,8 +45,8 @@
 				</div>
 
 				<div class="column inline">
-					<h3>Control privacy settings</h3>
-					<p>Determine the visibility of your nodes, whitelist IP addresses and more.</p>
+					<h3>Bring your own cloud accounts</h3>
+					<p>Run containers using custom Docker images, machine types and more.</p>
 				</div>
 			</li>
 		</ul>
@@ -61,28 +61,28 @@
 			class="button"
 			href="/login#signUp"
 		>
-			Sign Up
+			Sign up
 		</a>
 
 		<a
 			class="button primary"
 			href="/login#logIn"
 		>
-			Log In
+			Log in
 		</a>
 	{:else}
 		<a
 			class="button"
 			href="/cloud-accounts"
 		>
-			Connect Cloud Account
+			Connect cloud account
 		</a>
 
 		<a
 			class="button primary"
 			href="/clusters"
 		>
-			Manage Clusters
+			Manage clusters
 		</a>
 	{/if}
 </div>
@@ -100,13 +100,13 @@
 				align-self: start;
 				display: flex;
 				background-color: hsl(from var(--color-ritualGreen) h s l / 20%);
-				padding: 0.8em;
+				padding: 0.5em;
 				color: #16B371;
 				border-radius: 50%;
 
 				> :global(*) {
-					width: 2em;
-					height: 2em;
+					width: 1.66em;
+					height: 1.66em;
 				}
 			}
 		}

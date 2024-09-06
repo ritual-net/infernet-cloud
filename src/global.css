@@ -31,6 +31,15 @@
 
 	--card-default-backgroundColor: #fff;
 	--card-default-textColor: var(--textColor);
+
+	--card-typeSuccess-backgroundColor: rgb(246, 255, 246);
+	--card-typeSuccess-borderColor: rgba(0, 160, 0, 0.2);
+
+	--card-typeWarning-backgroundColor: rgb(255, 255, 246);
+	--card-typeWarning-borderColor: rgba(160, 152, 0, 0.2);
+
+	--card-typeError-backgroundColor: rgb(255, 246, 246);
+	--card-typeError-borderColor: rgba(255, 0, 0, 0.2);
 }
 
 * {
@@ -90,6 +99,13 @@ a {
 	&[aria-disabled="true"]  {
 		pointer-events: none;
 	}
+
+	&.button[target="_blank"]:after {
+		content: '↗';
+		font-size: 0.66em;
+		vertical-align: text-bottom;
+		margin-inline-start: 0.5em;
+	}
 }
 
 ol, ul {
@@ -100,8 +116,41 @@ ol, ul {
 	}
 }
 
+ol {
+	padding-inline-start: 0;
+
+	li {
+		counter-increment: list-item;
+
+		position: relative;
+		list-style: none;
+
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		gap: 1em;
+
+		&::before {
+			content: counter(list-item);
+
+			width: 1.66em;
+			height: 1.66em;
+			padding: 0.33em;
+			
+			background-color: hsl(from var(--color-ritualGreen) h s l / 20%);
+			border-radius: 50%;
+			
+			line-height: 1.66em;
+			font-weight: bold;
+			color: #16B371;
+			text-align: center;
+		}
+	}
+}
+
 dt {
 	opacity: 0.5;
+	align-self: start;
 }
 dd {
 	.row > & {
@@ -281,6 +330,21 @@ button, .button {
 	--card-borderWidth: var(--borderWidth);
 	--card-cornerRadius: 0.33em;
 
+	&.success {
+		--card-backgroundColor: var(--card-typeSuccess-backgroundColor);
+		--card-borderColor: var(--card-typeSuccess-borderColor);
+	}
+
+	&.warning {
+		--card-backgroundColor: var(--card-typeWarning-backgroundColor);
+		--card-borderColor: var(--card-typeWarning-borderColor);
+	}
+
+	&.error {
+		--card-backgroundColor: var(--card-typeError-backgroundColor);
+		--card-borderColor: var(--card-typeError-borderColor);
+	}
+
 	/* clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth))); */
 	overflow: hidden;
 	
@@ -308,6 +372,10 @@ button, .button {
 	&.column:has(:is(header, section, footer)) {
 		row-gap: var(--card-borderWidth);
 	}
+
+	.card {
+		margin: -1px;
+	}
 }
 
 .annotation {
@@ -332,4 +400,16 @@ code, .code {
 
 hr {
 	border-top: solid var(--borderWidth) var(--borderColor);
+}
+
+[data-before]::before {
+	content: attr(data-before);
+}
+
+[data-after]::after {
+	content: attr(data-after);
+}
+
+.loading {
+	cursor: progress;
 }

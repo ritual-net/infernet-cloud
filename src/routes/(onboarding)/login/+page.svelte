@@ -10,7 +10,7 @@
 	// Context
 	import { page } from '$app/stores'
 
-	import type { PageData } from './$types'
+	import type { PageData } from '../../login/$types'
 
 	const {
 		signUpFormData,
@@ -163,7 +163,7 @@
 					<FormSubmitButton
 						submitting={$signUpSubmitting}
 						allErrors={$signUpAllErrors}
-						submitLabel="Sign Up"
+						submitLabel="Sign up"
 					/>
 				</form>
 
@@ -256,5 +256,7 @@
 		display: grid;
 		grid-template-columns: minmax(0, 30rem);
     	justify-content: center;
+
+		align-self: center;
 	}
 </style>
