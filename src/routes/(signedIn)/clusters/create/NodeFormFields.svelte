@@ -595,7 +595,7 @@
 				pushState('#/container/edit', {
 					showContainerForm: 'edit',
 					nodeId: node.id,
-					containerId: container.id,
+					containerId: container.id ?? undefined,
 					pageData: {
 						...result.data,
 						imagesPromise: await result.data.imagesPromise,
