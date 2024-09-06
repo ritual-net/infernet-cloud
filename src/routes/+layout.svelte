@@ -251,6 +251,10 @@
 			> :first-child {
 				--accentColor: var(--color-ritualGreen-dark);
 			}
+
+			> :last-child {
+				margin-inline-start: auto;
+			}
 		}
 
 		.logo {
