@@ -183,7 +183,7 @@
 		--select-groupItem-indentX: 1em;
 
 		--select-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
-		--select-backdropFilter: blur(3px);
+		--select-backdropFilter: blur(20px);
 		--select-borderColor: var(--borderColor);
 		--select-borderWidth: var(--borderWidth);
 		--select-cornerRadius: 0.33em;

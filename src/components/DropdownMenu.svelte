@@ -132,7 +132,7 @@
 		--dropdownMenu-paddingY: 0.5em;
 
 		--dropdownMenu-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
-		--dropdownMenu-backdropFilter: blur(3px);
+		--dropdownMenu-backdropFilter: blur(20px);
 		--dropdownMenu-borderColor: var(--borderColor);
 		--dropdownMenu-borderWidth: var(--borderWidth);
 		--dropdownMenu-cornerRadius: 0.33em;
