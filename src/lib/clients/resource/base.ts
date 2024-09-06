@@ -7,7 +7,7 @@ import type { ProviderTypeEnum } from '$/types/provider'
 /**
  * Base abstract class for fetching data from cloud providers.
  */
-export abstract class BaseResourceClient<T extends ProviderTypeEnum> {
+export abstract class BaseResourceClient<T extends ProviderTypeEnum = ProviderTypeEnum> {
 	/**
 	 * Authenticate with the cloud provider.
 	 * This method should be called before any other methods.
