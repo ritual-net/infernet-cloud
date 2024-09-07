@@ -13,6 +13,7 @@
 		"local:edgedb:cli": "edgedb",
 		"docker:up": "docker compose up --detach && docker compose logs -f",
 		"docker:up:force": "docker compose build --force-rm --no-cache && pnpm run docker:up",
+		"docker:down": "docker compose down",
 		"docker:clean": "docker system prune -f",
 		"docker:server:up": "docker compose up --build --no-deps -d server",
 		"docker:server:restart": "pnpm run docker:clean && docker compose up server --build",
