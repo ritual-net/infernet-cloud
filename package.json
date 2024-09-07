@@ -3,6 +3,8 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
+		"init:local": "cp -n .env.local.example .env.local && pnpm install && pnpm run local:edgedb:init",
+		"init:docker": "cp -n .env.docker.example .env.docker && pnpm install",
 		"dev:local": "pnpm run local:server",
 		"dev:docker": "pnpm run docker:up",
 		"local:server": "vite dev",
