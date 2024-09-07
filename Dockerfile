@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 FROM base AS build
 
-COPY .env.docker .env
+COPY .env.docker .env.docker
 
 # pnpm install
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
@@ -46,10 +46,10 @@ FROM runtime AS app
 COPY --from=prod-deps /app/node_modules/ /app/node_modules/
 COPY --from=build /app/build/ /app/build/
 COPY --from=build /app/package.json /app/package.json
-COPY --from=build /app/.env /app/.env
+COPY --from=build /app/.env.docker /app/.env.docker
 COPY --from=build /app/infernet-deploy /app/infernet-deploy
 WORKDIR /app
 
 # Entry point for the app
 ENV NODE_ENV=production
-CMD ["dotenvx", "run", "--", "node", "build"]
+CMD ["dotenvx", "run", "-f", ".env.docker", "--", "node", "build"]

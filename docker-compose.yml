@@ -1,3 +1,6 @@
+env_file:
+  - path: ./.env.docker
+
 services:
   caddy:
     depends_on:
@@ -18,8 +21,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - .env
     restart: unless-stopped
     ports:
       - 3000:3000
