@@ -11,6 +11,7 @@
 		"local:edgedb:migrate": "edgedb migration create; edgedb migrate; pnpm run edgedb:generate",
 		"local:edgedb:destroy": "edgedb instance destroy -I infernet_cloud --force",
 		"local:edgedb:cli": "edgedb",
+		"local:edgedb:ui": "edgedb ui",
 		"docker:up": "docker compose up --detach && docker compose logs -f",
 		"docker:up:force": "docker compose build --force-rm --no-cache && pnpm run docker:up",
 		"docker:down": "docker compose down",
