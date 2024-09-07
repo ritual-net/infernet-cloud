@@ -13,6 +13,9 @@ FROM base AS prod-deps
 # pnpm install (production)
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
+# Install dotenvx
+RUN pnpm install @dotenvx/dotenvx --save
+
 
 FROM base AS build
 
@@ -30,9 +33,6 @@ FROM base AS runtime
 
 # Install curl and unzip
 RUN apk add --update curl unzip
-
-# Install dotenvx
-RUN curl -fsS https://dotenvx.sh/ | sh
 
 # Install Terraform
 ENV TERRAFORM_VERSION=1.9.0
