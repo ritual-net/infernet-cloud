@@ -3,6 +3,8 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
+		"dev:local": "pnpm run local:server",
+		"dev:docker": "pnpm run docker:up",
 		"local:server": "vite dev",
 		"local:server:debug": "NODE_OPTIONS='--inspect=localhost:9229' vite dev",
 		"local:edgedb:init": "edgedb project init; pnpm run local:edgedb:migrate",
