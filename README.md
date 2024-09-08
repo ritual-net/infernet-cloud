@@ -56,7 +56,7 @@
 
 7. Navigate to [http://localhost:3000](http://localhost:3000) in your browser to access the UI.
 
-	Jump to [Using Infernet Cloud](#using-infernet-cloud)
+	* Jump to [Using Infernet Cloud](#using-infernet-cloud) to get started with deploying an Infernet Node.
 
 ---
 
@@ -165,6 +165,8 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	* `smtp` – email relay service (used for sending user verification emails)
 
 8. Access the UI by opening a web browser and navigating to [http://localhost:3000](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
+
+	* Jump to [Using Infernet Cloud](#using-infernet-cloud) to get started with deploying an Infernet Node.
 
 9. Stop all services:
 
