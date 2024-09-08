@@ -65,7 +65,7 @@ pnpm run local:server:debug
 	pnpm run local:edgedb:init
 	```
 
-* Create and apply migrations to local EdgeDB database instance after making changes to [dbschema/schema.esdl](dbschema/schema.esdl), and generate TypeScript types:
+* After making changes to [dbschema/schema.esdl](dbschema/schema.esdl), create and apply migrations to local EdgeDB database instance, and regenerate TypeScript types:
 	```bash
 	pnpm run local:edgedb:migrate
 	```
@@ -213,53 +213,80 @@ Find more commands and their definitions in the `scripts` section of [package.js
 ## Usage
 
 ### 1. Create an account
+
 * Navigate to **Log in**.
+
 * Choose an email and password.
-* Verify your email address using the link sent to your email.
+
+* If email verification is enabled, verify your email address using the link sent to your email.
+
 * Log in.
 
 ### 2. Connect a cloud provider
+
 * Navigate to **Accounts** › **Connect Cloud Account**.
+
 * Choose a cloud provider (AWS or Google Cloud), name your account, and click **Continue**.
+
 * Follow the instructions to install the cloud provider's CLI, run a script to generate credentials, and paste the credentials into the form.
 
 ### 3. Connect a Docker account to run private Docker images (optional)
+
 * Navigate to **Accounts** › **Connect Docker account**.
+
 * Follow the instructions to log into Docker Hub, generate credentials, and paste the credentials into the form.
 
 ### 4. Create container templates (optional)
+
 * Navigate to **Templates** › **Create template**.
+
 * Under "Container template name", choose a template name.
+
 * Under "Node configuration", specify the conditions needed for a node to run the container.
 	* To use a private Docker image, choose the owner's Docker Hub account.
+
 * Under "Customize container", specify the container's configuration.
 	* To use a private Docker image, look for image IDs grouped under the owner's Docker Hub username.
+
 * Click **Add container template**.
 
 ### 5. Create a cluster
+
 * Navigate to **Clusters** › **Create cluster**.
+
 * Choose a connected cloud account to deploy the cluster with.
+
 * Set a name, firewall rules, and default region and zone for the [Infernet Router](https://docs.ritual.net/infernet/router/introduction) and [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction).
+
 * If desired, configure the location and machine type of the [Infernet Router](https://docs.ritual.net/infernet/router/introduction).
+
 * Configure one or more [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction) and their containers.
 	* To add a container to a node, click "Add container". You can choose an existing container template or create a new one.
+
 * Click "Create cluster".
 
 ### 6. Monitor and manage a cluster (and router)
+
 * Navigate to **Clusters** to view your clusters.
+
 * Click on a cluster to view its details, or right-click to trigger actions:
 	* **Edit cluster**: modify the configuration of the cluster (and router).
 	* **Trigger update**: manually trigger a redeployment of the cluster and provisioning of associated cloud resources.
 	* **Destroy cluster**: tear down the cluster and all associated nodes and cloud resources.
 	* **Recreate cluster**: recreate a destroyed cluster by reusing the existing configuration.
 	* **Delete cluster**: PERMANENTLY delete the configuration and deployment history of a destroyed cluster.
+
 * Scroll down to browse details about the cluster's cloud resources and deployment history.
 
 ### 7. Monitor and manage nodes
-* Navigate to a cluster detail page,
+
+* Navigate to a cluster detail page.
+
 * Click on a node to view its details, or right-click to trigger actions:
 	* **Edit node**: modify the node's configuration.
 	* **Start node**: start a stopped node.
 	* **Stop node**: stop a running node.
+
 * To add a node to an existing cluster, click "Add node".
+
 * Scroll down to browse logs and container details.
