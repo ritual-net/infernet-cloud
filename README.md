@@ -257,7 +257,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 * Navigate to **Accounts** › **Connect Docker account**.
 
-* Follow the instructions to log into Docker Hub, generate credentials, and paste the credentials into the form.
+* Follow the instructions to [log into Docker Hub](https://hub.docker.com), generate credentials, and paste the credentials into the form.
 
 ### 4. Create container templates (optional)
 
@@ -303,7 +303,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 ### 7. Monitor and manage nodes
 
-* Navigate to a cluster detail page.
+* From **Clusters**, navigate to a cluster detail page.
 
 * Click on a node to view its details, or right-click to trigger actions:
 	* **Edit node**: modify the node's configuration.
