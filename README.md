@@ -60,30 +60,30 @@ pnpm run local:server:debug
 
 #### EdgeDB (database)
 
-```bash
-pnpm run local:edgedb:init
-```
 * Initialize a local EdgeDB database instance (default name: "infernet_cloud").
+	```bash
+	pnpm run local:edgedb:init
+	```
 
-```bash
-pnpm run local:edgedb:migrate
-```
 * Create and apply migrations to local EdgeDB database instance after making changes to [dbschema/schema.esdl](dbschema/schema.esdl), and generate TypeScript types.
+	```bash
+	pnpm run local:edgedb:migrate
+	```
 
-```bash
-pnpm run local:edgedb:destroy
-```
 * Destroy the local EdgeDB database instance and all its data.
+	```bash
+	pnpm run local:edgedb:destroy
+	```
 
-```bash
-pnpm run local:edgedb:cli
-```
 * Open an [EdgeDB CLI](https://www.edgedb.com/docs/cli/overview) session.
+	```bash
+	pnpm run local:edgedb:cli
+	```
 
-```bash
-pnpm run local:edgedb:ui
-```
 * Open the [EdgeDB UI](https://www.edgedb.com/docs/ui/overview).
+	```bash
+	pnpm run local:edgedb:ui
+	```
 
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
@@ -159,54 +159,54 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 #### Docker Compose
 
-```bash
-pnpm run docker:up
-```
 * Start all Docker services in detached mode and display logs.
+	```bash
+	pnpm run docker:up
+	```
 
-```bash
-pnpm run docker:up:force
-```
 * Rebuild Docker images without cache, then (re)start all services.
+	```bash
+	pnpm run docker:up:force
+	```
 
-```bash
-pnpm run docker:down
-```
 * Stop and remove all Docker services.
+	```bash
+	pnpm run docker:down
+	```
 
-```bash
-pnpm run docker:clean
-```
 * Remove unused Docker data (images, containers, networks, and volumes).
+	```bash
+	pnpm run docker:clean
+	```
 
 #### `server` service:
 
-```bash
-pnpm run docker:server:restart
-```
 * Rebuild and restart `server` service after making changes to SvelteKit backend or frontend.
+	```bash
+	pnpm run docker:server:restart
+	```
 
 #### `edgedb` service:
 
-```bash
-pnpm run docker:edgedb:restart
-```
 * Restart `edgedb` service and migrate the database after making changes to EdgeDB schema / migrations.
+	```bash
+	pnpm run docker:edgedb:restart
+	```
 
-```bash
-pnpm run docker:edgedb:backup
-```
 * Create a timestamped backup of the EdgeDB Docker volume.
+	```bash
+	pnpm run docker:edgedb:backup
+	```
 
-```bash
-pnpm run docker:edgedb:destroy
-```
 * Permanently delete the current EdgeDB Docker volume after confirmation.
+	```bash
+	pnpm run docker:edgedb:destroy
+	```
 
-```bash
-pnpm run docker:edgedb:cli
-```
 * Open an [EdgeDB CLI](https://docs.edgedb.com/cli) session from inside the `edgedb` Docker container.
+	```bash
+	pnpm run docker:edgedb:cli
+	```
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
 
