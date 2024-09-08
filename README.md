@@ -13,8 +13,11 @@
 ## Local setup
 
 1. [Install pnpm](https://pnpm.io/installation).
+
 2. [Install EdgeDB](https://www.edgedb.com/install).
+
 3. [Install Terraform](https://developer.hashicorp.com/terraform/install).
+
 4. Initialize the project:
 
 	```bash
@@ -22,14 +25,21 @@
 	```
 
 	This script will:
-	* Create an [`.env.local`](.env.local) file with default values
+	* Create an [`.env.local`](.env.local) file with default values from [`env.local.example`](env.local.example), if one doesn't already exist
 	* Initialize a local EdgeDB project (default name: `"infernet_cloud"`)
 	* Perform EdgeDB database migrations
 	* Install npm package dependencies
 
+	If you have already created an EdgeDB instance and want to start over, run:
+
+	```bash
+	pnpm run local:edgedb:destroy
+	```
+
 5. Configure environment variables by editing the [`.env.local`](.env.local) file:
 	* `SERVER_HOST`: The public-facing URL of your server (default `http://localhost:3000` when running locally).
-	* `EDGEDB_BASE_URL`: The URL of your EdgeDB instance.
+	* `EDGEDB_BASE_URL`: The URL of your EdgeDB instance (default `http://localhost:10700/main` when running locally and using `edgedb` CLI defaults).
+	  * Run `edgedb instance list` to find the URL of your [local EdgeDB instance](https://docs.edgedb.com/get-started/instances#listing-instances) – make sure the port number and branch name match the value of `EDGEDB_BASE_URL`.
 
 6. Start the server:
 
@@ -88,15 +98,17 @@ Find more commands and their definitions in the `scripts` section of [package.js
 ## Docker Compose setup (recommended for production)
 
 1. Install [Docker Compose](https://docs.docker.com/compose/install) or an equivalent GUI ([Docker Desktop](https://www.docker.com/products/docker-desktop/), [OrbStack](https://orbstack.dev), [Podman](https://podman-desktop.io), etc.)
+
 2. [Install pnpm](https://pnpm.io/installation).
+
 3. Initialize the project:
 
 	```bash
-	pnpm run docker:init
+	pnpm run init:docker
 	```
 
 	This script will:
-	* Create an [`env.docker`](env.docker) file with default values
+	* Create an [`env.docker`](env.docker) file with default values from [`env.docker.example`](env.docker.example), if one doesn't already exist
 	* Install npm package dependencies
 
 4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
