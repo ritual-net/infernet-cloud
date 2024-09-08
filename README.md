@@ -45,32 +45,46 @@
 ### Development scripts (local setup)
 
 #### Server
-* `pnpm run local:server`
-  * Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload.
-* `pnpm run local:server:debug`
-  * Start the local [Vite](https://vitejs.dev) server with Node.js debugging enabled.
+
+```bash
+pnpm run local:server
+```
+
+* Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload.
+
+```bash
+pnpm run local:server:debug
+```
+
+* Start the local [Vite](https://vitejs.dev) server with Node.js debugging enabled.
 
 #### EdgeDB (database)
-* ```bash
+
+```bash
 pnpm run local:edgedb:init
 ```
-  * Initialize a local EdgeDB database instance (default name: "infernet_cloud").
-* ```bash
+* Initialize a local EdgeDB database instance (default name: "infernet_cloud").
+
+```bash
 pnpm run local:edgedb:migrate
 ```
-  * Create and apply migrations to local EdgeDB database instance after making changes to [dbschema/schema.esdl](dbschema/schema.esdl), and generate TypeScript types.
-* ```bash
+* Create and apply migrations to local EdgeDB database instance after making changes to [dbschema/schema.esdl](dbschema/schema.esdl), and generate TypeScript types.
+
+```bash
 pnpm run local:edgedb:destroy
 ```
-  * Destroy the local EdgeDB database instance and all its data.
-* ```bash
+* Destroy the local EdgeDB database instance and all its data.
+
+```bash
 pnpm run local:edgedb:cli
 ```
-  * Open an [EdgeDB CLI](https://www.edgedb.com/docs/cli/overview) session.
-* ```bash
+* Open an [EdgeDB CLI](https://www.edgedb.com/docs/cli/overview) session.
+
+```bash
 pnpm run local:edgedb:ui
 ```
-  * Open the [EdgeDB UI](https://www.edgedb.com/docs/ui/overview).
+* Open the [EdgeDB UI](https://www.edgedb.com/docs/ui/overview).
+
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
 
@@ -145,107 +159,107 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 #### Docker Compose
 
-* ```bash
+```bash
 pnpm run docker:up
 ```
-  * Start all Docker services in detached mode and display logs.
+* Start all Docker services in detached mode and display logs.
 
-* ```bash
+```bash
 pnpm run docker:up:force
 ```
-  * Rebuild Docker images without cache, then (re)start all services.
+* Rebuild Docker images without cache, then (re)start all services.
 
-* ```bash
+```bash
 pnpm run docker:down
 ```
-  * Stop and remove all Docker services.
+* Stop and remove all Docker services.
 
-* ```bash
+```bash
 pnpm run docker:clean
 ```
-  * Remove unused Docker data (images, containers, networks, and volumes).
+* Remove unused Docker data (images, containers, networks, and volumes).
 
 #### `server` service:
 
-* ```bash
+```bash
 pnpm run docker:server:restart
 ```
-  * Rebuild and restart `server` service after making changes to SvelteKit backend or frontend.
+* Rebuild and restart `server` service after making changes to SvelteKit backend or frontend.
 
 #### `edgedb` service:
 
-* ```bash
+```bash
 pnpm run docker:edgedb:restart
 ```
-  * Restart `edgedb` service and migrate the database after making changes to EdgeDB schema / migrations.
+* Restart `edgedb` service and migrate the database after making changes to EdgeDB schema / migrations.
 
-* ```bash
+```bash
 pnpm run docker:edgedb:backup
 ```
-  * Create a timestamped backup of the EdgeDB Docker volume.
+* Create a timestamped backup of the EdgeDB Docker volume.
 
-* ```bash
+```bash
 pnpm run docker:edgedb:destroy
 ```
-  * Permanently delete the current EdgeDB Docker volume after confirmation.
+* Permanently delete the current EdgeDB Docker volume after confirmation.
 
-* ```bash
+```bash
 pnpm run docker:edgedb:cli
 ```
-  * Open an [EdgeDB CLI](https://docs.edgedb.com/cli) session from inside the `edgedb` Docker container.
+* Open an [EdgeDB CLI](https://docs.edgedb.com/cli) session from inside the `edgedb` Docker container.
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
 
 ## Usage
 
 ### 1. Create an account
-	* Navigate to **Log in**.
-	* Choose an email and password.
-	* Verify your email address using the link sent to your email.
-	* Log in.
+* Navigate to **Log in**.
+* Choose an email and password.
+* Verify your email address using the link sent to your email.
+* Log in.
 
 ### 2. Connect a cloud provider
-	* Navigate to **Accounts** › **Connect Cloud Account**.
-	* Choose a cloud provider (AWS or Google Cloud), name your account, and click **Continue**.
-	* Follow the instructions to install the cloud provider's CLI, run a script to generate credentials, and paste the credentials into the form.
+* Navigate to **Accounts** › **Connect Cloud Account**.
+* Choose a cloud provider (AWS or Google Cloud), name your account, and click **Continue**.
+* Follow the instructions to install the cloud provider's CLI, run a script to generate credentials, and paste the credentials into the form.
 
 ### 3. Connect a Docker account to run private Docker images (optional)
-	* Navigate to **Accounts** › **Connect Docker account**.
-	* Follow the instructions to log into Docker Hub, generate credentials, and paste the credentials into the form.
+* Navigate to **Accounts** › **Connect Docker account**.
+* Follow the instructions to log into Docker Hub, generate credentials, and paste the credentials into the form.
 
 ### 4. Create container templates (optional)
-	* Navigate to **Templates** › **Create template**.
-	* Under "Container template name", choose a template name.
-	* Under "Node configuration", specify the conditions needed for a node to run the container.
-		* To use a private Docker image, choose the owner's Docker Hub account.
-	* Under "Customize container", specify the container's configuration.
-		* To use a private Docker image, look for image IDs grouped under the owner's Docker Hub username.
-	* Click **Add container template**.
+* Navigate to **Templates** › **Create template**.
+* Under "Container template name", choose a template name.
+* Under "Node configuration", specify the conditions needed for a node to run the container.
+	* To use a private Docker image, choose the owner's Docker Hub account.
+* Under "Customize container", specify the container's configuration.
+	* To use a private Docker image, look for image IDs grouped under the owner's Docker Hub username.
+* Click **Add container template**.
 
 ### 5. Create a cluster
-	* Navigate to **Clusters** › **Create cluster**.
-	* Choose a connected cloud account to deploy the cluster with.
-	* Set a name, firewall rules, and default region and zone for the [Infernet Router](https://docs.ritual.net/infernet/router/introduction) and [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction).
-	* If desired, configure the location and machine type of the [Infernet Router](https://docs.ritual.net/infernet/router/introduction).
-	* Configure one or more [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction) and their containers.
-		* To add a container to a node, click "Add container". You can choose an existing container template or create a new one.
-	* Click "Create cluster".
+* Navigate to **Clusters** › **Create cluster**.
+* Choose a connected cloud account to deploy the cluster with.
+* Set a name, firewall rules, and default region and zone for the [Infernet Router](https://docs.ritual.net/infernet/router/introduction) and [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction).
+* If desired, configure the location and machine type of the [Infernet Router](https://docs.ritual.net/infernet/router/introduction).
+* Configure one or more [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction) and their containers.
+	* To add a container to a node, click "Add container". You can choose an existing container template or create a new one.
+* Click "Create cluster".
 
 ### 6. Monitor and manage a cluster (and router)
-	* Navigate to **Clusters** to view your clusters.
-	* Click on a cluster to view its details, or right-click to trigger actions:
-		* **Edit cluster**: modify the configuration of the cluster (and router).
-		* **Trigger update**: manually trigger a redeployment of the cluster and provisioning of associated cloud resources.
-		* **Destroy cluster**: tear down the cluster and all associated nodes and cloud resources.
-		* **Recreate cluster**: recreate a destroyed cluster by reusing the existing configuration.
-		* **Delete cluster**: PERMANENTLY delete the configuration and deployment history of a destroyed cluster.
-	* Scroll down to browse details about the cluster's cloud resources and deployment history.
+* Navigate to **Clusters** to view your clusters.
+* Click on a cluster to view its details, or right-click to trigger actions:
+	* **Edit cluster**: modify the configuration of the cluster (and router).
+	* **Trigger update**: manually trigger a redeployment of the cluster and provisioning of associated cloud resources.
+	* **Destroy cluster**: tear down the cluster and all associated nodes and cloud resources.
+	* **Recreate cluster**: recreate a destroyed cluster by reusing the existing configuration.
+	* **Delete cluster**: PERMANENTLY delete the configuration and deployment history of a destroyed cluster.
+* Scroll down to browse details about the cluster's cloud resources and deployment history.
 
 ### 7. Monitor and manage nodes
-	* Navigate to a cluster detail page,
-	* Click on a node to view its details, or right-click to trigger actions:
-		* **Edit node**: modify the node's configuration.
-		* **Start node**: start a stopped node.
-		* **Stop node**: stop a running node.
-	* To add a node to an existing cluster, click "Add node".
-	* Scroll down to browse logs and container details.
+* Navigate to a cluster detail page,
+* Click on a node to view its details, or right-click to trigger actions:
+	* **Edit node**: modify the node's configuration.
+	* **Start node**: start a stopped node.
+	* **Stop node**: stop a running node.
+* To add a node to an existing cluster, click "Add node".
+* Scroll down to browse logs and container details.
