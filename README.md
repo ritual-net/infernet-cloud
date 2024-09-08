@@ -56,7 +56,7 @@
 
 7. Navigate to [http://localhost:3000](http://localhost:3000) in your browser to access the UI.
 
-	* Jump to [Using Infernet Cloud](#using-infernet-cloud) to get started with deploying an Infernet Node.
+	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
 ---
 
@@ -117,30 +117,30 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	```
 
 	This script will:
-	* Create an [`env.docker`](env.docker) file with default values copied from [`.env.docker.example`](.env.docker.example), if one doesn't already exist
+	* Create an [`.env.docker`](.env.docker) file with default values copied from [`.env.docker.example`](.env.docker.example), if one doesn't already exist
 	* Install npm package dependencies
 
 4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
 	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default `http://localhost:3000` when running locally).
 	* `EDGEDB_SERVER_PASSWORD`: The admin password for the EdgeDB database.
 	* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
-		* To use a different email relay service, modify the environment variables in [docker-compose.yml](docker-compose.yml) found at `services` › `smtp` › `environment`.
+		* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
 
 5. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password):
-	* Open [dbschema/auth.edgeql](dbschema/auth.edgeql) in a text editor.
+	* Open [`dbschema/auth.edgeql`](dbschema/auth.edgeql) in a text editor.
 	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
 	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
 	* To require new accounts to verify their email address before logging in, set `ext::auth::AuthConfig::require_verification` to `true`, otherwise set it to `false`.
-	* Save [dbschema/auth.edgeql](dbschema/auth.edgeql).
+	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
 
 	For more information, see the [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password) documentation.
 
 6. If hosting on a cloud provider, configure the reverse proxy:
-	* Open [caddy/Caddyfile](caddy/Caddyfile) in a text editor.
+	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
 	* Replace `my.infernet-cloud.instance.example` with the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
-	* Save [caddy/Caddyfile](caddy/Caddyfile).
-	* Ensure the corresponding port (default `3000`) is forwarded and whitelisted in the cloud provider's firewall settings.
+	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
+	* Ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
 
 7. Start all services:
 
@@ -148,7 +148,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	pnpm run docker:up
 	```
 
-	Docker images will be installed from Docker Hub on first run
+	Docker images for all services will be installed from Docker Hub on first run.
 
 	#### List of services:
 
@@ -158,15 +158,15 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	* `server` – [Node.js web server](https://nodejs.org)
 		* First run: installs npm package dependencies and builds Node.js production server using [SvelteKit](https://kit.svelte.dev).
 
-	* `edgedb` – [EdgeDB](https://www.edgedb.com) database
-		* First run: initializes Docker volume at [./edgedb-data](edgedb-data), configures EdgeDB Auth, and performs schema migrations.
-		* **IMPORTANT**: **Keep the `edgedb-data` directory safe. If you delete it, you will lose all data stored in the database!**
-
 	* `smtp` – email relay service (used for sending user verification emails)
 
-8. Access the UI by opening a web browser and navigating to [http://localhost:3000](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
+	* `edgedb` – [EdgeDB](https://www.edgedb.com) database
+		* First run: initializes Docker volume at [`./edgedb-data/`](edgedb-data), configures EdgeDB Auth, and performs schema migrations.
+		* **IMPORTANT**: **Keep the contents of the `./edgedb-data/` directory safe. If you delete it, you will lose all data stored in the database!**
 
-	* Jump to [Using Infernet Cloud](#using-infernet-cloud) to get started with deploying an Infernet Node.
+8. Access the UI by opening a web browser and navigating to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
+
+	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
 9. Stop all services:
 
