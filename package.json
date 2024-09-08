@@ -11,6 +11,7 @@
 		"local:server:start": "vite dev",
 		"local:server:debug": "NODE_OPTIONS='--inspect=localhost:9229' vite dev",
 		"local:edgedb:init": "edgedb project init; pnpm run local:edgedb:migrate",
+		"local:edgedb:init:auth": "edgedb query -f ./dbschema/bootstrap/auth.edgeql",
 		"local:edgedb:migrate": "edgedb migration create; edgedb migrate; pnpm run edgedb:generate",
 		"local:edgedb:destroy": "edgedb instance destroy -I infernet_cloud --force",
 		"local:edgedb:cli": "edgedb",
