@@ -33,7 +33,7 @@
 
 	This script will:
 	* Create an [`.env.local`](.env.local) file with default values copied from [`.env.local.example`](.env.local.example), if one doesn't already exist
-	*	* Install package dependencies from npm
+		* Install package dependencies from npm
 	* Initialize a local EdgeDB instance (default name: `infernet_cloud`)
 	* Apply EdgeDB database migrations
 
