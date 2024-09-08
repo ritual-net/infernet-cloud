@@ -5,10 +5,17 @@
 ## Table of contents
 
 * **[Local setup](#local-setup)**
+	* [Development scripts](#development-scripts-local-setup)
 * **[Docker Compose setup](#docker-compose-setup)**
-	* **[Development scripts (Docker Compose setup)](#development-scripts-docker-compose-setup)**
-* **[Usage](#usage)**
-	* **[Development scripts (local setup)](#development-scripts-local-setup)**
+	* [Development scripts](#development-scripts-docker-compose-setup)
+* **[Using Infernet Cloud](#using-infernet-cloud)**
+	1. [Create an account](#1-create-an-account)
+	2. [Connect a cloud provider](#2-connect-a-cloud-provider)
+	3. [Connect a Docker account to run private Docker images (optional)](#3-connect-a-docker-account-to-run-private-docker-images-optional)
+	4. [Create container templates (optional)](#4-create-container-templates-optional)
+	5. [Create a cluster](#5-create-a-cluster)
+	6. [Monitor and manage a cluster (and router)](#6-monitor-and-manage-a-cluster-and-router)
+	7. [Monitor and manage nodes](#7-monitor-and-manage-nodes)
 
 ## Local setup
 
@@ -48,6 +55,8 @@
 	```
 
 7. Navigate to [http://localhost:3000](http://localhost:3000) in your browser to access the UI.
+
+	Jump to [Using Infernet Cloud](#using-infernet-cloud)
 
 ---
 
@@ -220,7 +229,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
 
-## Usage
+## Using Infernet Cloud
 
 ### 1. Create an account
 
