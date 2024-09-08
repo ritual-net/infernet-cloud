@@ -202,7 +202,13 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 #### Docker Compose
 
-* Start all Docker services in detached mode and display logs:
+* Run the Docker Compose CLI with the [`.env.docker`](.env.docker) environment variables applied:
+
+	```bash
+	pnpm docker-compose
+	```
+
+* Start all Docker services in detached mode and display logs (wraps `docker compose up` command):
 
 	```bash
 	pnpm docker:start
@@ -214,10 +220,10 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	pnpm docker:start:force
 	```
 
-* Stop and remove all Docker services:
+* Stop and remove all Docker services (wraps `docker compose down` command):
 
 	```bash
-	pnpm docker:down
+	pnpm docker:stop
 	```
 
 * Remove unused Docker data (images, containers, networks, and volumes):

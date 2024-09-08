@@ -13,6 +13,7 @@ tests
 
 # Docker › EdgeDB
 edgedb-data/
+edgedb-data.backup*/
 
 # Docker › Caddy
 caddy

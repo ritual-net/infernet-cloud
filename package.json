@@ -18,7 +18,7 @@
 		"local:edgedb:ui": "edgedb ui",
 		"docker:start": "pnpm run docker-compose up --detach && pnpm run docker-compose logs -f",
 		"docker:start:force": "pnpm run docker-compose build --force-rm --no-cache && pnpm run docker:start",
-		"docker:down": "pnpm run docker-compose down",
+		"docker:stop": "pnpm run docker-compose down",
 		"docker:clean": "docker system prune -f",
 		"docker:server:restart": "pnpm run docker:clean && pnpm run docker-compose up --build --no-deps --detach server",
 		"docker:edgedb:restart": "pnpm run docker:clean && pnpm run docker-compose up --build --no-deps --detach edgedb",
