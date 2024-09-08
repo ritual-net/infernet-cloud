@@ -102,7 +102,7 @@
 	```
 
 
-Find more commands and their definitions in the `scripts` section of [package.json](package.json).
+Find more commands and their definitions in the `scripts` section of [`package.json`](package.json).
 
 ## Docker Compose setup (recommended for production)
 
@@ -231,7 +231,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	pnpm run docker:edgedb:cli
 	```
 
-Find more commands and their definitions in the `scripts` section of [package.json](package.json).
+Find more commands and their definitions in the `scripts` section of [`package.json`](package.json).
 
 ## Using Infernet Cloud
 
