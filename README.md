@@ -33,7 +33,6 @@
 
 6. Start the server:
 
-	Development mode:
 	```bash
 	pnpm run start:local
 	```
@@ -54,7 +53,7 @@
 * Start the local Vite server with Node.js debugging enabled:
 	```bash
 	pnpm run local:server:debug
-```
+	```
 
 #### EdgeDB (database)
 
