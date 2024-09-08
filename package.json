@@ -26,7 +26,7 @@
 		"docker-compose": "docker compose --env-file .env.docker",
 		"build": "vite build",
 		"preview": "vite preview",
-		"edgedb:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js --target ts",
+		"edgedb:generate": "pnpm exec generate edgeql-js && pnpm exec generate interfaces && pnpm exec generate edgeql-js --target ts",
 		"test": "pnpm run test:integration && pnpm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
