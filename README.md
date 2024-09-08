@@ -28,7 +28,7 @@
 4. Initialize the local setup:
 
 	```bash
-	pnpm run init:local
+	pnpm init:local
 	```
 
 	This script will:
@@ -40,7 +40,7 @@
 	If you have already created an EdgeDB instance with the default name and want to start over, run:
 
 	```bash
-	pnpm run local:edgedb:destroy
+	pnpm local:edgedb:destroy
 	```
 
 5. Configure environment variables by editing the [`.env.local`](.env.local) file:
@@ -51,7 +51,7 @@
 6. Start the server:
 
 	```bash
-	pnpm run start:local
+	pnpm start:local
 	```
 
 7. Navigate to [`http://localhost:3000`](http://localhost:3000) in your browser to access the Infernet Cloud UI.
@@ -66,39 +66,39 @@
 
 * Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload:
 	```bash
-	pnpm run local:server:start
+	pnpm local:server:start
 	```
 
 * Start the local Vite server with Node.js debugging enabled:
 	```bash
-	pnpm run local:server:debug
+	pnpm local:server:debug
 	```
 
 #### EdgeDB (database)
 
 * Initialize a local EdgeDB database instance (default name: `infernet_cloud`):
 	```bash
-	pnpm run local:edgedb:init
+	pnpm local:edgedb:init
 	```
 
 * After making changes to [`dbschema/schema.esdl`](dbschema/schema.esdl), create and apply migrations to local EdgeDB database instance, and regenerate TypeScript types:
 	```bash
-	pnpm run local:edgedb:migrate
+	pnpm local:edgedb:migrate
 	```
 
 * Destroy the local EdgeDB database instance and all its data:
 	```bash
-	pnpm run local:edgedb:destroy
+	pnpm local:edgedb:destroy
 	```
 
 * Open an [EdgeDB CLI](https://www.edgedb.com/docs/cli/overview) session:
 	```bash
-	pnpm run local:edgedb:cli
+	pnpm local:edgedb:cli
 	```
 
 * Open the [EdgeDB UI](https://www.edgedb.com/docs/ui/overview):
 	```bash
-	pnpm run local:edgedb:ui
+	pnpm local:edgedb:ui
 	```
 
 
@@ -113,7 +113,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 3. Initialize the Docker Compose setup:
 
 	```bash
-	pnpm run init:docker
+	pnpm init:docker
 	```
 
 	This script will:
@@ -147,7 +147,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 7. Start all services:
 
 	```bash
-	pnpm run docker:up
+	pnpm docker:up
 	```
 
 	Docker images for all services will be installed from Docker Hub on first run.
@@ -178,7 +178,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 9. Stop all services:
 
 	```bash
-	pnpm run docker:down
+	pnpm docker:down
 	```
 
 ---
@@ -189,51 +189,51 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 * Start all Docker services in detached mode and display logs:
 	```bash
-	pnpm run docker:start
+	pnpm docker:start
 	```
 
 * Rebuild Docker images without cache, then (re)start all services:
 	```bash
-	pnpm run docker:start:force
+	pnpm docker:start:force
 	```
 
 * Stop and remove all Docker services:
 	```bash
-	pnpm run docker:down
+	pnpm docker:down
 	```
 
 * Remove unused Docker data (images, containers, networks, and volumes):
 	```bash
-	pnpm run docker:clean
+	pnpm docker:clean
 	```
 
 #### `server` service:
 
 * Rebuild and restart `server` service after making changes to SvelteKit backend or frontend:
 	```bash
-	pnpm run docker:server:restart
+	pnpm docker:server:restart
 	```
 
 #### `edgedb` service:
 
 * Restart `edgedb` service and migrate the database after making changes to EdgeDB schema / migrations:
 	```bash
-	pnpm run docker:edgedb:restart
+	pnpm docker:edgedb:restart
 	```
 
 * Create a timestamped backup of the EdgeDB Docker volume ([`./edgedb-data/`](edgedb-data)):
 	```bash
-	pnpm run docker:edgedb:backup
+	pnpm docker:edgedb:backup
 	```
 
 * Permanently delete the current EdgeDB Docker volume ([`./edgedb-data/`](edgedb-data)) after confirmation:
 	```bash
-	pnpm run docker:edgedb:destroy
+	pnpm docker:edgedb:destroy
 	```
 
 * Open an [EdgeDB CLI](https://docs.edgedb.com/cli) session from inside the `edgedb` Docker container:
 	```bash
-	pnpm run docker:edgedb:cli
+	pnpm docker:edgedb:cli
 	```
 
 Find more commands and their definitions in the `scripts` section of [`package.json`](package.json).
