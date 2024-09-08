@@ -37,7 +37,7 @@
 	```
 
 5. Configure environment variables by editing the [`.env.local`](.env.local) file:
-	* `SERVER_HOST`: The public-facing URL of your server (default `http://localhost:3000` when running locally).
+	* `SERVER_HOST`: The public-facing URL of your server (default `http://localhost:5173` when running locally).
 	* `EDGEDB_BASE_URL`: The URL of your EdgeDB instance (default `http://localhost:10700/main` when running locally and using `edgedb` CLI defaults).
 	  * Run `edgedb instance list` to find the URL of your [local EdgeDB instance](https://docs.edgedb.com/get-started/instances#listing-instances) – make sure the port number and branch name match the value of `EDGEDB_BASE_URL`.
 
