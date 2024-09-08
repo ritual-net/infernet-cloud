@@ -13,6 +13,7 @@ ext::auth::AuthConfig::allowed_redirect_urls := {
 	# 'http://localhost:3000',
 };
 
+CONFIGURE CURRENT BRANCH RESET ext::auth::EmailPasswordProviderConfig;
 CONFIGURE CURRENT BRANCH
 INSERT ext::auth::EmailPasswordProviderConfig {
 	require_verification := false,
