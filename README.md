@@ -40,6 +40,8 @@
 
 7. Navigate to [http://localhost:3000](http://localhost:3000) in your browser to access the UI.
 
+---
+
 ### Development scripts (local setup)
 
 #### Server
@@ -50,24 +52,24 @@
 
 #### EdgeDB (database)
 * ```bash
-	pnpm run local:edgedb:init
-	```
+pnpm run local:edgedb:init
+```
   * Initialize a local EdgeDB database instance (default name: "infernet_cloud").
 * ```bash
-	pnpm run local:edgedb:migrate
-	```
+pnpm run local:edgedb:migrate
+```
   * Create and apply migrations to local EdgeDB database instance after making changes to [dbschema/schema.esdl](dbschema/schema.esdl), and generate TypeScript types.
 * ```bash
-	pnpm run local:edgedb:destroy
-	```
+pnpm run local:edgedb:destroy
+```
   * Destroy the local EdgeDB database instance and all its data.
 * ```bash
-	pnpm run local:edgedb:cli
-	```
+pnpm run local:edgedb:cli
+```
   * Open an [EdgeDB CLI](https://www.edgedb.com/docs/cli/overview) session.
 * ```bash
-	pnpm run local:edgedb:ui
-	```
+pnpm run local:edgedb:ui
+```
   * Open the [EdgeDB UI](https://www.edgedb.com/docs/ui/overview).
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
@@ -107,20 +109,26 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	* Save [caddy/Caddyfile](caddy/Caddyfile).
 	* Ensure the corresponding port (default `3000`) is forwarded and whitelisted in the cloud provider's firewall settings.
 
-7. Start all services (Docker images will be installed from Docker Hub on first run).
+7. Start all services:
 
 	```bash
 	pnpm run docker:up
 	```
 
-	List of services:
+	Docker images will be installed from Docker Hub on first run
+
+	### List of services:
+
 	* `caddy` – [reverse proxy](https://caddyserver.com)
 		* First run: generates a self-signed SSL certificate using [Let's Encrypt](https://letsencrypt.org).
+
 	* `server` – [Node.js web server](https://nodejs.org)
 		* First run: installs npm package dependencies and builds Node.js production server using [SvelteKit](https://kit.svelte.dev).
+
 	* `edgedb` – [EdgeDB](https://www.edgedb.com) database
 		* First run: initializes Docker volume at [./edgedb-data](edgedb-data), configures EdgeDB Auth, and performs schema migrations.
 		* **IMPORTANT**: **Keep the `edgedb-data` directory safe. If you delete it, you will lose all data stored in the database!**
+
 	* `smtp` – email relay service (used for sending user verification emails)
 
 8. Access the UI by opening a web browser and navigating to [http://localhost:3000](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
@@ -131,48 +139,59 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	pnpm run docker:down
 	```
 
+---
+
 ### Development scripts (Docker Compose setup)
 
 #### Docker Compose
+
 * ```bash
-	pnpm run docker:up
-	```
+pnpm run docker:up
+```
   * Start all Docker services in detached mode and display logs.
+
 * ```bash
-	pnpm run docker:up:force
-	```
+pnpm run docker:up:force
+```
   * Rebuild Docker images without cache, then (re)start all services.
+
 * ```bash
-	pnpm run docker:down
-	```
+pnpm run docker:down
+```
   * Stop and remove all Docker services.
+
 * ```bash
-	pnpm run docker:clean
-	```
+pnpm run docker:clean
+```
   * Remove unused Docker data (images, containers, networks, and volumes).
 
 #### `server` service:
+
 * ```bash
-	pnpm run docker:server:restart
-	```
+pnpm run docker:server:restart
+```
   * Rebuild and restart `server` service after making changes to SvelteKit backend or frontend.
 
 #### `edgedb` service:
+
 * ```bash
-	pnpm run docker:edgedb:restart
-	```
+pnpm run docker:edgedb:restart
+```
   * Restart `edgedb` service and migrate the database after making changes to EdgeDB schema / migrations.
+
 * ```bash
-	pnpm run docker:edgedb:backup
-	```
+pnpm run docker:edgedb:backup
+```
   * Create a timestamped backup of the EdgeDB Docker volume.
+
 * ```bash
-	pnpm run docker:edgedb:destroy
-	```
+pnpm run docker:edgedb:destroy
+```
   * Permanently delete the current EdgeDB Docker volume after confirmation.
+
 * ```bash
-	pnpm run docker:edgedb:cli
-	```
+pnpm run docker:edgedb:cli
+```
   * Open an [EdgeDB CLI](https://docs.edgedb.com/cli) session from inside the `edgedb` Docker container.
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
