@@ -26,11 +26,11 @@
 
 	This script will:
 	* Create an [`.env.local`](.env.local) file with default values copied from [`.env.local.example`](.env.local.example), if one doesn't already exist
-	* Initialize a local EdgeDB project (default name: `"infernet_cloud"`)
+	* Initialize a local EdgeDB instance (default name: `"infernet_cloud"`)
 	* Perform EdgeDB database migrations
 	* Install npm package dependencies
 
-	If you have already created an EdgeDB instance and want to start over, run:
+	If you have already created an EdgeDB instance with the default name and want to start over, run:
 
 	```bash
 	pnpm run local:edgedb:destroy
