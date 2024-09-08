@@ -10,11 +10,6 @@ import {
 
 const EDGEDB_AUTH_BASE_URL = `${EDGEDB_PROTOCOL}://${EDGEDB_HOST}:${EDGEDB_PORT}/branch/${EDGEDB_BRANCH}/ext/auth`
 
-/**
- * You can get EDGEDB_BASE_URL by running `edgedb instance credentials`.
- * Value should be:
- * `${protocol}://${host}:${port}/db/${database}`
- */
 export const EDGEDB_AUTH_URLS = {
 	GET_TOKEN: `${EDGEDB_AUTH_BASE_URL}/token`,
 	REGISTER: `${EDGEDB_AUTH_BASE_URL}/register`,
