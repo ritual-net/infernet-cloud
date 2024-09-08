@@ -109,9 +109,9 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 5. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password):
 	* Open [dbschema/auth.edgeql](dbschema/auth.edgeql) in a text editor.
-	* Set to value of `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
-	* Set the value of `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
-	* Set the value `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
+	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
+	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
+	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
 	* To require new accounts to verify their email address before logging in, set `ext::auth::AuthConfig::require_verification` to `true`, otherwise set it to `false`.
 	* Save [dbschema/auth.edgeql](dbschema/auth.edgeql).
 
@@ -131,7 +131,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 	Docker images will be installed from Docker Hub on first run
 
-	### List of services:
+	#### List of services:
 
 	* `caddy` – [reverse proxy](https://caddyserver.com)
 		* First run: generates a self-signed SSL certificate using [Let's Encrypt](https://letsencrypt.org).
