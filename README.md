@@ -55,13 +55,28 @@
 		edgedb instance credentials
 		```
 
-6. Start the server:
+6. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password):
+	* Open [`dbschema/auth.edgeql`](dbschema/auth.edgeql) in a text editor.
+	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
+	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
+	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
+	* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in, otherwise set it to `false`.
+	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
+	* Apply changes to EdgeDB Auth settings:
+
+		```bash
+		pnpm local:edgedb:init:auth
+		```
+
+	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#email-and-password).
+
+7. Start the server:
 
 	```bash
 	pnpm start:local
 	```
 
-7. Navigate to [`http://localhost:3000`](http://localhost:3000) in your browser to access the Infernet Cloud UI.
+8. Navigate to [`http://localhost:3000`](http://localhost:3000) in your browser to access the Infernet Cloud UI.
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
