@@ -33,7 +33,7 @@
 
 	This script will:
 	* Create an [`.env.local`](.env.local) file with default values copied from [`.env.local.example`](.env.local.example), if one doesn't already exist
-		* Install package dependencies from npm
+	* Install package dependencies from npm
 	* Initialize a local EdgeDB instance (default name: `infernet_cloud`)
 	* Apply EdgeDB database migrations
 
@@ -168,7 +168,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 	* `edgedb` – [EdgeDB](https://www.edgedb.com) database
 		* First run: initializes Docker volume at [`./edgedb-data/`](edgedb-data), configures EdgeDB Auth, and performs schema migrations.
-		* **IMPORTANT**: **Keep the contents of the `./edgedb-data/` directory safe. If you delete it, you will lose all data stored in the database!**
+		* **IMPORTANT**: **Keep the contents of the `./edgedb-data/` directory safe. If you modify/delete it, you will lose data stored in the database!**
 
 8. Access the Infernet Cloud UI by opening a web browser and navigating to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
 
