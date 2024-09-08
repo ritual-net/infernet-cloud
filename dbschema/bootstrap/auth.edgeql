@@ -6,9 +6,7 @@ ext::auth::AuthConfig::token_time_to_live := <duration>"24 hours";
 
 CONFIGURE CURRENT BRANCH SET
 ext::auth::AuthConfig::allowed_redirect_urls := {
-    'http://localhost:3000',
-    'https://infernet-cloud-staging.origin-ml.com',
-    'https://infernet-cloud-staging-2.origin-ml.com',
+	'http://localhost:3000',
 };
 
 CONFIGURE CURRENT BRANCH
