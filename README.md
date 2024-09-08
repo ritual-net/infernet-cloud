@@ -56,12 +56,12 @@
 		```
 
 6. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration):
-	* Open [`dbschema/auth.edgeql`](dbschema/auth.edgeql) in a text editor.
+	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
 	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
 	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
 	* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in, otherwise set it to `false`.
-	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
+	* Save [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql).
 	* Apply changes to EdgeDB Auth settings:
 
 		```bash
@@ -157,12 +157,12 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 		* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
 
 5. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration):
-	* Open [`dbschema/auth.edgeql`](dbschema/auth.edgeql) in a text editor.
+	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
 	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
 	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
 	* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in, otherwise set it to `false`.
-	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
+	* Save [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql).
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
@@ -200,7 +200,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 	* If you're having trouble, double-check that the following values match:
 		* The `SERVER_HOST` environment variable in [`.env.docker`](.env.docker)
-		* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/auth.edgeql`](dbschema/auth.edgeql)
+		* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql)
 		* The domain name in [`caddy/Caddyfile`](caddy/Caddyfile) (with `http://` or `https://` omitted)
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
