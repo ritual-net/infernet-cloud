@@ -2,12 +2,15 @@
 
 **Infernet Cloud** is a self-hostable UI for configuring, deploying and monitoring [Infernet](https://docs.ritual.net/infernet/about) [node](https://docs.ritual.net/infernet/node/introduction) clusters and Infernet-compatible [containers](https://docs.ritual.net/infernet/node/containers) using major cloud hosting providers ([AWS](https://aws.amazon.com), [Google Cloud](https://cloud.google.com)).
 
+
 ## Table of contents
 
 * **[Local setup](#local-setup)**
 	* [Development scripts](#development-scripts-local-setup)
+
 * **[Docker Compose setup](#docker-compose-setup)**
 	* [Development scripts](#development-scripts-docker-compose-setup)
+
 * **[Using Infernet Cloud](#using-infernet-cloud)**
 	1. [Create an account](#1-create-an-account)
 	2. [Connect a cloud provider](#2-connect-a-cloud-provider)
@@ -16,6 +19,7 @@
 	5. [Create a cluster](#5-create-a-cluster)
 	6. [Monitor and manage a cluster (and router)](#6-monitor-and-manage-a-cluster-and-router)
 	7. [Monitor and manage nodes](#7-monitor-and-manage-nodes)
+
 
 ## Local setup
 
@@ -107,6 +111,7 @@
 
 
 Find more commands and their definitions in the `scripts` section of [`package.json`](package.json).
+
 
 ## Docker Compose setup (recommended for production)
 
@@ -241,6 +246,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	```
 
 Find more commands and their definitions in the `scripts` section of [`package.json`](package.json).
+
 
 ## Using Infernet Cloud
 
