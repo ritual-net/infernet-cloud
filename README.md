@@ -55,7 +55,7 @@
 		edgedb instance credentials
 		```
 
-6. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password):
+6. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration):
 	* Open [`dbschema/auth.edgeql`](dbschema/auth.edgeql) in a text editor.
 	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
@@ -68,7 +68,7 @@
 		pnpm local:edgedb:init:auth
 		```
 
-	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#email-and-password).
+	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
 7. Start the server:
 
@@ -156,7 +156,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
 		* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
 
-5. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password):
+5. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration):
 	* Open [`dbschema/auth.edgeql`](dbschema/auth.edgeql) in a text editor.
 	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
@@ -164,7 +164,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in, otherwise set it to `false`.
 	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
 
-	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#email-and-password).
+	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
 6. If hosting Infernet Cloud on a cloud provider with a public-facing URL, configure the reverse proxy:
 	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
