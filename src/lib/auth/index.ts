@@ -1,5 +1,14 @@
-import crypto from 'node:crypto';
-import { EDGEDB_BASE_URL, SERVER_HOST } from '$env/static/private';
+import crypto from 'node:crypto'
+import {
+	SERVER_HOST,
+	EDGEDB_PROTOCOL,
+	EDGEDB_HOST,
+	EDGEDB_PORT,
+	EDGEDB_BRANCH,
+} from '$env/static/private'
+
+
+const EDGEDB_AUTH_BASE_URL = `${EDGEDB_PROTOCOL}://${EDGEDB_HOST}:${EDGEDB_PORT}/branch/${EDGEDB_BRANCH}/ext/auth`
 
 /**
  * You can get EDGEDB_BASE_URL by running `edgedb instance credentials`.
@@ -7,12 +16,12 @@ import { EDGEDB_BASE_URL, SERVER_HOST } from '$env/static/private';
  * `${protocol}://${host}:${port}/db/${database}`
  */
 export const EDGEDB_AUTH_URLS = {
-	GET_TOKEN: `${EDGEDB_BASE_URL}/ext/auth/token`,
-	REGISTER: `${EDGEDB_BASE_URL}/ext/auth/register`,
-	VERIFY: `${EDGEDB_BASE_URL}/ext/auth/verify`,
-	SIGN_IN: `${EDGEDB_BASE_URL}/ext/auth/authenticate`,
-	RESET_PASSWORD: `${EDGEDB_BASE_URL}/ext/auth/reset-password`,
-	SEND_RESET_PASSWORD_EMAIL: `${EDGEDB_BASE_URL}/ext/auth/send-reset-email`,
+	GET_TOKEN: `${EDGEDB_AUTH_BASE_URL}/token`,
+	REGISTER: `${EDGEDB_AUTH_BASE_URL}/register`,
+	VERIFY: `${EDGEDB_AUTH_BASE_URL}/verify`,
+	SIGN_IN: `${EDGEDB_AUTH_BASE_URL}/authenticate`,
+	RESET_PASSWORD: `${EDGEDB_AUTH_BASE_URL}/reset-password`,
+	SEND_RESET_PASSWORD_EMAIL: `${EDGEDB_AUTH_BASE_URL}/send-reset-email`,
 }
 
 export const AUTH_CALLBACK_URLS = {
