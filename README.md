@@ -22,7 +22,7 @@
 	```
 
 	This script will:
-	* Create an [.env.local](.env.local) file with default values
+	* Create an [`.env.local`](.env.local) file with default values
 	* Initialize a local EdgeDB project (default name: `"infernet_cloud"`)
 	* Perform EdgeDB database migrations
 	* Install npm package dependencies
@@ -46,17 +46,15 @@
 
 #### Server
 
-```bash
-pnpm run local:server
+* Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload:
+	```bash
+	pnpm run local:server
+	```
+
+* Start the local Vite server with Node.js debugging enabled:
+	```bash
+	pnpm run local:server:debug
 ```
-
-* Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload.
-
-```bash
-pnpm run local:server:debug
-```
-
-* Start the local [Vite](https://vitejs.dev) server with Node.js debugging enabled.
 
 #### EdgeDB (database)
 
@@ -98,8 +96,9 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	pnpm run docker:init
 	```
 
-	* Creates an `.env.docker` file with default values
-	* Installs npm package dependencies
+	This script will:
+	* Create an [`env.docker`](env.docker) file with default values
+	* Install npm package dependencies
 
 4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
 	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default `http://localhost:3000` when running locally).
