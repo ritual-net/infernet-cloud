@@ -242,15 +242,15 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 ### 1. Create an account
 
-* Navigate to **Log in**.
+* Navigate to **Log in** › **Sign up**.
 
-* Choose an email and password.
+* Choose a name, email address, and password.
 
 * If email verification is enabled, verify your email address using the link sent to your email.
 
 * Log in.
 
-### 2. Connect a cloud provider
+### 2. Connect a cloud account
 
 * Navigate to **Accounts** › **Connect Cloud Account**.
 
