@@ -44,7 +44,7 @@
 	```
 
 5. Configure environment variables by editing the [`.env.local`](.env.local) file:
-	* `SERVER_HOST`: The public-facing URL of your server (default `http://localhost:5173` when running locally).
+	* `SERVER_HOST`: The public-facing URL of your server (default [`http://localhost:5173`](http://localhost:5173) when running locally).
 	* `EDGEDB_BASE_URL`: The URL of your EdgeDB instance (default `http://localhost:10700/main` when using `edgedb` CLI defaults).
 	  * Run `edgedb instance list` to find the URL of your [local EdgeDB instance](https://docs.edgedb.com/get-started/instances#listing-instances) – make sure the port number and branch name match the value of `EDGEDB_BASE_URL`.
 
@@ -121,7 +121,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	*	* Install package dependencies from npm
 
 4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
-	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default `http://localhost:3000` when running locally).
+	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when running locally).
 	* `EDGEDB_SERVER_PASSWORD`: The admin password for the EdgeDB database.
 	* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
 		* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
@@ -134,13 +134,15 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	* To require new accounts to verify their email address before logging in, set `ext::auth::AuthConfig::require_verification` to `true`, otherwise set it to `false`.
 	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
 
-	For more information, see the [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password) documentation.
+	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#email-and-password).
 
 6. If hosting on a cloud provider, configure the reverse proxy:
 	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
 	* Replace `my.infernet-cloud.instance.example` with the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
 	* Ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
+
+	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
 
 7. Start all services:
 
