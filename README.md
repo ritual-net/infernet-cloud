@@ -136,7 +136,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#email-and-password).
 
-6. If hosting on a cloud provider, configure the reverse proxy:
+6. If hosting Infernet Cloud on a cloud provider with a public-facing URL, configure the reverse proxy:
 	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
 	* Replace `my.infernet-cloud.example.com` with the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
