@@ -221,12 +221,12 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	pnpm run docker:edgedb:restart
 	```
 
-* Create a timestamped backup of the EdgeDB Docker volume:
+* Create a timestamped backup of the EdgeDB Docker volume ([`./edgedb-data/`](edgedb-data)):
 	```bash
 	pnpm run docker:edgedb:backup
 	```
 
-* Permanently delete the current EdgeDB Docker volume after confirmation:
+* Permanently delete the current EdgeDB Docker volume ([`./edgedb-data/`](edgedb-data)) after confirmation:
 	```bash
 	pnpm run docker:edgedb:destroy
 	```
