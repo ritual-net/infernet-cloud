@@ -5,13 +5,13 @@
 			"name": "SvelteKit (VSCode)",
 			"type": "node-terminal",
 			"request": "launch",
-			"command": "pnpm dev"
+			"command": "pnpm run local:server"
 		},
 		{
 			"name": "SvelteKit (Browser DevTools)",
 			"type": "node-terminal",
 			"request": "launch",
-			"command": "pnpm dev:debug"
+			"command": "pnpm run local:server:debug"
 		},
 		{
 			"name": "SvelteKit (Chrome)",
