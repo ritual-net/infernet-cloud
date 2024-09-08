@@ -171,7 +171,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* If you're having trouble, double-check that the following values match:
 		* The `SERVER_HOST` environment variable in [`.env.docker`](.env.docker)
 		* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/auth.edgeql`](dbschema/auth.edgeql)
-		* The domain in the [`caddy/Caddyfile`](caddy/Caddyfile) (with `http://` or `https://` omitted)
+		* The domain name in [`caddy/Caddyfile`](caddy/Caddyfile) (with `http://` or `https://` omitted)
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
