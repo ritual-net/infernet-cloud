@@ -66,7 +66,7 @@
 
 * Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload:
 	```bash
-	pnpm run local:server
+	pnpm run local:server:start
 	```
 
 * Start the local Vite server with Node.js debugging enabled:
@@ -189,12 +189,12 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 * Start all Docker services in detached mode and display logs:
 	```bash
-	pnpm run docker:up
+	pnpm run docker:start
 	```
 
 * Rebuild Docker images without cache, then (re)start all services:
 	```bash
-	pnpm run docker:up:force
+	pnpm run docker:start:force
 	```
 
 * Stop and remove all Docker services:
