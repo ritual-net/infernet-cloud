@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Types
+	import type { ChangeFn } from '@melt-ui/svelte/internal/helpers'
+
+
 	// Inputs
 	export let id: string | undefined
 	export let name: string | undefined
@@ -7,21 +11,23 @@
 	export let disabled = false
 
 
-	// Internal state
-	import { writable } from 'svelte/store'
-	import { melt, createSwitch, createSync } from '@melt-ui/svelte'
+	// Events
+	export let onChange: ChangeFn<boolean>
 
-	const _checked = writable(checked)
-	$: checked = $_checked
+
+	// Internal state
+	import { melt, createSwitch, createSync } from '@melt-ui/svelte'
 	
 	const {
 		elements: { root, input },
 		states,
 		options,
 	} = createSwitch({
-		checked: _checked,
 		disabled,
+		onCheckedChange: onChange,
 	})
+
+	$: createSync(states).checked(checked, _ => { checked = _ })
 
 	$: createSync(options).disabled(disabled, _ => { disabled = _ })
 
@@ -50,13 +56,14 @@
 	use:melt={$input}
 	{id}
 	{name}
+	on:change
 />
 
 
 <style>
 	:root {
 		--switch-default-backgroundColor: #D9D9D940;
-		--switch-checked-backgroundColor: var(--color-ritualBlack);
+		--switch-checked-backgroundColor: var(--accentColor);
 		--switch-backgroundColor: #D9D9D988;
 		--switch-thumb-backgroundColor: #fff;
 		--switch-width: 2.5em;
@@ -74,6 +81,7 @@
 			/ 0fr auto 1fr
 		;
 
+		flex: 0 0 auto;
 		width: var(--switch-width);
 		height: var(--switch-height);
 		padding: var(--switch-padding);
@@ -91,7 +99,11 @@
 	
 	.thumb {
 		grid-area: thumb;
+
 		aspect-ratio: 1;
+		@supports not (aspect-ratio: 1) {
+			width: 1.25em;
+		}
 
 		background-color: var(--switch-thumb-backgroundColor);
 		border-radius: 100%;
@@ -102,6 +114,9 @@
 
 	button:active .thumb {
 		aspect-ratio: 1.1;
+		@supports not (aspect-ratio: 1) {
+			width: 1.375em;
+		}
 
 		transition-duration: 0.2s;
 	}

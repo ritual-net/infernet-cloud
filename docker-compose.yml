@@ -1,5 +1,7 @@
 services:
   caddy:
+    depends_on:
+      - server
     image: caddy:latest
     restart: unless-stopped
     ports:
@@ -10,16 +12,12 @@ services:
       - ./caddy:/etc/caddy
       - ./caddy_data:/data
       - ./caddy_config:/config
-    depends_on:
-      - server
 
   server:
     container_name: server
     build:
       context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
+      dockerfile: server.Dockerfile
     restart: unless-stopped
     ports:
       - 3000:3000
@@ -28,6 +26,8 @@ services:
         condition: service_healthy
 
   edgedb:
+    depends_on:
+      - smtp
     container_name: edgedb
     build:
       context: .
@@ -49,8 +49,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-    depends_on:
-      - smtp
+    restart: unless-stopped
 
   smtp:
     image: ixdotai/smtp:latest
@@ -60,6 +59,7 @@ services:
       SMARTHOST_USER: apikey
       SMARTHOST_PASSWORD: ${SENDGRID_KEY}
       SMARTHOST_ALIASES: '*.sendgrid.net'
+    restart: unless-stopped
     expose:
       - '25'
 

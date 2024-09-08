@@ -28,7 +28,7 @@
 	const {
 		form,
 		enhance,
-		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -59,14 +59,46 @@
 
 
 	// (Firewall)
-	let hasFirewall = (
-		Boolean($form.config.ip_allow_http?.length || $form.config.ip_allow_ssh?.length)
+	let httpFirewallMode: 'all' | 'allowlist' | 'none' = (
+		!$form.config.ip_allow_http || $form.config.ip_allow_http.length === 1 && $form.config.ip_allow_http[0] === '0.0.0.0/0' ?
+			'all'
+		: $form.config.ip_allow_http.length > 0 ?
+			'allowlist'
+		:
+			'none'
 	)
-	let ip_allow_http = $form.config.ip_allow_http ?? []
-	let ip_allow_ssh = $form.config.ip_allow_ssh ?? []
+	let sshFirewallMode: 'all' | 'allowlist' | 'none' = (
+		!$form.config.ip_allow_ssh || $form.config.ip_allow_ssh.length === 1 && $form.config.ip_allow_ssh[0] === '0.0.0.0/0' ?
+			'all'
+		: $form.config.ip_allow_ssh.length > 0 ?
+			'allowlist'
+		:
+			'none'
+	)
 
-	$: $form.config.ip_allow_http = hasFirewall ? ip_allow_http : []
-	$: $form.config.ip_allow_ssh = hasFirewall ? ip_allow_ssh : []
+	let httpAllowlist = $form.config.ip_allow_http ?? []
+	let sshAllowlist = $form.config.ip_allow_ssh ?? []
+
+	$: $form.config.ip_allow_http = (
+		httpFirewallMode === 'all' ?
+			undefined
+		: httpFirewallMode === 'allowlist' ?
+			httpAllowlist
+		: httpFirewallMode === 'none' ?
+			[]
+		:
+			undefined
+	)
+	$: $form.config.ip_allow_ssh = (
+		sshFirewallMode === 'all' ?
+			undefined
+		: sshFirewallMode === 'allowlist' ?
+			sshAllowlist
+		: sshFirewallMode === 'none' ?
+			[]
+		:
+			undefined
+	)
 
 
 	// Functions
@@ -75,11 +107,18 @@
 
 
 	// Components
-	import Tabs from '$/components/Tabs.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
 	import Select from '$/components/Select.svelte'
-	import Switch from '$/components/Switch.svelte'
 	import Textarea from '$/components/Textarea.svelte'
+	import Switch from '$/components/Switch.svelte'
+	import RegionZoneMachineFields from '../../create/RegionZoneMachineFields.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte';
 </script>
+
+
+<svelte:head>
+	<title>Edit Cluster | {cluster.name || cluster.id} | Cluster | Infernet Cloud</title>
+</svelte:head>
 
 
 <form
@@ -89,17 +128,17 @@
 >
 	<header class="row">
 		<legend>
-			<h2>Edit Cluster</h2>
+			<h2>Edit cluster</h2>
 		</legend>
 	</header>
 
 	<div class="card column">
 		<section class="row wrap">
 			<h3>
-				Cloud Account
+				Cloud account
 			</h3>
 
-			<div class="row">
+			<div class="row inline with-icon">
 				<img class="icon" src={providers[cluster.service_account.provider].icon} />
 				{cluster.service_account.name}
 			</div>
@@ -127,100 +166,165 @@
 		</section>
 
 		<section class="column wrap">
-			<div class="row wrap">
+			<h3>Firewall</h3>
+			
+			<div class="row equal align-start wrap">
+				<div class="column">
+					<div class="column inline">
+						<h4>
+							<label for="hasHttpFirewall">
+								HTTP
+							</label>
+						</h4>
+
+						<p>Specify which IPs can make HTTP requests to this cluster.</p>
+					</div>
+
+					<Select
+						required
+						id="hasHttpFirewall"
+						name="hasHttpFirewall"
+						labelText="HTTP Firewall"
+						bind:value={httpFirewallMode}
+						items={[
+							{
+								value: 'all',
+								label: 'All IPs',
+							},
+							{
+								value: 'allowlist',
+								label: 'Only allowed IPs',
+							},
+							{
+								value: 'none',
+								label: 'None (disabled)',
+							}
+						]}
+					/>
+
+					{#if httpFirewallMode === 'allowlist'}
+						<Textarea
+							id="config.ip_allow_http"
+							name="config.ip_allow_http"
+							rows="2"
+							placeholder={`Comma-separated IPv4 addresses / CIDR blocks...\n0.0.0.0/1, 0.0.0.0/2`}
+							value={serializeCommaSeparated(httpAllowlist)}
+							onblur={e => { httpAllowlist = parseCommaSeparated(e.currentTarget.value) }}
+							{...$constraints.config?.ip_allow_http}
+							pattern={$constraints?.config?.ip_allow_http?.pattern && `^${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_http.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+							class="small"
+						/>
+					{/if}
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<h4>
+							<label for="hasSshFirewall">
+								SSH
+							</label>
+						</h4>
+
+						<p>Specify which IPs can connect to this cluster via SSH.</p>
+					</div>
+
+					<Select
+						required
+						id="hasSshFirewall"
+						name="hasSshFirewall"
+						labelText="SSH Firewall"
+						bind:value={sshFirewallMode}
+						items={[
+							{
+								value: 'all',
+								label: 'All IPs',
+							},
+							{
+								value: 'allowlist',
+								label: 'Only allowed IPs',
+							},
+							{
+								value: 'none',
+								label: 'None (disabled)',
+							},
+						]}
+					/>
+
+					{#if sshFirewallMode === 'allowlist'}
+						<Textarea
+							id="config.ip_allow_ssh"
+							name="config.ip_allow_ssh"
+							rows="2"
+							placeholder={`Comma-separated IPv4 addresses / CIDR blocks...\n0.0.0.0/1, 0.0.0.0/2`}
+							value={serializeCommaSeparated(sshAllowlist)}
+							onblur={e => { sshAllowlist = parseCommaSeparated(e.currentTarget.value) }}
+							{...$constraints.config?.ip_allow_ssh}
+							pattern={$constraints?.config?.ip_allow_ssh?.pattern && `^${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')}(?:, ${$constraints.config.ip_allow_ssh.pattern.replaceAll(/^[^]|[$]$/g, '')})*$`}
+							class="small"
+						/>
+					{/if}
+				</div>
+			</div>
+		</section>
+
+		<fieldset
+			class="column"
+		>
+			<RegionZoneMachineFields
+				entityType="cluster"
+				namePrefix="config"
+				serviceAccount={cluster.service_account}
+				bind:regionId={$form.config.region}
+				bind:zoneId={$form.config.zone}
+				constraints={{
+					region: $constraints.config?.region,
+					zone: $constraints.config?.zone,
+				}}
+			/>
+		</fieldset>
+	</div>
+
+	<div class="card column">
+		<div class="card column">
+			<section class="row">
 				<div class="column inline">
-					<h3 class="row inline">
-						<label for="hasFirewall">
-							Firewall
+					<h3>
+						<label for="config.deploy_router">
+							Deploy Router?
 						</label>
 					</h3>
 
-					<p>Determine which IP addresses will have permissions to this cluster.</p>
+					<p>Determine whether your cluster will be deployed with an <a href="https://docs.ritual.net/infernet/router/introduction" target="_blank">Infernet Router</a>.</p>
 				</div>
 
-				<Select
-					required
-					id="hasFirewall"
-					name="hasFirewall"
-					labelText="Firewall"
-					bind:value={hasFirewall}
-					items={[
-						{
-							value: false,
-							label: 'All IPs',
-						},
-						{
-							value: true,
-							label: 'Only allowed IPs',
-						}
-					]}
+				<Switch
+					id="config.deploy_router"
+					name="config.deploy_router"
+					bind:checked={$form.config.deploy_router}
+					labelText="Deploy Router?"
 				/>
-			</div>
+			</section>
 
-			{#if hasFirewall}
-				<Tabs
-					value={0}
-					items={[
-						{
-							id: 0,
-							label: 'HTTP',
-						},
-						{
-							id: 1,
-							label: 'SSH',
-						},
-					]}
-				>
-					<svelte:fragment slot="content"
-						let:item
-					>
-						{#if item.id === 0}
-							<Textarea
-								id="config.ip_allow_http"
-								name="config.ip_allow_http"
-								rows="2"
-								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								value={serializeCommaSeparated(ip_allow_http)}
-								onblur={e => { ip_allow_http = parseCommaSeparated(e.currentTarget.value) }}
-								{...$constraints.config?.ip_allow_http}
-								disabled={!hasFirewall}
-							/>
+			<Collapsible
+				open={$form.config.deploy_router}
+			>	
+				<RegionZoneMachineFields
+					entityType="router"
+					namePrefix="router"
+					serviceAccount={cluster.service_account}
+					defaults={{
+						region: $form.config.region,
+						zone: $form.config.zone,
+					}}
+					bind:regionId={$form.router.region}
+					bind:zoneId={$form.router.zone}
+					bind:machineId={$form.router.machine_type}
+					bind:machineImageId={$form.router.machine_image}
+					constraints={$constraints.router}
+				/>
+			</Collapsible>
+		</div>
 
-						{:else}
-							<Textarea
-								id="config.ip_allow_ssh"
-								name="config.ip_allow_ssh"
-								rows="2"
-								placeholder={`Enter a comma-separated list of IP addresses...\n0.0.0.0/1, 0.0.0.0/2`}
-								value={serializeCommaSeparated(ip_allow_ssh)}
-								onblur={e => { ip_allow_ssh = parseCommaSeparated(e.currentTarget.value) }}
-								{...$constraints.config?.ip_allow_ssh}
-								disabled={!hasFirewall}
-							/>
-						{/if}
-					</svelte:fragment>
-				</Tabs>
-			{/if}
-		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3>
-					<label for="config.deploy_router">
-						Deploy Router?
-					</label>
-				</h3>
-
-				<p>Determine whether your cluster will be deployed with a router.</p>
-			</div>
-
-			<Switch
-				id="config.deploy_router"
-				name="config.deploy_router"
-				bind:checked={$form.config.deploy_router}
-				labelText="Deploy Router?"
-			/>
-		</section>
 	</div>
 
 	<footer class="row">
@@ -233,13 +337,11 @@
 			Cancel
 		</a>
 
-		<button
-			type="submit"
-			class="primary"
-			disabled={$submitting}
-		>
-			Save and Apply Changes
-		</button>
+		<FormSubmitButton
+			submitting={$submitting}
+			allErrors={$allErrors}
+			submitLabel="Save and apply changes"
+		/>
 	</footer>
 </form>
 

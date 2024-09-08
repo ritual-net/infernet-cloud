@@ -13,6 +13,7 @@
 
 	export let labelText: string | undefined
 	export let placeholder: string = 'Select...'
+	export let menuPlaceholder: string = 'No results found.'
 
 	export let id: string | undefined
 	export let name: string | undefined
@@ -21,6 +22,7 @@
 	export let multiple: boolean = false
 
 	// (View options)
+	export let loading = false
 	export let visuallyDisabled = false
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
@@ -28,38 +30,43 @@
 	// Functions
 	import { findMenuItem } from '$lib/menus'
 
-	const itemMatchesInput = (
+	const itemMatchesInputValue = (
 		item: MenuItem<Value>,
-		input: string | undefined,
+		inputValue: string | undefined,
 	) => {
-		const normalizedInput = input?.toLowerCase().trim()
+		if(!inputValue)
+			return true
+
+		const normalizedInput = inputValue.toLowerCase().trim()
 
 		return (
-			(
-				typeof item.value === 'string' && typeof normalizedInput === 'string' ?
-					String(item.value).toLowerCase().includes(normalizedInput)
-					: item.value === normalizedInput
-			)
-			|| (
-				typeof item.label === 'string' && typeof normalizedInput === 'string' ?
-					item.label.toLowerCase().includes(normalizedInput)
-					: false
-			)
+			String(item.value).toLowerCase().includes(String(normalizedInput))
+			|| String(item.label).toLowerCase().includes(String(normalizedInput))
+			// (
+			// 	typeof item.value === 'string' && typeof normalizedInput === 'string'
+			// 		? String(item.value).toLowerCase().includes(normalizedInput)
+			// 		: item.value === normalizedInput
+			// )
+			// || (
+			// 	typeof item.label === 'string' && typeof normalizedInput === 'string'
+			// 		? item.label.toLowerCase().includes(normalizedInput)
+			// 		: false
+			// )
 		)
 	}
 
 	const filterItems = (
 		items: MenuItems<Value>,
-		input: string,
+		inputValue: string | undefined,
 	): MenuItems<Value> => (
 		items
 			.map(item => (
 				'items' in item ?
 					{
 						...item,
-						items: filterItems(item.items, input),
+						items: filterItems(item.items, inputValue),
 					}
-				: itemMatchesInput(item, input) ?
+				: itemMatchesInputValue(item, inputValue) ?
 					item
 				:
 					undefined
@@ -95,6 +102,9 @@
 			fitViewport: true,
 			// boundary: document.getElementsByTagName('main')[0],
 		},
+
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
 
 		onOpenChange: ({ curr, next }) => {
 			const selectedItem = Array.isArray($selected) ? $selected[0] : $selected // as ListboxOption<Value>
@@ -139,13 +149,14 @@
 	)
 
 	// (Computed)
-	$: filteredItems =
-		inputValue !== undefined
-			? filterItems(items, inputValue)
-			: items
-	// $: filteredItems = $touchedInput
-	// 	? filterItems(items, inputValue)
-	// 	: items
+	$: filteredItems = (
+		filterItems(
+			items,
+			inputValue !== undefined && $touchedInput
+				? inputValue
+				: undefined
+		)
+	)
 </script>
 
 
@@ -158,11 +169,13 @@
 	<div class="stack">
 		<input
 			type="text"
+			class:loading
 			aria-disabled={visuallyDisabled ? true : undefined}
 			use:melt={$input}
 			value={inputValue}
 			{placeholder}
 			{name}
+			{...$$restProps}
 		/>
 	</div>
 </div>
@@ -201,7 +214,7 @@
 								>
 									<div class="row">
 										{#if subitem.icon}
-											<img src={item.icon} />
+											<img src={subitem.icon} />
 										{/if}
 
 										<span>{subitem.label}</span>
@@ -229,7 +242,11 @@
 					</li>
 				{/if}
 			{:else}
-				<li class="placeholder">No results found.</li>
+				<li class="placeholder">
+					<slot name="menu-placeholder">
+						{menuPlaceholder}
+					</slot>
+				</li>
 			{/each}
 		</div>
 	</ul>
@@ -242,15 +259,15 @@
 		--combobox-minWidth: 20rem;
 		--combobox-paddingX: 1em;
 		--combobox-paddingY: 0.5em;
-		--combobox-groupItem-indentX: 1.5em;
+		--combobox-groupItem-indentX: 1em;
 
-		--combobox-backgroundColor: rgb(255 255 255 / 0.75);
-		--combobox-backdropFilter: blur(3px);
+		--combobox-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
+		--combobox-backdropFilter: blur(20px);
 		--combobox-borderColor: var(--borderColor);
 		--combobox-borderWidth: var(--borderWidth);
 		--combobox-cornerRadius: 0.33em;
 
-		--combobox-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--combobox-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 
 		--combobox-textColor: var(--textColor);
 	}
@@ -269,8 +286,13 @@
 		cursor: context-menu;
 
 		&:after {
+			--combobox-indicator-inset: 1px;
+
 			margin: var(--borderWidth);
-			padding: var(--combobox-paddingY) calc(var(--combobox-paddingX) - 0.25em);
+			padding:
+				calc(var(--combobox-paddingY) - var(--combobox-indicator-inset))
+				calc(var(--combobox-paddingX) - 0.25em - var(--combobox-indicator-inset))
+			;
 			overflow: hidden;
 			border-radius: 0.33em;
 
@@ -318,6 +340,14 @@
 
 		& [data-melt-combobox-option] {
 			padding-left: calc(var(--combobox-paddingX) + var(--combobox-groupItem-indentX));
+		}
+	}
+
+	[data-melt-combobox-input] {
+		width: 100%;
+
+		&.loading {
+			cursor: progress;
 		}
 	}
 

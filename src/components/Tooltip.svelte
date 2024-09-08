@@ -1,5 +1,6 @@
 <script lang="ts">
 	// Inputs
+	export let isEnabled: boolean = true
 	export let labelText: string | undefined
 
 
@@ -26,30 +27,34 @@
 </script>
 
 
-<button
-	type="button"
-	tabindex="-1"
-	use:melt={$trigger}
-	aria-label={labelText}
->
-	<slot />
-</button>
-
-{#if $open}
-	<div
-		use:melt={$content}
-		transition:fade={{ duration: 100 }}
+{#if isEnabled}
+	<button
+		type="button"
+		tabindex="-1"
+		use:melt={$trigger}
+		aria-label={labelText}
 	>
-		<div use:melt={$arrow} />
+		<slot />
+	</button>
 
-		<slot name="content" />
-	</div>
+	{#if $open}
+		<div
+			use:melt={$content}
+			transition:fade={{ duration: 100 }}
+		>
+			<div use:melt={$arrow} />
+
+			<slot name="content" />
+		</div>
+	{/if}
+{:else}
+	<slot />
 {/if}
 
 	
 <style>
 	:root {
-		--tooltip-backgroundColor: #fff;
+		--tooltip-backgroundColor: light-dark(#fff, #000);
 		--tooltip-borderColor: var(--borderColor);
 		--tooltip-borderWidth: var(--borderWidth);
 		--tooltip-cornerRadius: 0.33em;

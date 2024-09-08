@@ -1,7 +1,6 @@
-import { error, text } from '@sveltejs/kit';
-import { nodeAction } from '$/lib/clients/node/common';
-import { NodeAction } from '$/types/provider';
-import type { RequestHandler } from '@sveltejs/kit';
+import { error, text } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
+import { getNodeClient } from '$/lib/clients/node/common'
 
 /**
  * Start a node by its id.
@@ -10,16 +9,23 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns success boolean and message.
  */
-export const POST: RequestHandler = async ({ locals: { client }, params }) => {
-	const id = params.nodeId;
+export const POST: RequestHandler = async ({
+	locals: { client },
+	params: { nodeId },
+}) => {
+	if (!nodeId)
+		return error(400, 'Node id is required')
 
-	if (!id) {
-		return error(400, 'Node id is required');
-	}
 	try {
-		await nodeAction(client, [id], NodeAction.start);
-		return text('Starting nodes...');
+		const nodeClient = await getNodeClient(client, nodeId)
+
+		if (!nodeClient)
+			return error(500, 'Node client not found')
+
+		await nodeClient.start()
+
+		return text('Started node.')
 	} catch (e) {
-		return error(400, (e as Error).message);
+		return error(500, (e as Error).message)
 	}
-};
+}

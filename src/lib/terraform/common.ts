@@ -1,11 +1,45 @@
-import { e } from '$/lib/db';
-import { getClusterById } from '../db/queries';
-import { routerAction } from '$/lib/clients/node/common';
-import { ProviderTerraform } from '$/lib';
-import type { Client } from 'edgedb';
-import type { ProviderServiceAccount } from '$/types/provider';
-import { NodeAction } from '$/types/provider';
-import { TFAction } from '$/types/terraform';
+import { e } from '$/lib/db'
+import { getClusterById } from '../db/queries'
+import { restartRouter } from '$/lib/clients/node/common'
+import { ProviderTerraform } from '$/lib'
+import type { Client } from 'edgedb'
+import type { ProviderServiceAccount } from '$/types/provider'
+import { TFAction } from '$/types/terraform'
+import { addCleanupListener, removeCleanupListener } from 'async-cleanup'
+
+/**
+ * Locks the given cluster to prevent concurrent mutations.
+ *
+ * @param client The database client
+ * @param clusterId The id of the Cluster
+ */
+const lockCluster = async (client: Client, clusterId: string) => {
+	await e
+		.update(e.Cluster, () => ({
+			filter_single: { id: clusterId },
+			set: {
+				locked: true,
+			},
+		}))
+		.run(client)
+}
+
+/**
+ * Unlocks the given cluster.
+ *
+ * @param client The database client
+ * @param clusterId The id of the Cluster
+ */
+const unlockCluster = async (client: Client, clusterId: string) => {
+	await e
+		.update(e.Cluster, () => ({
+			filter_single: { id: clusterId },
+			set: {
+				locked: false,
+			},
+		}))
+		.run(client)
+}
 
 /**
  * Applies the given action to a cluster, and persists the resulting Terraform state
@@ -21,80 +55,179 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		includeServiceAccountCredentials: true,
 		includeNodeDetails: true,
 		includeDockerAccountCredentials: true,
+		includeTerraformDeploymentDetails: true,
 	});
 
-	if (!cluster) {
-		return { error: 'Cluster not found.', success: false };
+	if (!cluster)
+		throw new Error(`Cluster not found.`)
+
+	if (/*action === TFAction.Apply &&*/ cluster.locked)
+		throw new Error(`The cluster is already in the process of being updated. Please wait and try again.`)
+
+	const cleanUp = async () => {
+		await unlockCluster(client, clusterId)
 	}
 
-	if (cluster.locked) {
-		return { error: 'The cluster is already in the process of being updated. Please wait and try again.', success: false };
-	}
+	try {
+		addCleanupListener(cleanUp)
 
-	// Lock the cluster to prevent concurrent mutations
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: clusterId },
-			set: {
-				locked: true,
-			},
-		}))
-		.run(client);
+		await lockCluster(client, clusterId)
 
-	const { error, state, success, logs } = await ProviderTerraform[
-		cluster.service_account.provider
-	].action(cluster, cluster.service_account as ProviderServiceAccount, action);
+		// Perform Terraform action
+		const results = await (
+			ProviderTerraform[cluster.service_account.provider]
+				.action(
+					cluster,
+					cluster.service_account as ProviderServiceAccount,
+					action
+				)
+		)
 
-	// Store state in the database
-	await e
-		.update(e.Cluster, () => ({
-			filter_single: { id: clusterId },
-			set: {
-				error: error ?? null,
-				healthy: success,
-				locked: false,
-				router: {
-					id: state?.outputs?.router?.value?.id ?? '',
-					ip: state?.outputs?.router?.value?.ip ?? '',
-				},
-				tfstate: JSON.stringify(state),
-				terraform_logs: logs,
-			},
-		}))
-		.run(client);
+		const snapshots = (
+			results
+				.map(result => ({
+					action: result.action,
+					tfvars: result.tfvars,
+					timestamp: new Date(result.timestamp).toISOString(),
+					command: result.command,
+					error: result.output.error,
+					tfstate: result.output.tfstate,
+					stdout: result.output.stdout,
+					stderr: result.output.stderr,
+				}))
+		)
 
-	// Restart router to apply any changes to IP address list
-	if (success && cluster.deploy_router && action == TFAction.Apply) {
-		await routerAction(client, state!.outputs!.router!.value!.id, NodeAction.restart);
-	}
+		// Store state in the database
 
-	// Update node provider IDs
-	const nodeInfo = state?.outputs?.nodes?.value;
-	if (nodeInfo) {
-		await e
-			.params(
-				{
-					nodeInfo: e.array(
-						e.tuple({
-							id: e.str,
-							ip: e.str,
-							key: e.uuid,
-						})
-					),
-				},
-				(params) =>
-					e.for(e.array_unpack(params.nodeInfo), (obj) =>
-						e.update(e.InfernetNode, () => ({
-							filter_single: { id: obj.key },
-							set: {
-								provider_id: obj.id,
-							},
-						}))
+		// https://github.com/edgedb/edgedb-js/issues/554
+
+		/*
+		const snapshots = (
+			await e
+				.params(
+					{
+						snapshots: e.array(
+							e.tuple({
+								action: e.TerraformAction,
+								error: e.str,
+								tfstate: e.json,
+								stdout: e.array(e.json),
+								stderr: e.array(e.json),
+							})
+						), 
+					},
+					({ snapshots }) => (
+						e.for(e.array_unpack(snapshots), (snapshot) =>
+							e.insert(
+								e.TerraformDeployment,
+								{
+									cluster: e.select(e.Cluster, () => ({
+										filter_single: { id: clusterId },
+									})),
+									action: e.cast(e.TerraformAction, action),
+									error: snapshot.error,
+									tfstate: snapshot.tfstate,
+									stdout: snapshot.stdout,
+									stderr: snapshot.stderr,
+								}
+							)
+						)
 					)
-			)
-			.run(client, {
-				nodeInfo,
-			});
+				)
+				.run(client, {
+					snapshots: (
+						results
+							.map(result => ({
+								action: result.action,
+								error: result.output.error ?? '',
+								tfstate: result.output.tfstate,
+								stdout: result.output.stdout,
+								stderr: result.output.stderr,
+							}))
+					),
+				})
+		)
+		*/
+
+		// InvalidValueError: JSON index 'error' is out of bounds
+		/*
+		const insertedSnapshots = (
+			await e
+				.params(
+					{
+						snapshots: e.json,
+					},
+					({ snapshots }) => (
+						e.for(e.json_array_unpack(snapshots), (snapshot) => (
+							e.insert(
+								e.TerraformDeployment,
+								{
+									action: e.cast(e.TerraformAction, snapshot['action']),
+									timestamp: e.cast(e.datetime, snapshot['timestamp']),
+									cluster: e.select(e.Cluster, () => ({
+										filter_single: { id: clusterId },
+									})),
+									command: e.cast(e.str, snapshot['command']),
+									error: e.cast(e.str, snapshot['error']),
+									tfstate: e.cast(e.json, snapshot['tfstate']),
+									stdout: e.cast(e.array(e.json), snapshot['stdout']),
+									stderr: e.cast(e.array(e.json), snapshot['stderr']),
+								}
+							)
+						)
+					)
+				)
+				.run(client, {
+					snapshots,
+				})
+		)
+		*/
+
+		// Insert snapshots individually
+		const insertedSnapshots = []
+		
+		for (const snapshot of snapshots) {
+			const insertedSnapshot = await e
+				.insert(
+					e.TerraformDeployment,
+					{
+						action: e.cast(e.TerraformAction, snapshot.action),
+						timestamp: e.cast(e.datetime, snapshot.timestamp),
+						cluster: e.select(e.Cluster, () => ({
+							filter_single: { id: clusterId },
+						})),
+						command: snapshot.command,
+						...snapshot.tfvars && { tfvars: snapshot.tfvars },
+						...snapshot.error && { error: snapshot.error },
+						...snapshot.tfstate && { tfstate: snapshot.tfstate },
+						...snapshot.stdout && { stdout: snapshot.stdout },
+						...snapshot.stderr && { stderr: snapshot.stderr }, 
+					}
+				)
+				.run(client)
+
+			insertedSnapshots.push(insertedSnapshot)
+		}
+
+		const {
+			output: {
+				error,
+				tfstate,
+				stdout,
+				stderr,
+			},
+		} = results[results.length - 1]
+
+		// Restart router to apply any changes to IP address list
+		if (cluster.router && action == TFAction.Apply && tfstate?.outputs?.router?.value)
+			await restartRouter(client, tfstate.outputs.router.value.id)
+
+		return {
+			snapshots: insertedSnapshots,
+			error,
+		}
+	}finally{
+		await cleanUp()
+		removeCleanupListener(cleanUp)
 	}
-	return { error, success };
-};
+}

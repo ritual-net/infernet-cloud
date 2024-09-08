@@ -10,6 +10,29 @@ module default {
 
   scalar type CloudProvider extending enum<AWS, GCP>;
 
+  scalar type Address extending str {
+    constraint regexp(r'^0x[[:xdigit:]]{40}$');
+  }
+
+  scalar type Secp256k1PrivateKey extending str {
+    constraint regexp(r'^0x[[:xdigit:]]{64}$');
+    constraint expression on (
+      __subject__ != '0x0000000000000000000000000000000000000000000000000000000000000000'
+    );
+  }
+
+  scalar type IpAddress extending str {
+    constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$');
+  }
+
+  scalar type IpAddressWithMask extending str {
+    constraint regexp(r'^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/(3[0-2]|[1-2]?[0-9]))?$');
+  }
+
+  scalar type BigIntString extending str {
+    constraint regexp(r'^[0]|[1-9][0-9]*$');
+  }
+
   type User {
     required name: str;
     required email: str;
@@ -94,22 +117,19 @@ module default {
     required external: bool {
       default := true;
     }
-    required allowed_addresses: array<str> {
-      default := <array<str>>[];
-    }
-    required allowed_delegate_addresses: array<str> {
-      default := <array<str>>[];
-    }
-    required allowed_ips: array<str> {
-      default := <array<str>>[];
-    }
-    required command: str {
-      default := "";
-    }
-    required env: json {
-      default := <json>{};
-    }
+    allowed_addresses: array<Address>;
+    allowed_delegate_addresses: array<Address>;
+    allowed_ips: array<IpAddressWithMask>;
+    command: str;
+    env: json;
     required gpu: bool {
+      default := false;
+    }
+    rate_limit_num_requests: int64;
+    rate_limit_period: float32;
+    # accepted_payments: array<tuple<address: Address, amount: bigint>>;
+    accepted_payments: array<tuple<address: Address, amount: BigIntString>>;
+    required generates_proofs: bool {
       default := false;
     }
 
@@ -128,6 +148,7 @@ module default {
     };
 
     chain_enabled: bool;
+    chain_id: int64;
     docker_account: DockerAccount;
 
     constraint exclusive on ((.name, .user));
@@ -137,30 +158,43 @@ module default {
   }
 
   type InfernetNode {
+    cluster := .<nodes[is Cluster];
+
+    required region: str {
+      # default := .cluster.region;
+    }
+
+    required zone: str {
+      # default := .cluster.zone;
+    }
+
+    required machine_type: str;
+
+    required machine_image: str;
+
     required chain_enabled: bool {
       default := false;
     }
+
     required forward_stats: bool {
       default := true;
     }
 
-    trail_head_blocks: int16 {
-      default := 0;
-    }
-    rpc_url: str {
-      default := "";
-    }
-    coordinator_address: str {
-      default := "";
-    }
-    max_gas_limit: int64 {
-      default := 0;
-    }
-    private_key: str {
-      default := "";
-    }
+    trail_head_blocks: int16;
 
-    provider_id: str;
+    rpc_url: str;
+
+    chain_id: int64;
+
+    registry_address: Address;
+
+    max_gas_limit: int64;
+
+    private_key: Secp256k1PrivateKey;
+
+    payment_address: Address;
+
+    allowed_sim_errors: array<str>;
 
     snapshot_sync_sleep: float32;
 
@@ -168,12 +202,29 @@ module default {
 
     docker_account: DockerAccount;
 
-    cluster := .<nodes[is Cluster];
-
     multi containers: Container {
       constraint exclusive;
       on source delete delete target;
     }
+
+    provider := (
+      .cluster.service_account.provider
+    );
+
+    provider_id := 'infernet-node-' ++ <str>.id;
+
+    state := (
+      with node := (
+        select json_get(InfernetNode.cluster.latest_deployment.tfstate, 'outputs', 'nodes', 'value', InfernetNode.provider_id)
+      )
+      select (
+        id := <str>json_get(node, 'id'),
+        ip := <str>json_get(node, 'ip') ?? ''
+        # ip := <IpAddress>json_get(node, 'ip')
+      )
+      if exists(InfernetNode.cluster.latest_deployment.tfstate)
+      else {}
+    );
 
     access policy only_owner
       allow all
@@ -185,33 +236,57 @@ module default {
 
   abstract type Cluster {
     required name: str;
-    required deploy_router: bool {
-      default := false;
-    }
-    required ip_allow_http: array<str> {
-      default := ["0.0.0.0/0"];
-    }
-    required ip_allow_ssh: array<str> {
-      default := ["0.0.0.0/0"];
-    }
-    required healthy: bool {
-      default := true;
-    }
-    required locked: bool {
-      default := false;
-    }
-    tfstate: str;
-    multi terraform_logs: json;
-    router: tuple<id: str, ip: str>;
-    error: str;
 
     required service_account: ServiceAccount {
       readonly := true;
     };
+
+    required region: str;
+
+    required zone: str;
+
+    ip_allow_http: array<IpAddressWithMask>;
+
+    ip_allow_ssh: array<IpAddressWithMask>;
+
+    router: tuple<region: str, zone: str, machine_type: str, machine_image: str>;
+
     multi nodes: InfernetNode {
       constraint exclusive;
       on source delete delete target;
     }
+
+    multi deployments := .<cluster[is TerraformDeployment];
+    latest_deployment := (
+      select .deployments
+      order by .timestamp desc
+      limit 1
+    );
+
+    required locked: bool {
+      default := false;
+    }
+
+    provider_id := 'ic-' ++ <str>.id;
+
+    status := (
+      'updating' if .locked else
+      'unhealthy' if exists(.latest_deployment) and .latest_deployment.status = 'failed' else
+      'destroyed' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' and .latest_deployment.action = TerraformAction.Destroy else
+      'healthy' if exists(.latest_deployment) and .latest_deployment.status = 'succeeded' else
+      'unknown'
+    );
+
+    router_state := (
+      with router := json_get(Cluster.latest_deployment.tfstate, 'outputs', 'router', 'value')
+      select (
+        id := <str>json_get(router, 'id'),
+        ip := <str>json_get(router, 'ip') ?? ''
+        # ip := <IpAddress>json_get(router_data, 'ip')
+      )
+      if exists(Cluster.latest_deployment.tfstate)
+      else {}
+    );
 
     constraint exclusive on ((.name, .service_account));
     access policy only_owner
@@ -220,28 +295,56 @@ module default {
   }
 
   type GCPCluster extending Cluster {
-    required region: str {
-      # e.g. "us-east2"
-      readonly := true;
-    }
-    required zone: str {
-      # e.g. "us-east2-a"
-      readonly := true;
-    }
-    required machine_type: str {
-      # e.g. "e2-standard-2"
-      readonly := true;
-    }
+    # e.g. "us-east2"
+    # overloaded required region: str;
+
+    # e.g. "us-east2-a"
+    # overloaded required zone: str;
   }
 
   type AWSCluster extending Cluster {
-    required region: str {
-      # e.g. "us-east-2"
-      readonly := true;
-    }
-    required machine_type: str {
-      # e.g. "t2.medium"
-      readonly := true;
-    }
+    # e.g. "us-east-2"
+    # overloaded required region: str;
+
+    # e.g. "us-east-2a"
+    # overloaded required zone: str;
   }
+
+  type TerraformDeployment {
+    index on ((.cluster, .timestamp));
+
+    status := (
+      'failed' if exists(.error) else
+      'failed' if(.action = TerraformAction.Apply and not exists(.tfstate)) else
+      'succeeded' if(.action = TerraformAction.Apply and exists(.tfstate)) else
+      'succeeded'
+    );
+
+    required action: TerraformAction;
+
+    required timestamp: datetime {
+      readonly := true;
+      default := std::datetime_current();
+    }
+
+    required cluster: Cluster {
+      readonly := true;
+      on target delete delete source;
+    }
+
+    config: json;
+    command: str;
+    tfvars: str;
+    error: str;
+    tfstate: json;
+    stdout: array<json>;
+    stderr: array<json>;
+  }
+
+  scalar type TerraformAction extending enum<
+    Init,
+    Plan,
+    Apply,
+    Destroy
+  >;
 }

@@ -9,7 +9,11 @@
 
 	$: ({
 		serviceAccount,
+		clusters: clustersPromise,
 	} = $page.data as PageData)
+
+	let clusters: Awaited<typeof clustersPromise> | undefined
+	$: clustersPromise.then(_ => { clusters = _ })
 
 
 	// Functions
@@ -17,9 +21,15 @@
 
 
 	// Components
-	// import ClustersTable from '$/routes/clusters/ClustersTable.svelte'
+	import ClustersTable from '$/routes/(signedIn)/clusters/ClustersTable.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
+
+
+<svelte:head>
+	<title>{serviceAccount.name || serviceAccount.id} | Cloud Account | Infernet Cloud</title>
+</svelte:head>
 
 
 <div class="container column">
@@ -36,7 +46,7 @@
 					{serviceAccount.name || serviceAccount.id}
 				</h2>
 
-				<p>Cloud Account</p>
+				<p>Cloud account</p>
 			</div>
 		</div>
 
@@ -45,26 +55,26 @@
 				serviceAccountId: $page.params.serviceAccountId,
 			})}
 			class="button primary"
-		>Edit Account</a> -->
+		>Edit account</a> -->
 	</header>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Configuration</h3>
 
 		<dl class="card column">
-			<section class="row">
-				<dt>Cloud Provider</dt>
+			<section class="row wrap">
+				<dt>Cloud provider</dt>
 
 				<dd class="row">
-					<img
-						class="icon"
-						src={providers[serviceAccount.provider].icon}
-					/>
-					{providers[serviceAccount.provider].name}
+					<WithIcon
+						icon={providers[serviceAccount.provider].icon}
+					>
+						{providers[serviceAccount.provider].name}
+					</WithIcon>
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>User</dt>
 
 				<dd>
@@ -72,7 +82,7 @@
 				</dd>
 			</section>
 
-			<!-- <section class="row">
+			<!-- <section class="row wrap">
 				<dt>Credentials</dt>
 
 				<dd>
@@ -82,13 +92,30 @@
 		</dl>
 	</section>
 
-	<!-- <div>
-		<h3>Clusters</h3>
+	<section class="column">
+		<header class="row">
+			<h3>Clusters</h3>
+
+			<a
+				class="button primary"
+				href={`/clusters/create?${new URLSearchParams({
+					serviceAccountId: serviceAccount.id,
+				})}`}
+			>
+				Create cluster
+			</a>
+		</header>
 
 		<ClustersTable
-			clusters={[]}
-		/>
-	</div> -->
+			clusters={clusters ?? []}
+		>
+			{#await clusters}
+				Loading clusters...
+			{:then}
+				No clusters found.
+			{/await}
+		</ClustersTable>
+	</section>
 </div>
 
 
@@ -103,12 +130,13 @@
 	}
 
 	header .icon {
+		flex-shrink: 0;
 		width: 4em;
 		height: 4em;
 		border-radius: 0.25em;
 		padding: 0.5em;
 
 		background-color: var(--color-ritualBlack);
-		color: #fff;
+		color: light-dark(#fff, #000);
 	}
 </style>

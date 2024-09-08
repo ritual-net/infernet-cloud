@@ -5,6 +5,8 @@ import type {
 	GCPServiceAccount,
 	InfernetNode,
 } from '$schema/interfaces';
+import type { Region as AwsRegion, AvailabilityZone, InstanceTypeInfo, Image } from '@aws-sdk/client-ec2'
+import type { compute_v1 } from 'googleapis'
 
 export enum ProviderTypeEnum {
 	AWS = 'AWS',
@@ -16,12 +18,61 @@ export type ProviderServiceAccount = AWSServiceAccount | GCPServiceAccount;
 export type ProviderServiceAccountCreds = AWSServiceAccount['creds'] & GCPServiceAccount['creds'];
 
 // Cloud provider client types
-export type Machine = {
+export type Region<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = {
+	id: string;
+	name: string;
+	continent?: string;
+	info: (
+		ProviderType extends ProviderTypeEnum.AWS ?
+			AwsRegion
+		: ProviderType extends ProviderTypeEnum.GCP ?
+			compute_v1.Schema$MachineType
+		:
+			never
+	);
+}
+
+export type Zone<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = {
+	id: string;
+	name: string;
+	info: (
+		ProviderType extends ProviderTypeEnum.AWS ?
+			AvailabilityZone
+		: ProviderType extends ProviderTypeEnum.GCP ?
+			compute_v1.Schema$Zone
+		:
+			never
+	);
+}
+
+export type Machine<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = {
+	id: string;
+	name: string;
+	description?: string;
+	hasGpu?: boolean;
+	info?: (
+		ProviderType extends ProviderTypeEnum.AWS ?
+			InstanceTypeInfo
+		: ProviderType extends ProviderTypeEnum.GCP ?
+			compute_v1.Schema$MachineType
+		:
+			never
+	);
+}
+
+export type MachineImage<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = {
 	id: string;
 	name: string;
 	description: string;
-	link: string;
-};
+	info?: (
+		ProviderType extends ProviderTypeEnum.AWS ?
+			Image
+		: ProviderType extends ProviderTypeEnum.GCP ?
+			compute_v1.Schema$Image
+		:
+			never
+	);
+}
 
 export type ProviderInfo = {
 	region: {
@@ -38,28 +89,20 @@ export type ZoneInfo = {
 
 // Node client types
 export type NodeInfo = {
-	id: string;
+	instanceId: string;
 	status?: string;
 	ip?: string;
-	node?: InfernetNode;
+	instanceInfo: any;
 };
 
 export type InfernetNodeWithInfo = {
-	node: InfernetNode;
+	node?: InfernetNode;
 	info?: NodeInfo;
 	infoError?: string | undefined;
 }
 
-export enum NodeAction {
-	start = 'start',
-	stop = 'stop',
-	info = 'info',
-	restart = 'restart',
-}
 
-
-import AWSIcon from '$/assets/aws.svg'
-import GCPIcon from '$/assets/gcp.svg'
+import { AWSIcon, GCPIcon } from '../icons'
 
 export const providers = {
 	[ProviderTypeEnum.AWS]: {

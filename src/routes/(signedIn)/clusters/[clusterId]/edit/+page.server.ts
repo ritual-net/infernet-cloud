@@ -29,7 +29,7 @@ export const actions: Actions = {
 			resolveRoute('/api/cluster/[clusterId]', { clusterId }),
 			{
 				method: 'PATCH',
-				body: JSON.stringify(formData.data.config),
+				body: JSON.stringify(formData.data),
 			}
 		)
 

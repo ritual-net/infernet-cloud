@@ -1,4 +1,10 @@
 <script lang="ts">
+	// Types/constants
+	import type { BaseNodeClient } from '$/lib/clients/node/base'
+	import { providers, ProviderTypeEnum } from '$/types/provider'
+	import { chainsByChainId } from '$/lib/chains'
+
+
 	// Context
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
@@ -15,16 +21,51 @@
 	$: nodeStatus = (
 		info?.status
 			? {
-				'RUNNING': 'healthy',
+				'RUNNING': 'running',
 				'TERMINATED': 'terminated',
 			}[info.status] || info.status
 			: 'unknown'
 	)
 
+	// (Output)
+	$: logsQuery = createInfiniteQuery({
+		queryKey: ['nodeLogs', {
+			nodeId: node?.id,
+		}] as const,
+
+		initialPageParam: 0,
+
+		queryFn: async ({
+			queryKey: [_, {
+				nodeId,
+			}],
+			pageParam: start,
+		}) => (
+			await fetch(
+				`${resolveRoute('/api/node/[nodeId]/logs', {
+					nodeId,
+				})}?${new URLSearchParams({
+					start: start?.toString(),
+				})}`,
+			)
+				.then(response => response.json() as ReturnType<BaseNodeClient['getLogs']>)
+		),
+
+		getNextPageParam: (lastPage) => lastPage.next,
+
+		select: result => (
+			result
+				.pages
+				.flatMap(page => page.logs)
+		),
+	})
+
 
 	// Functions
+	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { formatNumberCompact } from '$/lib/format'
 	import { resolveRoute } from '$app/paths'
+	import { isTruthy } from '$/lib/utils/isTruthy'
 
 
 	// Actions
@@ -35,10 +76,19 @@
 
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
+	import DetailsValue from '$/components/DetailsValue.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
+	import ScrollArea from '$/components/ScrollArea.svelte'
 	import Status from '$/views/Status.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
+
+
+<svelte:head>
+	<title>{node?.id ?? 'Node'} | Infernet Cloud</title>
+</svelte:head>
 
 
 <div class="container column">
@@ -55,37 +105,35 @@
 					{node.id}
 				</h2>
 
-				<p>Infernet Node</p>
+				<p>Infernet node</p>
 				<!-- <p>Created {node.created}</p> -->
 			</div>
 		</div>
 
-		<div class="row">
-			<dl class="card inline">
-				<div class="row">
-					<dt>Status</dt>
-					<dd>
-						<Status
-							status={nodeStatus}
-						/>
-					</dd>
-				</div>
+		<div class="row wrap">
+			<dl class="status-container card row">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={nodeStatus}
+					/>
+				</dd>
 			</dl>
 
-			<!-- <form
-				method="POST"
-				action="/?start"
-				use:enhance
-			>
-				<button type="submit">Start Node</button>
-			</form> -->
+			<a
+				href={resolveRoute(`/nodes/[nodeId]/edit`, {
+					nodeId: $page.params.nodeId,
+				})}
+				class="button primary"
+			>Edit node</a>
 
 			<DropdownMenu
 				labelText="Node Actions"
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -99,9 +147,9 @@
 							removeToast(toast.id)
 						},
 					},
-					{
+					info?.status === 'TERMINATED' && {
 						value: 'start',
-						label: 'Start Node',
+						label: 'Start node',
 						formAction: `?/start`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -125,9 +173,9 @@
 							}
 						},
 					},
-					{
+					info?.status === 'RUNNING' && {
 						value: 'stop',
-						label: 'Stop Node',
+						label: 'Stop node',
 						formAction: `?/stop`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -151,33 +199,63 @@
 							}
 						},
 					},
-				]}
+				].filter(isTruthy)}
 			/>
 		</div>
 	</header>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Configuration</h3>
 
 		<dl class="card column">
-			<section class="row">
-				<dt>Forward Stats?</dt>
+			<section class="row wrap">
+				<dt>Region / Zone</dt>
 
 				<dd>
-					{node.forward_stats ? 'Yes' : 'No'}
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{#if 'region' in node}
+							{node.region}
+						{/if}
+
+						{#if 'region' in node && 'zone' in node}
+							/
+						{/if}
+
+						{#if 'zone' in node}
+							{node.zone}
+						{/if}
+					</WithIcon>
 				</dd>
 			</section>
 
-			<section class="row">
-				<dt>Chain Enabled?</dt>
+			<section class="row wrap">
+				<dt>Machine type</dt>
 
 				<dd>
-					{node.chain_enabled ? 'Yes' : 'No'}
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{node.machine_type}
+					</WithIcon>
+				</dd>
+			</section>
+
+			<section class="row wrap">
+				<dt>Machine image</dt>
+
+				<dd>
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{node.machine_image}
+					</WithIcon>
 				</dd>
 			</section>
 
 			{#if node.docker_account}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Docker Hub Account</dt>
 
 					<dd>
@@ -185,16 +263,32 @@
 					</dd>
 				</section>
 			{/if}
+
+			<section class="row wrap">
+				<dt>Forward stats?</dt>
+
+				<dd>
+					{node.forward_stats ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
+			<section class="row wrap">
+				<dt>Chain enabled?</dt>
+
+				<dd>
+					{node.chain_enabled ? 'Yes' : 'No'}
+				</dd>
+			</section>
 		</dl>
 	</section>
 
 	{#if node.chain_enabled}
 		<section class="column">
-			<h3>Onchain Details</h3>
+			<h3>Onchain configuration</h3>
 
 			<dl class="card column">
 				{#if node.rpc_url}
-					<section class="row">
+					<section class="row wrap">
 						<dt>RPC URL</dt>
 
 						<dd>
@@ -203,19 +297,37 @@
 					</section>
 				{/if}
 
-				{#if node.coordinator_address}
-					<section class="row">
-						<dt>Coordinator Address</dt>
+				{#if node.chain_id}
+					<section class="row wrap">
+						<dt>Chain</dt>
 
 						<dd>
-							{node.coordinator_address}
+							{#if chainsByChainId[node.chain_id]}
+								<WithIcon
+									icon={chainsByChainId[node.chain_id].icon}
+								>
+									{chainsByChainId[node.chain_id].name}
+								</WithIcon>
+							{:else}
+								{node.chain_id}
+							{/if}
+						</dd>
+					</section>
+				{/if}
+
+				{#if node.registry_address}
+					<section class="row wrap">
+						<dt>Registry address</dt>
+
+						<dd>
+							{node.registry_address}
 						</dd>
 					</section>
 				{/if}
 
 				{#if node.trail_head_blocks}
-					<section class="row">
-						<dt>Trail Head Blocks</dt>
+					<section class="row wrap">
+						<dt>Trail head blocks</dt>
 
 						<dd>
 							{node.trail_head_blocks}
@@ -224,8 +336,8 @@
 				{/if}
 
 				{#if node.max_gas_limit !== undefined && node.max_gas_limit !== null}
-					<section class="row">
-						<dt>Max Gas Limit</dt>
+					<section class="row wrap">
+						<dt>Max gas limit</dt>
 
 						<dd>
 							{formatNumberCompact(node.max_gas_limit)}
@@ -234,8 +346,8 @@
 				{/if}
 
 				{#if node.private_key}
-					<section class="row">
-						<dt>Private Key</dt>
+					<section class="row wrap">
+						<dt>Private key</dt>
 
 						<dd>
 							<span class="secured">{node.private_key}</span>
@@ -244,8 +356,8 @@
 				{/if}
 
 				{#if node.snapshot_sync_sleep || node.snapshot_sync_batch_size}
-					<section class="row">
-						<dt>Snapshot Syncing</dt>
+					<section class="row wrap">
+						<dt>Snapshot syncing</dt>
 
 						<dd>
 							<p>{node.snapshot_sync_sleep} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sleep)]} between snapshots</p>
@@ -261,7 +373,7 @@
 		<h3>Status</h3>
 
 		<dl class="card column">
-			<section class="row">
+			<section class="row wrap">
 				<dt>Status</dt>
 
 				<dd>
@@ -271,37 +383,138 @@
 				</dd>
 			</section>
 
-			{#if info?.ip}
-				<section class="row">
+			{#if node.state?.ip}
+				<section class="row wrap">
 					<dt>IP</dt>
 
 					<dd>
-						{info.ip}
+						{node.state.ip}
 					</dd>
 				</section>
 			{/if}
 
-			{#if infoError}
+			{#if info?.instanceInfo || infoError}
 				<section class="column">
-					<dt>Error</dt>
+					<dt>Instance info</dt>
 
 					<dd>
-						<output>
-							<pre><code>{infoError}</code></pre>
-						</output>
+						<Collapsible
+							class="card"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={node.provider && providers[node.provider].icon}
+									>
+										{node?.state?.id ?? 'Instance'}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							{#if info?.instanceInfo}
+								<DetailsValue
+									value={info?.instanceInfo}
+								/>
+							{/if}
+
+							{#if infoError}
+								<div class="card column error">
+									<output>
+								<pre><code>{infoError}</code></pre>
+									</output>
+								</div>
+							{/if}
+						</Collapsible>
 					</dd>
 				</section>
 			{/if}
 		</dl>
 	</section>
 
-	<div>
+	<section class="column">
+		<header class="row wrap">
+			<h3>Logs</h3>
+
+			<div class="row wrap">
+				<button
+					class="small"
+					on:click={() => {
+						$logsQuery.refetch()
+					}}
+				>
+					Refresh
+				</button>
+
+				<button
+					class="small"
+					on:click={() => {
+						$logsQuery.fetchNextPage()
+					}}
+				>
+					Load more
+				</button>
+			</div>
+		</header>
+
+		<dl class="card column">
+			<section class="row">
+				<dt>Last updated</dt>
+
+				<dd>
+					{new Date($logsQuery.dataUpdatedAt).toLocaleString()}
+				</dd>
+			</section>
+
+			{#if node.provider === ProviderTypeEnum.GCP}
+				<section class="column">
+					<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
+
+					<dd>
+						{#if $logsQuery.isLoading}
+							<div class="card loading">
+								<p>Loading logs...</p>
+							</div>
+						{:else if $logsQuery.isError}
+							<div class="card error">
+								<p>Error loading logs: {$logsQuery.error.message}</p>
+							</div>
+						{:else if $logsQuery.data}
+							{@const logs = $logsQuery.data}
+
+							<ScrollArea>
+								<div class="log-container">
+									{#each logs as log, i}
+										{@const previousLog = logs[i - 1]}
+
+										{#if previousLog && previousLog.source !== log.source}
+											<hr>
+										{/if}
+
+										<div
+											class="log"
+											data-source={log.source}
+										>
+											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> <span>{log.source}</span><code>{log.text}</code></output>
+										</div>
+									{/each}
+								</div>
+							</ScrollArea>
+						{:else}
+							<p>No logs available.</p>
+						{/if}
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
+	<section>
 		<h3>Containers</h3>
 
 		<NodeContainersTable
 			containers={node.containers}
 		/>
-	</div>
+	</section>
 </div>
 
 
@@ -316,6 +529,7 @@
 	}
 
 	header .icon {
+		flex-shrink: 0;
 		width: 4em;
 		height: 4em;
 		border-radius: 0.25em;
@@ -325,23 +539,58 @@
 		color: #fff;
 	}
 
+	header .status-container {
+		--card-paddingX: 1.5em;
+		--card-paddingY: 0.75em;
+		--card-backgroundColor: rgba(0, 0, 0, 0.04);
+		--card-borderColor: transparent;
+		font-size: 0.9em;
+	}
+
 	output {
 		font-size: 0.75em;
 
 		& pre {
-			overflow-y: auto;
 			max-height: 15.6rem;
 			padding: 1em;
 
 			background: rgba(0, 0, 0, 0.05);
 			border-radius: 0.5em;
 
-			tab-size: 2;
-
 			& code {
 				white-space: pre-wrap;
 				word-break: break-word;
 			}
 		}
+	}
+
+	.log-container {
+		display: grid;
+		align-items: center;
+
+		padding: 0.66em 1em;
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
+
+		.log {
+			margin-inline: -1rem;
+			padding-inline: 1rem;
+			padding-block: 0.1rem;
+		}
+
+		date {
+			position: sticky;
+			top: 0.25em;
+			right: 0;
+			float: right;
+			margin-left: 1em;
+			line-height: 2.4;
+			font-size: smaller;
+			opacity: 0.5;
+		}
+	}
+
+	.secured:not(:active) {
+		-webkit-text-security: disc;
 	}
 </style>

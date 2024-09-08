@@ -4,8 +4,12 @@
 		'healthy': 'Healthy',
 		'updating': 'Updating',
 		'unhealthy': 'Unhealthy',
+		'destroyed': 'Destroyed',
+		'failed': 'Failed',
+		'succeeded': 'Succeeded',
 		'unknown': 'Unknown',
-		'TERMINATED': 'Terminated',
+		'running': 'Running',
+		'terminated': 'Stopped',
 	}
 
 
@@ -18,13 +22,15 @@
 	class="status"
 	data-status={status}
 >
-	{statusLabels[status] ?? status}
+	{statusLabels[status] ?? status ?? 'Unknown'}
 </div>
 
 
 <style>
 	.status {
-		&[data-status="healthy"] {
+		&[data-status="succeeded"],
+		&[data-status="healthy"],
+		&[data-status="running"] {
 			--status-color: #16B371;
 		}
 
@@ -32,21 +38,28 @@
 			--status-color: #b3a316;
 		}
 
+		&[data-status="failed"],
 		&[data-status="unhealthy"],
 		&[data-status="terminated"] {
 			--status-color: #b33d16;
 		}
 
+		&[data-status="destroyed"],
 		&[data-status="unknown"] {
 			--status-color: gray;
 		}
 
 		&:before {
-			transition: color 0.3s;
+			transition: background-color 0.3s;
 
-			content: '⏺';
+			content: '';
+			display: inline-flex;
 			margin-right: 0.33em;
-			color: var(--status-color);
+			width: 0.55em;
+			height: 0.55em;
+			border-radius: 50%;
+			vertical-align: 0.05em;
+			background-color: var(--status-color);
 		}
 	}
 </style>

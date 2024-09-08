@@ -2,7 +2,9 @@
 	// Context
 	import { page } from '$app/stores'
 
-	$: clusters = $page.data.clusters
+	$: ({
+		clustersPromise,
+	} = $page.data)
 
 
 	// Actions
@@ -18,7 +20,7 @@
 				await new Promise(resolve => setTimeout(resolve, 5000))
 				if(!isMounted) return
 
-				await invalidate($page.url)
+				await invalidate('/api/cluster')
 			}
 		})()
 
@@ -34,6 +36,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Clusters | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="column">
 	<header class="row">
 		<h2>Clusters</h2>
@@ -43,7 +50,7 @@
 				class="button primary"
 				href="/clusters/create"
 			>
-				Create Cluster
+				Create cluster
 			</a>
 
 			<DropdownMenu
@@ -51,7 +58,7 @@
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -60,7 +67,7 @@
 								},
 							})
 
-							await invalidate(`/api/clusters`)
+							await invalidate(`/api/cluster`)
 
 							removeToast(toast.id)
 						},
@@ -72,7 +79,7 @@
 
 	<section>
 		<ClustersTable
-			{clusters}
+			clusters={clustersPromise}
 		/>
 	</section>
 </div>

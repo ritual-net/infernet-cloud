@@ -26,6 +26,9 @@
 			placement,
 			fitViewport: true,
 		},
+
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
 	})
 
 
@@ -39,6 +42,7 @@
 
 
 <button
+	type="button"
 	use:melt={$trigger}
 	aria-label={labelText}
 	on:click|stopPropagation
@@ -68,6 +72,7 @@
 						>
 							<button
 								type="submit"
+								class:destructive={_subitem.isDestructive}
 								use:melt={$item}
 							>
 								<div class="row">
@@ -78,6 +83,7 @@
 					{:else}
 						<div
 							use:melt={$item}
+							class:destructive={_subitem.isDestructive}
 							on:m-click={e => _subitem.onClick?.(_subitem)}
 						>
 							<div class="row">
@@ -96,6 +102,7 @@
 				>
 					<button
 						type="submit"
+						class:destructive={subitem.isDestructive}
 						use:melt={$item}
 					>
 						<div class="row">
@@ -106,6 +113,7 @@
 			{:else}
 				<div
 					use:melt={$item}
+					class:destructive={subitem.isDestructive}
 					on:m-click={e => subitem.onClick?.(subitem)}
 				>
 					<div class="row">
@@ -123,13 +131,13 @@
 		--dropdownMenu-paddingX: 1em;
 		--dropdownMenu-paddingY: 0.5em;
 
-		--dropdownMenu-backgroundColor: rgb(255 255 255 / 0.75);
-		--dropdownMenu-backdropFilter: blur(3px);
+		--dropdownMenu-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
+		--dropdownMenu-backdropFilter: blur(20px);
 		--dropdownMenu-borderColor: var(--borderColor);
 		--dropdownMenu-borderWidth: var(--borderWidth);
 		--dropdownMenu-cornerRadius: 0.33em;
 
-		--dropdownMenu-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--dropdownMenu-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 		
 		--dropdownMenu-textColor: var(--textColor);
 	}
@@ -196,7 +204,9 @@
 		display: contents;
 
 		& button {
-			all: unset;
+			--button-backgroundColor: transparent;
+			--button-borderWidth: 0px;
+			--button-cornerRadius: 0px;
 		}
 	}
 </style>

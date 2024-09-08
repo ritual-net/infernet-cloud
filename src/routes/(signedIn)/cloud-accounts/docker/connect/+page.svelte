@@ -52,6 +52,10 @@
 		if(delayedToast)
 			removeToast(delayedToast.id)
 	}
+
+
+	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 </script>
 
 
@@ -61,13 +65,13 @@
 	class="column"
 >
 	<header>
-		<h2>Connect Docker Account</h2>
+		<h2>Connect Docker account</h2>
 	</header>
 
 	<section class="card column wrap">
 		<div class="column inline">
 			<h3>
-				Docker Credentials
+				Docker credentials
 			</h3>
 
 			<p>Connect your Docker Hub account to use private Docker images within your Infernet nodes.</p>
@@ -85,7 +89,7 @@
 						href="https://login.docker.com/u/login"
 						target="_blank"
 					>
-						Sign In
+						Sign in
 					</a>
 				</p>
 			</li>
@@ -127,7 +131,7 @@
 
 			<div class="column">
 				<div class="row wrap">
-					<label for="dockerAccount.password">Private Access Token</label>
+					<label for="dockerAccount.password">Private access token</label>
 
 					<button
 						type="button"
@@ -159,12 +163,10 @@
 			Cancel
 		</a>
 
-		<button
-			type="submit"
-			class="primary"
-			disabled={$submitting}
-		>
-			Connect Docker Account
-		</button>
+		<FormSubmitButton
+			submitting={$submitting}
+			allErrors={$allErrors}
+			submitLabel="Connect Docker account"
+		/>
 	</footer>
 </form>

@@ -10,6 +10,7 @@
 	const {
 		cluster,
 		formData,
+		serviceAccount,
 		dockerAccounts,
 	} = $page.data as PageData
 
@@ -27,6 +28,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -58,7 +60,13 @@
 
 	// Components
 	import NodeFormFields from '../../create/NodeFormFields.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 </script>
+
+
+<svelte:head>
+	<title>Add Node | {cluster.name || cluster.id} | Cluster | Infernet Cloud</title>
+</svelte:head>
 
 
 <form
@@ -67,15 +75,18 @@
 	class="column"
 >
 	<header>
-		<h2>Add Node to Cluster "{cluster.name}"</h2>
+		<h2>Add node to cluster "{cluster.name}"</h2>
 	</header>
 
 	<article
 		class="card column"
 	>
 		<NodeFormFields
+			defaultRegionId={cluster.region}
+			defaultZoneId={cluster.zone}
 			bind:node={$form.node}
 			constraints={$constraints.node}
+			{serviceAccount}
 			{dockerAccounts}
 		/>
 	</article>
@@ -89,13 +100,11 @@
 		</a>
 				
 		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting}
-			>
-				Add Node
-			</button>
+			<FormSubmitButton
+				submitting={$submitting}
+				allErrors={$allErrors}
+				submitLabel="Add node"
+			/>
 		</div>
 	</footer>
 </form>

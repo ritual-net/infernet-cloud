@@ -4,17 +4,13 @@
 
 
 	// Inputs
-	export let dockerAccounts: PageServerData['dockerAccounts']
-
-
-	// Context
-	import { page } from '$app/stores'
+	export let dockerAccounts: Promise<PageServerData['dockerAccounts']>
 
 
 	// Actions
 	import { addToast, removeToast } from '$/components/Toaster.svelte'
 	import { applyAction } from '$app/forms'
-	import { invalidate } from '$app/navigation'
+	import { invalidateAll } from '$app/navigation'
 
 
 	// Functions
@@ -22,16 +18,27 @@
 
 
 	// Components
+	import { DockerIcon } from '$/icons'
 	import Table from '$/components/Table.svelte'
+	import { createRender } from 'svelte-headless-table'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
 <Table
 	data={dockerAccounts}
+	getId={dockerAccount => dockerAccount.id}
 	columns={[
 		{
 			header: 'Docker Hub Username',
-			accessor: dockerAccount => dockerAccount.username,
+			accessor: dockerAccount => dockerAccount,
+			cell: ({ value: dockerAccount }) => (
+				createRender(WithIcon, {
+					icon: DockerIcon,
+					alt: 'Docker',
+					value: dockerAccount.username,
+				})
+			),
 		},
 	]}
 	contextMenu={dockerAccount => {
@@ -56,7 +63,7 @@
 						await applyAction(result)
 
 						if(result.type === 'success')
-							invalidate($page.url)
+							invalidateAll()
 
 						removeToast(toast.id)
 					}
@@ -65,5 +72,15 @@
 		]
 	}}
 >
-	<p>No Docker accounts connected.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading Docker accounts...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load Docker accounts.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>No Docker accounts connected.</p>
+	</svelte:fragment>
 </Table>

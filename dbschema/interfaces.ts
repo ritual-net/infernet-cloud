@@ -19,23 +19,22 @@ export interface User extends std.$Object {
   "email": string;
 }
 export interface Cluster extends std.$Object {
-  "nodes": InfernetNode[];
   "service_account": ServiceAccount;
-  "deploy_router": boolean;
-  "error"?: string | null;
-  "healthy": boolean;
-  "ip_allow_http": string[];
-  "ip_allow_ssh": string[];
   "locked": boolean;
   "name": string;
-  "router"?: {id: string, ip: string} | null;
-  "tfstate"?: string | null;
-  "terraform_logs": unknown[];
-}
-export interface AWSCluster extends Cluster {
-  "machine_type": string;
+  "ip_allow_http"?: string[] | null;
+  "ip_allow_ssh"?: string[] | null;
+  "deployments": TerraformDeployment[];
+  "latest_deployment"?: TerraformDeployment | null;
+  "status"?: string | null;
   "region": string;
+  "zone": string;
+  "nodes": InfernetNode[];
+  "router_state"?: {id: string, ip: string} | null;
+  "provider_id": string;
+  "router"?: {region: string, zone: string, machine_type: string, machine_image: string} | null;
 }
+export interface AWSCluster extends Cluster {}
 export interface ServiceAccount extends std.$Object {
   "user": User;
   "name": string;
@@ -47,33 +46,34 @@ export interface AWSServiceAccount extends ServiceAccount {
 }
 export type CloudProvider = "AWS" | "GCP";
 export interface Container extends std.$Object {
-  "allowed_addresses": string[];
-  "allowed_delegate_addresses": string[];
-  "allowed_ips": string[];
-  "command": string;
   "container_id": string;
   "description"?: string | null;
-  "env": unknown;
   "external": boolean;
   "gpu": boolean;
   "image": string;
+  "rate_limit_num_requests"?: number | null;
+  "rate_limit_period"?: number | null;
+  "allowed_addresses"?: string[] | null;
+  "allowed_delegate_addresses"?: string[] | null;
+  "command"?: string | null;
+  "env"?: unknown | null;
+  "generates_proofs": boolean;
+  "accepted_payments"?: {address: string, amount: string}[] | null;
+  "allowed_ips"?: string[] | null;
 }
 export interface ContainerTemplate extends Container {
   "user": User;
   "name": string;
   "docker_account"?: DockerAccount | null;
   "chain_enabled"?: boolean | null;
+  "chain_id"?: number | null;
 }
 export interface DockerAccount extends std.$Object {
   "user": User;
   "username": string;
   "password": string;
 }
-export interface GCPCluster extends Cluster {
-  "machine_type": string;
-  "region": string;
-  "zone": string;
-}
+export interface GCPCluster extends Cluster {}
 export interface GCPServiceAccount extends ServiceAccount {
   "creds": {type: string, project_id: string, private_key_id: string, private_key: string, client_email: string, client_id: string, auth_uri: string, token_uri: string, auth_provider_x509_cert_url: string, client_x509_cert_url: string, universe_domain: string};
   "provider": CloudProvider;
@@ -81,17 +81,40 @@ export interface GCPServiceAccount extends ServiceAccount {
 export interface InfernetNode extends std.$Object {
   "containers": Container[];
   "chain_enabled": boolean;
-  "coordinator_address"?: string | null;
   "forward_stats": boolean;
   "max_gas_limit"?: number | null;
-  "private_key"?: string | null;
-  "provider_id"?: string | null;
   "rpc_url"?: string | null;
   "trail_head_blocks"?: number | null;
   "docker_account"?: DockerAccount | null;
   "cluster"?: Cluster | null;
   "snapshot_sync_batch_size"?: number | null;
   "snapshot_sync_sleep"?: number | null;
+  "registry_address"?: string | null;
+  "allowed_sim_errors"?: string[] | null;
+  "payment_address"?: string | null;
+  "private_key"?: string | null;
+  "machine_type": string;
+  "region": string;
+  "zone": string;
+  "provider_id": string;
+  "state"?: {id: string, ip: string} | null;
+  "provider"?: CloudProvider | null;
+  "chain_id"?: number | null;
+  "machine_image": string;
+}
+export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
+export interface TerraformDeployment extends std.$Object {
+  "config"?: unknown | null;
+  "error"?: string | null;
+  "stderr"?: unknown[] | null;
+  "stdout"?: unknown[] | null;
+  "tfstate"?: unknown | null;
+  "action": TerraformAction;
+  "timestamp": Date;
+  "cluster": Cluster;
+  "command"?: string | null;
+  "status": string;
+  "tfvars"?: string | null;
 }
 export interface current_user extends User {}
 export namespace ext {
@@ -244,6 +267,7 @@ export namespace cfg {
     "allow_user_specified_id"?: boolean | null;
     "cors_allow_origins": string[];
     "auto_rebuild_query_cache"?: boolean | null;
+    "auto_rebuild_query_cache_timeout"?: edgedb.Duration | null;
     "query_cache_mode"?: QueryCacheMode | null;
     "shared_buffers"?: edgedb.ConfigMemory | null;
     "query_work_mem"?: edgedb.ConfigMemory | null;
@@ -541,6 +565,8 @@ export interface types {
     "GCPCluster": GCPCluster;
     "GCPServiceAccount": GCPServiceAccount;
     "InfernetNode": InfernetNode;
+    "TerraformAction": TerraformAction;
+    "TerraformDeployment": TerraformDeployment;
     "current_user": current_user;
   };
   "ext": {

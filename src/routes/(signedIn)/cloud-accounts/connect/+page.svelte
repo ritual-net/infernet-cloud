@@ -66,6 +66,7 @@
 
 
 	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Select from '$/components/Select.svelte'
 	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
@@ -74,6 +75,11 @@
 	// Transitions/animations
 	import { fly } from 'svelte/transition'
 </script>
+
+
+<svelte:head>
+	<title>Connect Cloud Account | Infernet Cloud</title>
+</svelte:head>
 
 
 <form
@@ -193,7 +199,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://aws.amazon.com/cli"
 												target="_blank"
 											>
@@ -209,7 +215,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey"
 												target="_blank"
 											>
@@ -225,12 +231,12 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/aws/create_service_account.sh"
 												target="_blank"
 												download
 											>
-												Download Script
+												Download script
 											</a>
 										</p>
 									</li>
@@ -249,7 +255,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://console.cloud.google.com"
 												target="_blank"
 											>
@@ -265,7 +271,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://console.cloud.google.com/apis/library/compute.googleapis.com"
 												target="_blank"
 											>
@@ -281,7 +287,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://cloud.google.com/sdk/docs/install"
 												target="_blank"
 											>
@@ -297,7 +303,7 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://support.google.com/googleapi/answer/7014113"
 												target="_blank"
 												download
@@ -314,12 +320,12 @@
 											</span>
 
 											<a
-												class="button small"
+												class="button"
 												href="https://raw.githubusercontent.com/ritual-net/infernet-deploy/main/procure/gcp/create_service_account.sh"
 												target="_blank"
 												download
 											>
-												Download Script
+												Download script
 											</a>
 										</p>
 									</li>
@@ -336,7 +342,7 @@
 								<h3>
 									<label for="credentials">
 										{#if $form.provider === 'GCP'}
-											Key File
+											Key file
 										{:else if $form.provider === 'AWS'}
 											Credentials
 										{/if}
@@ -457,13 +463,11 @@
 						</div>
 				
 						<div class="row">
-							<button
-								type="submit"
-								class="primary"
-								disabled={$submitting || $allErrors.length > 0}
-							>
-								Connect
-							</button>
+							<FormSubmitButton
+								submitting={$submitting}
+								allErrors={$allErrors}
+								submitLabel="Connect"
+							/>
 						</div>
 					</footer>
 				{/if}

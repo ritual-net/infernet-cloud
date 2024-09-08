@@ -13,8 +13,9 @@ import { setDefaultNodeValues, type FormData as CreateClusterFormData } from '$/
 import { error, json } from '@sveltejs/kit';
 import { e, ClusterTypeByProvider } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
-import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
-import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
+// import { createNodeParams, nodeQueryFields } from '$/lib/db/components'
+import { nodeJsonQueryFields } from '$/lib/db/components'
+import { getServiceAccountById, getClusters } from '$/lib/db/queries';
 
 
 /**
@@ -23,11 +24,16 @@ import { getServiceAccountById, getClustersForUser } from '$/lib/db/queries';
  * @param locals - The locals object contains the client.
  * @returns Array of Cluster objects.
  */
-export const GET: RequestHandler = async ({ locals: { client } }) => {
-	// Get all clusters for user
-	const result = await getClustersForUser(client)
+export const GET: RequestHandler = async ({
+	locals: { client },
+	url,
+}) => {
+	const serviceAccountId = url.searchParams.get('serviceAccountId')
 
-	return json(result);
+	// Get all clusters (optionally by service account)
+	const result = await getClusters(client, serviceAccountId)
+
+	return json(result)
 };
 
 /**
@@ -38,13 +44,13 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
  * @returns Cluster ID, success boolean, and Terraform message.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
-	const { serviceAccountId, config, nodes } = await request.json() as z.InferType<typeof CreateClusterFormData>;
+	const { serviceAccountId, config, router, nodes } = await request.json() as z.InferType<typeof CreateClusterFormData>;
 
 	if (!serviceAccountId || !config || !nodes || !Array.isArray(nodes) || nodes.length === 0) {
 		return error(400, 'Service account and at least one node are required');
 	}
 
-	nodes.forEach(setDefaultNodeValues)
+	// nodes.forEach(setDefaultNodeValues)
 
 	// Get provider of service account
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
@@ -52,34 +58,43 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Service account could not be retrieved');
 	}
 
-	let cluster: Cluster
+	let cluster: Pick<Cluster, 'id'>
+
+	const { deploy_router, ...clusterConfig } = config
 
 	try {
-		// Exclude zone (unused by backend)
-		if(serviceAccount.provider === 'AWS')
-			delete config.zone
-
 		// Insert cluster
-		cluster = (await e
+		cluster = await e
 			.params(
 				{
-					nodes: e.array(createNodeParams),
+					nodes: e.array(e.json), 
 				},
-				({ nodes }) =>
-					// Choose cluster type based on provider
-					e.insert(ClusterTypeByProvider[serviceAccount.provider], {
-						...config,
-						service_account: e.select(e.ServiceAccount, () => ({
-							filter_single: { id: serviceAccountId },
-						})),
-						nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
-					})
+				({ nodes }) => e.insert(ClusterTypeByProvider[serviceAccount.provider], {
+					...clusterConfig,
+					service_account: e.select(e.ServiceAccount, () => ({
+						filter_single: { id: serviceAccountId },
+					})),
+					...deploy_router && {
+						router: e.tuple({
+							region: router.region!,
+							zone: router.zone!,
+							machine_type: router.machine_type,
+							machine_image: router.machine_image,
+						}),
+					},
+					// nodes: e.for(e.array_unpack(nodes), (node) => (
+					// 	e.insert(nodeQueryFields(node))
+					// )),
+					nodes: e.for(e.array_unpack(nodes), (node) => (
+						e.insert(e.InfernetNode, nodeJsonQueryFields(node))
+					)),
+				})
 			)
-			.run(client, { nodes })) as Cluster;
+			.run(client, { nodes })
 	} catch (e) {
 		console.error(e)
 
-		if(e.message?.includes(`violates exclusivity constraint`)){
+		if((e as unknown as Error).message?.includes(`violates exclusivity constraint`)){
 			return error(500, `A cluster with name "${config.name}" already exists.`)
 		}
 
@@ -99,14 +114,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			);
 		} catch (e) {
 			console.error(e)
-
-			// return error(500, JSON.stringify(e))
 		}
-
-		// const { success, error: errorMessage } = result
-
-		// if(!success)
-		// 	return error(500, errorMessage)
 	})();
 
 	return json({

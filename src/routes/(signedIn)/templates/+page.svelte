@@ -3,7 +3,7 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		containerTemplates,
+		containerTemplatesPromise,
 	} = $page.data)
 
 
@@ -18,16 +18,21 @@
 </script>
 
 
+<svelte:head>
+	<title>Container Templates | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="column">
 	<header class="row">
-		<h2>Container Templates</h2>
+		<h2>Container templates</h2>
 
 		<div class="row">
 			<a
 				class="button primary"
 				href="/templates/create"
 			>
-				Create Container Template
+				Create template
 			</a>
 
 			<DropdownMenu
@@ -35,7 +40,7 @@
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -56,7 +61,7 @@
 
 	<section>
 		<ContainerTemplatesTable
-			{containerTemplates}
+			data={containerTemplatesPromise}
 		/>
 	</section>
 </div>

@@ -121,6 +121,8 @@
 
 <style>
 	[data-melt-tabs] {
+		--tabs-accentColor: var(--accentColor);
+
 		isolation: isolate;
 
 		display: grid;
@@ -166,10 +168,10 @@
 			pointer-events: none;
 		}
 		&[data-orientation="horizontal"] .trigger-indicator {
-			border-bottom: var(--color-ritualBlack) 2px solid;
+			border-bottom: var(--tabs-accentColor) 2px solid;
 		}
 		&[data-orientation="vertical"] .trigger-indicator {
-			border-right: var(--color-ritualBlack) 2px solid;
+			border-right: var(--tabs-accentColor) 2px solid;
 		}
 	}
 
@@ -209,7 +211,7 @@
 				--button-paddingX: 5px;
 				--button-paddingY: 5px;
 				/* --button-backgroundColor: hsl(from var(--textColor) h s l / 0.16); */
-				--button-backgroundColor: rgba(0, 0, 0, 0.16);
+				--button-backgroundColor: light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.16));
 				--button-borderWidth: 0;
 				--button-cornerRadius: 100%;
 

@@ -1,10 +1,11 @@
 <script lang="ts">
 	// Types/constants
-	import type { QueriedServiceAccount } from '../api/service_account/+server'
+	import type { QueriedServiceAccount } from '$/routes/api/service_account/+server'
+	import { providers } from '$/types/provider'
 
 
 	// Inputs
-	export let serviceAccounts: QueriedServiceAccount[]
+	export let serviceAccounts: Promise<QueriedServiceAccount[]>
 
 
 	// Functions
@@ -14,24 +15,26 @@
 	// Components
 	import { createRender } from 'svelte-headless-table'
 	import Table from '$/components/Table.svelte'
-	import ServiceAccountsTableCell, { CellType } from './ServiceAccountsTableCell.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 </script>
 
 
 <Table
 	data={serviceAccounts}
+	getId={serviceAccount => serviceAccount.id}
 	columns={[
 		{
 			header: 'Name',
 			accessor: serviceAccount => serviceAccount.name,
 		},
 		{
-			header: 'Cloud Provider',
+			header: 'Cloud provider',
 			accessor: serviceAccount => serviceAccount,
 			cell: ({ value: serviceAccount }) => (
-				createRender(ServiceAccountsTableCell, {
-					cellType: CellType.CloudProvider,
-					serviceAccount,
+				createRender(WithIcon, {
+					icon: providers[serviceAccount.provider].icon,
+					alt: providers[serviceAccount.provider].name,
+					value: providers[serviceAccount.provider].name,
 				})
 			),
 		},
@@ -42,5 +45,15 @@
 		})
 	)}
 >
-	<p>No cloud accounts configured.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading cloud accounts...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load cloud accounts.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>You have not yet configured any cloud accounts.</p>
+	</svelte:fragment>
 </Table>

@@ -1,7 +1,10 @@
 <script lang="ts">
 	// Types/constants
 	import type { InputConstraints } from 'sveltekit-superforms'
+	import type { ServiceAccount } from '$schema/interfaces'
 	import * as z from 'yup'
+	import { chainsByChainId } from '$/lib/chains'
+	import { infernetDeployments } from '$/lib/infernet-sdk'
 
 
 	// Schema
@@ -12,24 +15,64 @@
 	import { page } from '$app/stores'
 
 
+	// Functions
+	import { createPublicClient, http, type PublicClient } from 'viem'
+	import { getChainId } from 'viem/actions'
+
+
 	// Inputs
 	export let node: z.InferType<typeof Node>
 	export let namePrefix = 'node'
 	export let constraints: InputConstraints<z.InferType<typeof Node>> | undefined
 
+	export let defaultRegionId: string | undefined
+	export let defaultZoneId: string | undefined
+
+	export let serviceAccount: ServiceAccount | undefined
 	export let dockerAccounts: {
 		username: string
 	}[]
 
 
 	// Internal state
+	// (GPU)
+	let hasGpu: boolean = false
+
+
+	// (Chain)
+	let client: PublicClient | undefined
+	$: if(node.config.rpc_url) {
+		client = createPublicClient({ 
+			transport: http(node.config.rpc_url),
+		})
+
+		if(client)
+			getChainId(client)
+				.then(_ => { node.config.chain_id = _ })
+	}
+
+
+	// (Payments)
+	let isPaymentsEnabled = (
+		Boolean(node.config.chain_enabled && node.config.payment_address)
+	)
+
+
+	// (Containers)
 	$: containerCreateRoute = new URL(
 		`/clusters/create/container?${new URLSearchParams({
-			...node.dockerAccountUsername && {
-				dockerAccountUsername: node.dockerAccountUsername,
+			...hasGpu && {
+				hasGpu: 'true',
 			},
 			...node.config.chain_enabled && {
 				isOnchain: 'true',
+				chainId: node.config.chain_id?.toString(),
+				...isPaymentsEnabled && {
+					isPaymentsEnabled: 'true',
+				},
+			},
+			...node.dockerAccountUsername && {
+				dockerAccountUsername: node.dockerAccountUsername,
 			},
 		})}`,
 		$page.url
@@ -41,12 +84,16 @@
 
 
 	// Components
+	import ChainCombobox from '$/views/ChainCombobox.svelte'
+	import Combobox from '$/components/Combobox.svelte'
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Dialog from '$/components/Dialog.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import Select from '$/components/Select.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
 	import ContainerForm from './container/+page.svelte'
+	import Textarea from '$/components/Textarea.svelte'
+	import RegionZoneMachineFields from './RegionZoneMachineFields.svelte'
 
 
 	// Shallow Routes
@@ -54,7 +101,28 @@
 </script>
 
 
-<section class="row wrap">
+<RegionZoneMachineFields
+	entityType="node"
+	namePrefix={namePrefix}
+	{serviceAccount}
+	defaults={{
+		region: defaultRegionId,
+		zone: defaultZoneId,
+	}}
+	bind:regionId={node.config.region}
+	bind:zoneId={node.config.zone}
+	bind:machineId={node.config.machine_type}
+	bind:machineImageId={node.config.machine_image}
+	bind:hasGpu
+	constraints={{
+		region: constraints?.config?.region,
+		zone: constraints?.config?.zone,
+		machine_type: constraints?.config?.machine_type,
+		machine_image: constraints?.config?.machine_image,
+	}}
+/>
+
+<section class="row">
 	<div class="column inline">
 		<h3>
 			<label for="{namePrefix}.config.chain_enabled">
@@ -62,7 +130,7 @@
 			</label>
 		</h3>
 
-		<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
+		<p>Whether this node will listen and respond to onchain events, and optionally accept payments from subscriptions.</p>
 	</div>
 
 	<Switch
@@ -78,132 +146,270 @@
 		class="column"
 		disabled={!node.config.chain_enabled}
 	>
-		<section class="row wrap">
+		<section class="column">
 			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.rpc_url">
-						RPC URL
-					</label>
-				</h3>
-
-				<p>The Ethereum node RPC URL.</p>
+				<h3>Chain configuration</h3>
 			</div>
 
-			<input
-				type="url"
-				placeholder="https://rpc.example.com/rpc"
-				id="{namePrefix}.config.rpc_url"
-				name="{namePrefix}.config.rpc_url"
-				bind:value={node.config.rpc_url}
-				{...constraints?.config?.rpc_url}
-			/>
+			<div class="row equal wrap">
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.rpc_url">JSON-RPC URL</label>
+						</div>
+
+						<p>HTTP(S). Must support the <a href="https://ethereum.org/en/developers/docs/apis/json-rpc#eth_newfilter" target="_blank"><code>eth_newFilter</code></a> method.</p>
+					</div>
+
+					<input
+						type="url"
+						placeholder="https://rpc.example.com/rpc"
+						id="{namePrefix}.config.rpc_url"
+						name="{namePrefix}.config.rpc_url"
+						bind:value={node.config.rpc_url}
+						{...constraints?.config?.rpc_url}
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}|chainId">
+								Chain ID
+							</label>
+						</div>
+
+						<p>The chain ID of the EVM-based network to connect to.</p>
+					</div>
+	
+					<ChainCombobox
+						id="{namePrefix}|chain_id"
+						name="{namePrefix}|chain_id"
+						bind:chainId={node.config.chain_id}
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<label for="{namePrefix}.config.registry_address">
+							Registry address
+						</label>
+		
+						<p>The address of the <a href="https://docs.ritual.net/infernet/sdk/reference/Registry" target="_blank">Infernet SDK Registry</a> smart contract.</p>
+					</div>
+		
+					<Combobox
+						labelText="Registry Address"
+						placeholder="0xabcdef...1234567890"
+						id="{namePrefix}.config.registry_address"
+						name="{namePrefix}.config.registry_address"
+						class="code address-input"
+						bind:value={node.config.registry_address}
+						{...constraints?.config?.registry_address}
+						items={
+							Array.from(
+								Map.groupBy(
+									infernetDeployments,
+									deployment => deployment.chainId
+								)
+									.entries(),
+								([chainId, deployments]) => ({
+									value: chainId,
+									label: chainsByChainId.get(chainId)?.name ?? chainId,
+									items: deployments.map(deployment => ({
+										value: deployment.contracts['Registry'].address,
+										label: `${chainsByChainId.get(chainId)?.name ?? chainId} › Infernet SDK ${deployment.version} › Registry`, 
+										icon: chainsByChainId.get(chainId)?.icon,
+									})),
+								})
+							)
+								.filter(group => (
+									node.config.chain_id
+										? group.value === node.config.chain_id
+										: true
+								))
+						}
+					/>
+				</div>
+	
+				<div class="column">
+					<div class="column inline">
+						<span class="row inline">
+							<label for="{namePrefix}.config.trail_head_blocks">
+								Trail head blocks
+							</label>
+	
+							<span class="annotation">Optional</span>
+						</span>	
+					</div>
+
+					<p><a href="https://docs.ritual.net/infernet/node/configuration/v1_1_0#trail_head_blocks-integer" target="_blank">Number of blocks</a> to delay chain syncing. Added latency may help avoid failed transactions due to reorganizations.</p>
+	
+					<input
+						type="number"
+						placeholder="{5}"
+						id="{namePrefix}.config.trail_head_blocks"
+						name="{namePrefix}.config.trail_head_blocks"
+						bind:value={node.config.trail_head_blocks}
+						{...constraints?.config?.trail_head_blocks}
+					/>
+				</div>
+			</div>
 		</section>
 
-		<section class="row wrap">
+		<section class="column">
 			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.coordinator_address">
-						Coordinator Address
-					</label>
-				</h3>
-
-				<p>The address of the Coordinator smart contract.</p>
+				<h3>Wallet and transactions</h3>
 			</div>
 
-			<input
-				type="text"
-				placeholder="0xabcdef...1234567890"
-				id="{namePrefix}.config.coordinator_address"
-				name="{namePrefix}.config.coordinator_address"
-				bind:value={node.config.coordinator_address}
-				{...constraints?.config?.coordinator_address}
-			/>
+			<div class="row equal wrap">
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.private_key">
+								Private key
+							</label>
+						</div>
+
+						<p>The <code>0x</code>-prefixed private key for the node's wallet.</p>
+					</div>
+
+					<input
+						type="password"
+						placeholder="0xabcdef...1234567890"
+						id="{namePrefix}.config.private_key"
+						name="{namePrefix}.config.private_key"
+						bind:value={node.config.private_key}
+						{...constraints?.config?.private_key}
+						class="code"
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.max_gas_limit">
+								Max gas limit
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>Maximum gas units to spend when sending a transaction from the node wallet.</p>
+					</div>
+
+					<input
+						type="number"
+						placeholder="{5000000}"
+						id="{namePrefix}.config.max_gas_limit"
+						name="{namePrefix}.config.max_gas_limit"
+						bind:value={node.config.max_gas_limit}
+						{...constraints?.config?.max_gas_limit}
+					/>
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="{namePrefix}.config.allowed_sim_errors">
+							Ignored errors
+						</label>
+					</h3>
+
+					<p>
+						Substrings of error messages to ignore when simulating transactions. Case-insensitive; one per line.
+						<br>
+						For example, <code>"out of gas"</code> matches <code>"Contract reverted: Out of gas"</code>.
+					</p>
+				</div>
+
+				<Textarea
+					id="{namePrefix}.config.allowed_sim_errors"
+					name="{namePrefix}.config.allowed_sim_errors"
+					rows="2"
+					placeholder={`Enter one string per line...\nout of gas`}
+					value={node.config.allowed_sim_errors?.join('\n')}
+					onblur={e => { node.config.allowed_sim_errors = e.currentTarget.value.split('\n').map(item => item.trim()) }}
+					{...constraints?.config?.allowed_sim_errors}
+					disabled={!node.config.chain_enabled}
+					class="code"
+				/>
+			</div>
 		</section>
 
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.trail_head_blocks">
-						Trail Head Blocks
-					</label>
+		<section class="column">
+			<div class="row">
+				<div class="column inline">
+					<h3 class="row inline">
+						<label for="{namePrefix}|isPaymentsEnabled">
+							Accept payments?
+						</label>
+					</h3>
 
-					<span class="annotation">Optional</span>
-				</h3>
+					<p>Whether to accept payments from subscriptions.</p>
+				</div>
 
-				<p>The number of blocks.</p>
+				<Switch
+					id="{namePrefix}|isPaymentsEnabled"
+					name="{namePrefix}|isPaymentsEnabled"
+					bind:checked={isPaymentsEnabled}
+					on:change={e => {
+						node.config.payment_address = undefined
+					}}
+					labelText="Accept Payments?"
+				/>
 			</div>
 
-			<input
-				type="number"
-				placeholder="{5}"
-				id="{namePrefix}.config.trail_head_blocks"
-				name="{namePrefix}.config.trail_head_blocks"
-				bind:value={node.config.trail_head_blocks}
-				{...constraints?.config?.trail_head_blocks}
-			/>
-		</section>
+			<Collapsible open={isPaymentsEnabled}>
+				<fieldset
+					class="column"
+					disabled={!isPaymentsEnabled}
+				>
+					<div class="row wrap">
+						<div class="column inline">
+							<div class="row inline">
+								<label for="{namePrefix}.config.payment_address">
+									Payment address
+								</label>
+							</div>
 
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.max_gas_limit">
-						Max Gas Limit
-					</label>
+							<p>The address to send payments to.</p>
+						</div>
 
-					<span class="annotation">Optional</span>
-				</h3>
-
-				<p>The threshold to trigger an Ethereum transaction in gwei.</p>
-			</div>
-
-			<input
-				type="number"
-				placeholder="{5000000}"
-				id="{namePrefix}.config.max_gas_limit"
-				name="{namePrefix}.config.max_gas_limit"
-				bind:value={node.config.max_gas_limit}
-				{...constraints?.config?.max_gas_limit}
-			/>
-		</section>
-
-		<section class="row wrap">
-			<div class="column inline">
-				<h3 class="row inline">
-					<label for="{namePrefix}.config.private_key">
-						Private Key
-					</label>
-				</h3>
-
-				<p>The private key of the node.</p>
-			</div>
-
-			<input
-				type="password"
-				placeholder="0xabcdef...1234567890"
-				id="{namePrefix}.config.private_key"
-				name="{namePrefix}.config.private_key"
-				bind:value={node.config.private_key}
-				{...constraints?.config?.private_key}
-				class="code"
-			/>
+						<input
+							type="text"
+							placeholder="0xabcdef...1234567890"
+							id="{namePrefix}.config.payment_address"
+							name="{namePrefix}.config.payment_address"
+							bind:value={node.config.payment_address}
+							{...constraints?.config?.payment_address}
+							required={isPaymentsEnabled}
+							class="code address-input"
+						/>
+					</div>
+				</fieldset>
+			</Collapsible>
 		</section>
 
 		<section class="column">
 			<div class="column inline">
 				<h3>
 					<span>
-						Snapshot Syncing
+						Snapshot syncing
 					</span>
 				</h3>
 
 				<p>Control rate limiting parameters for RPC communication.</p>
 			</div>
 
-			<div class="row equal">
+			<div class="row equal wrap">
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
-							<label for="{namePrefix}.config.snapshot_sync_sleep">Sleep Duration</label>
+							<label for="{namePrefix}.config.snapshot_sync_sleep">
+								Sleep duration
+							</label>
 
 							<span class="annotation">Optional</span>
 						</div>
@@ -225,7 +431,9 @@
 				<div class="column">
 					<div class="column inline">
 						<div class="row inline">
-							<label for="{namePrefix}.config.snapshot_sync_batch_size">Batch Size</label>
+							<label for="{namePrefix}.config.snapshot_sync_batch_size">
+								Batch size
+							</label>
 
 							<span class="annotation">Optional</span>
 						</div>
@@ -247,11 +455,11 @@
 	</fieldset>
 </Collapsible>
 
-<section class="row wrap">
+<section class="row">
 	<div class="column inline">
 		<h3 class="row inline">
 			<label for="{namePrefix}.config.forward_stats">
-				Forward Stats?
+				Forward stats?
 			</label>
 		</h3>
 
@@ -262,7 +470,7 @@
 		id="{namePrefix}.config.forward_stats"
 		name="{namePrefix}.config.forward_stats"
 		bind:checked={node.config.forward_stats}
-		labelText="Forward Stats?"
+		labelText="Forward stats?"
 	/>
 </section>
 
@@ -270,19 +478,19 @@
 	<div class="column inline">
 		<h3 class="row inline">
 			<label for="{namePrefix}.dockerAccountUsername">
-				Docker Hub Account
+				Docker Hub account
 			</label>
 
 			<span class="annotation">Optional</span>
 		</h3>
 
-		<p><a href="/cloud-accounts/docker/connect">Connect your Docker Hub account</a> to allow the node to access private Docker images.</p>
+		<p><a href="/cloud-accounts/docker/connect" target="_blank">Connect</a> your Docker Hub account to allow the node to access private Docker images.</p>
 	</div>
 
 	<Select
 		id="{namePrefix}.dockerAccountUsername"
 		name="{namePrefix}.dockerAccountUsername"
-		labelText="Docker Hub Username"
+		labelText="Docker Hub username"
 		bind:value={node.dockerAccountUsername}
 		{...!dockerAccounts
 			? {
@@ -297,6 +505,7 @@
 						label: node.dockerAccountUsername,
 					}
 				].filter(Boolean),
+				loading: true,
 				visuallyDisabled: true,
 			}
 			: {
@@ -311,6 +520,7 @@
 						label: dockerAccount.username,
 					}))
 				],
+				disabled: dockerAccounts.length === 0,
 			}
 		}
 		{...constraints?.dockerAccountUsername}
@@ -324,7 +534,7 @@
 				Containers
 			</h3>
 
-			<p>Assign new or existing container configurations to this node.</p>
+			<p>Assign container configurations to this node.</p>
 		</div>
 
 		<a
@@ -372,7 +582,7 @@
 				removeToast(loadingToast.id)
 			}}
 		>
-			Add Container
+			Add container
 		</a>
 	</div>
 
@@ -418,7 +628,7 @@
 				$page.state.showContainerForm === 'create' ?
 				// $page.url.hash === '#/container/create' ?
 					{
-						submitLabel: 'Add Container',
+						submitLabel: 'Add container',
 
 						onSubmit: ({ container }) => {
 							node.containers.push(container)
@@ -430,7 +640,7 @@
 				: $page.state.showContainerForm === 'edit' ?
 				// : $page.url.hash === '#/container/edit' ?
 					{
-						submitLabel: 'Save Changes',
+						submitLabel: 'Save changes',
 
 						onSubmit: ({ container }) => {
 							node.containers[
@@ -451,3 +661,11 @@
 		/>
 	</Dialog>
 </section>
+
+
+<style>
+	* :global(.address-input) {
+		font-size: 0.75em;
+		--input-paddingY: 0.75rem;
+	}
+</style>

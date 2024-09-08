@@ -732,6 +732,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is GCPCluster]": $.LinkDesc<_default.$GCPCluster, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is GCPServiceAccount]": $.LinkDesc<_default.$GCPServiceAccount, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is DockerAccount]": $.LinkDesc<_default.$DockerAccount, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is TerraformDeployment]": $.LinkDesc<_default.$TerraformDeployment, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<intersection_of": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

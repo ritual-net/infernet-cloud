@@ -1,5 +1,6 @@
 <script lang="ts">
 	// Inputs
+	export let tagName = 'div'
 	export let open: boolean
 
 
@@ -22,16 +23,16 @@
 </script>
 
 	
-<div
+<svelte:element this={tagName}
 	use:melt={$root}
-	class="column"
+	class="column {$$restProps.class ?? ''}"
 >
 	{#if $$slots.trigger}
 		<button
 			type="button"
 			use:melt={$trigger}
 		>
-			<slot name="trigger" />
+			<slot name="trigger" {open} />
 		</button>
 	{/if}
 
@@ -44,12 +45,12 @@
 			<slot />
 		</div>
 	{/if}
-</div>
+</svelte:element>
 
 
 <style>
 	[data-melt-collapsible] {
-		gap: 0;
+		gap: var(--borderWidth);
 
 		&:empty, &:not(:has(*)) {
 			display: contents;

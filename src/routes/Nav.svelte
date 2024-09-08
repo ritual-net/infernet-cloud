@@ -8,35 +8,41 @@
 		href: string,
 		label: string,
 		type?: 'link' | 'button',
-	}[]
+	}[][]
 
 	$: navItems = [
-		{
-			href: '/cloud-accounts',
-			label: 'Accounts',
-		},
-		{
-			href: '/templates',
-			label: 'Templates',
-		},
-		{
-			href: '/clusters',
-			label: 'Clusters',
-		},
-		$page.data.user ? {
-			href: '/account',
-			label: $page.data.user.name || $page.data.user.email,
-			type: 'button',
-		} : {
-			href: '/login',
-			label: 'Log In',
-			type: 'button',
-		},
+		!$page.data.user
+			? [
+				{
+					href: '/login',
+					label: 'Log In',
+					type: 'button',
+				},
+			]
+			: [
+				{
+					href: '/cloud-accounts',
+					label: 'Accounts',
+				},
+				{
+					href: '/templates',
+					label: 'Templates',
+				},
+				{
+					href: '/clusters',
+					label: 'Clusters',
+				},
+				{
+					href: '/account',
+					label: $page.data.user.name || $page.data.user.email,
+					type: 'button',
+				}
+			],
 	]
 
 
 	// Components
-	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import InfernetCloudLogo from '$/icons/InfernetCloudLogo.svelte'
 </script>
 
 
@@ -46,68 +52,149 @@
 		aria-current={$page.url.pathname === '/' ? 'page' : undefined}
 		class="home row"
 	>
-		<RitualLogo />
+		<h1 class="logotype">
+			<InfernetCloudLogo />
 
-		<h1>
-			Infernet Cloud
-			<span class="annotation">by Ritual</span>
+			<span>
+				<span>Infernet</span>
+				<span>Cloud</span>
+			</span>
 		</h1>
 	</a>
 
-	<ul class="row">
-		{#each navItems as item}
-			<li>
-				<a	
-					href={item.href}
-					aria-current={$page.url.pathname === item.href ? 'page' : undefined}
-					class:button={item.type === 'button'}
-				>
-					{item.label}
-				</a>
-			</li>
+	<div class="row wrap">
+		{#each navItems as items}
+			<ul class="row wrap">
+				{#each items as item}
+					<li>
+						<a	
+							href={item.href}
+							aria-current={$page.url.pathname.startsWith(item.href) ? 'page' : undefined}
+							class:button={item.type === 'button'}
+						>
+							{item.label}
+						</a>
+					</li>
+				{/each}
+			</ul>
 		{/each}
-	</ul>
+	</div>
 </nav>
 
 
 <style>
 	:root {
-		--nav-link-default-opacity: 0.7;
+		--nav-link-default-opacity: 66%;
+	}
+
+	.logotype {
+		display: flex;
+		align-items: center;
+
+		font-size: 1.33em;
+		line-height: 1;
+
+		gap: 0.33em;
+		font-family: var(--fontFamily-display);
+
+		> :global(svg) {
+			height: 1.75em;
+		}
+
+		> span {
+			display: inline-grid;
+			gap: 0.25em;
+
+			> :first-child {
+				font-weight: 400;
+			}
+
+			> :last-child {
+				font-size: 0.5em;
+				font-weight: 400;
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				opacity: 0.66;
+			}
+		}
 	}
 
 	a {
 		display: inline-flex;
 
-		transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+		transition-property: background-color, color, opacity, scale;
+		transition-duration: var(--active-transitionOutDuration);
+		transition-timing-function: var(--transition-easeOutExpo);
+
+		&.home:hover:not(:active) {
+			scale: 1.033;
+		}
 
 		&:active {
 			transition-duration: var(--active-transitionInDuration);
 			opacity: var(--active-opacity);
 			scale: var(--active-scale);
 		}
+	}
 
-		&[href="/"] {
-			font-size: 1.5em;
+	ul {
+		padding: 0;
 
-			gap: 0.33em;
-			font-family: var(--fontFamily-display);
+		li {
+			list-style-type: none;
 
-			& :global(svg) {
-				height: 1.25em;
+			a:not([aria-current="page"]) {
+				color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
+				color: color-mix(in oklch, var(--textColor) var(--nav-link-default-opacity), transparent);
+
+				@supports not (
+					(color: hsl(from #000 h s l))
+					or (color: color-mix(in oklch, #000, transparent))
+				) {
+					filter: var(--nav-link-default-opacity);
+				}
 			}
 		}
 	}
 
-	li {
-		list-style-type: none;
-	}
+	@media (width <= 50rem) {
+		nav {
+			display: grid;
+			justify-content: stretch;
+			gap: 1.5rem;
 
-	ul a:not([aria-current="page"]) {
-		color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
-	}
-	@supports not (color: hsl(from #000 h s l)) {
-		ul a:not([aria-current="page"]) {
-			filter: opacity(0.7);
+			> :first-child {
+				margin-inline-end: auto;
+			}
+
+			> :last-child {
+				display: block;
+			}
+
+			li {
+				display: grid;
+
+				a:not(.button) {
+					padding: 0.25em;
+				}
+			}
+
+			&:after {
+				position: absolute;
+				right: 1rem;
+				top: 0.6rem;
+
+				font-size: 1.5rem;
+				content: '☰';
+
+				:global(header:is(:hover, :focus-within) &) { 
+					opacity: 0;
+				}
+			}
+
+			ul {
+				flex-direction: column;
+			}
 		}
 	}
 </style>

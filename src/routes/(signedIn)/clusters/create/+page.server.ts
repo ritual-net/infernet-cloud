@@ -13,18 +13,17 @@ import type { PageServerLoad } from './$types'
 import { e } from '$/lib/db'
 
 export const load: PageServerLoad = async ({
-	parent,
 	fetch,
 	locals: { client },
+	url,
 }) => {
+	const serviceAccountId = url.searchParams.get('serviceAccountId')
+
 	const [
-		parentData,
 		serviceAccounts,
 		dockerAccounts,
 		formData,
 	] = await Promise.all([
-		parent(),
-
 		fetch(`/api/service_account`)
 			.then<QueriedServiceAccount[]>(response => response.json()),
 
@@ -33,11 +32,15 @@ export const load: PageServerLoad = async ({
 		}))
 			.run(client),
 		
-		superValidate(yup(FormData)),
+		superValidate(
+			{
+				serviceAccountId,
+			},
+			yup(FormData),
+		),
 	])
 
 	return {
-		...parentData,
 		serviceAccounts,
 		dockerAccounts,
 		formData,

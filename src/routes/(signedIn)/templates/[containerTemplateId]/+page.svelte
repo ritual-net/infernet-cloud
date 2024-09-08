@@ -1,4 +1,9 @@
 <script lang="ts">
+	// Types/constants
+	import { chainsByChainId } from '$/lib/chains'
+	import { tokensByChainId } from '$/lib/tokens'
+
+
 	// Context
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
@@ -24,6 +29,11 @@
 </script>
 
 
+<svelte:head>
+	<title>{containerTemplate.name} | Container Template | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">
@@ -38,24 +48,25 @@
 					{containerTemplate.name}
 				</h2>
 
-				<p>Container Template</p>
+				<p>Container template</p>
 			</div>
 		</div>
 
 		<div class="row">
 			<DropdownMenu
-				labelText="Container Template Actions"
+				labelText="Container Template actions"
 				items={[
 					{
 						value: 'duplicate',
-						label: 'Duplicate Container Template',
+						label: 'Duplicate container template',
 						onClick: () => {
 							goto(`/templates/create?fromContainerTemplate=${containerTemplate.id}`)
 						},
 					},
 					{
 						value: 'delete',
-						label: 'Delete Container Template',
+						label: 'Delete container template',
+						isDestructive: true,
 						formAction: `?/delete`,
 						formSubmit: async (e) => {
 							const toast = addToast({
@@ -81,10 +92,55 @@
 	</header>
 
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Node details</h3>
 
 		<dl class="card column">
+			<section class="row wrap">
+				<dt>Onchain?</dt>
+
+				<dd>
+					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
+				</dd>
+			</section>
+
 			<section class="row">
+				<dt>Chain</dt>
+
+				<dd class="row">
+					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
+						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
+
+						<span class="row inline with-icon">
+							<img
+								src={chain.icon}
+								alt={chain.name}
+								class="icon"
+							/>
+							{chain.name}
+						</span>
+					{:else}
+						{containerTemplate.chain_id}
+					{/if}
+				</dd>
+			</section>
+
+			{#if containerTemplate.docker_account}
+				<section class="row wrap">
+					<dt>Docker Hub account</dt>
+
+					<dd>
+						{containerTemplate.docker_account.username}
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
+	<section class="column">
+		<h3>Configuration</h3>
+
+		<dl class="card column">
+			<section class="row wrap">
 				<dt>Image</dt>
 
 				<dd>
@@ -92,7 +148,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Service ID</dt>
 
 				<dd>
@@ -101,7 +157,7 @@
 			</section>
 
 			{#if containerTemplate.description}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Description</dt>
 
 					<dd class="description">
@@ -110,7 +166,7 @@
 				</section>
 			{/if}
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Visibility</dt>
 
 				<dd>
@@ -118,7 +174,7 @@
 				</dd>
 			</section>
 
-			<section class="row">
+			<section class="row wrap">
 				<dt>Has GPU?</dt>
 
 				<dd>
@@ -127,7 +183,7 @@
 			</section>
 
 			{#if containerTemplate.allowed_ips?.length}
-				<section class="row">
+				<section class="row wrap">
 					<dt>Allowed IPs</dt>
 
 					<dd>
@@ -139,32 +195,32 @@
 			{/if}
 
 			{#if containerTemplate.allowed_addresses?.length}
-				<section class="row">
-					<dt>Allowed Addresses</dt>
+				<section class="row wrap">
+					<dt>Allowed addresses</dt>
 
 					<dd>
 						{#each containerTemplate.allowed_addresses as address}
-							<p>{address}</p>
+							<p><code>{address}</code></p>
 						{/each}
 					</dd>
 				</section>
 			{/if}
 
 			{#if containerTemplate.allowed_delegate_addresses?.length}
-				<section class="row">
-					<dt>Allowed Delegate Addresses</dt>
+				<section class="row wrap">
+					<dt>Allowed delegate addresses</dt>
 
 					<dd>
 						{#each containerTemplate.allowed_delegate_addresses as address}
-							<output>{address}</output>
+							<p><code>{address}</code></p>
 						{/each}
 					</dd>
 				</section>
 			{/if}
 
 			{#if containerTemplate.command}
-				<section class="row">
-					<dt>Start Command</dt>
+				<section class="row wrap">
+					<dt>Start command</dt>
 
 					<dd>
 						<pre><code>{containerTemplate.command}</code></pre>
@@ -173,35 +229,94 @@
 			{/if}
 
 			{#if containerTemplate.env && Object.entries(containerTemplate.env).length}
-				<section class="row">
-					<dt>Environment Variables</dt>
+				<section class="column">
+					<dt>Environment variables</dt>
 
 					<dd>
-						<pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre>
+						<!-- <pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre> -->
+
+						<dl class="card column">
+							{#each Object.entries(containerTemplate.env) as [key, value] (key)}
+								<section class="row wrap">
+									<dt>{key}</dt>
+
+									<dd>
+										<output>{value}</output>
+									</dd>
+								</section>
+							{/each}
+						</dl>
 					</dd>
 				</section>
 			{/if}
-		</dl>
-	</section>
 
-	<section class="column">
-		<h3>Node Details</h3>
-
-		<dl class="card column">
-			<section class="row">
-				<dt>Chain Enabled?</dt>
+			<section class="row wrap">
+				<dt>Rate limiting</dt>
 
 				<dd>
-					{containerTemplate.chain_enabled ? 'Yes' : 'No'}
+					{containerTemplate.rate_limit_num_requests} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests)]}
+					every {containerTemplate.rate_limit_period} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period)]}
 				</dd>
 			</section>
 
-			{#if containerTemplate.docker_account}
+			{#if containerTemplate.accepted_payments?.length}
 				<section class="row">
-					<dt>Docker Hub Account</dt>
+					<dt>Payments</dt>
+
+					<dd class="column inline">
+						{#each containerTemplate.accepted_payments as payment, i}
+							{@const token = (
+								containerTemplate.chain_id && containerTemplate.chain_id in tokensByChainId
+									? tokensByChainId[containerTemplate.chain_id]
+										.find((token) => token.address === payment.address)
+									: null
+							)}
+
+							<p>
+								<span class="row inline with-icon">
+									<span>≥</span>
+									{#if token}
+										{@const formattedAmount = String(Number(payment.amount) / 10 ** token.decimals)}
+										{@const [number, exponent] = formattedAmount.split('e')}
+
+										<abbr
+											title={payment.amount}
+										>
+											{number}
+											{#if exponent}
+												× 10<sup>{exponent}</sup>
+											{/if}
+										</abbr>
+
+										<abbr
+											title={token.address}
+											class="row inline with-icon"
+										>
+											<img
+												src={token.icon}
+												alt={token.name}
+												class="icon"
+											/>
+											{token.name}
+										</abbr>
+									{:else}
+										<span>{payment.amount}</span>
+										<span>units</span>
+										<span><code>{payment.address}</code></span>
+									{/if}
+								</span>
+							</p>
+						{/each}
+					</dd>
+				</section>
+			{/if}
+
+			{#if containerTemplate.generates_proofs !== undefined}
+				<section class="row">
+					<dt>Generates proofs?</dt>
 
 					<dd>
-						{containerTemplate.docker_account.username}
+						{containerTemplate.generates_proofs ? 'Yes' : 'No'}
 					</dd>
 				</section>
 			{/if}
@@ -221,6 +336,7 @@
 	}
 
 	header .icon {
+		flex-shrink: 0;
 		width: 4em;
 		height: 4em;
 		border-radius: 0.25em;
@@ -228,26 +344,6 @@
 
 		background-color: var(--color-ritualBlack);
 		color: #fff;
-	}
-
-	output {
-		font-size: 0.75em;
-
-		& pre {
-			overflow-y: auto;
-			max-height: 15.6rem;
-			padding: 1em;
-
-			background: rgba(0, 0, 0, 0.05);
-			border-radius: 0.5em;
-
-			tab-size: 2;
-
-			& code {
-				white-space: pre-wrap;
-				word-break: break-word;
-			}
-		}
 	}
 
 	.description {

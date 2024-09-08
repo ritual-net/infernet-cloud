@@ -1,45 +1,46 @@
-import type { ProviderTypeEnum, NodeInfo } from '$/types/provider';
+import type { ProviderTypeEnum, NodeInfo } from '$/types/provider'
 
-export interface BaseNodeClient {
-	/**
-	 * Client object for interacting with nodes
-	 */
-	client: unknown;
+export abstract class BaseNodeClient {
 	/**
 	 * Helper utility to map client instance to type
 	 */
-	type(): ProviderTypeEnum;
+	abstract get type(): ProviderTypeEnum
 
 	/**
-	 * Start set of infernet nodes.
-	 *
-	 * @param ids - List of node ids to start
-	 * @param args - Additional arguments needed to start nodes
+	 * Convert node config ID to node instance ID
 	 */
-	startNodes(ids: string[], args: object): Promise<void>;
+	abstract get instanceId(): string
 
 	/**
-	 * Stop set of infernet nodes.
-	 *
-	 * @param ids - List of node ids to stop
-	 * @param args - Additional arguments needed to stop nodes
+	 * Start Infernet node.
 	 */
-	stopNodes(ids: string[], args: object): Promise<void>;
+	abstract start(): Promise<any>
 
 	/**
-	 * Restart set of infernet nodes.
-	 *
-	 * @param ids - List of node ids to restart
-	 * @param args - Additional arguments needed to restart nodes
+	 * Stop Infernet node.
 	 */
-	restartNodes(ids: string[], args: object): Promise<void>;
+	abstract stop(): Promise<any>
 
 	/**
-	 * Get status and ip of set of infernet nodes.
-	 *
-	 * @param ids - List of node ids to get status and ip of
-	 * @param args - Additional arguments needed to get node info
-	 * @returns Flat array of node info objects
+	 * Restart Infernet node.
 	 */
-	getNodesInfo(ids: string[], args: object): Promise<NodeInfo[]>;
+	abstract restart(): Promise<any>
+
+	/**
+	 * Get status and IP of Infernet node.
+	 */
+	abstract getInfo(): Promise<NodeInfo>
+
+	/**
+	 * Get logs from Infernet node.
+	 */
+	abstract getLogs(start?: number): Promise<{
+		start?: number,
+		next?: number,
+		logs: {
+			timestamp: number,
+			source: number,
+			text: string,
+		}[],
+	}>
 }

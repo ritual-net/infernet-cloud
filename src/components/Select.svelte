@@ -18,8 +18,9 @@
 	export let required: boolean = false
 	export let disabled: boolean = false
 	export let multiple: boolean = false
-
+	
 	// (View options)
+	export let loading: boolean = false
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
 
 
@@ -46,6 +47,9 @@
 			placement,
 			fitViewport: true,
 		},
+
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
 	})
 
 	const {
@@ -91,6 +95,7 @@
 		use:melt={$trigger}
 		aria-label={labelText}
 		class="row"
+		class:loading
 		bind:this={triggerElement}
 	>
 		{#if $selected?.icon}
@@ -175,15 +180,15 @@
 	:root {
 		--select-paddingX: 1em;
 		--select-paddingY: 0.5em;
-		--select-groupItem-indentX: 1.5em;
+		--select-groupItem-indentX: 1em;
 
-		--select-backgroundColor: rgb(255 255 255 / 0.75);
-		--select-backdropFilter: blur(3px);
+		--select-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
+		--select-backdropFilter: blur(20px);
 		--select-borderColor: var(--borderColor);
 		--select-borderWidth: var(--borderWidth);
 		--select-cornerRadius: 0.33em;
 
-		--select-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--select-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 		
 		--select-textColor: var(--textColor);
 	}

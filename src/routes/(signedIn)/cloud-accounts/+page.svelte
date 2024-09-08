@@ -3,8 +3,8 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		serviceAccounts,
-		dockerAccounts,
+		serviceAccountsPromise,
+		dockerAccountsPromise,
 	} = $page.data)
 
 
@@ -14,18 +14,23 @@
 </script>
 
 
+<svelte:head>
+	<title>Cloud Accounts | Infernet Cloud</title>
+</svelte:head>
+
+
 <section class="column">
 	<header class="row">
-		<h2>Cloud Accounts</h2>
+		<h2>Cloud accounts</h2>
 
 		<a
 			class="button primary"
 			href="/cloud-accounts/connect"
-		>Connect Cloud Account</a>
+		>Connect cloud account</a>
 	</header>
 
 	<ServiceAccountsTable
-		{serviceAccounts}
+		serviceAccounts={serviceAccountsPromise}
 	/>
 </section>
 
@@ -33,15 +38,15 @@
 
 <section class="column">
 	<header class="row">
-		<h2>Docker Accounts</h2>
+		<h2>Docker accounts</h2>
 
 		<a
 			class="button primary"
 			href="/cloud-accounts/docker/connect"
-		>Connect Docker Account</a>
+		>Connect Docker account</a>
 	</header>
 
 	<DockerAccountsTable
-		{dockerAccounts}
+		dockerAccounts={dockerAccountsPromise}
 	/>
 </section>

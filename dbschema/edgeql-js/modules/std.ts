@@ -14,6 +14,9 @@ type $anydiscrete = $number | _cal.$local_date;
 
 type $anycontiguous = $anyfloat | $datetime | $duration | $decimal | _cal.$local_datetime;
 
+export type $str = $.ScalarType<"std::str", string>;
+const str: $.scalarTypeWithConstructor<$str, never> = $.makeType<$.scalarTypeWithConstructor<$str, never>>(_.spec, "00000000-0000-0000-0000-000000000101", _.syntax.literal);
+
 export type $Endian = {
   "Little": $.$expr_Literal<$Endian>;
   "Big": $.$expr_Literal<$Endian>;
@@ -77,9 +80,6 @@ const json: $.scalarTypeWithConstructor<$json, never> = $.makeType<$.scalarTypeW
 
 interface $sequence extends $int64 {}
 const $sequence: $sequence = $.makeType<$sequence>(_.spec, "fd1c52ea-74a9-541b-88e2-378d1edb02fd", _.syntax.literal);
-
-export type $str = $.ScalarType<"std::str", string>;
-const str: $.scalarTypeWithConstructor<$str, never> = $.makeType<$.scalarTypeWithConstructor<$str, never>>(_.spec, "00000000-0000-0000-0000-000000000101", _.syntax.literal);
 
 export type $uuid = $.ScalarType<"std::uuid", string>;
 const uuid: $.scalarTypeWithConstructor<$uuid, never> = $.makeType<$.scalarTypeWithConstructor<$uuid, never>>(_.spec, "00000000-0000-0000-0000-000000000100", _.syntax.literal);
@@ -4919,11 +4919,12 @@ function sequence_next(...args: any[]) {
 
 
 
-export { Endian, JsonEmpty, bigint, bool, bytes, datetime, decimal, duration, float32, float64, int16, int32, int64, json, $sequence, str, uuid, number, $BaseObject, BaseObject, $Object_8ce8c71ee4fa5f73840c22d7eaa58588, Object_8ce8c71ee4fa5f73840c22d7eaa58588, $FreeObject, FreeObject };
+export { str, Endian, JsonEmpty, bigint, bool, bytes, datetime, decimal, duration, float32, float64, int16, int32, int64, json, $sequence, uuid, number, $BaseObject, BaseObject, $Object_8ce8c71ee4fa5f73840c22d7eaa58588, Object_8ce8c71ee4fa5f73840c22d7eaa58588, $FreeObject, FreeObject };
 
 export type { $anyscalar, $anypoint, $anydiscrete, $anycontiguous, $anyreal, $anyfloat, $anyint, $anynumeric };
 
 type __defaultExports = {
+  "str": typeof str;
   "Endian": typeof Endian;
   "JsonEmpty": typeof JsonEmpty;
   "bigint": typeof bigint;
@@ -4938,7 +4939,6 @@ type __defaultExports = {
   "int32": typeof int32;
   "int64": typeof int64;
   "json": typeof json;
-  "str": typeof str;
   "uuid": typeof uuid;
   "BaseObject": typeof BaseObject;
   "Object": typeof Object_8ce8c71ee4fa5f73840c22d7eaa58588;
@@ -5041,6 +5041,7 @@ type __defaultExports = {
   "enc": typeof _module__enc
 };
 const __defaultExports: __defaultExports = {
+  "str": str,
   "Endian": Endian,
   "JsonEmpty": JsonEmpty,
   "bigint": bigint,
@@ -5055,7 +5056,6 @@ const __defaultExports: __defaultExports = {
   "int32": int32,
   "int64": int64,
   "json": json,
-  "str": str,
   "uuid": uuid,
   "BaseObject": BaseObject,
   "Object": Object_8ce8c71ee4fa5f73840c22d7eaa58588,

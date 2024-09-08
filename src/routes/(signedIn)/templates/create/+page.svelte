@@ -31,6 +31,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -93,10 +94,18 @@
 
 
 	// Components
+	import ChainCombobox from '$/views/ChainCombobox.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Select from '$/components/Select.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import ContainerFormFields from '$/routes/(signedIn)/clusters/create/container/ContainerFormFields.svelte'
 </script>
+
+
+<svelte:head>
+	<title>Create Container Template | Infernet Cloud</title>
+</svelte:head>
 
 
 <div class="container column">
@@ -109,7 +118,7 @@
 		method="POST"
 		use:enhance
 	>
-		<div class="card">
+		<div class="card column">
 			<header>
 				Container template
 			</header>
@@ -141,7 +150,7 @@
 				Node configuration
 			</header>
 
-			<section class="row wrap">
+			<section class="row">
 				<div class="column inline">
 					<h3>
 						<label for="containerTemplate.chain_enabled">
@@ -149,7 +158,11 @@
 						</label>
 					</h3>
 			
-					<p>Determines if the node is listening to Ritual chain for events, or whether it is latent.</p>
+					<p>
+						Whether the node running this container will listen and respond to
+						<br>
+						onchain events, and optionally accept payments from subscriptions.
+					</p>
 				</div>
 			
 				<Switch
@@ -159,6 +172,28 @@
 					labelText="Onchain?"
 				/>
 			</section>
+
+			<Collapsible open={$form.containerTemplate.chain_enabled}>
+				<fieldset disabled={!$form.containerTemplate.chain_enabled}>
+					<section class="row wrap">
+						<div class="column inline">
+							<h3>
+								<label for="containerTemplate.chain_id">
+									Chain ID
+								</label>
+							</h3>
+
+							<p>The chain ID of the EVM-based network the node is connected to.</p>
+						</div>
+
+						<ChainCombobox
+							id="containerTemplate.chain_id"
+							name="containerTemplate.chain_id"
+							bind:chainId={$form.containerTemplate.chain_id}
+						/>
+					</section>
+				</fieldset>
+			</Collapsible>
 
 			<section class="row wrap">
 				<div class="column inline">
@@ -217,8 +252,13 @@
 			constraints={$constraints.containerTemplate}
 			{images}
 			{dockerUserImages}
-			isOnchain={$form.chain_enabled}
-			dockerAccountUsername={$form.dockerAccountUsername}
+			nodeConfiguration={{
+				hasGpu: true,
+				isOnchain: $form.containerTemplate.chain_enabled,
+				chainId: $form.containerTemplate.chain_id,
+				isPaymentsEnabled: true,
+				dockerAccountUsername: $form.dockerAccountUsername,
+			}}
 		>
 			<svelte:fragment slot="title">
 				Container configuration
@@ -236,13 +276,11 @@
 			</div>
 
 			<div class="row">
-				<button
-					type="submit"
-					class="primary"
-					disabled={$submitting}
-				>
-					Add Container Template
-				</button>
+				<FormSubmitButton
+					submitting={$submitting}
+					allErrors={$allErrors}
+					submitLabel="Add container template"
+				/>
 			</div>
 		</footer>
 	</form>

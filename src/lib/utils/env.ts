@@ -6,8 +6,9 @@ export const serializeEnvObject = (envObject: Record<string, string>) => (
 
 export const parseEnvString = (envString: string) => (
 	Object.fromEntries(
-		envString
-			.matchAll(/(\w+)=(.*\S|)/g)
-			.map(([match, key, value]) => [key, value])
+		Array.from(
+			envString.matchAll(/(\w+)=(.*\S|)/g),
+			([match, key, value]) => [key, value]
+		)
 	)
 )

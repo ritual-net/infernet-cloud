@@ -1,93 +1,140 @@
-import compute, { InstancesClient } from '@google-cloud/compute';
-import { ProviderTypeEnum } from '$/types/provider';
-import type { BaseNodeClient } from '$/lib/clients/node/base';
-import type { GCPServiceAccount } from '$schema/interfaces';
-import type { NodeInfo } from '$/types/provider';
+import { InstancesClient } from '@google-cloud/compute'
+import { ProviderTypeEnum } from '$/types/provider'
+import { BaseNodeClient } from '$/lib/clients/node/base'
+import type { GCPServiceAccount } from '$schema/interfaces'
 
-export class GCPNodeClient implements BaseNodeClient {
-	client: InstancesClient;
+export class GCPNodeClient extends BaseNodeClient {
+	public projectId: string
 
-	constructor(credentials: GCPServiceAccount['creds']) {
-		this.client = new compute.InstancesClient({
-			projectId: credentials.project_id,
+	#client: InstancesClient | undefined;
+
+	constructor(
+		private credentials: GCPServiceAccount['creds'],
+		public zone: string,
+		public nodeConfigId: string,
+	) {
+		super()
+
+		this.projectId = this.credentials.project_id
+	}
+
+	get client(): InstancesClient {
+		return this.#client ??= new InstancesClient({
+			projectId: this.credentials.project_id,
 			credentials: {
-				client_email: credentials.client_email,
-				private_key: credentials.private_key.split(String.raw`\n`).join('\n'),
+				client_email: this.credentials.client_email,
+				private_key: this.credentials.private_key.split(String.raw`\n`).join('\n'),
 			},
-		});
+		})
 	}
 
-	/**
-	 * Get the type of provider this client is for.
-	 *
-	 * @returns provider type (gcp)
-	 */
-	type(): ProviderTypeEnum {
-		return ProviderTypeEnum.GCP;
+	get type() {
+		return ProviderTypeEnum.GCP
 	}
 
-	/**
-	 * Start set of GCP infernet nodes.
-	 *
-	 * @param ids - List of node ids to start
-	 * @param args - Additional arguments needed to start nodes (project id, zone)
-	 */
-	async startNodes(ids: string[], args: object): Promise<void> {
-		for (const id of ids) {
-			await this.client.start({
-				...args,
-				instance: id,
-			});
+	get instanceId() {
+		return `node-${this.nodeConfigId}`
+	}
+
+	async start() {
+		return await this.client.start({
+			project: this.projectId,
+			zone: this.zone,
+			instance: this.instanceId,
+		})
+	}
+
+	async stop() {
+		return await this.client.stop({
+			project: this.projectId,
+			zone: this.zone,
+			instance: this.instanceId,
+		})
+	}
+
+	async restart() {
+		return await this.client.reset({
+			project: this.projectId,
+			zone: this.zone,
+			instance: this.instanceId,
+		})
+	}
+
+	async getInfo() {
+		const result = await this.client.get({
+			project: this.projectId,
+			zone: this.zone,
+			instance: this.instanceId,
+		})
+
+		return {
+			instanceId: this.instanceId,
+			status: result[0]?.status ?? undefined,
+			ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
+			instanceInfo: (
+				Object.fromEntries(
+					Object.entries(result[0] ?? {})
+						.filter(([key, value]) => (
+							!key.startsWith('_')
+						))
+						.map(([key, value]) => ([
+							key,
+							typeof value === 'object' ?
+								Object.fromEntries(
+									Object.entries(value ?? {})
+										.filter(([key, value]) => (
+											!key.startsWith('_')
+										))
+								)
+							:
+								value
+						]))
+				)
+			),
 		}
 	}
 
-	/**
-	 * Stop set of GCP infernet nodes.
-	 *
-	 * @param ids - List of node ids to stop
-	 * @param args - Additional arguments needed to stop nodes (project id, zone)
-	 */
-	async stopNodes(ids: string[], args: object): Promise<void> {
-		for (const id of ids) {
-			await this.client.stop({
-				...args,
-				instance: id,
-			});
-		}
-	}
+	async getLogs(start?: number) {
+		const result = await this.client.getSerialPortOutput({
+			project: this.projectId,
+			zone: this.zone,
+			instance: this.instanceId,
+			port: 1,
+			start,
+		}, {
+			autoPaginate: true,
+		})
 
-	/**
-	 * Restart set of GCP infernet nodes.
-	 *
-	 * @param ids - List of node ids to restart
-	 * @param args - Additional arguments needed to restart nodes (project id, zone)
-	 */
-	async restartNodes(ids: string[], args: object): Promise<void> {
-		await Promise.all(ids.map((id) => this.client.reset({ ...args, instance: id })));
-	}
+		const { contents, ...output } = result[0]
 
-	/**
-	 * Get status and ip of set of GCP infernet nodes.
-	 *
-	 * @param ids - List of node ids to get status and ip of
-	 * @param args - Additional arguments needed to get node info (project id, zone)
-	 * @returns Flat array of node info objects
-	 */
-	async getNodesInfo(ids: string[], args: object): Promise<NodeInfo[]> {
-		return Promise.all(
-			ids
-			.map((id) => (
-				this.client
-					.get({
-						...args,
-						instance: id,
+		return {
+			start: output.start,
+			next: output.next,
+			logs: (
+				contents
+					?.split('\r\n')
+					.slice(1)
+					.map(log => {
+						const match = log.match(/^(?<timestamp>\w+ \d+ \d+:\d+:\d+) (?<hostname>\S+) (?<process>\S+)\[(?<pid>\d+)\]: (?<message>.*)$/)
+
+						if(!match?.groups) {
+							return {
+								text: log,
+							}
+						}
+
+						if (match && match.groups) {
+							const { timestamp, process, pid, message } = match.groups
+
+							return {
+								timestamp: new Date(`${timestamp} ${new Date().getFullYear()}`).getTime(),
+								source: `${process}[${pid}]`,
+								text: message,
+							}
+						}
 					})
-					.then((result) => ({
-						id: id,
-						status: result[0]?.status ?? undefined,
-						ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
-					}))
-			))
-		);
+				?? []
+			),
+		}
 	}
 }

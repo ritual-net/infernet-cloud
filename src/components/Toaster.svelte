@@ -60,6 +60,7 @@
 				<div class="card column">
 					<div>
 						<button
+							type="button"
 							use:melt={$close(id)}
 							class="small"
 						>
@@ -83,11 +84,11 @@
 
 <style>
 	:root {
-		--toast-typeSuccess-backgroundColor: rgb(246, 255, 246);
-		--toast-typeSuccess-borderColor: rgba(0, 160, 0, 0.2);
+		--toast-typeSuccess-backgroundColor: var(--card-typeSuccess-backgroundColor);
+		--toast-typeSuccess-borderColor: var(--card-typeSuccess-borderColor);
 
-		--toast-typeError-backgroundColor: rgb(255, 246, 246);
-		--toast-typeError-borderColor: rgba(255, 0, 0, 0.2);
+		--toast-typeError-backgroundColor: var(--card-typeError-backgroundColor);
+		--toast-typeError-borderColor: var(--card-typeError-borderColor);
 	}
 
 	[data-portal] {
@@ -105,7 +106,7 @@
 			align-content: end;
 
 			& [data-melt-toast-content] {
-				--toast-backgroundColor: #fff;
+				--toast-backgroundColor: light-dark(#fff, #000);
 				--toast-borderColor: var(--borderColor);
 
 				&[data-type="success"] {
@@ -141,21 +142,24 @@
 					& > div {
 						row-gap: 0.25em;
 					}
+				}
 
-					& [data-melt-toast-close] {
-						--button-paddingX: 0.25em;
-						--button-paddingY: 0.25em;
-						--button-borderWidth: 0px;
+				[data-melt-toast-close] {
+					--button-paddingX: 0.25em;
+					--button-paddingY: 0.25em;
+					--button-borderWidth: 0px;
 
-						float: right;
-						margin-left: 0.5em;
-						margin-right: calc(-1 * var(--card-paddingX) + var(--card-paddingY));
+					float: right;
+					margin-left: 0.5em;
+					margin-right: calc(-1 * var(--card-paddingX) + var(--card-paddingY));
 
-						& span {
-							display: inline-block;
-							width: 1lh;
-						}
+					& span {
+						display: inline-block;
+						width: 1lh;
 					}
+				}
+				&:is([data-type="success"], [data-type="error"]) [data-melt-toast-close] {
+					--button-backgroundColor: transparent;
 				}
 			}
 		}

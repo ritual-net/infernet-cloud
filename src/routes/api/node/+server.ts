@@ -12,7 +12,8 @@ import { type FormData, setDefaultNodeValues } from '$/routes/(signedIn)/cluster
 import { error, json } from '@sveltejs/kit';
 import { clusterAction } from '$/lib/terraform/common';
 import { getClusterById } from '$/lib/db/queries';
-import { createNodeParams, insertNodeQuery } from '$/lib/db/components';
+// import { createNodeParams, nodeQueryFields } from '$/lib/db/components'
+import { nodeJsonQueryFields } from '$/lib/db/components';
 import { e } from '$/lib/db';
 
 /**
@@ -29,7 +30,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		return error(400, 'Data and cluster id are required');
 	}
 
-	setDefaultNodeValues(node);
+	// setDefaultNodeValues(node);
 
 	const cluster = await getClusterById(client, clusterId, { includeServiceAccountCredentials: true, includeNodeDetails: true });
 	if (!cluster) {
@@ -45,13 +46,14 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		updatedCluster = await e
 			.params(
 				{
-					node: createNodeParams,
+					node: e.json,
 				},
 				({ node }) =>
 					e.update(e.Cluster, () => ({
 						set: {
 							nodes: {
-								'+=': insertNodeQuery(node),
+								// '+=': e.insert(e.InfernetNode, nodeueryFields(node)),
+								'+=': e.insert(e.InfernetNode, nodeJsonQueryFields(node)),
 							},
 						},
 						filter_single: { id: clusterId },
@@ -75,14 +77,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			);
 		} catch (e) {
 			console.error(e)
-
-			// return error(500, JSON.stringify(e))
 		}
-
-		// const { success, error: errorMessage } = result
-
-		// if(!success)
-		// 	return error(500, errorMessage)
 	})();
 
 	return json({

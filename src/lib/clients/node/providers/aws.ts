@@ -4,90 +4,85 @@ import {
 	RebootInstancesCommand,
 	StartInstancesCommand,
 	StopInstancesCommand,
-} from '@aws-sdk/client-ec2';
-import { ProviderTypeEnum } from '$/types/provider';
-import type { AWSServiceAccount } from '$schema/interfaces';
-import type { EC2ClientConfig } from '@aws-sdk/client-ec2';
-import type { BaseNodeClient } from '$/lib/clients/node/base';
-import type { NodeInfo } from '$/types/provider';
+} from '@aws-sdk/client-ec2'
+import { ProviderTypeEnum } from '$/types/provider'
+import type { AWSServiceAccount } from '$schema/interfaces'
+import { BaseNodeClient } from '$/lib/clients/node/base'
 
-export class AWSNodeClient implements BaseNodeClient {
-	client: EC2Client;
+export class AWSNodeClient extends BaseNodeClient {
+	#client: EC2Client | undefined
 
-	constructor(credentials: AWSServiceAccount['creds'], region: string) {
-		const config: EC2ClientConfig = {
-			region: region,
+	constructor(
+		private credentials: AWSServiceAccount['creds'],
+		public region: string,
+		public nodeConfigId: string,
+	) {
+		super()
+	}
+
+	get client() {
+		return this.#client ??= new EC2Client({
+			region: this.region,
 			credentials: {
-				accessKeyId: credentials.access_key_id,
-				secretAccessKey: credentials.secret_access_key,
+				accessKeyId: this.credentials.access_key_id,
+				secretAccessKey: this.credentials.secret_access_key,
 			},
-		};
-		this.client = new EC2Client(config);
+		})
 	}
 
-	/**
-	 * Get the type of provider this client is for.
-	 *
-	 * @returns provider type (aws)
-	 */
-	type(): ProviderTypeEnum {
-		return ProviderTypeEnum.AWS;
+	get type() {
+		return ProviderTypeEnum.AWS
 	}
 
-	/**
-	 * Start set of AWS infernet nodes.
-	 *
-	 * @param ids - List of node ids to start
-	 */
-	async startNodes(ids: string[]): Promise<void> {
-		const command = new StartInstancesCommand({ InstanceIds: ids });
-		await this.client.send(command);
+	get instanceId() {
+		return `node-${this.nodeConfigId}`
 	}
 
-	/**
-	 * Stop set of AWS infernet nodes.
-	 *
-	 * @param ids - List of node ids to stop
-	 */
-	async stopNodes(ids: string[]): Promise<void> {
-		const command = new StopInstancesCommand({ InstanceIds: ids });
-		await this.client.send(command);
+	async start() {
+		return await this.client.send(
+			new StartInstancesCommand({
+				InstanceIds: [this.instanceId],
+			})
+		)
 	}
 
-	/**
-	 * Restart set of AWS infernet nodes.
-	 *
-	 * @param ids - List of node ids to restart
-	 */
-	async restartNodes(ids: string[]): Promise<void> {
-		const command = new RebootInstancesCommand({ InstanceIds: ids });
-		await this.client.send(command);
+	async stop() {
+		return await this.client.send(
+			new StopInstancesCommand({
+				InstanceIds: [this.instanceId],
+			})
+		)
 	}
 
-	/**
-	 * Get status and ip of set of AWS infernet nodes.
-	 *
-	 * @param ids - List of node ids to get status and ip of
-	 * @returns Flat array of node info objects
-	 */
-	async getNodesInfo(ids: string[]): Promise<NodeInfo[]> {
-		const command = new DescribeInstancesCommand({ InstanceIds: ids });
+	async restart() {
+		return await this.client.send(
+			new RebootInstancesCommand({
+				InstanceIds: [this.instanceId],
+			})
+		)
+	}
 
-		const result = await this.client.send(command);
+	async getInfo() {
+		const result = await this.client.send(
+			new DescribeInstancesCommand({
+				InstanceIds: [this.instanceId],
+			})
+		)
 
-		return (
-			result.Reservations
-				?.flatMap(reservation => (
-					reservation
-						.Instances
-						?.map(instance => ({
-							id: instance.InstanceId!,
-							status: instance.State?.Name,
-							ip: instance.PublicIpAddress,
-						}))
-					?? []
-				))
-			?? []
-		);
+		const instance = result.Reservations?.[0]?.Instances?.[0]
+
+		if (!instance)
+			throw new Error(`Instance ${this.instanceId} not found.`)
+
+		return {
+			instanceId: instance.InstanceId!,
+			status: instance.State?.Name,
+			ip: instance.PublicIpAddress,
+			instanceInfo: instance,
+		}
+	}
+
+	async getLogs() {
+		return []
 	}
 }

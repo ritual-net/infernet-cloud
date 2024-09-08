@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import { providers } from '$/types/provider'
+	import { TFAction } from '$/types/terraform'
 
 
 	// Context
@@ -9,22 +10,21 @@
 
 	$: ({
 		cluster,
-		nodesWithInfo,
+		nodesWithInfoPromise,
 	} = $page.data as PageData)
-
-
-	// Internal state
-	$: clusterStatus = (
-		cluster.locked
-			? 'updating'
-			: cluster.healthy
-				? 'healthy'
-				: 'unhealthy'
-	)
 
 
 	// Functions
 	import { resolveRoute } from '$app/paths'
+
+	const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	})
 
 
 	// Actions
@@ -57,11 +57,24 @@
 
 
 	// Components
+	import Collapsible from '$/components/Collapsible.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodesTable from './NodesTable.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import Status from '$/views/Status.svelte'
+	import TerraformDeployment from './TerraformDeployment.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
+
+
+	// Transitions
+	import { scale } from 'svelte/transition'
+	import SizeTransition from '$/components/SizeTransition.svelte'
 </script>
+
+
+<svelte:head>
+	<title>{cluster.name || cluster.id} | Cluster | Infernet Cloud</title>
+</svelte:head>
 
 
 <div class="container column">
@@ -78,21 +91,20 @@
 					{cluster.name || cluster.id}
 				</h2>
 
-				<p>Infernet Cluster</p>
+				<p>Infernet cluster</p>
 				<!-- <p>Created {cluster.created}</p> -->
 			</div>
 		</div>
 
-		<div class="row">
-			<dl class="card inline">
-				<div class="row">
-					<dt>Status</dt>
-					<dd>
-						<Status
-							status={clusterStatus}
-						/>
-					</dd>
-				</div>
+		<div class="row wrap">
+			<dl class="status-container card row">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={cluster.status}
+					/>
+				</dd>
 			</dl>
 
 			<a
@@ -100,14 +112,14 @@
 					clusterId: $page.params.clusterId,
 				})}
 				class="button primary"
-			>Edit Cluster</a>
+			>Edit cluster</a>
 
 			<DropdownMenu
-				labelText="Cluster Actions"
+				labelText="Cluster actions"
 				items={[
 					{
 						value: 'refresh',
-						label: 'Refresh Data',
+						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
 								data: {
@@ -123,13 +135,22 @@
 					},
 					{
 						value: 'apply',
-						label: 'Trigger Update',
+						label: (
+							cluster.status !== 'destroyed'
+								? 'Trigger update'
+								: 'Recreate cluster'
+						), 
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
 							const toast = addToast({
 								data: {
 									type: 'default',
-									title: `Applying changes to cluster "${cluster.name}"...`,
+									title: (
+										cluster.status !== 'destroyed' ?
+											`Applying changes to cluster "${cluster.name}"...`
+										:
+											`Recreating cluster "${cluster.name}"...`
+									)
 								},
 							})
 
@@ -147,31 +168,60 @@
 							}
 						},
 					},
-					{
-						value: 'delete',
-						label: 'Delete Cluster',
-						formAction: `?/delete`,
-						formSubmit: async (e) => {
-							const toast = addToast({
-								data: {
-									type: 'default',
-									title: `Deleting cluster "${cluster.name}"...`,
+					(
+						cluster.status !== 'destroyed'
+							? {
+								value: 'destroy',
+								label: 'Destroy cluster',
+								formAction: `?/destroy`,
+								formSubmit: async (e) => {
+									const toast = addToast({
+										data: {
+											type: 'default',
+											title: `Destroying cluster "${cluster.name}"...`,
+										},
+									})
+
+									return async ({ result }) => {
+										await applyAction(result)
+
+										if(result.type === 'success')
+											invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+
+										removeToast(toast.id)
+									}
 								},
-							})
-
-							return async ({ result }) => {
-								await applyAction(result)
-
-								removeToast(toast.id)
 							}
-						},
-					},
+							: {
+								value: 'delete',
+								label: 'Delete cluster',
+								isDestructive: true,
+								formAction: `?/delete`,
+								formSubmit: async (e) => {
+									const toast = addToast({
+										data: {
+											type: 'default',
+											title: `Deleting cluster "${cluster.name}"...`,
+										},
+									})
+
+									return async ({ result }) => {
+										await applyAction(result)
+
+										if(result.type === 'success')
+											invalidate(`/api/cluster`)
+
+										removeToast(toast.id)
+									}
+								},
+							}
+					),
 				]}
 			/>
 		</div>
 	</header>
 
-	<section>
+	<section class="column">
 		<div class="row">
 			<h3>Nodes</h3>
 
@@ -181,74 +231,125 @@
 				})}
 				class="button"
 			>
-				Add Node
+				Add node
 			</a>
 		</div>
 
-		<!-- <NodesTable
-			nodes={cluster.nodes}
-		/> -->
 		<NodesTable
-			{nodesWithInfo}
+			nodesWithInfo={nodesWithInfoPromise}
 		/>
 	</section>
 
+	{#if cluster.router || cluster.router_state?.ip}
+		<section class="column">
+			<h3>Router</h3>
+
+			<dl class="card column">
+				{#if cluster.router_state?.ip}
+					<section class="row wrap">
+						<dt>IP</dt>
+
+						<dd>
+							{cluster.router_state.ip}
+						</dd>
+					</section>
+				{/if}
+
+				{#if cluster.router}
+					<section class="row wrap">
+						<dt>Region / Zone</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.region} / {cluster.router.zone}
+							</WithIcon>
+						</dd>
+					</section>
+
+					<section class="row wrap">
+						<dt>Machine type</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.machine_type}
+							</WithIcon>
+						</dd>
+					</section>
+
+					<section class="row wrap">
+						<dt>Machine image</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.machine_image}
+							</WithIcon>
+						</dd>
+					</section>
+				{/if}
+			</dl>
+		</section>
+	{/if}
+
 	<section class="column">
-		<h3>Details</h3>
+		<h3>Configuration</h3>
 
 		<dl class="card column">
-			<section class="row">
-				<dt>Cloud Account</dt>
+			<section class="row wrap">
+				<dt>Cloud account</dt>
 
 				<dd>
 					<a
 						href={resolveRoute(`/cloud-accounts/[serviceAccountId]`, {
 							serviceAccountId: cluster.service_account.id,
 						})}
-						class="row"
+						class="row inline with-icon"
 					>
-						<img
-							class="icon"
-							src={providers[cluster.service_account.provider].icon}
-						/>
-						{cluster.service_account.name}
+						<WithIcon
+							icon={providers[cluster.service_account.provider].icon}
+						>
+							{cluster.service_account.name}
+						</WithIcon>
 					</a>
 				</dd>
 			</section>
 
-			<section class="row">
-				<dt>Region / Zone</dt>
+			<section class="row wrap">
+				<dt>Default region / zone</dt>
 
 				<dd>
-					{#if 'region' in cluster}
-						{cluster.region}
-					{/if}
+					<WithIcon
+						icon={providers[cluster.service_account.provider].icon}
+					>
+						{#if 'region' in cluster}
+							{cluster.region}
+						{/if}
 
-					{#if 'region' in cluster && 'zone' in cluster}
-						/
-					{/if}
+						{#if 'region' in cluster && 'zone' in cluster}
+							/
+						{/if}
 
-					{#if 'zone' in cluster}
-						{cluster.zone}
-					{/if}
+						{#if 'zone' in cluster}
+							{cluster.zone}
+						{/if}
+					</WithIcon>
 				</dd>
 			</section>
 
-			<section class="row">
-				<dt>Machine Type</dt>
+			<section class="row wrap">
+				<dt>IPs allowed (HTTP)</dt>
 
-				<dd>
-					{cluster.machine_type}
-				</dd>
-			</section>
-
-			<section class="row">
-				<dt>IPs Allowed (HTTP)</dt>
-
-				{#if cluster.ip_allow_http?.length}
+				{#if cluster.ip_allow_http}
 					<dd class="column inline">
 						{#each cluster.ip_allow_http as ip}
 							<p>{ip}</p>
+						{:else}
+							None
 						{/each}
 					</dd>
 				{:else}
@@ -256,13 +357,15 @@
 				{/if}
 			</section>
 
-			<section class="row">
-				<dt>IPs Allowed (SSH)</dt>
+			<section class="row wrap">
+				<dt>IPs allowed (SSH)</dt>
 
-				{#if cluster.ip_allow_ssh?.length}
+				{#if cluster.ip_allow_ssh}
 					<dd class="column inline">
 						{#each cluster.ip_allow_ssh as ip}
 							<p>{ip}</p>
+						{:else}
+							None
 						{/each}
 					</dd>
 				{:else}
@@ -270,83 +373,142 @@
 				{/if}
 			</section>
 
-			<section class="row">
-				<dt>Has Deployed Router?</dt>
+			<section class="row wrap">
+				<dt>Has deployed router?</dt>
 
 				<dd>
-					{cluster.deploy_router ? 'Yes' : 'No'}
+					{cluster.router ? 'Yes' : 'No'}
+				</dd>
+			</section>
+		</dl>
+	</section>
+
+	<section class="column">
+		<h3>Deployment</h3>
+
+		<dl class="card column">
+			<section class="row wrap">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={cluster.status}
+					/>
 				</dd>
 			</section>
 
-			{#if cluster.router?.ip}
-				<section class="row">
-					<dt>Router IP</dt>
+			{#if cluster.latest_deployment}
+				{#if cluster.latest_deployment.timestamp}
+					<section class="row wrap">
+						<dt>Last updated</dt>
 
-					<dd>
-						{cluster.router.ip}
-					</dd>
-				</section>
+						<dd>
+							<date>{dateTimeFormat.format(new Date(cluster.latest_deployment.timestamp))}</date>
+						</dd>
+					</section>
+				{/if}
+
+				<TerraformDeployment
+					clusterName={cluster.name}
+					provider={cluster.service_account.provider}
+					deployment={cluster.latest_deployment}
+					isSummary
+				/>
 			{/if}
 		</dl>
 	</section>
 
 	<section class="column">
-		<h3>Status</h3>
+		<h3 class="row inline">
+			History
+			<span class="annotation">
+				{cluster.deployments.length}
+			</span>
+		</h3>
 
-		<dl class="card column">
-			<section class="row">
-				<dt>Status</dt>
+		<div class="history column">
+			{#each (
+				// Group by "init" actions
+				cluster.deployments
+					.toReversed()
+					.reduce((groups, snapshot, i) => {
+						if(snapshot.action === TFAction.Init || i === 0)
+							groups.push([snapshot])
+						else
+							groups[groups.length - 1].push(snapshot)
+						return groups
+					}, [])
+					.toReversed()
+			) as group (group[0]?.id)}
+				<div class="history-group-container column">
+					<h4 class="annotation">
+						{#if group[0] && group.at(-1)}
+							{dateTimeFormat.formatRange(new Date(group[0].timestamp), new Date(group.at(-1).timestamp))}
+						{:else if group[0]}
+							{dateTimeFormat.format(new Date(group[0].timestamp))}
+						{/if}
+					</h4>
 
-				<dd>
-					<Status
-						status={clusterStatus}
-					/>
-				</dd>
-			</section>
-
-			{#if cluster.tfstate}
-				<section class="column">
-					<dt>Terraform State</dt>
-	
-					<dd>
-						<output>
-							<pre><code>{JSON.stringify(JSON.parse(cluster.tfstate), null, '\t')}</code></pre>
-						</output>
-					</dd>
-				</section>
-			{/if}
-
-			{#if cluster.terraform_logs?.length}
-				<section class="column">
-					<dt>Terraform Logs</dt>
-	
-					<dd>
-						{#each cluster.terraform_logs as log}
-							<output
-								class="log"
-								data-type={log['type']} 
-								data-level={log['@level']}
-								data-module={log['@module']}
+					<div class="column card">
+						{#each group as snapshot (snapshot.id)}
+							<Collapsible
+								class="card"
 							>
-								<pre><date date={log['@timestamp']}>{log['@timestamp']}</date> <code>{log['type']}</code> <code>{log['@message']}</code> {#if log['@hook']}<code>{JSON.stringify(log['hook'])}</code>{/if}</pre>
-							</output>
-						{/each}
-					</dd>
-				</section>
-			{/if}
+								<svelte:fragment slot="trigger">
+									<header class="row wrap">
+										<h4>{snapshot.action}</h4>
 
-			{#if cluster.error}
-				<section class="column">
-					<dt>Error</dt>
-	
-					<dd>
-						<output>
-							<pre><code>{cluster.error}</code></pre>
-						</output>
-					</dd>
-				</section>
-			{/if}
-		</dl>
+										<div class="column inline">
+											<dd>
+												<Status
+													status={snapshot.status}
+												/>
+											</dd>
+
+											<span class="annotation">at {new Date(snapshot.timestamp).toLocaleString()}</span>
+										</div>
+									</header>
+								</svelte:fragment>
+
+								<dl class="snapshot-details column">
+									<section class="row wrap">
+										<dt>Status</dt>
+
+										<dd>
+											<Status
+												status={snapshot.status}
+											/>
+										</dd>
+									</section>
+
+									<section class="row wrap">
+										<dt>Timestamp</dt>
+
+										<dd>
+											{dateTimeFormat.format(new Date(snapshot.timestamp))}
+										</dd>
+									</section>
+
+									<TerraformDeployment
+										clusterName={cluster.name}
+										provider={cluster.service_account.provider}
+										deployment={snapshot}
+									/>
+								</dl>
+							</Collapsible>
+						{:else}
+							<div class="card">
+								<p>No deployments found.</p>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{:else}
+				<div class="card">
+					<p>No deployments found.</p>
+				</div>
+			{/each}
+		</div>
 	</section>
 </div>
 
@@ -354,7 +516,6 @@
 <style>
 	.container {
 		gap: 2rem;
-		margin-bottom: 20dvh;
 	}
 
 	.icon {
@@ -363,6 +524,7 @@
 	}
 
 	header .icon {
+		flex-shrink: 0;
 		width: 4em;
 		height: 4em;
 		border-radius: 0.25em;
@@ -372,23 +534,37 @@
 		color: #fff;
 	}
 
+	header.row > :last-child {
+		text-align: end;
+	}
+
+	header .status-container {
+		--card-paddingX: 1.5em;
+		--card-paddingY: 0.75em;
+		--card-backgroundColor: rgba(0, 0, 0, 0.04);
+		--card-borderColor: transparent;
+		font-size: 0.9em;
+	}
+
+	.snapshot-details {
+		background-color: rgba(0, 0, 0, 0.03);
+	}
+
 	output {
 		font-size: 0.75em;
+	}
 
-		& pre {
-			overflow-y: auto;
-			max-height: 15.6rem;
-			padding: 1em;
+	code {
+		white-space: pre-wrap;
+		word-break: break-word;
+		tab-size: 2;
+	}
 
-			background: rgba(0, 0, 0, 0.05);
-			border-radius: 0.5em;
+	.history {
+		gap: 1.25em;
 
-			tab-size: 2;
-
-			& code {
-				white-space: pre-wrap;
-				word-break: break-word;
-			}
+		.history-group-container {
+			gap: 0.75em;
 		}
 	}
 </style>

@@ -25,6 +25,9 @@
 			placement,
 			fitViewport: true,
 		},
+
+		closeOnOutsideClick: true,
+		closeOnEscape: true,
 	})
 
 
@@ -62,6 +65,7 @@
 						>
 							<button
 								type="submit"
+								class:destructive={_subitem.isDestructive}
 								use:melt={$item}
 							>
 								<div class="row">
@@ -72,6 +76,7 @@
 					{:else}
 						<div
 							use:melt={$item}
+							class:destructive={_subitem.isDestructive}
 							on:m-click={e => _subitem.onClick?.(_subitem)}
 						>
 							<div class="row">
@@ -91,6 +96,7 @@
 					<button
 						type="submit"
 						use:melt={$item}
+						class:destructive={subitem.isDestructive}
 					>
 						<div class="row">
 							{subitem.label}
@@ -100,6 +106,7 @@
 			{:else}
 				<div
 					use:melt={$item}
+					class:destructive={subitem.isDestructive}
 					on:m-click={e => subitem.onClick?.(subitem)}
 				>
 					<div class="row">
@@ -117,13 +124,13 @@
 		--contextMenu-paddingX: 1em;
 		--contextMenu-paddingY: 0.5em;
 
-		--contextMenu-backgroundColor: rgb(255 255 255 / 0.75);
-		--contextMenu-backdropFilter: blur(3px);
+		--contextMenu-backgroundColor: light-dark(rgb(255 255 255 / 0.75), rgb(0 0 0 / 0.75));
+		--contextMenu-backdropFilter: blur(20px);
 		--contextMenu-borderColor: var(--borderColor);
 		--contextMenu-borderWidth: var(--borderWidth);
 		--contextMenu-cornerRadius: 0.33em;
 
-		--contextMenu-item-selected-backgroundColor: rgba(0, 0, 0, 0.1);
+		--contextMenu-item-selected-backgroundColor: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 		
 		--contextMenu-textColor: var(--textColor);
 	}
@@ -193,7 +200,9 @@
 		display: contents;
 
 		& button {
-			all: unset;
+			--button-backgroundColor: transparent;
+			--button-borderWidth: 0px;
+			--button-cornerRadius: 0px;
 		}
 	}
 </style>

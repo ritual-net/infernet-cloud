@@ -12,14 +12,25 @@ export const load: PageLoad = async ({
 }) => {
 	const { cluster } = await parent()
 
-	const formData = await superValidate({
-		config: {
-			name: cluster.name,
-			deploy_router: cluster.deploy_router,
-			ip_allow_http: cluster.ip_allow_http,
-			ip_allow_ssh: cluster.ip_allow_ssh,
-		},	
-	}, yup(FormData))
+	const formData = await superValidate(
+		{
+			config: {
+				name: cluster.name,
+				deploy_router: Boolean(cluster.router),
+				ip_allow_http: cluster.ip_allow_http,
+				ip_allow_ssh: cluster.ip_allow_ssh,
+				region: cluster.region,
+				zone: cluster.zone,
+			},
+			router: {
+				region: cluster.router?.region,
+				zone: cluster.router?.zone,
+				machine_type: cluster.router?.machine_type,
+				machine_image: cluster.router?.machine_image,
+			},
+		},
+		yup(FormData)
+	)
 
 	return {
 		cluster,

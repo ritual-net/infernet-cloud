@@ -21,7 +21,7 @@ export const getNodesByIds = async (
 	} = {}
 ) => {
 	return await e
-		.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		.params({ nodeIds: e.array(e.uuid) }, ({ nodeIds }) =>
 			e.select(e.InfernetNode, (node) => ({
 				...e.InfernetNode['*'],
 				...includeClusterBacklink && {
@@ -36,10 +36,12 @@ export const getNodesByIds = async (
 				containers: {
 					...e.Container['*'],
 				},
-				filter: e.op(node.id, 'in', e.array_unpack(ids)),
+				filter: e.op(node.id, 'in', e.array_unpack(nodeIds)),
 			}))
 		)
-		.run(client, { ids: nodeIds });
+		.run(client, {
+			nodeIds,
+		});
 };
 
 /**
@@ -103,6 +105,7 @@ export const getClusterById = async (
 		includeServiceAccountCredentials,
 		includeNodeDetails,
 		includeDockerAccountCredentials,
+		includeTerraformDeploymentDetails,
 	}: {
 		/**
 		 * Whether to include sensitive Service Account credentials
@@ -118,6 +121,11 @@ export const getClusterById = async (
 		 * Whether to include Docker Credentials from Nodes
 		 */
 		includeDockerAccountCredentials?: boolean,
+
+		/**
+		 * Whether to include Terraform Deployment details
+		 */
+		includeTerraformDeploymentDetails?: boolean,
 	},
 ): Promise<ProviderCluster | null> => {
 	// Get cloud provider from generic cluster
@@ -142,6 +150,7 @@ export const getClusterById = async (
 				includeServiceAccountCredentials,
 				includeNodeDetails,
 				includeDockerAccountCredentials,
+				includeTerraformDeploymentDetails,
 			}),
 			filter_single: { id },
 		}))
@@ -217,7 +226,7 @@ export const getClusterByRouterId = async (
 			service_account: {
 				provider: true,
 			},
-			filter_single: e.op(cluster.router.id, '=', id),
+			filter_single: e.op(cluster.router_state?.id, '=', id),
 		}))
 		.run(client);
 
@@ -239,15 +248,21 @@ export const getClusterByRouterId = async (
 };
 
 /**
- * Get clusters owned by user
+ * Get clusters
  *
+ * @param client The database client
+ * @param {optional} serviceAccountId filter by clusters created with service account
  * @returns Cluster array
  */
-export const getClustersForUser = async (
-	client: Client
+export const getClusters = async (
+	client: Client,
+	serviceAccountId?: string,
 ) => (
 	await e
 		.select(e.Cluster, (cluster) => ({
+			...serviceAccountId && {
+				filter: e.op(cluster.service_account.id, '=', e.uuid(serviceAccountId)),
+			},
 			service_account: {
 				id: true,
 				name: true,
@@ -256,7 +271,9 @@ export const getClustersForUser = async (
 			id: true,
 			name: true,
 			node_count: e.count(cluster.nodes),
-			healthy: true,
+			region: true,
+			zone: true,
+			status: true,
 			locked: true,
 		}))
 		.run(client)

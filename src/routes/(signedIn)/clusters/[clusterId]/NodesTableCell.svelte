@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	export enum CellType {
-		ID,
+		IpAndId,
 		Status,
 	}
 </script>
@@ -21,8 +21,16 @@
 </script>
 
 
-{#if cellType === CellType.ID}
-	<span class="node-id">{nodeWithInfo.node.id}</span>
+{#if cellType === CellType.IpAndId}
+	{#if nodeWithInfo.node}
+		<p>{nodeWithInfo.node.state?.ip ?? nodeWithInfo?.info?.ip ?? '–'}</p>  
+		<p><span class="node-id">{nodeWithInfo.node.state?.id ?? nodeWithInfo.node?.provider_id ?? '–'}</span></p>
+	{:else}
+		<div class="card error">
+			<p>Error fetching node info.</p>
+		</div>
+	{/if}
+
 
 {:else if cellType === CellType.Status}
 	<div class="row">
@@ -30,7 +38,7 @@
 			status={
 				nodeWithInfo.info?.status
 					? {
-						'RUNNING': 'healthy',
+						'RUNNING': 'running',
 						'TERMINATED': 'terminated',
 					}[nodeWithInfo.info.status] || nodeWithInfo.info.status
 					: 'unknown'

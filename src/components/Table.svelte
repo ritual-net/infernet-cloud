@@ -8,7 +8,7 @@
 
 
 	// Inputs
-	export let data: Datum[]
+	export let data: Datum[] | Promise<Datum[]> | undefined
 	export let getId: (_: Datum) => any
 	export let columns: Parameters<Table<Datum>['column']>[0][]
 	export let contextMenu: ((_: Datum) => MenuItems<MenuItemValue>[]) | undefined
@@ -22,9 +22,12 @@
 	// Internal state
 	import { writable } from 'svelte/store'
 	import { createTable, Subscribe, Render } from 'svelte-headless-table'
-	
-	const _data = writable(data)
-	$: $_data = data
+
+	let resolvedData: Datum[] | undefined = undefined
+	$: Promise.resolve(data).then(data => { resolvedData = data })
+
+	const _data = writable<Datum[]>([])
+	$: $_data = resolvedData ?? []
 
 	const table = createTable(_data)
 
@@ -50,6 +53,7 @@
 	import { melt } from '@melt-ui/svelte'
 	import ContextMenu from './ContextMenu.svelte'
 	import DropdownMenu from './DropdownMenu.svelte'
+	import SizeTransition from './SizeTransition.svelte'
 
 
 	// Transitions/animations
@@ -59,9 +63,31 @@
 
 <div data-layout={layout}>
 	<table {...$tableAttrs}>
-		{#if !$rows.length}
+		{#if !resolvedData || !$rows.length}
 			<caption class="placeholder">
-				<slot />
+				<SizeTransition>
+					<div class="stack">
+						{#await data}
+							<div class="card loading" transition:scale>
+								<slot name="loading">
+									<p>Loading data...</p>
+								</slot>
+							</div>
+						{:then}
+							<slot name="empty">
+								No data found.
+							</slot>
+						{:catch error}
+							<div class="card error" transition:scale>
+								<slot name="error" {error}>
+									<p>Error loading data: {error.message}</p>
+								</slot>
+
+								<pre><output><code>{error}</code></output></pre>
+							</div>
+						{/await}
+					</div>
+				</SizeTransition>
 			</caption>
 		{/if}
 
@@ -86,7 +112,7 @@
 								data-align="end"
 								data-column="menu"
 							>
-								Actions
+								<span hidden>Actions</span>
 							</th>
 						{/if}
 					</tr>
@@ -95,9 +121,9 @@
 		</thead>
 
 		<tbody {...$tableBodyAttrs}>
-			{#each $rows as row (getId?.(data[row.dataId]) ?? row.dataId)}
-				{@const datum = data[row.dataId]}
-				{@const link = getRowLink?.(data[row.dataId])}
+			{#each $rows as row (getId?.($_data[row.dataId]) ?? row.dataId)}
+				{@const datum = $_data[row.dataId]}
+				{@const link = getRowLink?.($_data[row.dataId])}
 
 				<Subscribe
 					rowAttrs={row.attrs()} let:rowAttrs
@@ -158,7 +184,7 @@
 		--table-layoutDefault-backgroundColor: transparent;
 		--table-layoutDefault-outerBorderColor: transparent;
 
-		--table-layoutCard-backgroundColor: #fff;
+		--table-layoutCard-backgroundColor: light-dark(#fff, #1a1a1a);
 		--table-layoutCard-outerBorderColor: var(--borderColor);
 	}
 
@@ -182,7 +208,8 @@
 	}
 
 	table {
-		width: 100%;
+		min-width: 100%;
+		width: max-content;
 		margin-inline: calc(-1 * var(--borderWidth));
 
 		border-collapse: separate;
@@ -204,7 +231,7 @@
 
 	tbody {
 		& tr {
-			--table-row-backgroundColor: rgba(0, 0, 0, 0.03);
+			--table-row-backgroundColor: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.03));
 
 			box-shadow: 0 var(--borderWidth) var(--borderColor), 0 calc(-1 * var(--borderWidth)) var(--borderColor);
 
@@ -226,13 +253,17 @@
 				}
 
 				&:hover {
-					--table-row-backgroundColor: rgba(0, 0, 0, 0.05);
+					--table-row-backgroundColor: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 				}
 
 				&:active:not(:has([tabindex="0"]:active)) {
 					transition-duration: var(--active-transitionInDuration);
 					opacity: var(--active-opacity);
 					scale: var(--active-scale);
+
+					&:active {
+						--borderColor: transparent;
+					}
 
 					box-shadow: none;
 

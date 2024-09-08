@@ -123,6 +123,8 @@ export const providerRegionsAndZones = {
 				name: `South America (São Paulo)`,
 			},
 		],
+		machineTypesLink: 'https://aws.amazon.com/ec2/instance-types',
+		machineImagesLink: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html',
 	},
 	[ProviderTypeEnum.GCP]: {
 		regionsInfoLink: 'https://cloud.google.com/compute/docs/regions-zones/#available',
@@ -731,6 +733,8 @@ export const providerRegionsAndZones = {
 				],
 			},
 		],
+		machineTypesLink: 'https://cloud.google.com/compute/docs/machine-resource',
+		machineImagesLink: 'https://cloud.google.com/compute/docs/images',
 	},
 } as const;
 

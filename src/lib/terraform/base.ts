@@ -1,9 +1,10 @@
 import path from 'path';
+import { promises as fs } from 'fs';
 import { TFAction, type TFState } from '$/types/terraform';
 import * as SystemUtils from '$/lib/utils/system';
-import * as TerraformUtils from '$/lib/utils/terraform';
-import type { CommandExecutionError } from '$/types/error';
+import { createTempDir, formatTfVars, formatNodeConfig, parseJsonLines } from '$/lib/terraform/utils';
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
+import type { InfernetNode } from "$schema/interfaces";
 
 /**
  * Base class for Terraform deployments.
@@ -35,6 +36,18 @@ export abstract class BaseTerraform {
 	): Promise<void>;
 
 	/**
+	 * Returns formatted Terraform input variables for the given cluster and service account.
+	 *
+	 * @param cluster The ProviderCluster to use.
+	 * @param serviceAccount The ProviderServiceAccount to use.
+	 * @returns The Terraform variables as a string.
+	 */
+	public abstract getTerraformVars(
+		cluster: ProviderCluster,
+		serviceAccount: ProviderServiceAccount
+	): string;
+
+	/**
 	 * Applies a Terraform action:
 	 * 	- Creates a temporary directory
 	 *  - Writes terraform files and configuration files
@@ -53,54 +66,191 @@ export abstract class BaseTerraform {
 		serviceAccount: ProviderServiceAccount,
 		action: TFAction
 	) {
+		let tempDir: string | undefined = undefined
+
+		const cwd = process.cwd()
+
+		// Create fresh temporary directory
+		console.log(`Creating working directory for Terraform...`)
+		tempDir = await createTempDir()
+		if (!tempDir)
+			throw new Error('Cluster could not be updated.')
+
+		console.log(`Created: ${tempDir}`)
+
 		try {
-			// Create fresh temporary directory
-			const tempDir = await TerraformUtils.createTempDir(this.type);
+			// Copy the provider-specific Terraform files
+			console.log(`Copying Terraform config files for ${this.type}...`, tempDir)
+			console.log(`cp -r "${cwd}/infernet-deploy/procure/${this.type.toLowerCase()}" "${tempDir}"`)
+			await fs.cp(
+				`${cwd}/infernet-deploy/procure/${this.type.toLowerCase()}`,
+				tempDir,
+				{
+					'recursive': true,
+				}
+			)
+
+			// Copy the Docker Compose files as a .tar.gz file
+			console.log(`Copying Docker Compose files...`)
+
+			await SystemUtils.executeCommands(
+				`${cwd}/infernet-deploy/deploy`,
+				`tar --numeric-owner --exclude=".DS_Store" -czvf "${tempDir}/deploy.tar.gz" *`
+			)
 
 			// Create terraform files
+			const terraformVariables = this.getTerraformVars(cluster, serviceAccount)
+
+			console.log(`Writing Terraform files for cluster "${cluster.id}" and service account "${serviceAccount.id}"...`, tempDir);
 			await this.writeTerraformFiles(tempDir, cluster, serviceAccount);
 
 			// Create node config files under configs/
-			await TerraformUtils.createNodeConfigFiles(tempDir, cluster.nodes);
+			await createNodeConfigFiles(tempDir, cluster.nodes);
 
-			// If state file exist in db, write it to file
-			if (cluster?.tfstate) {
+			// If state file exists in db, write it to file
+			if (cluster?.latest_deployment?.tfstate) {
+				console.log(`Found existing Terraform state in database. Writing JSON to "./terraform.tfstate"...`);
+
 				await SystemUtils.writeJsonToFile(
 					path.join(tempDir, 'terraform.tfstate'),
-					JSON.parse(cluster.tfstate)
-				);
+					cluster?.latest_deployment?.tfstate
+				)
 			}
 
-			// Initialize terraform
-			await SystemUtils.executeCommands(tempDir, 'terraform init');
-			if (!tempDir) {
-				return { success: false, error: 'Cluster could not be updated.' };
+			const commands = (
+				[
+					{
+						action: TFAction.Init,
+						command: 'terraform init -json -no-color',
+						statusMessage: 'Initializing Terraform project...',
+						errorMessage: 'Error initializing Terraform project.',
+					},
+					[TFAction.Plan, TFAction.Apply, TFAction.Destroy].includes(action) && {
+						action: TFAction.Plan,
+						command: action === TFAction.Destroy ? `terraform plan -destroy -json -no-color` : `terraform plan -json -no-color`,
+						statusMessage: 'Creating Terraform plan...',
+						errorMessage: 'Error creating Terraform plan.',
+					},
+					action === TFAction.Apply && {
+						action: TFAction.Apply,
+						command: `terraform apply -auto-approve -json -no-color`,
+						statusMessage: 'Applying changes to resources...',
+						errorMessage: 'Error applying changes to resources.',
+					},
+					action === TFAction.Destroy && {
+						action: TFAction.Destroy,
+						command: `terraform apply -destroy -auto-approve -json -no-color`,
+						statusMessage: 'Destroying resources...',
+						errorMessage: 'Error destroying resources.',
+					},
+				]
+					.filter(Boolean)
+			)
+
+			const result = []
+
+			for(const command of commands){
+				if(!command) continue
+
+				console.log(command.statusMessage, tempDir)
+
+				const {
+					error,
+					stdout,
+					stderr,
+				} = await SystemUtils.executeCommands(
+					tempDir,
+					command.command
+				)
+
+				if(error){
+					console.error(command.errorMessage)
+					console.error(error)
+				}
+
+				const tfstate = await SystemUtils.readJsonFromFile<TFState>(
+					path.join(tempDir, 'terraform.tfstate')
+				)
+					.catch(e => {
+						console.error(e)
+						return null
+					})
+
+				result.push({
+					timestamp: Date.now(),
+					action: command.action,
+					command: command.command,
+					tfvars: terraformVariables,
+					output: {
+						error: error?.message,
+						tfstate,
+						stdout: parseJsonLines(stdout),
+						stderr: parseJsonLines(stderr),
+					},
+				})
+
+				if(error)
+					break
 			}
 
-			let logs: any;
-			let error: string | undefined;
-			try {
-				const stdout = await SystemUtils.executeCommands(tempDir, `terraform ${action} -auto-approve -json -no-color`);
-				logs = JSON.parse(stdout);
-			} catch (e) {
-				// We catch the error here so we can store the state file in the db.
-				// Even if the apply fails, the cluster may be partially created / updated,
-				// so we want the state file to reflect that.
-				const commandError = e as CommandExecutionError;
-				error = commandError.stderr ?? commandError.error ?? commandError;
-			}
-
-			// Store state file in db under cluster entry
-			const state = (await SystemUtils.readJsonFromFile(
-				path.join(tempDir, 'terraform.tfstate')
-			)) as TFState;
-
+			return result
+		}finally{
 			// Remove temporary directory
-			SystemUtils.removeDir(tempDir);
-
-			return { success: error ? false : true, error, state, logs };
-		}catch(error){
-			return { success: false, error: JSON.stringify(error) };
+			if(tempDir){
+				try {
+					await SystemUtils.removeDir(tempDir)
+					console.log(`Removed working directory for Terraform ${tempDir}`); 
+				}catch(e){
+					console.error(e)
+				}
+			}
 		}
 	}
 }
+
+/**
+ * Creates a terraform.tfvars file from an object.
+ *
+ * @param tempDir The path to the temporary directory.
+ * @param tfVars The object to write to the file.
+ */
+export const createTerraformVarsFile = async (
+	tempDir: string,
+	formattedTfVars: string,
+): Promise<void> => {
+	await fs.writeFile(
+		path.join(tempDir, 'terraform.tfvars'),
+		formattedTfVars
+	)
+};
+
+/**
+ * Creates node config files from an array of InfernetNode objects.
+ *
+ * @param tempDir The path to the temporary directory.
+ * @param nodes The array of InfernetNode objects.
+ */
+const createNodeConfigFiles = async (
+	tempDir: string,
+	nodes: InfernetNode[]
+): Promise<void> => {
+	// Create configs/ directory
+	console.log(`Creating node configs...`, tempDir);
+	console.log(`mkdir -p "configs"`);
+	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true });
+
+	// Create node config files under configs/
+	for (const node of nodes) {
+		const nodeId = node.provider_id;
+
+		const jsonConfig = formatNodeConfig(node);
+
+		await SystemUtils.writeJsonToFile(
+			path.join(tempDir, 'configs', `${nodeId}.json`),
+			jsonConfig
+		);
+
+		console.log(`Created: configs/${nodeId}.json`);
+	}
+};
+

@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Schema
-	import type { ContainerTemplate } from '$schema/interfaces'
+	import type { Container, ContainerTemplate } from '$schema/interfaces'
 
 
 	// Context
@@ -11,19 +11,16 @@
 		formData,
 		containerTemplatesPromise,
 		imagesPromise,
-		dockerAccountUsername,
+		nodeConfiguration,
 		dockerUserImages,
-		isOnchain,
 	} = data
-
-	let configurations = []
 
 
 	// Inputs
 	// (View options)
 	export let placement: 'standalone' | 'in-modal' = 'standalone'
 	export let mode: 'create' | 'edit' = 'create'
-	export let submitLabel = 'Add Container'
+	export let submitLabel = 'Add container'
 
 
 	// Schema
@@ -38,6 +35,7 @@
 		form,
 		enhance,
 		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -76,8 +74,9 @@
 			const {
 				id,
 				name,
-				docker_account,
 				chain_enabled,
+				chain_id,
+				docker_account,
 				...newContainer
 			} = globalThis.structuredClone(containerTemplate)
 
@@ -106,9 +105,16 @@
 
 
 	// Components
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte'
 	import Select from '$/components/Select.svelte'
+	import Tooltip from '$/components/Tooltip.svelte'
 	import ContainerFormFields from './ContainerFormFields.svelte'
 </script>
+
+
+<svelte:head>
+	<title>Create Cluster | Infernet Cloud</title>
+</svelte:head>
 
 
 <form
@@ -145,7 +151,7 @@
 					id="containerTemplateId"
 					name="containerTemplateId"
 					labelText="Container template"
-					placeholder={configurations.length ? `Select templates...` : `No templates found`}
+					placeholder={containerTemplates?.length ? `Select template...` : `No templates found.`}
 					bind:value={containerTemplateId}
 					items={
 						containerTemplates
@@ -158,7 +164,7 @@
 									items: containerTemplates.map(containerTemplate => ({
 										value: containerTemplate.id,
 										label: containerTemplate.name,
-										disabled: containerTemplate.docker_account && containerTemplate.docker_account.username !== dockerAccountUsername,
+										disabled: containerTemplate.docker_account && containerTemplate.docker_account.username !== nodeConfiguration.dockerAccountUsername,
 									}))
 								}),
 							)
@@ -173,8 +179,7 @@
 		bind:container={$form.container}
 		constraints={$constraints.container}
 		{images}
-		{isOnchain}
-		{dockerAccountUsername}
+		{nodeConfiguration}
 		{dockerUserImages}
 	/>
 
@@ -189,13 +194,11 @@
 		</div>
 
 		<div class="row">
-			<button
-				type="submit"
-				class="primary"
-				disabled={$submitting}
-			>
+			<FormSubmitButton
+				submitting={$submitting}
+				allErrors={$allErrors}
 				{submitLabel}
-			</button>
+			/>
 		</div>
 	</footer>
 </form>

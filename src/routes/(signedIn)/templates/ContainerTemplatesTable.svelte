@@ -9,7 +9,7 @@
 
 
 	// Inputs
-	export let containerTemplates: ContainerTemplate[]
+	export let data: Promise<ContainerTemplate[]>
 
 
 	// Actions
@@ -25,11 +25,18 @@
 
 
 <Table
-	data={containerTemplates}
+	{data}
+	getId={containerTemplate => containerTemplate.id}
 	columns={[
 		{
-			header: 'Name',
-			accessor: container => container.name,
+			header: 'Template',
+			accessor: container => container,
+			cell: ({ value: container }) => (
+				createRender(ContainerTemplatesTableCell, {
+					cellType: CellType.NameAndDescription,
+					container,
+				})
+			)
 		},
 		{
 			header: 'Service ID',
@@ -58,16 +65,6 @@
 		{
 			header: 'Image',
 			accessor: container => container.image,
-		},
-		{
-			header: 'Description',
-			accessor: container => container,
-			cell: ({ value: container }) => (
-				createRender(ContainerTemplatesTableCell, {
-					cellType: CellType.Description,
-					container,
-				})
-			)
 		},
 		{
 			header: 'Visibility',
@@ -109,14 +106,15 @@
 		return [
 			{
 				value: 'duplicate',
-				label: 'Duplicate Container Template',
+				label: 'Duplicate container template',
 				onClick: () => {
 					goto(`/templates/create?fromContainerTemplate=${containerTemplate.id}`)
 				},
 			},
 			{
 				value: 'delete',
-				label: 'Delete Container Template',
+				label: 'Delete container template',
+				isDestructive: true,
 				formAction: `${containerTemplateRoute}?/delete`,
 				formSubmit: async (e) => {
 					const toast = addToast({
@@ -139,5 +137,15 @@
 		]
 	}}
 >
-	<p>You have not created any container templates.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading container templates...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load container templates.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>You have not created any container templates.</p>
+	</svelte:fragment>
 </Table>
