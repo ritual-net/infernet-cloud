@@ -146,7 +146,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
 	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
-	* To require new accounts to verify their email address before logging in, set `ext::auth::AuthConfig::require_verification` to `true`, otherwise set it to `false`.
+	* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in, otherwise set it to `false`.
 	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#email-and-password).
