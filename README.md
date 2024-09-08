@@ -25,7 +25,7 @@
 
 3. [Install Terraform](https://developer.hashicorp.com/terraform/install).
 
-4. Initialize the project:
+4. Initialize the local setup:
 
 	```bash
 	pnpm run init:local
@@ -33,7 +33,7 @@
 
 	This script will:
 	* Create an [`.env.local`](.env.local) file with default values copied from [`.env.local.example`](.env.local.example), if one doesn't already exist
-	* Install npm package dependencies
+	*	* Install package dependencies from npm
 	* Initialize a local EdgeDB instance (default name: `infernet_cloud`)
 	* Apply EdgeDB database migrations
 
@@ -81,7 +81,7 @@
 	pnpm run local:edgedb:init
 	```
 
-* After making changes to [dbschema/schema.esdl](dbschema/schema.esdl), create and apply migrations to local EdgeDB database instance, and regenerate TypeScript types:
+* After making changes to [`dbschema/schema.esdl`](dbschema/schema.esdl), create and apply migrations to local EdgeDB database instance, and regenerate TypeScript types:
 	```bash
 	pnpm run local:edgedb:migrate
 	```
@@ -110,7 +110,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 2. [Install pnpm](https://pnpm.io/installation).
 
-3. Initialize the project:
+3. Initialize the Docker Compose setup:
 
 	```bash
 	pnpm run init:docker
@@ -118,7 +118,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 
 	This script will:
 	* Create an [`.env.docker`](.env.docker) file with default values copied from [`.env.docker.example`](.env.docker.example), if one doesn't already exist
-	* Install npm package dependencies
+	*	* Install package dependencies from npm
 
 4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
 	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default `http://localhost:3000` when running locally).
