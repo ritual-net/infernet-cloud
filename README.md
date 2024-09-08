@@ -138,7 +138,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 6. If hosting Infernet Cloud on a cloud provider with a public-facing URL, configure the reverse proxy:
 	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
-	* Replace `my.infernet-cloud.example.com` with the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
+	* Replace `my.infernet-cloud.example.com` with the public-facing domain of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above, with `http://` or `https://` omitted).
 	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
 	* Ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
 
@@ -169,6 +169,11 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 8. Access the Infernet Cloud UI by opening a web browser and navigating to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
+
+	* If you're having trouble, double-check that the following values match:
+		* The `SERVER_HOST` environment variable in [`.env.docker`](.env.docker)
+		* The public URL of your server in the [`caddy/Caddyfile`](caddy/Caddyfile) (with `http://` or `https://` omitted)
+		* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/auth.edgeql`](dbschema/auth.edgeql)
 
 9. Stop all services:
 
