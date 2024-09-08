@@ -21,11 +21,11 @@
 	pnpm run init:local
 	```
 
-	This script:
-	* Creates an [.env.local](.env.local) file with default values
-	* Initializes a local EdgeDB project (default name: `"infernet_cloud"`)
-	* Performs EdgeDB database migrations
-	* Installs npm package dependencies
+	This script will:
+	* Create an [.env.local](.env.local) file with default values
+	* Initialize a local EdgeDB project (default name: `"infernet_cloud"`)
+	* Perform EdgeDB database migrations
+	* Install npm package dependencies
 
 5. Configure environment variables by editing the [`.env.local`](.env.local) file:
 	* `SERVER_HOST`: The public-facing URL of your server (default `http://localhost:3000` when running locally).
@@ -38,22 +38,37 @@
 	pnpm run start:local
 	```
 
-	npm run build
-
-7. Navigate to `http://localhost:3000` in your browser to access the UI.
+7. Navigate to [http://localhost:3000](http://localhost:3000) in your browser to access the UI.
 
 ### Development scripts (local setup)
 
 #### Server
-* `pnpm run local:server`: Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload.
-* `pnpm run local:server:debug`: Start the local [Vite](https://vitejs.dev) server with Node.js debugging enabled.
+* `pnpm run local:server`
+  * Start the local [Vite](https://vitejs.dev) server. Changes to the SvelteKit backend or frontend will cause an automatic hot-reload.
+* `pnpm run local:server:debug`
+  * Start the local [Vite](https://vitejs.dev) server with Node.js debugging enabled.
 
 #### EdgeDB (database)
-* `pnpm run local:edgedb:init`: Initialize a local EdgeDB database instance (default name: "infernet_cloud").
-* `pnpm run local:edgedb:migrate`: Create and apply migrations to local EdgeDB database instance after making changes to [dbschema/schema.esdl](dbschema/schema.esdl), and generate TypeScript types.
-* `pnpm run local:edgedb:destroy`: Destroy the local EdgeDB database instance and all its data.
-* `pnpm run local:edgedb:cli`: Open an [EdgeDB CLI](https://www.edgedb.com/docs/cli/overview) session.
-* `pnpm run local:edgedb:ui`: Open the [EdgeDB UI](https://www.edgedb.com/docs/ui/overview).
+* ```bash
+	pnpm run local:edgedb:init
+	```
+  * Initialize a local EdgeDB database instance (default name: "infernet_cloud").
+* ```bash
+	pnpm run local:edgedb:migrate
+	```
+  * Create and apply migrations to local EdgeDB database instance after making changes to [dbschema/schema.esdl](dbschema/schema.esdl), and generate TypeScript types.
+* ```bash
+	pnpm run local:edgedb:destroy
+	```
+  * Destroy the local EdgeDB database instance and all its data.
+* ```bash
+	pnpm run local:edgedb:cli
+	```
+  * Open an [EdgeDB CLI](https://www.edgedb.com/docs/cli/overview) session.
+* ```bash
+	pnpm run local:edgedb:ui
+	```
+  * Open the [EdgeDB UI](https://www.edgedb.com/docs/ui/overview).
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
 
@@ -99,14 +114,14 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	```
 
 	List of services:
-	* `caddy`: [Reverse proxy](https://caddyserver.com).
+	* `caddy` – [reverse proxy](https://caddyserver.com)
 		* First run: generates a self-signed SSL certificate using [Let's Encrypt](https://letsencrypt.org).
-	* `server`: Node.js web server.
+	* `server` – [Node.js web server](https://nodejs.org)
 		* First run: installs npm package dependencies and builds Node.js production server using [SvelteKit](https://kit.svelte.dev).
-	* `edgedb`: [EdgeDB](https://www.edgedb.com) database.
+	* `edgedb` – [EdgeDB](https://www.edgedb.com) database
 		* First run: initializes Docker volume at [./edgedb-data](edgedb-data), configures EdgeDB Auth, and performs schema migrations.
 		* **IMPORTANT**: **Keep the `edgedb-data` directory safe. If you delete it, you will lose all data stored in the database!**
-	* `smtp`: Email relay service used for sending user verification emails.
+	* `smtp` – email relay service (used for sending user verification emails)
 
 8. Access the UI by opening a web browser and navigating to [http://localhost:3000](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
 
@@ -119,40 +134,67 @@ Find more commands and their definitions in the `scripts` section of [package.js
 ### Development scripts (Docker Compose setup)
 
 #### Docker Compose
-* `pnpm run docker:up`: Start all Docker services in detached mode and display logs.
-* `pnpm run docker:up:force`: Rebuild Docker images without cache, then (re)start all services.
-* `pnpm run docker:down`: Stop and remove all Docker services.
-* `pnpm run docker:clean`: Remove unused Docker data (images, containers, networks, and volumes).
+* ```bash
+	pnpm run docker:up
+	```
+  * Start all Docker services in detached mode and display logs.
+* ```bash
+	pnpm run docker:up:force
+	```
+  * Rebuild Docker images without cache, then (re)start all services.
+* ```bash
+	pnpm run docker:down
+	```
+  * Stop and remove all Docker services.
+* ```bash
+	pnpm run docker:clean
+	```
+  * Remove unused Docker data (images, containers, networks, and volumes).
 
 #### `server` service:
-* `pnpm run docker:server:restart`: Rebuild and restart `server` service after making changes to SvelteKit backend or frontend.
+* ```bash
+	pnpm run docker:server:restart
+	```
+  * Rebuild and restart `server` service after making changes to SvelteKit backend or frontend.
 
 #### `edgedb` service:
-* `pnpm run docker:edgedb:restart`: Restart `edgedb` service and migrate the database after making changes to EdgeDB schema / migrations.
-* `pnpm run docker:edgedb:backup`: Create a timestamped backup of the EdgeDB Docker volume.
-* `pnpm run docker:edgedb:destroy`: Permanently delete the current EdgeDB Docker volume after confirmation.
-* `pnpm run docker:edgedb:cli`: Open an [EdgeDB CLI](https://docs.edgedb.com/cli) session from inside the `edgedb` Docker container.
+* ```bash
+	pnpm run docker:edgedb:restart
+	```
+  * Restart `edgedb` service and migrate the database after making changes to EdgeDB schema / migrations.
+* ```bash
+	pnpm run docker:edgedb:backup
+	```
+  * Create a timestamped backup of the EdgeDB Docker volume.
+* ```bash
+	pnpm run docker:edgedb:destroy
+	```
+  * Permanently delete the current EdgeDB Docker volume after confirmation.
+* ```bash
+	pnpm run docker:edgedb:cli
+	```
+  * Open an [EdgeDB CLI](https://docs.edgedb.com/cli) session from inside the `edgedb` Docker container.
 
 Find more commands and their definitions in the `scripts` section of [package.json](package.json).
 
 ## Usage
 
-1. Create an account:
+### 1. Create an account
 	* Navigate to **Log in**.
 	* Choose an email and password.
 	* Verify your email address using the link sent to your email.
 	* Log in.
 
-2. Connect a cloud provider:
+### 2. Connect a cloud provider
 	* Navigate to **Accounts** › **Connect Cloud Account**.
 	* Choose a cloud provider (AWS or Google Cloud), name your account, and click **Continue**.
 	* Follow the instructions to install the cloud provider's CLI, run a script to generate credentials, and paste the credentials into the form.
 
-3. Connect a Docker account to run private Docker images (optional):
+### 3. Connect a Docker account to run private Docker images (optional)
 	* Navigate to **Accounts** › **Connect Docker account**.
 	* Follow the instructions to log into Docker Hub, generate credentials, and paste the credentials into the form.
 
-4. Create container templates (optional):
+### 4. Create container templates (optional)
 	* Navigate to **Templates** › **Create template**.
 	* Under "Container template name", choose a template name.
 	* Under "Node configuration", specify the conditions needed for a node to run the container.
@@ -161,7 +203,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 		* To use a private Docker image, look for image IDs grouped under the owner's Docker Hub username.
 	* Click **Add container template**.
 
-5. Create a cluster:
+### 5. Create a cluster
 	* Navigate to **Clusters** › **Create cluster**.
 	* Choose a connected cloud account to deploy the cluster with.
 	* Set a name, firewall rules, and default region and zone for the [Infernet Router](https://docs.ritual.net/infernet/router/introduction) and [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction).
@@ -170,7 +212,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 		* To add a container to a node, click "Add container". You can choose an existing container template or create a new one.
 	* Click "Create cluster".
 
-6. Monitor and manage a cluster (and router):
+### 6. Monitor and manage a cluster (and router)
 	* Navigate to **Clusters** to view your clusters.
 	* Click on a cluster to view its details, or right-click to trigger actions:
 		* **Edit cluster**: modify the configuration of the cluster (and router).
@@ -180,7 +222,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 		* **Delete cluster**: PERMANENTLY delete the configuration and deployment history of a destroyed cluster.
 	* Scroll down to browse details about the cluster's cloud resources and deployment history.
 
-7. Monitor and manage nodes:
+### 7. Monitor and manage nodes
 	* Navigate to a cluster detail page,
 	* Click on a node to view its details, or right-click to trigger actions:
 		* **Edit node**: modify the node's configuration.
