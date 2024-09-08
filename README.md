@@ -25,7 +25,7 @@
 	```
 
 	This script will:
-	* Create an [`.env.local`](.env.local) file with default values from [`env.local.example`](env.local.example), if one doesn't already exist
+	* Create an [`.env.local`](.env.local) file with default values copied from [`.env.local.example`](.env.local.example), if one doesn't already exist
 	* Initialize a local EdgeDB project (default name: `"infernet_cloud"`)
 	* Perform EdgeDB database migrations
 	* Install npm package dependencies
@@ -108,7 +108,7 @@ Find more commands and their definitions in the `scripts` section of [package.js
 	```
 
 	This script will:
-	* Create an [`env.docker`](env.docker) file with default values from [`env.docker.example`](env.docker.example), if one doesn't already exist
+	* Create an [`env.docker`](env.docker) file with default values copied from [`.env.docker.example`](.env.docker.example), if one doesn't already exist
 	* Install npm package dependencies
 
 4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
