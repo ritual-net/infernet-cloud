@@ -48,7 +48,7 @@
 	```
 
 5. Configure environment variables by editing the [`.env.local`](.env.local) file:
-	* `SERVER_HOST`: The public-facing URL of your server (default [`http://localhost:5173`](http://localhost:5173) when running locally).
+	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:5173`](http://localhost:5173) when running locally).
 	* `EDGEDB_PROTOCOL`, `EDGEDB_HOST`, `EDGEDB_PORT`, `EDGEDB_BRANCH`: The connection details of your EdgeDB instance.
 	  * Make sure these values match your EdgeDB instance configuration. To find the details of your local EdgeDB instance, run:
 		```bash
@@ -76,7 +76,7 @@
 	pnpm start:local
 	```
 
-8. Navigate to [`http://localhost:3000`](http://localhost:3000) in your browser to access the Infernet Cloud UI.
+7. Navigate to [`http://localhost:5173`](http://localhost:5173) in your browser to access the Infernet Cloud UI.
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
