@@ -61,7 +61,7 @@
 	pnpm start:local
 	```
 
-7. Navigate to [`http://localhost:3000`](http://localhost:3000) in your browser to access the Infernet Cloud UI.
+7. Navigate to [`http://localhost:5173`](http://localhost:5173) in your browser to access the Infernet Cloud UI.
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
