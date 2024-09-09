@@ -31,11 +31,13 @@ export type TFState = {
 		mode: string;
 		instances: {
 			attributes: {
-				tags: {
+				tags?: {
 					Name: string;
 				};
 				id: string;
-				arn: string;
+				arn?: string;
+				self_link?: string;
+				[key: string]: any;
 			}
 			dependencies: string[];
 			id: string;

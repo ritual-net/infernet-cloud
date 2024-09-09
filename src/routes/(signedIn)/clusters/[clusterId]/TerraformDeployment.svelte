@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { TerraformDeployment } from '$schema/interfaces'
-	import { providers, ProviderTypeEnum } from '$/types/provider'
+	import { ProviderTypeEnum } from '$/types/provider'
 
 
 	// Inputs
@@ -11,17 +11,15 @@
 	export let isSummary = false
 
 
-	// Functions
-	import { formatResourceType, getAwsConsoleLink, getGcpConsoleLink } from '$/lib/terraform/format'
-
-
 	// Components
-	import DetailsValue from '$/components/DetailsValue.svelte'
 	import ScrollArea from '$/components/ScrollArea.svelte'
+	import TerraformResourceDetails from './TerraformResourceDetails.svelte'
+	import Mermaid from '$/components/Mermaid.svelte'
 	import XYFlow from '$/components/XYFlow.svelte'
 	import XYFlowDownload from '$/components/XYFlowDownload.svelte'
 	import { MarkerType, ConnectionLineType } from '@xyflow/svelte'
 	import TerraformResourceNode from './TerraformResourceNode.svelte'
+	import TerraformResourceTypeNode from './TerraformResourceTypeNode.svelte'
 </script>
 
 
@@ -50,44 +48,63 @@
 		<dt>Cloud resources</dt>
 
 		<dd class="column">
-			{#if deployment.tfstate?.resources?.flatMap(resource => resource.instances).length}
-				<XYFlow
+			{#if deployment.tfstate?.resources?.flatMap(resourceType => resourceType.instances).length}
+				<!-- <XYFlow
 					nodeTypes={{
+						'group': TerraformResourceTypeNode,
 						'resource': TerraformResourceNode,
 					}}
 					nodes={
 						deployment.tfstate.resources
-							.flatMap(resource => (
-								resource.instances
-									.map(instance => ({
-										id: `${resource.type}.${resource.name}`,
-										type: 'resource',
-										data: {
-											provider,
-											resource,
-										},
-									}))
-							))
+							.flatMap(resourceType => {
+								const parentNode = {
+									id: `resourceType.${resourceType.type}`,
+									type: 'group',
+									data: {
+										provider,
+										resourceType,
+									},
+									width: 700,
+									height: 150,
+								}
+
+								const childNodes = (
+									resourceType.instances
+										.map(resource => ({
+											id: `resource.${resource.attributes.id}`,
+											type: 'resource',
+											data: {
+												provider,
+												resourceType,
+												resource,
+											},
+											parentId: `resourceType.${resourceType.type}`,
+											extent: 'parent',
+										}))
+								)
+
+								return [parentNode, ...childNodes]
+							})
 					}
 					edges={
 						deployment.tfstate.resources
-							.flatMap(resource => (
-								resource.instances
-									.flatMap(instance => (
-										instance.dependencies
+							.flatMap(resourceType => (
+								resourceType.instances
+									.flatMap(resource => (
+										resource.dependencies
 											?.map(dependencyId => {
-												const [type, name] = dependencyId.split('.')
-												return { type, name }
+												const [dependencyResourceType, dependencyName] = dependencyId.split('.')
+
+												return {
+													id: `resource.${resource.attributes.id}-${dependencyResourceType}.${dependencyName}`,
+													source: `resource.${resource.attributes.id}`,
+													target: `resourceType.${dependencyResourceType}`,
+													type: ConnectionLineType.Bezier,
+													markerEnd: {
+														type: MarkerType.ArrowClosed,
+													},
+												};
 											})
-											.map(dependency => ({
-												id: `${resource.type}.${resource.name}-${dependency.type}.${dependency.name}`,
-												source: `${resource.type}.${resource.name}`,
-												target: `${dependency.type}.${dependency.name}`,
-												type: ConnectionLineType.Bezier,
-												markerEnd: {
-													type: MarkerType.ArrowClosed,
-												},
-											}))
 										?? []
 									))
 							))
@@ -106,184 +123,75 @@
 					<XYFlowDownload
 						fileName={`${clusterName}-resources-${deployment.action}-${deployment.timestamp}`}
 					/>
-				</XYFlow>
+				</XYFlow> -->
+
+				<Mermaid
+					init={{
+						'flowchart': {
+							'defaultRenderer': 'forceGraph',
+						},
+						'theme': 'base',
+						'themeVariables': { 
+							'nodeBorder': '1px #0000001a solid',
+							'mainBkg': '#fff',
+							'nodeBorderRadius': '10px',
+							'nodeShadow': '0 0 0 1px #0000001a,0 0 0 2px #0003',
+							'nodeTextPadding': '0px',
+							'nodePadding': '0px',
+						}
+					}}
+					diagram={`
+						flowchart BT
+							${deployment.tfstate.resources.map(resourceType => `
+								subgraph resourceType.${resourceType.type} [
+									${resourceType.type}
+								]
+									${resourceType.instances.map(resource => `
+										resource.${resource.attributes.id}(
+											${resource.attributes.id}
+										)
+									`).join('\n')}
+								end
+							`).join('\n')}
+
+							${deployment.tfstate?.resources.flatMap(resourceType =>
+								resourceType.instances?.flatMap(resource => (
+									resource.dependencies?.map(dependencyId => {
+										const [dependencyResourceType, dependencyName] = dependencyId.split('.')
+
+										return `
+											resource.${resource.attributes.id} --> resourceType.${dependencyResourceType}
+										`
+									})
+								))
+							).join('\n')}
+					`}
+				/>
 			{/if}
 
-			<ScrollArea
+			<!-- <ScrollArea
 				tagName="dl"
-			>
+				containerProps={{
+					class: 'card',
+				}}
+			> -->
 				<div class="resources card column">
-					{#each deployment.tfstate.resources as resource}
-						<section
-							id="terraform-resource-{deployment.id}-{resource.type}-{resource.name}"
-							class="column"
-						>
-							<dt>
-								{formatResourceType(resource.type)}: {resource.name}
-							</dt>
-
-						<dd>
-							{#each resource.instances as instance}
-								<dl
-									class="card column"
-								>
-									{#if instance.attributes?.tags?.Name}
-										<section class="row wrap">
-											<dt>Tag</dt>
-											<dd>{instance.attributes.tags.Name}</dd>
-										</section>
-									{/if}
-
-									{#if instance.attributes?.id}
-										<section class="row wrap">
-											<dt>ID</dt>
-											<dd>
-												{#if instance.attributes.self_link}
-													<a
-														href={getGcpConsoleLink(instance.attributes.self_link)}
-														target="_blank"
-														class="row inline with-icon"
-													>
-														<img
-															src={providers[ProviderTypeEnum.GCP].icon}
-															width="20"
-															height="20"
-														/>
-
-														<output><code>{instance.attributes.id}</code></output>
-													</a>
-												{:else}
-													<output><code>{instance.attributes.id}</code></output>
-												{/if}
-											</dd>
-										</section>
-									{/if}
-
-									{#if instance.attributes?.arn}
-										<section class="row wrap">
-											<dt>ARN</dt>
-											<dd>
-												<p>
-													<a
-														href={getAwsConsoleLink(instance.attributes.arn)}
-														target="_blank"
-														class="row inline with-icon"
-													>
-														<img
-															src={providers[ProviderTypeEnum.AWS].icon}
-															width="20"
-															height="20"
-														/>
-
-														{instance.attributes.arn}
-													</a>
-												</p>
-											</dd>
-										</section>
-									{/if}
-
-									{#each Object.entries(instance.attributes) as [key, value]}
-										{#if (
-											!['tags', 'tags_all', 'id', 'arn'].includes(key)
-											&& value !== null && !(Array.isArray(value) && value.length === 0)
-										)}
-											<section class="row wrap">
-												<dt>Tag</dt>
-												<dd>{instance.attributes.tags.Name}</dd>
-											</section>
-										{/if}
-
-										{#if instance.attributes?.id}
-											<section class="row wrap">
-												<dt>ID</dt>
-												<dd>
-													{#if instance.attributes.self_link}
-														<a
-															href={getGcpConsoleLink(instance.attributes.self_link)}
-															target="_blank"
-															class="row inline with-icon"
-														>
-															<img
-																src={providers[ProviderTypeEnum.GCP].icon}
-																width="20"
-																height="20"
-															/>
-
-															<output><code>{instance.attributes.id}</code></output>
-														</a>
-													{:else}
-														<output><code>{instance.attributes.id}</code></output>
-													{/if}
-												</dd>
-											</section>
-										{/if}
-
-										{#if instance.attributes?.arn}
-											<section class="row wrap">
-												<dt>ARN</dt>
-												<dd>
-													<p>
-														<a
-															href={getAwsConsoleLink(instance.attributes.arn)}
-															target="_blank"
-															class="row inline with-icon"
-														>
-															<img
-																src={providers[ProviderTypeEnum.AWS].icon}
-																width="20"
-																height="20"
-															/>
-
-															{instance.attributes.arn}
-														</a>
-													</p>
-												</dd>
-											</section>
-										{/if}
-
-										{#each Object.entries(instance.attributes) as [key, value]}
-											{#if (
-												!['tags', 'tags_all', 'id', 'arn'].includes(key)
-												&& value !== null && !(Array.isArray(value) && value.length === 0)
-											)}
-												<section class="row wrap">
-													<dt>{key}</dt>
-													<dd>
-														<DetailsValue
-															{value}
-														/>
-													</dd>
-												</section>
-											{/if}
-										{/each}
-
-										{#if instance.dependencies?.length}
-											<section class="row wrap">
-												<dt>Dependencies</dt>
-												<dd>
-													{#each instance.dependencies as dependency}
-														{@const [type, name] = dependency.split('.')}
-
-														<p>
-															<a href="#terraform-resource-{deployment.id}-{type}-{name}">
-																{name} ({type})
-															</a>
-														</p>
-													{/each}
-												</dd>
-											</section>
-										{/if}
-									</dl>
-								{:else}
-									<div class="card column">
-										<p>No resources found.</p>
-									</div>
-								{/each}
-							</dd>
-						</section>
+					{#each deployment.tfstate.resources as resourceType}
+						{#each resourceType.instances as resource}
+							<TerraformResourceDetails
+								deploymentId={deployment.id}
+								{provider}
+								{resourceType}
+								{resource}
+							/>
+						<!-- {:else}
+							<div class="card column">
+								<p>No resources found.</p>
+							</div> -->
+						{/each}
 					{/each}
-				<!-- </div> -->
-			</ScrollArea>
+				</div>
+			<!-- </ScrollArea> -->
 		</dd>
 	</section>
 {/if}

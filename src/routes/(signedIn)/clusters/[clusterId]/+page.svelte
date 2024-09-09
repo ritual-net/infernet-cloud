@@ -22,17 +22,6 @@
 	// Functions
 	import { resolveRoute } from '$app/paths'
 
-	export const formatResourceType = (resourceType: string): string => (
-		resourceType
-			.split('_')
-			.map((word, i) => (
-				word.length <= 3 && i <= 1
-					? word.toUpperCase()
-					: `${word[0].toUpperCase()}${word.slice(1)}`
-			))
-			.join(' ')
-	)
-
 	const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
 		year: 'numeric',
 		month: 'short',

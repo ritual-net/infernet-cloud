@@ -7,7 +7,8 @@
 	// Inputs
 	export let data: {
 		provider: ProviderTypeEnum,
-		resource: TFState['resources'][0],
+		resourceType: TFState['resources'][number],
+		resource: TFState['resources'][0]['instances'][number],
 	}
 
 
@@ -17,10 +18,10 @@
 
 	// Internal state
 	$: link = (
-		data.provider === ProviderTypeEnum.AWS && data.resource.instances?.[0]?.attributes?.arn ?
-			getAwsConsoleLink(data.resource.instances[0].attributes.arn)
-		: data.provider === ProviderTypeEnum.GCP && data.resource.instances?.[0]?.attributes?.self_link ?
-			getGcpConsoleLink(data.resource.instances[0].attributes.self_link)
+		data.provider === ProviderTypeEnum.AWS && data.resource.attributes?.arn ?
+			getAwsConsoleLink(data.resource.attributes.arn)
+		: data.provider === ProviderTypeEnum.GCP && data.resource?.attributes?.self_link ?
+			getGcpConsoleLink(data.resource.attributes.self_link)
 		:
 			''
 	)
@@ -47,8 +48,11 @@
 			/>
 
 			<div>
-				<h5>{data.resource.name}</h5>
-				<span class="annotation">{formatResourceType(data.resource.type)}</span>
+				<h5>{data.resourceType.name}</h5>
+				<span class="annotation">{formatResourceType(data.resourceType.type)}</span>
+				{#if data.resource.id}
+					<span class="annotation">{data.resource.id}</span>
+				{/if}
 			</div>
 		</div>
 

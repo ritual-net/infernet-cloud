@@ -29,7 +29,9 @@
 	let positionedNodes = writable<Node[]>([])
 
 	$: $positionedNodes = (() => {
-		const dagreGraph = new dagre.graphlib.Graph()
+		const dagreGraph = new dagre.graphlib.Graph({
+			compound: true,
+		})
 
 		dagreGraph.setGraph({
 			...layoutOptions,
@@ -47,13 +49,36 @@
 				}
 			)
 
+		dagre.layout(dagreGraph)
+
+		for(const node of nodes)
+			if (node.parentId)
+				try {
+					dagreGraph.setParent(
+						node.id,
+						node.parentId
+					)
+				}catch(e){
+					console.warn(e)
+				}
+
+		try {
+			dagre.layout(dagreGraph)
+		}catch(e){
+			console.warn(e)
+		}
+
 		for(const edge of edges)
 			dagreGraph.setEdge(
 				edge.source,
 				edge.target
 			)
 
-		dagre.layout(dagreGraph)
+		try {
+			dagre.layout(dagreGraph)
+		}catch(e){
+			console.warn(e)
+		}
 
 		return nodes.map(node => {
 			const { x, y } = dagreGraph.node(node.id)
