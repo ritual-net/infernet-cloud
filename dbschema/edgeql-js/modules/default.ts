@@ -60,9 +60,9 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "deployments": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, true,  false, false>;
   "latest_deployment": $.LinkDesc<$TerraformDeployment, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
   "status": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, true, false, false>;
-  "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
-  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
-  "router": $.PropertyDesc<$.NamedTupleType<{region: _std.$str, zone: _std.$str, machine_type: _std.$str}>, $.Cardinality.AtMostOne, false, false, true, false>;
+  "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "router": $.PropertyDesc<$.NamedTupleType<{region: _std.$str, zone: _std.$str, machine_type: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
   "nodes": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, true, false,  false, false>;
   "router_state": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, true, false, false>;
   "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
@@ -79,9 +79,7 @@ const $Cluster = $.makeType<$Cluster>(_.spec, "bf9834de-5e72-11ef-9ece-c1f291672
 
 const Cluster: $.$expr_PathNode<$.TypeSet<$Cluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Cluster, $.Cardinality.Many), null);
 
-export type $AWSClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "region" | "zone"> & {
-  "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
-  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+export type $AWSClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 }>;
 type $AWSCluster = $.ObjectType<"default::AWSCluster", $AWSClusterλShape, null, [
   ...$Cluster['__exclusives__'],
@@ -174,9 +172,7 @@ const $DockerAccount = $.makeType<$DockerAccount>(_.spec, "cc5f39b0-5e72-11ef-9b
 
 const DockerAccount: $.$expr_PathNode<$.TypeSet<$DockerAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($DockerAccount, $.Cardinality.Many), null);
 
-export type $GCPClusterλShape = $.typeutil.flatten<Omit<$ClusterλShape, "region" | "zone"> & {
-  "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
-  "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, true, false>;
+export type $GCPClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 }>;
 type $GCPCluster = $.ObjectType<"default::GCPCluster", $GCPClusterλShape, null, [
   ...$Cluster['__exclusives__'],

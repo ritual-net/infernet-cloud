@@ -1,7 +1,7 @@
 import * as z from 'yup'
 import { IpAddressWithMask, Address, Secp256k1PrivateKey, BigIntString } from '$/types/stringFormats'
 
-export const Config = z
+export const ClusterConfig = z
 	.object({
 		'name': z
 			.string()
@@ -291,7 +291,7 @@ export const FormData = z
 			.string()
 			.uuid(),
 
-		'config': Config,
+		'config': ClusterConfig,
 
 		'router': RouterConfig
 			.when(

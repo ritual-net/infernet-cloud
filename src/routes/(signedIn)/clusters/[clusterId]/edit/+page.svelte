@@ -75,10 +75,12 @@
 
 
 	// Components
-	import Tabs from '$/components/Tabs.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
 	import Select from '$/components/Select.svelte'
-	import Switch from '$/components/Switch.svelte'
+	import Tabs from '$/components/Tabs.svelte'
 	import Textarea from '$/components/Textarea.svelte'
+	import Switch from '$/components/Switch.svelte'
+	import RegionZoneMachineFields from '../../create/RegionZoneMachineFields.svelte'
 </script>
 
 
@@ -204,6 +206,64 @@
 				</Tabs>
 			{/if}
 		</section>
+
+		<fieldset
+			class="column"
+		>
+			<RegionZoneMachineFields
+				entityType="cluster"
+				namePrefix="config"
+				serviceAccount={cluster.service_account}
+				bind:regionId={$form.config.region}
+				bind:zoneId={$form.config.zone}
+				constraints={{
+					region: $constraints.config?.region,
+					zone: $constraints.config?.zone,
+				}}
+			/>
+		</fieldset>
+	</div>
+
+	<div class="card column">
+		<div class="card column">
+			<section class="row wrap">
+				<div class="column inline">
+					<h3>
+						<label for="config.deploy_router">
+							Deploy Router?
+						</label>
+					</h3>
+
+					<p>Determine whether your cluster will be deployed with an <a href="https://docs.ritual.net/infernet/router/introduction" target="_blank">Infernet Router</a>.</p>
+				</div>
+
+				<Switch
+					id="config.deploy_router"
+					name="config.deploy_router"
+					bind:checked={$form.config.deploy_router}
+					labelText="Deploy Router?"
+				/>
+			</section>
+
+			<Collapsible
+				open={$form.config.deploy_router}
+			>	
+				<RegionZoneMachineFields
+					entityType="router"
+					namePrefix="router"
+					serviceAccount={cluster.service_account}
+					defaults={{
+						region: $form.config.region,
+						zone: $form.config.zone,
+					}}
+					bind:regionId={$form.router.region}
+					bind:zoneId={$form.router.zone}
+					bind:machineId={$form.router.machine_type}
+					constraints={$constraints.router}
+				/>
+			</Collapsible>
+		</div>
+
 	</div>
 
 	<footer class="row">

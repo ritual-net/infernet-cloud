@@ -77,6 +77,11 @@
 </script>
 
 
+<svelte:head>
+	<title>{cluster.name || cluster.id} | Cluster | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">
@@ -257,6 +262,50 @@
 		</SizeTransition>
 	</section>
 
+	{#if cluster.router || cluster.router_state?.ip}
+		<section class="column">
+			<h3>Router</h3>
+
+			<dl class="card column">
+				{#if cluster.router_state?.ip}
+					<section class="row wrap">
+						<dt>IP</dt>
+
+						<dd>
+							{cluster.router_state.ip}
+						</dd>
+					</section>
+				{/if}
+
+				{#if cluster.router}
+					<section class="row wrap">
+						<dt>Region / Zone</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.region} / {cluster.router.zone}
+							</WithIcon>
+						</dd>
+					</section>
+
+					<section class="row wrap">
+						<dt>Machine type</dt>
+
+						<dd>
+							<WithIcon
+								icon={providers[cluster.service_account.provider].icon}
+							>
+								{cluster.router.machine_type}
+							</WithIcon>
+						</dd>
+					</section>
+				{/if}
+			</dl>
+		</section>
+	{/if}
+
 	<section class="column">
 		<h3>Configuration</h3>
 
@@ -339,22 +388,6 @@
 			</section>
 		</dl>
 	</section>
-
-	{#if cluster.router_state?.ip}
-		<section class="column">
-			<h3>Router</h3>
-
-			<dl class="card column">
-				<section class="row wrap">
-					<dt>IP</dt>
-
-					<dd>
-						{cluster.router_state.ip}
-					</dd>
-				</section>
-			</dl>
-		</section>
-	{/if}
 
 	<section class="column">
 		<h3>Deployment</h3>
