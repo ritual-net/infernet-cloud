@@ -1,5 +1,5 @@
 const postcssNesting = require('postcss-nesting')
-const postcssLightDark = require('postcss-light-dark')
+// const postcssLightDarkFunction = require('@csstools/postcss-light-dark-function')
 const autoprefixer = require('autoprefixer')
 
 module.exports = {
@@ -7,7 +7,7 @@ module.exports = {
 		postcssNesting({
 			edition: '2024-02',
 		}),
-		postcssLightDark(),
+		// postcssLightDarkFunction(),
 		autoprefixer,
 	]
 }
