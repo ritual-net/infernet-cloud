@@ -16,7 +16,7 @@
 
 
 	// Functions
-	import { createPublicClient, http } from 'viem'
+	import { createPublicClient, http, type PublicClient } from 'viem'
 	import { getChainId } from 'viem/actions'
 
 
@@ -33,8 +33,6 @@
 		username: string
 	}[]
 
-	export let chainId: number | undefined
-
 
 	// Internal state
 	// (GPU)
@@ -42,13 +40,16 @@
 
 
 	// (Chain)
-	$: client = node.config.rpc_url && createPublicClient({ 
-		transport: http(node.config.rpc_url),
-	})
+	let client: PublicClient | undefined
+	$: if(node.config.rpc_url) {
+		client = createPublicClient({ 
+			transport: http(node.config.rpc_url),
+		})
 
-	$: if(client)
-		getChainId(client)
-			.then(_ => { chainId = _ })
+		if(client)
+			getChainId(client)
+				.then(_ => { node.config.chain_id = _ })
+	}
 
 
 	// (Payments)
@@ -65,7 +66,7 @@
 			},
 			...node.config.chain_enabled && {
 				isOnchain: 'true',
-				chainId: chainId?.toString(),
+				chainId: node.config.chain_id?.toString(),
 				...isPaymentsEnabled && {
 					isPaymentsEnabled: 'true',
 				},
@@ -182,7 +183,7 @@
 					<ChainCombobox
 						id="{namePrefix}|chain_id"
 						name="{namePrefix}|chain_id"
-						bind:chainId
+						bind:chainId={node.config.chain_id}
 					/>
 				</div>
 
@@ -221,8 +222,8 @@
 								})
 							)
 								.filter(group => (
-									chainId
-										? group.value === chainId
+									node.config.chain_id
+										? group.value === node.config.chain_id
 										: true
 								))
 						}
