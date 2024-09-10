@@ -343,7 +343,7 @@
 		padding: 0.5em;
 
 		background-color: var(--color-ritualBlack);
-		color: #fff;
+		color: light-dark(#fff, #000);
 	}
 
 	.description {
