@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					e.update(e.Cluster, () => ({
 						set: {
 							nodes: {
-								// '+=': e.insert(e.InfernetNode, nodeueryFields(node)),
+								// '+=': e.insert(e.InfernetNode, nodeQueryFields(node)),
 								'+=': e.insert(e.InfernetNode, nodeJsonQueryFields(node)),
 							},
 						},
