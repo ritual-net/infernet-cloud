@@ -8,7 +8,8 @@
 		'failed': 'Failed',
 		'succeeded': 'Succeeded',
 		'unknown': 'Unknown',
-		'TERMINATED': 'Terminated',
+		'running': 'Running',
+		'terminated': 'Stopped',
 	}
 
 
@@ -28,7 +29,8 @@
 <style>
 	.status {
 		&[data-status="succeeded"],
-		&[data-status="healthy"] {
+		&[data-status="healthy"],
+		&[data-status="running"] {
 			--status-color: #16B371;
 		}
 

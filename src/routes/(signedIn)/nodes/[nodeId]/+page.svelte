@@ -20,7 +20,7 @@
 	$: nodeStatus = (
 		info?.status
 			? {
-				'RUNNING': 'healthy',
+				'RUNNING': 'running',
 				'TERMINATED': 'terminated',
 			}[info.status] || info.status
 			: 'unknown'
@@ -30,6 +30,7 @@
 	// Functions
 	import { formatNumberCompact } from '$/lib/format'
 	import { resolveRoute } from '$app/paths'
+	import { isTruthy } from '$/lib/utils/isTruthy'
 
 
 	// Actions
@@ -106,7 +107,7 @@
 							removeToast(toast.id)
 						},
 					},
-					{
+					info?.status === 'TERMINATED' && {
 						value: 'start',
 						label: 'Start node',
 						formAction: `?/start`,
@@ -132,7 +133,7 @@
 							}
 						},
 					},
-					{
+					info?.status === 'RUNNING' && {
 						value: 'stop',
 						label: 'Stop node',
 						formAction: `?/stop`,
@@ -158,7 +159,7 @@
 							}
 						},
 					},
-				]}
+				].filter(isTruthy)}
 			/>
 		</div>
 	</header>
