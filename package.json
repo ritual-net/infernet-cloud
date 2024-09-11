@@ -38,6 +38,7 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@csstools/postcss-light-dark-function": "^2.0.2",
 		"@edgedb/generate": "^0.4.1",
 		"@melt-ui/pp": "^0.3.2",
 		"@melt-ui/svelte": "^0.83.0",
