@@ -509,7 +509,7 @@
 				visuallyDisabled: true,
 			}
 			: {
-				placeholder: 'Choose Docker Hub user...',
+				placeholder: 'Choose user...',
 				items: [
 					{
 						value: '',
