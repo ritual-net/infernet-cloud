@@ -530,8 +530,8 @@
 		border-radius: 0.25em;
 		padding: 0.5em;
 
-		background-color: var(--color-ritualBlack);
-		color: #fff;
+		background-color: light-dark(#000, #fff);
+		color: light-dark(#fff, #000);
 	}
 
 	header.row > :last-child {

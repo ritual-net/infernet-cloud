@@ -76,9 +76,15 @@
 	}
 
 	let currentTheme: Theme
-	$: if(browser)
-		globalThis.document.documentElement.style.colorScheme = currentTheme
-
+	$: if(browser){
+		if(currentTheme){
+			globalThis.document.documentElement.style.colorScheme = currentTheme
+			globalThis.document.documentElement.style.setProperty('--csstools-color-scheme--dark', currentTheme === 'dark' ? 'initial' : ' ')
+		}else{
+			globalThis.document.documentElement.style.removeProperty('color-scheme')
+			globalThis.document.documentElement.style.removeProperty('--csstools-color-scheme--dark')
+		}
+	}
 
 	// Components
 	import Toaster from '$/components/Toaster.svelte'
