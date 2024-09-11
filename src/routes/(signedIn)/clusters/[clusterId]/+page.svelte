@@ -178,6 +178,7 @@
 							? {
 								value: 'destroy',
 								label: 'Destroy cluster',
+								isDestructive: true,
 								formAction: `?/destroy`,
 								formSubmit: async (e) => {
 									const toast = addToast({
