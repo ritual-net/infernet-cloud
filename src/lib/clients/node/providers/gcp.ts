@@ -65,7 +65,7 @@ export class GCPNodeClient extends BaseNodeClient {
 
 		return {
 			instanceId: this.instanceId,
-			status: result[0]?.status ?? undefined,
+			status: result[0]?.status?.toLowerCase() ?? undefined,
 			ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
 			instanceInfo: (
 				Object.fromEntries(

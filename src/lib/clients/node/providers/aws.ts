@@ -72,7 +72,7 @@ export class AWSNodeClient extends BaseNodeClient {
 
 		return {
 			instanceId: instance.InstanceId!,
-			status: instance.State?.Name,
+			status: instance.State?.Name?.toLowerCase(),
 			ip: instance.PublicIpAddress,
 			instanceInfo: instance,
 		}

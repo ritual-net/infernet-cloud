@@ -35,14 +35,7 @@
 {:else if cellType === CellType.Status}
 	<div class="row">
 		<Status
-			status={
-				nodeWithInfo.info?.status
-					? {
-						'RUNNING': 'running',
-						'TERMINATED': 'terminated',
-					}[nodeWithInfo.info.status] || nodeWithInfo.info.status
-					: 'unknown'
-			}
+			status={nodeWithInfo.info?.status ?? 'unknown'}
 		/>
 	</div>
 {/if}

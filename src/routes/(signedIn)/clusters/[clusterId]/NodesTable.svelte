@@ -94,7 +94,7 @@
 		})
 
 		return [
-			info?.status === 'TERMINATED' && {
+			['stopped', 'terminated'].includes(info?.status) && {
 				value: 'start',
 				label: 'Start node',
 				formAction: `${nodeRoute}?/start`,
@@ -120,7 +120,7 @@
 					}
 				},
 			},
-			info?.status === 'RUNNING' && {
+			['running'].includes(info?.status) && {
 				value: 'stop',
 				label: 'Stop node',
 				formAction: `${nodeRoute}?/stop`,

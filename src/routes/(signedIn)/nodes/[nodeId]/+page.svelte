@@ -147,7 +147,7 @@
 							removeToast(toast.id)
 						},
 					},
-					info?.status === 'TERMINATED' && {
+					['stopped', 'terminated'].includes(info?.status) && {
 						value: 'start',
 						label: 'Start node',
 						formAction: `?/start`,
@@ -173,7 +173,7 @@
 							}
 						},
 					},
-					info?.status === 'RUNNING' && {
+					['running'].includes(info?.status) && {
 						value: 'stop',
 						label: 'Stop node',
 						formAction: `?/stop`,
