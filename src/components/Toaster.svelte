@@ -84,6 +84,8 @@
 
 <style>
 	:root {
+		--toast-default-backgroundColor: var(--card-default-backgroundColor);
+
 		--toast-typeSuccess-backgroundColor: var(--card-typeSuccess-backgroundColor);
 		--toast-typeSuccess-borderColor: var(--card-typeSuccess-borderColor);
 
@@ -106,7 +108,7 @@
 			align-content: end;
 
 			& [data-melt-toast-content] {
-				--toast-backgroundColor: light-dark(#fff, #000);
+				--toast-backgroundColor: var(--toast-default-backgroundColor);
 				--toast-borderColor: var(--borderColor);
 
 				&[data-type="success"] {
