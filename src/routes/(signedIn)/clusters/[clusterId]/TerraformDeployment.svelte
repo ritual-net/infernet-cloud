@@ -130,15 +130,6 @@
 						'flowchart': {
 							'defaultRenderer': 'forceGraph',
 						},
-						'theme': 'base',
-						'themeVariables': { 
-							'nodeBorder': '1px #0000001a solid',
-							'mainBkg': '#fff',
-							'nodeBorderRadius': '10px',
-							'nodeShadow': '0 0 0 1px #0000001a,0 0 0 2px #0003',
-							'nodeTextPadding': '0px',
-							'nodePadding': '0px',
-						}
 					}}
 					diagram={`
 						flowchart BT
