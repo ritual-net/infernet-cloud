@@ -542,7 +542,7 @@
 	header .status-container {
 		--card-paddingX: 1.5em;
 		--card-paddingY: 0.75em;
-		--card-backgroundColor: rgba(0, 0, 0, 0.04);
+		--card-backgroundColor: light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04));
 		--card-borderColor: transparent;
 		font-size: 0.9em;
 	}
