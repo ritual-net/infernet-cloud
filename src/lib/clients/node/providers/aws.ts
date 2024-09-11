@@ -15,7 +15,7 @@ export class AWSNodeClient extends BaseNodeClient {
 	constructor(
 		private credentials: AWSServiceAccount['creds'],
 		public region: string,
-		public nodeConfigId: string,
+		public instanceId: string,
 	) {
 		super()
 	}
@@ -32,10 +32,6 @@ export class AWSNodeClient extends BaseNodeClient {
 
 	get type() {
 		return ProviderTypeEnum.AWS
-	}
-
-	get instanceId() {
-		return `node-${this.nodeConfigId}`
 	}
 
 	async start() {
