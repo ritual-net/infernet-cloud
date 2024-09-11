@@ -60,8 +60,6 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 
 	let cluster: Pick<Cluster, 'id'>
 
-	console.log('Create cluster', { serviceAccountId, config, nodes })
-
 	const { deploy_router, ...clusterConfig } = config
 
 	try {
@@ -78,8 +76,8 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					})),
 					...deploy_router && {
 						router: e.tuple({
-							region: router.region,
-							zone: router.zone,
+							region: router.region!,
+							zone: router.zone!,
 							machine_type: router.machine_type,
 						}),
 					},
