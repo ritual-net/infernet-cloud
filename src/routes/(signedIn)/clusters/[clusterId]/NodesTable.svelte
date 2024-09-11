@@ -57,7 +57,7 @@
 		{
 			header: 'Containers',
 			accessor: nodeWithInfo => (
-				nodeWithInfo.node?.containers.length
+				nodeWithInfo.node?.containers?.length ?? '–'
 			),
 		},
 		{
