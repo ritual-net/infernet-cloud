@@ -535,7 +535,7 @@
 		border-radius: 0.25em;
 		padding: 0.5em;
 
-		background-color: var(--color-ritualBlack);
+		background-color: light-dark(#000, #fff);
 		color: light-dark(#fff, #000);
 	}
 
