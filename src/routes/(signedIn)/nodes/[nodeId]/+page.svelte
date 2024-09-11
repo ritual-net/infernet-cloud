@@ -80,13 +80,12 @@
 				</dd>
 			</dl>
 
-			<!-- <form
-				method="POST"
-				action="/?start"
-				use:enhance
-			>
-				<button type="submit">Start node</button>
-			</form> -->
+			<a
+				href={resolveRoute(`/nodes/[nodeId]/edit`, {
+					nodeId: $page.params.nodeId,
+				})}
+				class="button primary"
+			>Edit node</a>
 
 			<DropdownMenu
 				labelText="Node Actions"

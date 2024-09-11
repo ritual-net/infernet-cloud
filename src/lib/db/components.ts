@@ -55,111 +55,107 @@ export const createNodeParams = e.tuple({
  * Query to insert an InfernetNode
  *
  * @param node The node expression params
- * @returns The insert query
+ * @returns Fields to pass to an insert or update query
  */
-export const insertNodeQuery = (
+export const nodeQueryFields = (
 	node: $expr_ForVar<typeof createNodeParams> | $expr_Param<'node', typeof createNodeParams>
-) => {
-	return e.insert(e.InfernetNode, {
-		region: node.config.region,
-		zone: node.config.zone,
-		machine_type: node.config.machine_type,
-		chain_enabled: node.config.chain_enabled,
-		trail_head_blocks: node.config.trail_head_blocks,
-		rpc_url: node.config.rpc_url,
-		chain_id: node.config.chain_id,
-		registry_address: node.config.registry_address,
-		allowed_sim_errors: node.config.allowed_sim_errors,
-		payment_address: node.config.payment_address,
-		max_gas_limit: node.config.max_gas_limit,
-		private_key: node.config.private_key,
-		forward_stats: node.config.forward_stats,
-		snapshot_sync_batch_size: node.config.snapshot_sync_batch_size,
-		snapshot_sync_sleep: node.config.snapshot_sync_sleep,
-		docker_account: e.select(e.DockerAccount, () => ({
-			filter_single: {
-				user: e.global.current_user,
-				username: node.dockerAccountUsername,
-			},
-		})),
-		containers: e.for(e.array_unpack(node.containers), (container) =>
-			e.insert(e.Container, {
-				image: container.image,
-				container_id: container.container_id,
-				description: container.description,
-				external: container.external,
-				allowed_addresses: container.allowed_addresses,
-				allowed_delegate_addresses: container.allowed_delegate_addresses,
-				allowed_ips: container.allowed_ips,
-				command: container.command,
-				env: container.env,
-				gpu: container.gpu,
-				rate_limit_num_requests: container.rate_limit_num_requests,
-				rate_limit_period: container.rate_limit_period,
-				accepted_payments: container.accepted_payments,
-				// accepted_payments: e.for(container.accepted_payments, payment => e.tuple([
-				// 	payment.address,
-				// 	e.to_bigint(payment.amount),
-				// ])),
-				generates_proofs: container.generates_proofs,
-			})
-		),
-	});
-};
+) => ({
+	region: node.config.region,
+	zone: node.config.zone,
+	machine_type: node.config.machine_type,
+	chain_enabled: node.config.chain_enabled,
+	trail_head_blocks: node.config.trail_head_blocks,
+	rpc_url: node.config.rpc_url,
+	chain_id: node.config.chain_id,
+	registry_address: node.config.registry_address,
+	allowed_sim_errors: node.config.allowed_sim_errors,
+	payment_address: node.config.payment_address,
+	max_gas_limit: node.config.max_gas_limit,
+	private_key: node.config.private_key,
+	forward_stats: node.config.forward_stats,
+	snapshot_sync_batch_size: node.config.snapshot_sync_batch_size,
+	snapshot_sync_sleep: node.config.snapshot_sync_sleep,
+	docker_account: e.select(e.DockerAccount, () => ({
+		filter_single: {
+			user: e.global.current_user,
+			username: node.dockerAccountUsername,
+		},
+	})),
+	containers: e.for(e.array_unpack(node.containers), (container) =>
+		e.insert(e.Container, {
+			image: container.image,
+			container_id: container.container_id,
+			description: container.description,
+			external: container.external,
+			allowed_addresses: container.allowed_addresses,
+			allowed_delegate_addresses: container.allowed_delegate_addresses,
+			allowed_ips: container.allowed_ips,
+			command: container.command,
+			env: container.env,
+			gpu: container.gpu,
+			rate_limit_num_requests: container.rate_limit_num_requests,
+			rate_limit_period: container.rate_limit_period,
+			accepted_payments: container.accepted_payments,
+			// accepted_payments: e.for(container.accepted_payments, payment => e.tuple([
+			// 	payment.address,
+			// 	e.to_bigint(payment.amount),
+			// ])),
+			generates_proofs: container.generates_proofs,
+		})
+	),
+} as const)
 
-export const insertNodeJsonQuery = (
-	node: $expr_ForVar<$json> | $expr_Param<'node', $json>
-) => (
-	e.insert(e.InfernetNode, {
-		region: e.cast(e.str, e.json_get(node, 'config', 'region')),
-		zone: e.cast(e.str, e.json_get(node, 'config', 'zone')),
-		machine_type: e.cast(e.str, e.json_get(node, 'config', 'machine_type')),
-		chain_enabled: e.cast(e.bool, e.json_get(node, 'config', 'chain_enabled')),
-		trail_head_blocks: e.cast(e.int16, e.json_get(node, 'config', 'trail_head_blocks')),
-		rpc_url: e.cast(e.str, e.json_get(node, 'config', 'rpc_url')),
-		chain_id: e.cast(e.int64, e.json_get(node, 'config', 'chain_id')),
-		registry_address: e.cast(e.Address, e.json_get(node, 'config', 'registry_address')),
-		allowed_sim_errors: e.cast(e.array(e.str), e.json_get(node, 'config', 'allowed_sim_errors')),
-		payment_address: e.cast(e.Address, e.json_get(node, 'config', 'payment_address')),
-		max_gas_limit: e.cast(e.int64, e.json_get(node, 'config', 'max_gas_limit')),
-		private_key: e.cast(e.str, e.json_get(node, 'config', 'private_key')),
-		forward_stats: e.cast(e.bool, e.json_get(node, 'config', 'forward_stats')),
-		snapshot_sync_batch_size: e.cast(e.int16, e.json_get(node, 'config', 'snapshot_sync_batch_size')),
-		snapshot_sync_sleep: e.cast(e.float32, e.json_get(node, 'config', 'snapshot_sync_sleep')),
-		docker_account: e.select(e.DockerAccount, () => ({
-			filter_single: {
-				user: e.global.current_user,
-				username: e.cast(e.str, e.json_get(node, 'dockerAccountUsername')),
-			},
-		})),
-		containers: e.for(e.json_array_unpack(e.json_get(node, 'containers')), (container) =>
-			e.insert(e.Container, {
-				image: e.cast(e.str, e.json_get(container, 'image')),
-				container_id: e.cast(e.str, e.json_get(container, 'container_id')),
-				description: e.cast(e.str, e.json_get(container, 'description')),
-				external: e.cast(e.bool, e.json_get(container, 'external')),
-				allowed_addresses: e.cast(e.array(e.Address), e.json_get(container, 'allowed_addresses')),
-				allowed_delegate_addresses: e.cast(e.array(e.Address), e.json_get(container, 'allowed_delegate_addresses')),
-				allowed_ips: e.cast(e.array(e.IpAddress), e.json_get(container, 'allowed_ips')),
-				command: e.cast(e.str, e.json_get(container, 'command')),
-				env: e.cast(e.json, e.json_get(container, 'env')),
-				gpu: e.cast(e.bool, e.json_get(container, 'gpu')),
-				rate_limit_num_requests: e.cast(e.int64, e.json_get(container, 'rate_limit_num_requests')),
-				rate_limit_period: e.cast(e.float32, e.json_get(container, 'rate_limit_period')),
-				accepted_payments: e.cast(
-					e.array(
-						e.tuple({
-							address: e.Address,
-							amount: e.BigIntString,
-						})
-					),
-					e.json_get(container, 'accepted_payments')
+export const nodeJsonQueryFields = (
+	node: $expr_ForVar<$json> | $expr_Param<'node', $json>,
+) => ({
+	region: e.cast(e.str, e.json_get(node, 'config', 'region')),
+	zone: e.cast(e.str, e.json_get(node, 'config', 'zone')),
+	machine_type: e.cast(e.str, e.json_get(node, 'config', 'machine_type')),
+	chain_enabled: e.cast(e.bool, e.json_get(node, 'config', 'chain_enabled')),
+	trail_head_blocks: e.cast(e.int16, e.json_get(node, 'config', 'trail_head_blocks')),
+	rpc_url: e.cast(e.str, e.json_get(node, 'config', 'rpc_url')),
+	chain_id: e.cast(e.int64, e.json_get(node, 'config', 'chain_id')),
+	registry_address: e.cast(e.Address, e.json_get(node, 'config', 'registry_address')),
+	allowed_sim_errors: e.cast(e.array(e.str), e.json_get(node, 'config', 'allowed_sim_errors')),
+	payment_address: e.cast(e.Address, e.json_get(node, 'config', 'payment_address')),
+	max_gas_limit: e.cast(e.int64, e.json_get(node, 'config', 'max_gas_limit')),
+	private_key: e.cast(e.str, e.json_get(node, 'config', 'private_key')),
+	forward_stats: e.cast(e.bool, e.json_get(node, 'config', 'forward_stats')),
+	snapshot_sync_batch_size: e.cast(e.int16, e.json_get(node, 'config', 'snapshot_sync_batch_size')),
+	snapshot_sync_sleep: e.cast(e.float32, e.json_get(node, 'config', 'snapshot_sync_sleep')),
+	docker_account: e.select(e.DockerAccount, () => ({
+		filter_single: {
+			user: e.global.current_user,
+			username: e.cast(e.str, e.json_get(node, 'dockerAccountUsername')),
+		},
+	})),
+	containers: e.for(e.json_array_unpack(e.json_get(node, 'containers')), (container) =>
+		e.insert(e.Container, {
+			image: e.cast(e.str, e.json_get(container, 'image')),
+			container_id: e.cast(e.str, e.json_get(container, 'container_id')),
+			description: e.cast(e.str, e.json_get(container, 'description')),
+			external: e.cast(e.bool, e.json_get(container, 'external')),
+			allowed_addresses: e.cast(e.array(e.Address), e.json_get(container, 'allowed_addresses')),
+			allowed_delegate_addresses: e.cast(e.array(e.Address), e.json_get(container, 'allowed_delegate_addresses')),
+			allowed_ips: e.cast(e.array(e.IpAddress), e.json_get(container, 'allowed_ips')),
+			command: e.cast(e.str, e.json_get(container, 'command')),
+			env: e.cast(e.json, e.json_get(container, 'env')),
+			gpu: e.cast(e.bool, e.json_get(container, 'gpu')),
+			rate_limit_num_requests: e.cast(e.int64, e.json_get(container, 'rate_limit_num_requests')),
+			rate_limit_period: e.cast(e.float32, e.json_get(container, 'rate_limit_period')),
+			accepted_payments: e.cast(
+				e.array(
+					e.tuple({
+						address: e.Address,
+						amount: e.BigIntString,
+					})
 				),
-				generates_proofs: e.cast(e.bool, e.json_get(container, 'generates_proofs')),
-			})
-		),
-	})
-)
+				e.json_get(container, 'accepted_payments')
+			),
+			generates_proofs: e.cast(e.bool, e.json_get(container, 'generates_proofs')),
+		})
+	),
+} as const)
 
 /**
  * Generic params for selecting a Cluster

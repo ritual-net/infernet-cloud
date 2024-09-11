@@ -6,6 +6,7 @@ import { getClusterByNodeIds } from '$/lib/db/queries';
 import { TFAction } from '$/types/terraform';
 import { NodeAction, type InfernetNodeWithInfo } from '$/types/provider';
 import type { RequestHandler } from '@sveltejs/kit';
+import { nodeJsonQueryFields } from '$/lib/db/components'
 
 /**
  * Retrieve a node and its status/info by its ID.
@@ -36,6 +37,78 @@ export const GET: RequestHandler = async ({ locals: { client }, params, url }) =
 };
 
 /**
+ * Update a node by its ID.
+ *
+ * @param locals - The locals object contains the client.
+ * @param params - The parameters object, expected to contain 'nodeId'.
+ * @param request - The request body with node fields.
+ * @returns Updated node ID.
+ */
+export const PATCH: RequestHandler = async ({
+	locals: { client },
+	params: { nodeId },
+	request,
+}) => {
+	if (!nodeId)
+		return error(400, 'Node id is required')
+
+	// Get cluster id and service account
+	const cluster = await getClusterByNodeIds(client, [nodeId])
+
+	if (!cluster)
+		return error(400, 'Cluster could not be retrieved')
+
+	const body = await request.json()
+	if (!body)
+		return error(400, 'Body is required')
+
+	const node = body
+
+	// Update node
+	const updatedNode = (
+		await e
+			.params(
+				{
+					node: e.json,
+				},
+				({ node }) => (
+					e.update(e.InfernetNode, () => ({
+						filter_single: { id: e.cast(e.uuid, nodeId) },
+						set: nodeJsonQueryFields(node),
+					}))
+				)
+			)
+			.run(client, { node })
+	)
+
+	if(!updatedNode)
+		return error(500, 'Node was not updated.')
+
+	// Apply Terraform changes to updated cluster
+	// (Run in background - don't block API response)
+	;(async () => {
+		let result: Awaited<ReturnType<typeof clusterAction>>
+
+		try {
+			result = await clusterAction(
+				client,
+				cluster.id,
+				TFAction.Apply
+			)
+		} catch (e) {
+			console.error(e)
+		}
+
+		if(result?.error)
+			return error(500, result.error)
+	})();
+
+	return json({
+		node: updatedNode,
+	})
+};
+
+/**
  * Delete a node by its ID.
  *
  * @param locals - The locals object contains the client.
@@ -45,16 +118,14 @@ export const GET: RequestHandler = async ({ locals: { client }, params, url }) =
 export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.nodeId;
 
-	if (!id) {
-		return error(400, 'Node id is required');
-	}
+	if (!id)
+		return error(400, 'Node id is required')
 
 	// Get cluster id and service account
-	const cluster = await getClusterByNodeIds(client, [id]);
+	const cluster = await getClusterByNodeIds(client, [id])
 
-	if (!cluster) {
-		return error(400, 'Cluster could not be retrieved');
-	}
+	if (!cluster)
+		return error(400, 'Cluster could not be retrieved')
 
 	// Delete node
 	const deletedNode = await e

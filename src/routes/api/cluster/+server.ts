@@ -13,8 +13,8 @@ import { setDefaultNodeValues, type FormData as CreateClusterFormData } from '$/
 import { error, json } from '@sveltejs/kit';
 import { e, ClusterTypeByProvider } from '$/lib/db';
 import { clusterAction } from '$/lib/terraform/common';
-// import { createNodeParams, insertNodeQuery } from '$/lib/db/components'
-import { insertNodeJsonQuery } from '$/lib/db/components'
+// import { createNodeParams, nodeQueryFields } from '$/lib/db/components'
+import { nodeJsonQueryFields } from '$/lib/db/components'
 import { getServiceAccountById, getClusters } from '$/lib/db/queries';
 
 
@@ -83,9 +83,11 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 							machine_type: router.machine_type,
 						}),
 					},
-					// nodes: e.for(e.array_unpack(nodes), (node) => insertNodeQuery(node)),
+					// nodes: e.for(e.array_unpack(nodes), (node) => (
+					// 	e.insert(nodeQueryFields(node))
+					// )),
 					nodes: e.for(e.array_unpack(nodes), (node) => (
-						insertNodeJsonQuery(node)
+						e.insert(e.InfernetNode, nodeJsonQueryFields(node))
 					)),
 				})
 			)
