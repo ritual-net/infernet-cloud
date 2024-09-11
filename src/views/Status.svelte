@@ -12,6 +12,7 @@
 		'stopping': 'Stopping',
 		'stopped': 'Stopped',
 		'terminated': 'Stopped',
+		'shutting-down': 'Shutting down',
 	}
 
 
@@ -37,7 +38,8 @@
 		}
 
 		&[data-status="updating"],
-		&[data-status="stopping"] {
+		&[data-status="stopping"],
+		&[data-status="shutting-down"] {
 			--status-color: #b3a316;
 		}
 
