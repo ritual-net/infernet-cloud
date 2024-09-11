@@ -181,22 +181,27 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 		machineId: _InstanceType,
 		zoneId: string,
 	): Promise<MachineImage[]> {
+		const architectures = (await this.getMachineInfo(machineId, zoneId)).info?.ProcessorInfo?.SupportedArchitectures
+
 		const response = await this.amazonCompute.send(
 			new DescribeImagesCommand({
-				Filters: [
-					{
-						Name: 'state',
-						Values: ['available'],
-					},
-					{
-						Name: 'architecture',
-						Values: [machineId.startsWith('a1') ? 'arm64' : 'x86_64'],
-					},
-					{
-						Name: 'name',
-						Values: ['ubuntu/images/hvm-ssd/ubuntu-*'],
-					},
-				],
+				Filters: (
+					[
+						{
+							Name: 'state',
+							Values: ['available'],
+						},
+						architectures && {
+							Name: 'architecture',
+							Values: architectures,
+						},
+						{
+							Name: 'name',
+							Values: ['ubuntu/images/hvm-ssd/ubuntu-*'],
+						},
+					]
+						.filter(isTruthy)
+				),
 				Owners: ['amazon'],
 			})
 		)
