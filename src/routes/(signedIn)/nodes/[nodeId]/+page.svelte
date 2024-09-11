@@ -547,6 +547,10 @@
 		font-size: 0.9em;
 	}
 
+	header h2 {
+		font-size: 1.25em;
+	}
+
 	output {
 		font-size: 0.75em;
 
