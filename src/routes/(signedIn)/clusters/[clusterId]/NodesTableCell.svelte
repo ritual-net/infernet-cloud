@@ -12,6 +12,7 @@
 
 
 	// Inputs
+	export let clusterStatus: string
 	export let nodeWithInfo: InfernetNodeWithInfo
 	export let cellType: CellType
 
@@ -22,13 +23,13 @@
 
 
 {#if cellType === CellType.IpAndId}
-	{#if nodeWithInfo.node}
-		<p>{nodeWithInfo.node.state?.ip ?? nodeWithInfo?.info?.ip ?? '–'}</p>  
-		<p><span class="node-id">{nodeWithInfo.node.state?.id ?? nodeWithInfo.node?.provider_id ?? '–'}</span></p>
-	{:else}
+	{#if !nodeWithInfo.node && clusterStatus === 'healthy'}
 		<div class="card error">
 			<p>Error fetching node info.</p>
 		</div>
+	{:else}
+		<p>{nodeWithInfo.node?.state?.ip ?? nodeWithInfo?.info?.ip ?? '–'}</p>  
+		<p><span class="node-id">{nodeWithInfo.node?.state?.id ?? nodeWithInfo.node?.provider_id ?? '–'}</span></p>
 	{/if}
 
 

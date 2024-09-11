@@ -4,6 +4,7 @@
 
 
 	// Inputs
+	export let clusterStatus: string
 	export let nodesWithInfo: InfernetNodeWithInfo[]
 
 
@@ -35,6 +36,7 @@
 				createRender(NodesTableCell, {
 					cellType: CellType.IpAndId,
 					nodeWithInfo,
+					clusterStatus,
 				})
 			),
 		},
@@ -45,6 +47,7 @@
 				createRender(NodesTableCell, {
 					cellType: CellType.Status,
 					nodeWithInfo,
+					clusterStatus,
 				})
 			),
 		},
