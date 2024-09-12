@@ -45,14 +45,18 @@ services:
       EDGEDB_SERVER_PASSWORD: ${EDGEDB_SERVER_PASSWORD:?error}
       EDGEDB_SERVER_BINARY_ENDPOINT_SECURITY: optional # For auth server TLS
       EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
-      EDGEDB_DSN: edgedb://${EDGEDB_USER:-edgedb}:${EDGEDB_SERVER_PASSWORD}@${EDGEDB_BRANCH:-edgedb}:${EDGEDB_PORT:-5656}
+      EDGEDB_HOST: ${EDGEDB_HOST:-edgedb}
+      EDGEDB_PORT: ${EDGEDB_PORT:-5656}
+      EDGEDB_SERVER_USER: ${EDGEDB_SERVER_USER:-edgedb}
+      EDGEDB_BRANCH: ${EDGEDB_BRANCH:-edgedb}
+      EDGEDB_DSN: edgedb://${EDGEDB_SERVER_USER:-edgedb}:${EDGEDB_SERVER_PASSWORD}@${EDGEDB_BRANCH:-edgedb}:${EDGEDB_PORT:-5656}
     volumes:
       - './dbschema:/dbschema'
       - './edgedb-data:/var/lib/edgedb/data'
     expose:
       - '5656'
     healthcheck:
-      test: ['CMD', 'curl', '-f', '${EDGEDB_SERVER_PROTOCOL:-http}://${EDGEDB_USER:-edgedb}:${EDGEDB_PORT:-5656}/server/status/ready']
+      test: ['CMD', 'curl', '-f', '${EDGEDB_SERVER_PROTOCOL:-http}://${EDGEDB_SERVER_USER:-edgedb}:${EDGEDB_PORT:-5656}/server/status/ready']
       interval: 10s
       timeout: 10s
       retries: 5
