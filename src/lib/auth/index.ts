@@ -1,14 +1,14 @@
 import crypto from 'node:crypto'
 import {
 	SERVER_HOST,
-	EDGEDB_PROTOCOL,
 	EDGEDB_HOST,
 	EDGEDB_PORT,
 	EDGEDB_BRANCH,
+	EDGEDB_SERVER_PROTOCOL,
 } from '$env/static/private'
 
 
-const EDGEDB_AUTH_BASE_URL = `${EDGEDB_PROTOCOL}://${EDGEDB_HOST}:${EDGEDB_PORT}/branch/${EDGEDB_BRANCH}/ext/auth`
+const EDGEDB_AUTH_BASE_URL = `${EDGEDB_SERVER_PROTOCOL}://${EDGEDB_HOST}:${EDGEDB_PORT}/branch/${EDGEDB_BRANCH}/ext/auth`
 
 export const EDGEDB_AUTH_URLS = {
 	GET_TOKEN: `${EDGEDB_AUTH_BASE_URL}/token`,
