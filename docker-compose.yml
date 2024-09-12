@@ -29,8 +29,9 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
       EDGEDB_HOST: ${EDGEDB_HOST:-edgedb}
       EDGEDB_PORT: ${EDGEDB_PORT:-5656}
-      EDGEDB_BRANCH: ${EDGEDB_BRANCH:-edgedb}
+      EDGEDB_BRANCH: ${EDGEDB_BRANCH:-main}
       EDGEDB_SERVER_PROTOCOL: ${EDGEDB_SERVER_PROTOCOL:-http}
+      EDGEDB_DSN: edgedb://${EDGEDB_SERVER_USER:-edgedb}:${EDGEDB_SERVER_PASSWORD}@${EDGEDB_HOST:-edgedb}:${EDGEDB_PORT:-5656}/${EDGEDB_BRANCH:-main}
 
   edgedb:
     depends_on:
@@ -48,15 +49,14 @@ services:
       EDGEDB_HOST: ${EDGEDB_HOST:-edgedb}
       EDGEDB_PORT: ${EDGEDB_PORT:-5656}
       EDGEDB_SERVER_USER: ${EDGEDB_SERVER_USER:-edgedb}
-      EDGEDB_BRANCH: ${EDGEDB_BRANCH:-edgedb}
-      EDGEDB_DSN: edgedb://${EDGEDB_SERVER_USER:-edgedb}:${EDGEDB_SERVER_PASSWORD}@${EDGEDB_BRANCH:-edgedb}:${EDGEDB_PORT:-5656}
+      EDGEDB_BRANCH: ${EDGEDB_BRANCH:-main}
     volumes:
       - './dbschema:/dbschema'
       - './edgedb-data:/var/lib/edgedb/data'
     expose:
       - '5656'
     healthcheck:
-      test: ['CMD', 'curl', '-f', '${EDGEDB_SERVER_PROTOCOL:-http}://${EDGEDB_SERVER_USER:-edgedb}:${EDGEDB_PORT:-5656}/server/status/ready']
+      test: ['CMD', 'curl', '-f', '${EDGEDB_SERVER_PROTOCOL:-http}://${EDGEDB_HOST:-edgedb}:${EDGEDB_PORT:-5656}/server/status/ready']
       interval: 10s
       timeout: 10s
       retries: 5
