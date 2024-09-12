@@ -38,7 +38,6 @@ services:
       EDGEDB_SERVER_PASSWORD: ${EDGEDB_SERVER_PASSWORD:?error}
       EDGEDB_SERVER_BINARY_ENDPOINT_SECURITY: optional # For auth server TLS
       EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
-      EDGEDB_SERVER_BOOTSTRAP_COMMAND_FILE: /dbschema/bootstrap/auth.edgeql
     volumes:
       - './dbschema:/dbschema'
       - './edgedb-data:/var/lib/edgedb/data'
