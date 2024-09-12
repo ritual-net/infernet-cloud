@@ -1,11 +1,11 @@
-import { error, json } from '@sveltejs/kit';
-import { clusterAction } from '$/lib/terraform/common';
-import { e } from '$/lib/db';
-import { nodeAction } from '$/lib/clients/node/common';
-import { getClusterByNodeIds } from '$/lib/db/queries';
-import { TFAction } from '$/types/terraform';
-import { NodeAction, type InfernetNodeWithInfo } from '$/types/provider';
-import type { RequestHandler } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit'
+import { clusterAction } from '$/lib/terraform/common'
+import { e } from '$/lib/db'
+import { getNodeClient } from '$/lib/clients/node/common'
+import { getClusterByNodeIds, getNodesByIds } from '$/lib/db/queries'
+import { TFAction } from '$/types/terraform'
+import { type InfernetNodeWithInfo, type NodeInfo } from '$/types/provider'
+import type { RequestHandler } from '@sveltejs/kit'
 import { nodeJsonQueryFields } from '$/lib/db/components'
 
 /**
@@ -15,26 +15,59 @@ import { nodeJsonQueryFields } from '$/lib/db/components'
  * @param params - The parameters object, expected to contain 'nodeId'.
  * @returns NodeInfo object.
  */
-export const GET: RequestHandler = async ({ locals: { client }, params, url }) => {
-	const id = params.nodeId;
-
+export const GET: RequestHandler = async ({
+	locals: { client },
+	params: { nodeId },
+	url,
+}) => {
 	const includeClusterBacklink = url.searchParams.has('includeClusterBacklink')
 
-	if (!id) {
-		return error(400, 'Node id is required');
-	}
+	if (!nodeId)
+		return error(400, 'Node id is required')
+
 	try {
-		const result = await nodeAction(client, [id], NodeAction.info, { includeClusterBacklink });
+		const [
+			[node],
+			{ info, infoError }
+		] = await Promise.all([
+			getNodesByIds(
+				client,
+				[nodeId],
+				{
+					includeClusterBacklink,
+				}
+			),
+
+			(async () => {
+				const nodeClient = await getNodeClient(client, nodeId)
+
+				let info: NodeInfo | undefined
+				let infoError: string | undefined
+
+				if(!nodeClient){
+					infoError = 'Node client could not be retrieved.'
+				} else try {
+					info = await nodeClient.getInfo()
+				} catch (error) {
+					infoError = (error as Error).message
+				}
+
+				return {
+					info,
+					infoError,
+				}
+			})()
+		])
 
 		return json({
-			node: result.nodes[0].node,
-			info: result.nodes[0].info,
-			infoError: result.infoError?.message,
-		} as InfernetNodeWithInfo);
+			node,
+			info,
+			infoError,
+		} as InfernetNodeWithInfo)
 	} catch (e) {
-		return error(400, (e as Error).message);
+		return error(400, (e as Error).message)
 	}
-};
+}
 
 /**
  * Update a node by its ID.

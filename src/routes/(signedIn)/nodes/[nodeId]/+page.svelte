@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
-	import { providers } from '$/types/provider'
+	import type { BaseNodeClient } from '$/lib/clients/node/base'
+	import { providers, ProviderTypeEnum } from '$/types/provider'
 	import { chainsByChainId } from '$/lib/chains'
 
 
@@ -26,8 +27,42 @@
 			: 'unknown'
 	)
 
+	// (Output)
+	$: logsQuery = createInfiniteQuery({
+		queryKey: ['nodeLogs', {
+			nodeId: node?.id,
+		}] as const,
+
+		initialPageParam: 0,
+
+		queryFn: async ({
+			queryKey: [_, {
+				nodeId,
+			}],
+			pageParam: start,
+		}) => (
+			await fetch(
+				`${resolveRoute('/api/node/[nodeId]/logs', {
+					nodeId,
+				})}?${new URLSearchParams({
+					start: start?.toString(),
+				})}`,
+			)
+				.then(response => response.json() as ReturnType<BaseNodeClient['getLogs']>)
+		),
+
+		getNextPageParam: (lastPage) => lastPage.next,
+
+		select: result => (
+			result
+				.pages
+				.flatMap(page => page.logs)
+		),
+	})
+
 
 	// Functions
+	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { formatNumberCompact } from '$/lib/format'
 	import { resolveRoute } from '$app/paths'
 	import { isTruthy } from '$/lib/utils/isTruthy'
@@ -45,6 +80,7 @@
 	import DetailsValue from '$/components/DetailsValue.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import NodeContainersTable from './NodeContainersTable.svelte'
+	import ScrollArea from '$/components/ScrollArea.svelte'
 	import Status from '$/views/Status.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 </script>
@@ -378,13 +414,90 @@
 		</dl>
 	</section>
 
-	<div>
+	<section class="column">
+		<header class="row wrap">
+			<h3>Logs</h3>
+
+			<div class="row wrap">
+				<button
+					class="small"
+					on:click={() => {
+						$logsQuery.refetch()
+					}}
+				>
+					Refresh
+				</button>
+
+				<button
+					class="small"
+					on:click={() => {
+						$logsQuery.fetchNextPage()
+					}}
+				>
+					Load more
+				</button>
+			</div>
+		</header>
+
+		<dl class="card column">
+			<section class="row">
+				<dt>Last updated</dt>
+
+				<dd>
+					{new Date($logsQuery.dataUpdatedAt).toLocaleString()}
+				</dd>
+			</section>
+
+			{#if node.provider === ProviderTypeEnum.GCP}
+				<section class="column">
+					<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
+
+					<dd>
+						{#if $logsQuery.isLoading}
+							<div class="card loading">
+								<p>Loading logs...</p>
+							</div>
+						{:else if $logsQuery.isError}
+							<div class="card error">
+								<p>Error loading logs: {$logsQuery.error.message}</p>
+							</div>
+						{:else if $logsQuery.data}
+							{@const logs = $logsQuery.data}
+
+							<ScrollArea>
+								<div class="log-container">
+									{#each logs as log, i}
+										{@const previousLog = logs[i - 1]}
+
+										{#if previousLog && previousLog.source !== log.source}
+											<hr>
+										{/if}
+
+										<div
+											class="log"
+											data-source={log.source}
+										>
+											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> <span>{log.source}</span><code>{log.text}</code></output>
+										</div>
+									{/each}
+								</div>
+							</ScrollArea>
+						{:else}
+							<p>No logs available.</p>
+						{/if}
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
+	<section>
 		<h3>Containers</h3>
 
 		<NodeContainersTable
 			containers={node.containers}
 		/>
-	</div>
+	</section>
 </div>
 
 
@@ -431,6 +544,32 @@
 				white-space: pre-wrap;
 				word-break: break-word;
 			}
+		}
+	}
+
+	.log-container {
+		display: grid;
+		align-items: center;
+
+		padding: 0.66em 1em;
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 0.5em;
+
+		.log {
+			margin-inline: -1rem;
+			padding-inline: 1rem;
+			padding-block: 0.1rem;
+		}
+
+		date {
+			position: sticky;
+			top: 0.25em;
+			right: 0;
+			float: right;
+			margin-left: 1em;
+			line-height: 2.4;
+			font-size: smaller;
+			opacity: 0.5;
 		}
 	}
 

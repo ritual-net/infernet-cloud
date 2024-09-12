@@ -1,10 +1,9 @@
 import { e } from '$/lib/db'
 import { getClusterById } from '../db/queries'
-import { routerAction } from '$/lib/clients/node/common'
+import { restartRouter } from '$/lib/clients/node/common'
 import { ProviderTerraform } from '$/lib'
 import type { Client } from 'edgedb'
 import type { ProviderServiceAccount } from '$/types/provider'
-import { NodeAction } from '$/types/provider'
 import { TFAction } from '$/types/terraform'
 import { addCleanupListener, removeCleanupListener } from 'async-cleanup'
 
@@ -221,7 +220,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 
 		// Restart router to apply any changes to IP address list
 		if (cluster.router && action == TFAction.Apply && tfstate?.outputs?.router?.value)
-			await routerAction(client, tfstate.outputs.router.value.id, NodeAction.restart)
+			await restartRouter(client, tfstate.outputs.router.value.id)
 
 		return {
 			snapshots: insertedSnapshots,

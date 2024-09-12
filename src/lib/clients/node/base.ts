@@ -1,53 +1,46 @@
-import type { ProviderTypeEnum, NodeInfo } from '$/types/provider';
+import type { ProviderTypeEnum, NodeInfo } from '$/types/provider'
 
 export abstract class BaseNodeClient {
 	/**
-	 * Client object for interacting with nodes
-	 */
-	client: unknown;
-
-	/**
 	 * Helper utility to map client instance to type
 	 */
-	abstract type(): ProviderTypeEnum;
+	abstract get type(): ProviderTypeEnum
 
 	/**
 	 * Convert node config ID to node instance ID
 	 */
-	toInstanceId(nodeConfigId: string) {
-		return `node-${nodeConfigId}`
-	}
+	abstract get instanceId(): string
 
 	/**
-	 * Start set of infernet nodes.
-	 *
-	 * @param nodeConfigIds - List of node config ids to start
-	 * @param args - Additional arguments needed to start nodes
+	 * Start Infernet node.
 	 */
-	abstract startNodes(nodeConfigIds: string[], args: object): Promise<void>;
+	abstract start(): Promise<any>
 
 	/**
-	 * Stop set of infernet nodes.
-	 *
-	 * @param nodeConfigIds - List of node config ids to stop
-	 * @param args - Additional arguments needed to stop nodes
+	 * Stop Infernet node.
 	 */
-	abstract stopNodes(nodeConfigIds: string[], args: object): Promise<void>;
+	abstract stop(): Promise<any>
 
 	/**
-	 * Restart set of infernet nodes.
-	 *
-	 * @param nodeConfigIds - List of node config ids to restart
-	 * @param args - Additional arguments needed to restart nodes
+	 * Restart Infernet node.
 	 */
-	abstract restartNodes(nodeConfigIds: string[], args: object): Promise<void>;
+	abstract restart(): Promise<any>
 
 	/**
-	 * Get status and ip of set of infernet nodes.
-	 *
-	 * @param nodeConfigIds - List of node config ids to get status and ip of
-	 * @param args - Additional arguments needed to get node info
-	 * @returns Flat array of node info objects
+	 * Get status and IP of Infernet node.
 	 */
-	abstract getNodesInfo(nodeConfigIds: string[], args: object): Promise<Map<string, NodeInfo | { error: unknown }>>;
+	abstract getInfo(): Promise<NodeInfo>
+
+	/**
+	 * Get logs from Infernet node.
+	 */
+	abstract getLogs(start?: number): Promise<{
+		start?: number,
+		next?: number,
+		logs: {
+			timestamp: number,
+			source: number,
+			text: string,
+		}[],
+	}>
 }

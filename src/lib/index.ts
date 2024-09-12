@@ -1,15 +1,8 @@
-import { AWSNodeClient } from './clients/node/providers/aws';
-import { AWSResourceClient } from './clients/resource/providers/aws';
-import { AWSTerraform } from './terraform/providers/aws';
-import { GCPNodeClient } from './clients/node/providers/gcp';
-import { GCPResourceClient } from './clients/resource/providers/gcp';
-import { GCPTerraform } from './terraform/providers/gcp';
-import {
-	ProviderTypeEnum,
-	type ProviderCluster,
-	type ProviderServiceAccount,
-} from '$/types/provider';
-import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
+import { ProviderTypeEnum } from '$/types/provider'
+import { AWSResourceClient } from './clients/resource/providers/aws'
+import { AWSTerraform } from './terraform/providers/aws'
+import { GCPResourceClient } from './clients/resource/providers/gcp'
+import { GCPTerraform } from './terraform/providers/gcp'
 
 /**
  * The Terraform provider for each cloud provider. Since these classes are stateless,
@@ -18,7 +11,7 @@ import type { GCPCluster, GCPServiceAccount } from '$schema/interfaces';
 export const ProviderTerraform = {
 	[ProviderTypeEnum.AWS]: new AWSTerraform(),
 	[ProviderTypeEnum.GCP]: new GCPTerraform(),
-};
+} as const
 
 /**
  * The console client for each cloud provider. Since these classes are stateful, they
@@ -27,29 +20,4 @@ export const ProviderTerraform = {
 export const ProviderClient = {
 	[ProviderTypeEnum.AWS]: AWSResourceClient,
 	[ProviderTypeEnum.GCP]: GCPResourceClient,
-};
-
-/**
- * The node client for each cloud provider. Since these classes are stateful, they
- * must be instantiated for each request.
- */
-export const NodeClient = {
-	[ProviderTypeEnum.AWS]: {
-		class: AWSNodeClient,
-		classArgs: (cluster: ProviderCluster, serviceAccount: ProviderServiceAccount) => [
-			serviceAccount.creds,
-			cluster.region,
-		],
-		functionArgs: (_1: ProviderCluster, _2: ProviderServiceAccount) => ({}),
-	},
-	[ProviderTypeEnum.GCP]: {
-		class: GCPNodeClient,
-		classArgs: (_: ProviderCluster, serviceAccount: ProviderServiceAccount) => [
-			serviceAccount.creds,
-		],
-		functionArgs: (cluster: ProviderCluster, serviceAccount: ProviderServiceAccount) => ({
-			project: (serviceAccount as GCPServiceAccount).creds.project_id,
-			zone: (cluster as GCPCluster).zone,
-		}),
-	},
-};
+} as const
