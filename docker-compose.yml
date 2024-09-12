@@ -24,6 +24,8 @@ services:
     depends_on:
       edgedb:
         condition: service_healthy
+    environment:
+      - ORIGIN=${SERVER_HOST}
 
   edgedb:
     depends_on:
