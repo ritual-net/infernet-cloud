@@ -11,7 +11,7 @@ export class GCPNodeClient extends BaseNodeClient {
 	constructor(
 		private credentials: GCPServiceAccount['creds'],
 		public zone: string,
-		public nodeConfigId: string,
+		public instanceId: string,
 	) {
 		super()
 
@@ -30,10 +30,6 @@ export class GCPNodeClient extends BaseNodeClient {
 
 	get type() {
 		return ProviderTypeEnum.GCP
-	}
-
-	get instanceId() {
-		return `node-${this.nodeConfigId}`
 	}
 
 	async start() {
@@ -69,7 +65,7 @@ export class GCPNodeClient extends BaseNodeClient {
 
 		return {
 			instanceId: this.instanceId,
-			status: result[0]?.status ?? undefined,
+			status: result[0]?.status?.toLowerCase() ?? undefined,
 			ip: result[0]?.networkInterfaces?.[0]?.accessConfigs?.[0]?.natIP ?? undefined,
 			instanceInfo: (
 				Object.fromEntries(

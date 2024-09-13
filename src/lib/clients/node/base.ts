@@ -7,11 +7,6 @@ export abstract class BaseNodeClient {
 	abstract get type(): ProviderTypeEnum
 
 	/**
-	 * Convert node config ID to node instance ID
-	 */
-	abstract get instanceId(): string
-
-	/**
 	 * Start Infernet node.
 	 */
 	abstract start(): Promise<any>
