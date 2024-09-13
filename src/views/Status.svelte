@@ -9,7 +9,10 @@
 		'succeeded': 'Succeeded',
 		'unknown': 'Unknown',
 		'running': 'Running',
+		'stopping': 'Stopping',
+		'stopped': 'Stopped',
 		'terminated': 'Stopped',
+		'shutting-down': 'Shutting down',
 	}
 
 
@@ -34,16 +37,19 @@
 			--status-color: #16B371;
 		}
 
-		&[data-status="updating"] {
+		&[data-status="updating"],
+		&[data-status="stopping"],
+		&[data-status="shutting-down"] {
 			--status-color: #b3a316;
 		}
 
 		&[data-status="failed"],
-		&[data-status="unhealthy"],
-		&[data-status="terminated"] {
+		&[data-status="unhealthy"] {
 			--status-color: #b33d16;
 		}
 
+		&[data-status="stopped"],
+		&[data-status="terminated"],
 		&[data-status="destroyed"],
 		&[data-status="unknown"] {
 			--status-color: gray;
