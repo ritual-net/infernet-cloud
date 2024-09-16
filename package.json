@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"init:local": "cp -n .env.local.example .env.local; pnpm run local:server:init; pnpm run local:edgedb:init",
-		"init:docker": "cp -n .env.docker.example .env.docker; pnpm install",
+		"init:docker": "cp -n .env.docker.example .env.docker; pnpm install; pnpm run docker:edgedb:init",
 		"start:local": "pnpm store prune; pnpm run local:server:start",
 		"start:docker": "pnpm run docker:clean; pnpm run docker:start",
 		"local:server:init": "pnpm install",
@@ -21,6 +21,7 @@
 		"docker:stop": "pnpm run docker-compose down",
 		"docker:clean": "docker system prune -f",
 		"docker:server:restart": "pnpm run docker:clean && pnpm run docker-compose up --build --no-deps --detach server",
+		"docker:edgedb:init": "pnpm run docker:edgedb:init:auth",
 		"docker:edgedb:init:auth": "pnpm run docker:edgedb:cli query -f ./dbschema/bootstrap/auth.edgeql",
 		"docker:edgedb:restart": "pnpm run docker:clean && pnpm run docker-compose up --build --no-deps --detach edgedb",
 		"docker:edgedb:backup": "cp -r edgedb-data edgedb-data.backup.$(date +%s)",
