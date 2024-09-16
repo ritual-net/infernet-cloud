@@ -35,11 +35,48 @@
 {/if}
 
 {#if deployment.error}
+	{@const errorLogs = deployment.stdout?.filter(log => log['@level'] === 'error')}
+
 	<section class="column">
 		<dt>Error</dt>
 
-		<dd class="log-container scrollable">
-			<output><code>{deployment.error}</code></output>
+		<dd class="column">
+			<div class="log-container scrollable">
+				<output><code>{deployment.error}</code></output>
+			</div>
+
+			{#if errorLogs?.length}
+				<ScrollArea
+					tagName="dd"
+				>
+					<div class="log-container">
+						{#each errorLogs as log, i}
+							<div
+								class="log"
+								data-type={log['type']} 
+								data-level={log['@level']}
+								data-module={log['@module']}
+							>
+								<output><date date={log['@timestamp']}>{new Date(log['@timestamp']).toLocaleString()}</date> <code>{log['@message']}</code></output>
+		
+								{#if log['type'] === 'diagnostic' && 'diagnostic' in log}
+									<div class="diagnostic-log">
+										{#if log.diagnostic.detail}
+											<output><code>{log.diagnostic.detail}</code></output>
+										{/if}
+		
+										{#if log.diagnostic.snippet?.code}
+											<blockquote>
+												<output><pre><code>{log.diagnostic.snippet?.code}</code></pre></output>
+											</blockquote>
+										{/if}
+									</div>
+								{/if}
+							</div>
+						{/each}
+					</div>
+				</ScrollArea>
+			{/if}
 		</dd>
 	</section>
 {/if}

@@ -28,7 +28,7 @@
 	const {
 		form,
 		enhance,
-		errors,
+		allErrors,
 		constraints,
 
 		capture,
@@ -112,6 +112,7 @@
 	import Textarea from '$/components/Textarea.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import RegionZoneMachineFields from '../../create/RegionZoneMachineFields.svelte'
+	import FormSubmitButton from '$/components/FormSubmitButton.svelte';
 </script>
 
 
@@ -336,13 +337,11 @@
 			Cancel
 		</a>
 
-		<button
-			type="submit"
-			class="primary"
-			disabled={$submitting}
-		>
-			Save and apply changes
-		</button>
+		<FormSubmitButton
+			submitting={$submitting}
+			allErrors={$allErrors}
+			submitLabel="Save and apply changes"
+		/>
 	</footer>
 </form>
 
