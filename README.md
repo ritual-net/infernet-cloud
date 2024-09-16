@@ -163,6 +163,11 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
 	* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in; otherwise set it to `false`.
 	* Save [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql).
+	* Apply changes to EdgeDB Auth settings:
+
+		```bash
+		pnpm docker:edgedb:init:auth
+		```
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
