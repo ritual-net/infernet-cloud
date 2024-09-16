@@ -26,6 +26,11 @@
 </script>
 
 
+<svelte:head>
+	<title>{serviceAccount.name || serviceAccount.id} | Cloud Account | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">

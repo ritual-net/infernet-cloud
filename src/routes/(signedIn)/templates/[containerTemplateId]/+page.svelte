@@ -29,6 +29,11 @@
 </script>
 
 
+<svelte:head>
+	<title>{containerTemplate.name} | Container Template | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">

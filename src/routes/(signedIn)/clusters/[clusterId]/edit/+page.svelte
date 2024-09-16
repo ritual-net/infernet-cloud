@@ -84,6 +84,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Edit Cluster | {cluster.name || cluster.id} | Cluster | Infernet Cloud</title>
+</svelte:head>
+
+
 <form
 	method="POST"
 	use:enhance

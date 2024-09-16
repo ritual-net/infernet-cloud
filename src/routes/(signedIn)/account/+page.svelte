@@ -26,6 +26,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Account | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container column">
 	<header>
 		<h2>Account</h2>

@@ -77,6 +77,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Connect Cloud Account | Infernet Cloud</title>
+</svelte:head>
+
+
 <form
 	method="POST"
 	use:enhance

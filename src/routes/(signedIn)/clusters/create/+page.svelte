@@ -108,6 +108,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Create Cluster | Infernet Cloud</title>
+</svelte:head>
+
+
 <form
 	method="POST"
 	use:enhance

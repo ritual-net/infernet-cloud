@@ -8,6 +8,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="card column">
 	<header class="column inline">
 		<h2>Welcome</h2>

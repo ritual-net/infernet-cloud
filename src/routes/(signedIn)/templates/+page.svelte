@@ -18,6 +18,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Container Templates | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="column">
 	<header class="row">
 		<h2>Container templates</h2>

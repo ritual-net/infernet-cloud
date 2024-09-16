@@ -36,6 +36,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Reset Password | Infernet Cloud</title>
+</svelte:head>
+
+
 <div class="container">
 	<form
 		method="POST"

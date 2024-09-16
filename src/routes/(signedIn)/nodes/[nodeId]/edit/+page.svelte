@@ -65,6 +65,11 @@
 </script>
 
 
+<svelte:head>
+	<title>Edit node configuration | Infernet Cloud</title>
+</svelte:head>
+
+
 <form
 	class="column"
 	method="POST"
