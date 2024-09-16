@@ -22,8 +22,8 @@ export class GCPTerraform extends BaseTerraform {
 
 			name: cluster.provider_id,
 			is_production: true,
-			ip_allow_ssh: cluster.ip_allow_ssh ?? [],
-			ip_allow_http: cluster.ip_allow_http ?? [],
+			ip_allow_ssh: cluster.ip_allow_ssh ?? ['0.0.0.0/0'],
+			ip_allow_http: cluster.ip_allow_http ?? ['0.0.0.0/0'],
 			ip_allow_http_ports: ["4000"],
 
 			router: (	
