@@ -100,10 +100,10 @@
 	.thumb {
 		grid-area: thumb;
 
-		aspect-ratio: 1;
-		@supports not (aspect-ratio: 1) {
+		/* aspect-ratio: 1;
+		@supports not (aspect-ratio: 1) { */
 			width: 1.25em;
-		}
+		/* } */
 
 		background-color: var(--switch-thumb-backgroundColor);
 		border-radius: 100%;
@@ -113,10 +113,10 @@
 	}
 
 	button:active .thumb {
-		aspect-ratio: 1.1;
-		@supports not (aspect-ratio: 1) {
+		/* aspect-ratio: 1.1;
+		@supports not (aspect-ratio: 1) { */
 			width: 1.375em;
-		}
+		/* } */
 
 		transition-duration: 0.2s;
 	}
