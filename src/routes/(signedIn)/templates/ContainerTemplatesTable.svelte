@@ -9,7 +9,7 @@
 
 
 	// Inputs
-	export let containerTemplates: ContainerTemplate[]
+	export let data: Promise<ContainerTemplate[]>
 
 
 	// Actions
@@ -25,7 +25,8 @@
 
 
 <Table
-	data={containerTemplates}
+	{data}
+	getId={containerTemplate => containerTemplate.id}
 	columns={[
 		{
 			header: 'Template',
@@ -136,5 +137,15 @@
 		]
 	}}
 >
-	<p>You have not created any container templates.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading container templates...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load container templates.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>You have not created any container templates.</p>
+	</svelte:fragment>
 </Table>

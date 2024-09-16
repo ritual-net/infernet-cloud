@@ -13,7 +13,7 @@
 
 
 	// Inputs
-	export let clusters: Awaited<ReturnType<typeof getClusters>>
+	export let clusters: ReturnType<typeof getClusters>
 
 
 	// Actions
@@ -30,6 +30,7 @@
 
 <Table
 	data={clusters}
+	getId={cluster => cluster.id}
 	columns={[
 		// {
 		// 	header: 'Id',
@@ -167,5 +168,15 @@
 		]
 	}}
 >
-	<p>You have not created any clusters.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading clusters...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load clusters.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>You have not created any clusters.</p>
+	</svelte:fragment>
 </Table>

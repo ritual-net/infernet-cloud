@@ -4,7 +4,7 @@
 
 
 	// Inputs
-	export let dockerAccounts: PageServerData['dockerAccounts']
+	export let dockerAccounts: Promise<PageServerData['dockerAccounts']>
 
 
 	// Actions
@@ -27,6 +27,7 @@
 
 <Table
 	data={dockerAccounts}
+	getId={dockerAccount => dockerAccount.id}
 	columns={[
 		{
 			header: 'Docker Hub Username',
@@ -71,5 +72,15 @@
 		]
 	}}
 >
-	<p>No Docker accounts connected.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading Docker accounts...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load Docker accounts.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>No Docker accounts connected.</p>
+	</svelte:fragment>
 </Table>

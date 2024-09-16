@@ -8,12 +8,12 @@ import type { PageLoad } from './$types'
 export const load: PageLoad = async ({
 	fetch,
 }) => {
-	const containerTemplates = (
-		await fetch('/api/container_template')
+	const containerTemplatesPromise = (
+		fetch('/api/container_template')
 			.then(result => result.json())
-	) as ContainerTemplate[]
+	) as Promise<ContainerTemplate[]>
 
 	return {
-		containerTemplates,
+		containerTemplatesPromise,
 	}
 }

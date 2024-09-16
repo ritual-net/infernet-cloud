@@ -150,5 +150,15 @@
 			.filter(isTruthy)
 	}}
 >
-	<p>No nodes configured.</p>
+	<svelte:fragment slot="loading">
+		<p>Loading nodes...</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="error">
+		<p>Failed to load nodes.</p>
+	</svelte:fragment>
+
+	<svelte:fragment slot="empty">
+		<p>You have not yet configured any nodes.</p>
+	</svelte:fragment>
 </Table>

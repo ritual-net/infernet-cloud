@@ -8,7 +8,7 @@
 
 
 	// Inputs
-	export let data: Datum[]
+	export let data: Datum[] | Promise<Datum[]> | undefined
 	export let getId: (_: Datum) => any
 	export let columns: Parameters<Table<Datum>['column']>[0][]
 	export let contextMenu: ((_: Datum) => MenuItems<MenuItemValue>[]) | undefined
@@ -22,9 +22,12 @@
 	// Internal state
 	import { writable } from 'svelte/store'
 	import { createTable, Subscribe, Render } from 'svelte-headless-table'
-	
-	const _data = writable(data)
-	$: $_data = data
+
+	let resolvedData: Datum[] | undefined = undefined
+	$: Promise.resolve(data).then(data => { resolvedData = data })
+
+	const _data = writable<Datum[]>([])
+	$: $_data = resolvedData ?? []
 
 	const table = createTable(_data)
 
@@ -50,6 +53,7 @@
 	import { melt } from '@melt-ui/svelte'
 	import ContextMenu from './ContextMenu.svelte'
 	import DropdownMenu from './DropdownMenu.svelte'
+	import SizeTransition from './SizeTransition.svelte'
 
 
 	// Transitions/animations
@@ -59,9 +63,31 @@
 
 <div data-layout={layout}>
 	<table {...$tableAttrs}>
-		{#if !$rows.length}
+		{#if !resolvedData || !$rows.length}
 			<caption class="placeholder">
-				<slot />
+				<SizeTransition>
+					<div class="stack">
+						{#await data}
+							<div class="card loading" transition:scale>
+								<slot name="loading">
+									<p>Loading data...</p>
+								</slot>
+							</div>
+						{:then}
+							<slot name="empty">
+								No data found.
+							</slot>
+						{:catch error}
+							<div class="card error" transition:scale>
+								<slot name="error" {error}>
+									<p>Error loading data: {error.message}</p>
+								</slot>
+
+								<pre><output><code>{error}</code></output></pre>
+							</div>
+						{/await}
+					</div>
+				</SizeTransition>
 			</caption>
 		{/if}
 
@@ -95,9 +121,9 @@
 		</thead>
 
 		<tbody {...$tableBodyAttrs}>
-			{#each $rows as row (getId?.(data[row.dataId]) ?? row.dataId)}
-				{@const datum = data[row.dataId]}
-				{@const link = getRowLink?.(data[row.dataId])}
+			{#each $rows as row (getId?.($_data[row.dataId]) ?? row.dataId)}
+				{@const datum = $_data[row.dataId]}
+				{@const link = getRowLink?.($_data[row.dataId])}
 
 				<Subscribe
 					rowAttrs={row.attrs()} let:rowAttrs
