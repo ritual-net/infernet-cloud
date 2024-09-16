@@ -149,6 +149,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	This script will:
 	* Create an [`.env.docker`](.env.docker) file with default values copied from [`.env.docker.example`](.env.docker.example), if one doesn't already exist
 	* Install package dependencies from npm
+	* Intialize Docker volume for `edgedb` service at [`./edgedb-data/`](edgedb-data), apply default EdgeDB Auth config, and perform schema migrations.
 
 4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
 	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when running locally).
