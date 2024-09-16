@@ -22,6 +22,7 @@
 
 	// Components
 	import ClustersTable from '$/routes/(signedIn)/clusters/ClustersTable.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
 
@@ -65,11 +66,11 @@
 				<dt>Cloud provider</dt>
 
 				<dd class="row">
-					<img
-						class="icon"
-						src={providers[serviceAccount.provider].icon}
-					/>
-					{providers[serviceAccount.provider].name}
+					<WithIcon
+						icon={providers[serviceAccount.provider].icon}
+					>
+						{providers[serviceAccount.provider].name}
+					</WithIcon>
 				</dd>
 			</section>
 
@@ -135,7 +136,7 @@
 		border-radius: 0.25em;
 		padding: 0.5em;
 
-		background-color: var(--color-ritualBlack);
-		color: #fff;
+		background-color: light-dark(#000, #fff);
+		color: light-dark(#fff, #000);
 	}
 </style>

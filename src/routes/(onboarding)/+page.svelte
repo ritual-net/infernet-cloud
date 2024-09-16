@@ -29,7 +29,7 @@
 
 				<div class="column inline">
 					<h3>Run your own Infernet node</h3>
-					<p>Take part in the world’s first community-owned AI compute network.</p>
+					<p>Take part in a global, verifiable, community-owned AI compute network.</p>
 				</div>
 			</li>
 
@@ -39,8 +39,8 @@
 				</div>
 
 				<div class="column inline">
-					<h3>Customize your infrastructure</h3>
-					<p>Configure regions, zones and firewalls for clusters, routers and nodes.</p> 
+					<h3>Bring your own cloud accounts</h3>
+					<p>Run containers using custom Docker images, machine types and more.</p>
 				</div>
 			</li>
 
@@ -50,8 +50,8 @@
 				</div>
 
 				<div class="column inline">
-					<h3>Bring your own cloud accounts</h3>
-					<p>Run containers using custom Docker images, machine types and more.</p>
+					<h3>Secure your infrastructure</h3>
+					<p>Configure regions, zones, and HTTP/SSH access for routers and nodes.</p> 
 				</div>
 			</li>
 		</ul>
@@ -60,7 +60,7 @@
 	</section>
 </div>
 
-<div class="row equal">
+<div class="row equal wrap">
 	{#if !$page.data.user}
 		<a
 			class="button"
@@ -104,9 +104,10 @@
 			& .icon {
 				align-self: start;
 				display: flex;
-				background-color: hsl(from var(--color-ritualGreen) h s l / 20%);
+				background-color: hsl(from var(--accentColor) h s l / 20%);
+				background-color: color-mix(in oklch, var(--accentColor) 20%, transparent);
 				padding: 0.5em;
-				color: #16B371;
+				color: var(--accentColor);
 				border-radius: 50%;
 
 				> :global(*) {

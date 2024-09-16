@@ -13,6 +13,7 @@
 
 	// Components
 	import ScrollArea from '$/components/ScrollArea.svelte'
+	import SizeTransition from '$/components/SizeTransition.svelte'
 	import TerraformResourceDetails from './TerraformResourceDetails.svelte'
 	import Mermaid from '$/components/Mermaid.svelte'
 	import XYFlow from '$/components/XYFlow.svelte'
@@ -125,48 +126,43 @@
 					/>
 				</XYFlow> -->
 
-				<Mermaid
-					init={{
-						'flowchart': {
-							'defaultRenderer': 'forceGraph',
-						},
-						'theme': 'base',
-						'themeVariables': { 
-							'nodeBorder': '1px #0000001a solid',
-							'mainBkg': '#fff',
-							'nodeBorderRadius': '10px',
-							'nodeShadow': '0 0 0 1px #0000001a,0 0 0 2px #0003',
-							'nodeTextPadding': '0px',
-							'nodePadding': '0px',
-						}
-					}}
-					diagram={`
-						flowchart BT
-							${deployment.tfstate.resources.map(resourceType => `
-								subgraph resourceType.${resourceType.type} [
-									${resourceType.type}
-								]
-									${resourceType.instances.map(resource => `
-										resource.${resource.attributes.id}(
-											${resource.attributes.id}
-										)
+				<SizeTransition>
+					<figure class="mermaid-wrapper">
+						<Mermaid
+							init={{
+								'flowchart': {
+									'defaultRenderer': 'forceGraph',
+								},
+							}}
+							diagram={`
+								flowchart BT
+									${deployment.tfstate.resources.map(resourceType => `
+										subgraph resourceType.${resourceType.type} [
+											${resourceType.type}
+										]
+											${resourceType.instances.map(resource => `
+												resource.${resource.attributes.id}(
+													${resource.attributes.id}
+												)
+											`).join('\n')}
+										end
 									`).join('\n')}
-								end
-							`).join('\n')}
 
-							${deployment.tfstate?.resources.flatMap(resourceType =>
-								resourceType.instances?.flatMap(resource => (
-									resource.dependencies?.map(dependencyId => {
-										const [dependencyResourceType, dependencyName] = dependencyId.split('.')
+									${deployment.tfstate?.resources.flatMap(resourceType =>
+										resourceType.instances?.flatMap(resource => (
+											resource.dependencies?.map(dependencyId => {
+												const [dependencyResourceType, dependencyName] = dependencyId.split('.')
 
-										return `
-											resource.${resource.attributes.id} --> resourceType.${dependencyResourceType}
-										`
-									})
-								))
-							).join('\n')}
-					`}
-				/>
+												return `
+													resource.${resource.attributes.id} --> resourceType.${dependencyResourceType}
+												`
+											})
+										))
+									).join('\n')}
+							`}
+						/>
+					</figure>
+				</SizeTransition>
 			{/if}
 
 			<!-- <ScrollArea
@@ -317,7 +313,7 @@
 		align-items: center;
 
 		padding: 0.66em 1em;
-		background: rgba(0, 0, 0, 0.05);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 		border-radius: 0.5em;
 
 		.log {
@@ -326,8 +322,8 @@
 			padding-block: 0.1rem;
 
 			&[data-level="error"] {
-				background-color: rgb(255, 246, 246);
-				color: rgb(150, 0, 0);
+				background-color: light-dark(rgb(255, 246, 246), rgb(50, 0, 0));
+				color: light-dark(rgb(150, 0, 0), rgb(255, 100, 100));
 			}
 		}
 
@@ -349,6 +345,45 @@
 
 	.resources {
 		font-size: 0.9em;
-		background-color: #0000000d;
+		background-color: light-dark(#0000000d, #ffffff0d);
+	}
+
+
+	.mermaid-wrapper {
+		&:not(:active) {
+			cursor: ew-resize;
+		}
+
+		overflow-x: auto;
+		display: grid;
+
+		transition: grid-auto-columns 0.3s;
+
+		&:is(:hover, :focus-within) {
+			grid-auto-columns: 2000px;
+		}
+
+		:global(#mermaid .cluster rect) {
+			fill: light-dark(#f6f6f6, #333);
+			stroke: var(--borderColor);
+		}
+		:global(#mermaid .cluster-label) {
+			font-size: 1em;
+		}
+		:global(#mermaid .node rect) {
+			fill: light-dark(#fff, #222);
+			stroke: var(--borderColor);
+		}
+		:global(#mermaid .nodeLabel) {
+			color: light-dark(#000, #fff);
+		}
+		:global(#mermaid .flowchart-link) {
+			stroke: currentColor;
+			stroke-opacity: 0.5;
+		}
+		:global(#mermaid .marker) {
+			fill: currentColor;
+			fill-opacity: 0.5;
+		}
 	}
 </style>

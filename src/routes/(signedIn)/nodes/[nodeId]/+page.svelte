@@ -110,7 +110,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row wrap">
 			<dl class="status-container card row">
 				<dt>Status</dt>
 
@@ -535,16 +535,20 @@
 		border-radius: 0.25em;
 		padding: 0.5em;
 
-		background-color: var(--color-ritualBlack);
-		color: #fff;
+		background-color: light-dark(#000, #fff);
+		color: light-dark(#fff, #000);
 	}
 
 	header .status-container {
 		--card-paddingX: 1.5em;
 		--card-paddingY: 0.75em;
-		--card-backgroundColor: rgba(0, 0, 0, 0.04);
+		--card-backgroundColor: light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04));
 		--card-borderColor: transparent;
 		font-size: 0.9em;
+	}
+
+	header h2 {
+		font-size: 1.25em;
 	}
 
 	output {

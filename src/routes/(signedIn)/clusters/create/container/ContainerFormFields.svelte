@@ -253,7 +253,7 @@
 	</section>
 
 	<section class="column">
-		<div class="row wrap">
+		<div class="row">
 			<div class="column inline">
 				<h3>
 					<label for="container.gpu">
@@ -659,7 +659,7 @@
 			</svelte:fragment> -->
 
 			<section class="column">
-				<div class="row wrap">
+				<div class="row">
 					<div class="column inline">
 						<h3>
 							<label for="container.generates_proofs">

@@ -42,7 +42,7 @@
 
 
 	// Components
-	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import InfernetCloudLogo from '$/icons/InfernetCloudLogo.svelte'
 </script>
 
 
@@ -52,17 +52,19 @@
 		aria-current={$page.url.pathname === '/' ? 'page' : undefined}
 		class="home row"
 	>
-		<RitualLogo />
+		<h1 class="logotype">
+			<InfernetCloudLogo />
 
-		<h1>
-			Infernet Cloud
-			<span class="annotation">by Ritual</span>
+			<span>
+				<span>Infernet</span>
+				<span>Cloud</span>
+			</span>
 		</h1>
 	</a>
 
 	<div class="row wrap">
 		{#each navItems as items}
-			<ul class="row">
+			<ul class="row wrap">
 				{#each items as item}
 					<li>
 						<a	
@@ -82,30 +84,56 @@
 
 <style>
 	:root {
-		--nav-link-default-opacity: 0.66;
+		--nav-link-default-opacity: 66%;
+	}
+
+	.logotype {
+		display: flex;
+		align-items: center;
+
+		font-size: 1.33em;
+		line-height: 1;
+
+		gap: 0.33em;
+		font-family: var(--fontFamily-display);
+
+		> :global(svg) {
+			height: 1.75em;
+		}
+
+		> span {
+			display: inline-grid;
+			gap: 0.25em;
+
+			> :first-child {
+				font-weight: 400;
+			}
+
+			> :last-child {
+				font-size: 0.5em;
+				font-weight: 400;
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				opacity: 0.66;
+			}
+		}
 	}
 
 	a {
 		display: inline-flex;
 
-		transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
+		transition-property: background-color, color, opacity, scale;
+		transition-duration: var(--active-transitionOutDuration);
+		transition-timing-function: var(--transition-easeOutExpo);
+
+		&.home:hover:not(:active) {
+			scale: 1.033;
+		}
 
 		&:active {
 			transition-duration: var(--active-transitionInDuration);
 			opacity: var(--active-opacity);
 			scale: var(--active-scale);
-		}
-
-		&[href="/"] {
-			font-size: 1.5em;
-
-			gap: 0.33em;
-			font-family: var(--fontFamily-display);
-
-			& :global(svg) {
-				flex-shrink: 0;
-				height: 1.25em;
-			}
 		}
 	}
 
@@ -117,9 +145,13 @@
 
 			a:not([aria-current="page"]) {
 				color: hsl(from var(--textColor) h s l / var(--nav-link-default-opacity));
+				color: color-mix(in oklch, var(--textColor) var(--nav-link-default-opacity), transparent);
 
-				@supports not (color: hsl(from #000 h s l)) {
-					filter: opacity(0.7);
+				@supports not (
+					(color: hsl(from #000 h s l))
+					or (color: color-mix(in oklch, #000, transparent))
+				) {
+					filter: var(--nav-link-default-opacity);
 				}
 			}
 		}
@@ -127,13 +159,24 @@
 
 	@media (width <= 50rem) {
 		nav {
-			display: grid !important;
+			display: grid;
 			justify-content: stretch;
-			justify-items: start;
-			gap: 1rem;
+			gap: 1.5rem;
+
+			> :first-child {
+				margin-inline-end: auto;
+			}
+
+			> :last-child {
+				display: block;
+			}
 
 			li {
-				display: grid !important;
+				display: grid;
+
+				a:not(.button) {
+					padding: 0.25em;
+				}
 			}
 
 			&:after {
@@ -149,8 +192,8 @@
 				}
 			}
 
-			> :last-child {
-				justify-self: stretch;
+			ul {
+				flex-direction: column;
 			}
 		}
 	}

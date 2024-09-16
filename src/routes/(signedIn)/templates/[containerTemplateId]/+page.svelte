@@ -106,7 +106,7 @@
 			<section class="row">
 				<dt>Chain</dt>
 
-				<dd>
+				<dd class="row">
 					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
 						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
 
@@ -342,8 +342,8 @@
 		border-radius: 0.25em;
 		padding: 0.5em;
 
-		background-color: var(--color-ritualBlack);
-		color: #fff;
+		background-color: light-dark(#000, #fff);
+		color: light-dark(#fff, #000);
 	}
 
 	.description {

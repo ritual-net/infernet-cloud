@@ -54,7 +54,7 @@
 	
 <style>
 	:root {
-		--tooltip-backgroundColor: #fff;
+		--tooltip-backgroundColor: light-dark(#fff, #000);
 		--tooltip-borderColor: var(--borderColor);
 		--tooltip-borderWidth: var(--borderWidth);
 		--tooltip-cornerRadius: 0.33em;
