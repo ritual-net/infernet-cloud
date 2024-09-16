@@ -183,7 +183,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 7. Start all services:
 
 	```bash
-	pnpm docker:up
+	pnpm docker:start
 	```
 
 	Docker images for all services will be installed from Docker Hub on first run.
@@ -214,7 +214,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 9. Stop all services:
 
 	```bash
-	pnpm docker:down
+	pnpm docker:stop
 	```
 
 ---
