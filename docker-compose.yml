@@ -41,15 +41,15 @@ services:
       context: .
       dockerfile: edgedb.Dockerfile
     environment:
-      EDGEDB_SERVER_SECURITY: strict
-      EDGEDB_SERVER_TLS_CERT_MODE: generate_self_signed
-      EDGEDB_SERVER_PASSWORD: ${EDGEDB_SERVER_PASSWORD:?error}
-      EDGEDB_SERVER_BINARY_ENDPOINT_SECURITY: optional # For auth server TLS
-      EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
       EDGEDB_HOST: ${EDGEDB_HOST:-edgedb}
       EDGEDB_PORT: ${EDGEDB_PORT:-5656}
       EDGEDB_SERVER_USER: ${EDGEDB_SERVER_USER:-edgedb}
+      EDGEDB_SERVER_PASSWORD: ${EDGEDB_SERVER_PASSWORD:?error}
       EDGEDB_BRANCH: ${EDGEDB_BRANCH:-main}
+      EDGEDB_SERVER_SECURITY: strict
+      EDGEDB_SERVER_TLS_CERT_MODE: generate_self_signed
+      EDGEDB_SERVER_BINARY_ENDPOINT_SECURITY: optional # For auth server TLS
+      EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
     volumes:
       - './dbschema:/dbschema'
       - './edgedb-data:/var/lib/edgedb/data'
