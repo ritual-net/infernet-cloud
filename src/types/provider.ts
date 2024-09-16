@@ -5,7 +5,7 @@ import type {
 	GCPServiceAccount,
 	InfernetNode,
 } from '$schema/interfaces';
-import type { InstanceTypeInfo, Region as AwsRegion } from '@aws-sdk/client-ec2'
+import type { Region as AwsRegion, AvailabilityZone, InstanceTypeInfo, Image } from '@aws-sdk/client-ec2'
 import type { compute_v1 } from 'googleapis'
 
 export enum ProviderTypeEnum {
@@ -37,7 +37,7 @@ export type Zone<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = {
 	name: string;
 	info: (
 		ProviderType extends ProviderTypeEnum.AWS ?
-			InstanceTypeInfo
+			AvailabilityZone
 		: ProviderType extends ProviderTypeEnum.GCP ?
 			compute_v1.Schema$Zone
 		:
@@ -49,12 +49,26 @@ export type Machine<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = 
 	id: string;
 	name: string;
 	description?: string;
-	hasGpu: boolean;
-	info: (
+	hasGpu?: boolean;
+	info?: (
 		ProviderType extends ProviderTypeEnum.AWS ?
 			InstanceTypeInfo
 		: ProviderType extends ProviderTypeEnum.GCP ?
 			compute_v1.Schema$MachineType
+		:
+			never
+	);
+}
+
+export type MachineImage<ProviderType extends ProviderTypeEnum = ProviderTypeEnum> = {
+	id: string;
+	name: string;
+	description: string;
+	info?: (
+		ProviderType extends ProviderTypeEnum.AWS ?
+			Image
+		: ProviderType extends ProviderTypeEnum.GCP ?
+			compute_v1.Schema$Image
 		:
 			never
 	);

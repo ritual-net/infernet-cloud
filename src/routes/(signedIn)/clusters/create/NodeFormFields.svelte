@@ -112,11 +112,13 @@
 	bind:regionId={node.config.region}
 	bind:zoneId={node.config.zone}
 	bind:machineId={node.config.machine_type}
+	bind:machineImageId={node.config.machine_image}
 	bind:hasGpu
 	constraints={{
 		region: constraints?.config?.region,
 		zone: constraints?.config?.zone,
 		machine_type: constraints?.config?.machine_type,
+		machine_image: constraints?.config?.machine_image,
 	}}
 />
 

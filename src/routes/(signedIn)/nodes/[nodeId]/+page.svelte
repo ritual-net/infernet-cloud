@@ -242,6 +242,18 @@
 				</dd>
 			</section>
 
+			<section class="row wrap">
+				<dt>Machine image</dt>
+
+				<dd>
+					<WithIcon
+						icon={node.provider && providers[node.provider].icon}
+					>
+						{node.machine_image}
+					</WithIcon>
+				</dd>
+			</section>
+
 			{#if node.docker_account}
 				<section class="row wrap">
 					<dt>Docker Hub Account</dt>

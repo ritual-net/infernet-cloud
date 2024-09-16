@@ -38,6 +38,7 @@
 
 		return (
 			String(item.value).toLowerCase().includes(String(normalizedInput))
+			|| String(item.label).toLowerCase().includes(String(normalizedInput))
 			// (
 			// 	typeof item.value === 'string' && typeof normalizedInput === 'string'
 			// 		? String(item.value).toLowerCase().includes(normalizedInput)

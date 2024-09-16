@@ -15,7 +15,7 @@ import { getRegionName } from '$/lib/utils/providers/common'
 /**
  * Google Cloud Provider extension of BaseResourceClient abstract class.
  */
-export class GCPResourceClient extends BaseResourceClient {
+export class GCPResourceClient extends BaseResourceClient<ProviderTypeEnum.GCP> {
 	googleCompute!: compute_v1.Compute;
 	projectId: string = '';
 
@@ -117,7 +117,9 @@ export class GCPResourceClient extends BaseResourceClient {
 	 *     "link": "https://www.googleapis.com/compute/v1/projects/project/zones/us-west4-c/machineTypes/t2d-standard-48"
 	 *   }, ...]
 	 */
-	async getMachines(zoneId: string) {
+	async getMachines(
+		zoneId: string,
+	) {
 		const response = await this.googleCompute.machineTypes.list({
 			project: this.projectId,
 			zone: zoneId,
@@ -126,13 +128,12 @@ export class GCPResourceClient extends BaseResourceClient {
 		return (
 			response.data.items
 				?.map(machine => ({
-					id: machine.name,
-					name: machine.name,
-					description: machine.description,
+					id: machine.name!,
+					name: machine.name!,
+					description: machine.description ?? undefined,
 					// https://cloud.google.com/compute/docs/gpus/#gpus_for_compute_workloads
 					hasGpu: /^(a3|a2|g2|n1)-/.test(machine.name!),
-					info: machine,
-				}) as Machine)
+				}))
 			?? []
 		)
 	}
@@ -147,14 +148,53 @@ export class GCPResourceClient extends BaseResourceClient {
 			zone: zoneId,
 		})
 
+		const machine = response.data
+
 		return {
 			id: machineId,
-			name: response.data.name!,
-			description: response.data.description,
-			link: response.data.selfLink,
+			name: machine.name!,
+			description: machine.description ?? undefined,
+			link: machine.selfLink,
 			// https://cloud.google.com/compute/docs/gpus/#gpus_for_compute_workloads
-			hasGpu: /^(a3|a2|g2|n1)-/.test(response.data.name!),
+			hasGpu: /^(a3|a2|g2|n1)-/.test(machine.name!),
+			info: machine,
+		}
+	}
+
+	async getMachineImages(
+		machineId: string,
+		zoneId: string,
+	) {
+		const response = await this.googleCompute.images.list({
+			project: 'ubuntu-os-cloud',
+			filter: '(status = READY)',
+		})
+
+		return (
+			response.data.items
+				?.map(image => ({
+					id: image.name!,
+					name: image.name!,
+					description: image.description || '',
+				}))
+				.sort((a, b) => a.name.localeCompare(b.name))
+			?? []
+		)
+	}
+
+	async getMachineImageInfo(
+		imageId: string,
+	) {
+		const response = await this.googleCompute.images.get({
+			project: 'ubuntu-os-cloud',
+			image: imageId,
+		})
+
+		return {
+			id: imageId,
+			name: response.data.name!,
+			description: response.data.description || '',
 			info: response.data,
-		} as Machine<ProviderTypeEnum.GCP>
+		}
 	}
 }

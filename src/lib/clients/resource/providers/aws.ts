@@ -1,7 +1,7 @@
 // Types
 import type { AWSServiceAccount } from '$schema/interfaces'
 import type { _InstanceType } from '@aws-sdk/client-ec2'
-import { ProviderTypeEnum, type Machine } from '$/types/provider'
+import { ProviderTypeEnum, type Machine, type MachineImage } from '$/types/provider'
 import { getRegionName } from '$/lib/utils/providers/common'
 
 
@@ -12,6 +12,7 @@ import {
 	DescribeAvailabilityZonesCommand,
 	DescribeInstanceTypeOfferingsCommand,
 	DescribeInstanceTypesCommand,
+	DescribeImagesCommand,
 } from '@aws-sdk/client-ec2'
 import { BaseResourceClient } from '$/lib/clients/resource/base'
 
@@ -20,7 +21,7 @@ import { isTruthy } from '$/lib/utils/isTruthy'
 /**
  * Amazon Web Services extension of BaseResourceClient abstract class.
  */
-export class AWSResourceClient extends BaseResourceClient {
+export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> {
 	amazonCompute!: EC2Client;
 	creds!: AWSServiceAccount['creds'];
 
@@ -94,7 +95,9 @@ export class AWSResourceClient extends BaseResourceClient {
 	 * @returns A flat array of zone names.
 	 * Example return value: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 	 */
-	async getZones(regionId: string) {
+	async getZones(
+		regionId: string,
+	) {
 		this.amazonCompute = await this.createInstance(regionId)
 
 		const command = new DescribeAvailabilityZonesCommand({});
@@ -105,8 +108,8 @@ export class AWSResourceClient extends BaseResourceClient {
 			response
 				.AvailabilityZones
 				?.map(zone => ({
-					id: zone.ZoneName,
-					name: zone.ZoneName,
+					id: zone.ZoneName!,
+					name: zone.ZoneName!,
 					info: zone,
 				}))
 				.filter(isTruthy)
@@ -149,7 +152,6 @@ export class AWSResourceClient extends BaseResourceClient {
 				?.map(offering => ({
 					id: offering.InstanceType!,
 					name: offering.InstanceType!,
-					info: offering.LocationType,
 				}))
 			?? []
 		)
@@ -172,6 +174,68 @@ export class AWSResourceClient extends BaseResourceClient {
 			name: machineId,
 			hasGpu: instanceTypeInfo?.GpuInfo ? true : false,
 			info: instanceTypeInfo,
-		} as Machine<ProviderTypeEnum.AWS>
+		}
+	}
+
+	async getMachineImages(
+		machineId: _InstanceType,
+		zoneId: string,
+	): Promise<MachineImage[]> {
+		const architectures = (await this.getMachineInfo(machineId, zoneId)).info?.ProcessorInfo?.SupportedArchitectures
+
+		const response = await this.amazonCompute.send(
+			new DescribeImagesCommand({
+				Filters: (
+					[
+						{
+							Name: 'state',
+							Values: ['available'],
+						},
+						architectures && {
+							Name: 'architecture',
+							Values: architectures,
+						},
+						{
+							Name: 'name',
+							Values: ['ubuntu/images/hvm-ssd/ubuntu-*'],
+						},
+					]
+						.filter(isTruthy)
+				),
+				Owners: ['amazon'],
+			})
+		)
+
+		return (
+			response.Images
+				?.map(image => ({
+					id: image.ImageId!,
+					name: image.Name || image.ImageId!,
+					description: image.Description || '',
+				}))
+				.sort((a, b) => a.name.localeCompare(b.name))
+			?? []
+		)
+	}
+
+	async getMachineImageInfo(
+		imageId: string,
+	) {
+		const response = await this.amazonCompute.send(
+			new DescribeImagesCommand({
+				ImageIds: [imageId],
+			})
+		)
+
+		const image = response.Images?.[0]
+		if (!image)
+			throw new Error(`Image with ID ${imageId} not found`)
+
+		return {
+			id: image.ImageId!,
+			name: image.Name || image.ImageId!,
+			description: image.Description || '',
+			info: image,
+		}
 	}
 }

@@ -163,12 +163,14 @@ module default {
     required region: str {
       # default := .cluster.region;
     }
+
     required zone: str {
       # default := .cluster.zone;
     }
-    required machine_type: str {
-      # default := .cluster.machine_type;
-    }
+
+    required machine_type: str;
+
+    required machine_image: str;
 
     required chain_enabled: bool {
       default := false;
@@ -247,7 +249,7 @@ module default {
 
     ip_allow_ssh: array<IpAddressWithMask>;
 
-    router: tuple<region: str, zone: str, machine_type: str>;
+    router: tuple<region: str, zone: str, machine_type: str, machine_image: str>;
 
     multi nodes: InfernetNode {
       constraint exclusive;

@@ -79,6 +79,7 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 							region: router.region!,
 							zone: router.zone!,
 							machine_type: router.machine_type,
+							machine_image: router.machine_image,
 						}),
 					},
 					// nodes: e.for(e.array_unpack(nodes), (node) => (

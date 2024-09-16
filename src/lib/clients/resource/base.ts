@@ -1,13 +1,13 @@
 // Types
-import type { Machine, ProviderInfo, Region, Zone, ZoneInfo } from '$/types/provider'
-
+import type { Machine, ProviderInfo, Region, Zone, ZoneInfo, MachineImage } from '$/types/provider'
+import type { ProviderTypeEnum } from '$/types/provider'
 
 // Functions
 
 /**
  * Base abstract class for fetching data from cloud providers.
  */
-export abstract class BaseResourceClient {
+export abstract class BaseResourceClient<T extends ProviderTypeEnum = ProviderTypeEnum> {
 	/**
 	 * Authenticate with the cloud provider.
 	 * This method should be called before any other methods.
@@ -22,7 +22,7 @@ export abstract class BaseResourceClient {
 	 *
 	 * @returns Flat array of all region IDs.
 	 */
-	abstract getRegions(): Promise<Region[]>;
+	abstract getRegions(): Promise<Region<T>[]>;
 
 	/**
 	 * Get the list of zones in a region.
@@ -30,7 +30,7 @@ export abstract class BaseResourceClient {
 	 * @param regionId The name of the region.
 	 * @returns Flat array of all zones in the region.
 	 */
-	abstract getZones(regionId: string): Promise<Zone[]>;
+	abstract getZones(regionId: string): Promise<Zone<T>[]>;
 
 	/**
 	 * Get the list of machine types in a zone.
@@ -38,7 +38,7 @@ export abstract class BaseResourceClient {
 	 * @param zoneId The name of the zone.
 	 * @returns Flat array of all machine types in a zone.
 	 */
-	abstract getMachines(zoneId: string): Promise<Machine[]>;
+	abstract getMachines(zoneId: string): Promise<Machine<T>[]>;
 
 	/**
 	 * End to end method to get all provider info (regions, zones, machines).
@@ -71,5 +71,10 @@ export abstract class BaseResourceClient {
 	abstract getMachineInfo(
 		machineId: string,
 		zoneId: string,
-	): Promise<Machine>
+	): Promise<Machine<T>>
+
+	abstract getMachineImages(
+		machineId: string,
+		zoneId: string,
+	): Promise<MachineImage<T>[]>
 }

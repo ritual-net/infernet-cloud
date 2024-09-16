@@ -113,6 +113,7 @@ export const PATCH: RequestHandler = async ({
 							region: router.region,
 							zone: router.zone,
 							machine_type: router.machine_type,
+							machine_image: router.machine_image,
 						})
 						: e.set()
 				),
