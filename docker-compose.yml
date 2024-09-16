@@ -57,9 +57,9 @@ services:
       - '5656'
     healthcheck:
       test: ['CMD', 'curl', '-f', '${EDGEDB_SERVER_PROTOCOL:-http}://${EDGEDB_HOST:-edgedb}:${EDGEDB_PORT:-5656}/server/status/ready']
-      interval: 10s
+      interval: 5s
       timeout: 10s
-      retries: 5
+      retries: 20
     restart: unless-stopped
 
   smtp:
