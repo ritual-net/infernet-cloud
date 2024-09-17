@@ -26,7 +26,7 @@
 		"docker:edgedb:restart": "pnpm run docker:clean && pnpm run docker-compose up --build --no-deps --detach edgedb",
 		"docker:edgedb:backup": "cp -r edgedb-data edgedb-data.backup.$(date +%s)",
 		"docker:edgedb:destroy": "read -p 'Destroy EdgeDB Docker volume? (y/N): ' confirm && case $confirm in y|Y) pnpm run docker-compose down edgedb && rm -rf edgedb-data ;; *) echo 'Operation cancelled' ;; esac",
-		"docker:edgedb:cli": "source .env.docker && echo ${EDGEDB_SERVER_PASSWORD} | pnpm run docker-compose exec -T edgedb edgedb --tls-security insecure --password-from-stdin",
+		"docker:edgedb:cli": "sh -c '. .env.docker && printf \"%s\\n\" \"$EDGEDB_SERVER_PASSWORD\" | pnpm run docker-compose exec -T edgedb edgedb --tls-security insecure --password-from-stdin'",
 		"docker-compose": "docker compose --env-file .env.docker",
 		"build": "vite build",
 		"preview": "vite preview",
