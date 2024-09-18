@@ -150,6 +150,7 @@
 	use:enhance
 >
 	<Tabs
+		labelText="Cluster configuration"
 		bind:value={currentFieldset}
 		items={[
 			{

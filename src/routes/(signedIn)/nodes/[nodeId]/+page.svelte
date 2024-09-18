@@ -83,6 +83,7 @@
 	import ScrollArea from '$/components/ScrollArea.svelte'
 	import Status from '$/views/Status.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
+	import { DockerIcon } from '$/icons'
 </script>
 
 
@@ -259,7 +260,11 @@
 					<dt>Docker Hub account</dt>
 
 					<dd>
-						{node.docker_account.username}
+						<WithIcon
+							icon={DockerIcon}
+						>
+							{node.docker_account.username}
+						</WithIcon>
 					</dd>
 				</section>
 			{/if}
