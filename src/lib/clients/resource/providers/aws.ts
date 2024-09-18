@@ -84,6 +84,8 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 					}
 				})
 				.filter(isTruthy)
+				// Restrict to `us-east-1` to avoid "Resource not found" errors
+				.filter(region => region.id === 'us-east-1')
 			?? []
 		)
 	}
