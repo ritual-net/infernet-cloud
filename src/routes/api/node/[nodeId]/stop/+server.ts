@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({
 
 		await nodeClient.stop()
 
-		return text('Stopped node.')
+		return text('Stopping node.')
 	} catch (e) {
 		return error(500, (e as Error).message)
 	}

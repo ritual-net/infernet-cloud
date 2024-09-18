@@ -75,7 +75,7 @@ export const actions: Actions = {
 		return message(
 			{},
 			{
-				title: `Stopped node.`,
+				title: `Stopping node.`,
 				description: result,
 			},
 			{
