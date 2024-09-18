@@ -104,8 +104,8 @@ export class GCPNodeClient extends BaseNodeClient {
 		const { contents, ...output } = result[0]
 
 		return {
-			start: output.start,
-			next: output.next,
+			start: (output.start ?? undefined) && Number(output.start),
+			next: (output.next ?? undefined) && Number(output.next),
 			logs: (
 				contents
 					?.split('\r\n')
