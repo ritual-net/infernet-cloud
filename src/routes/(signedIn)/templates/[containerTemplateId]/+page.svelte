@@ -270,8 +270,8 @@
 				<dt>Rate limiting</dt>
 
 				<dd>
-					{containerTemplate.rate_limit_num_requests} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests)]}
-					every {containerTemplate.rate_limit_period} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period)]}
+					{containerTemplate.rate_limit_num_requests ?? 60} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests ?? 60)]}
+					every {(containerTemplate.rate_limit_period ?? 60.0).toFixed(1)} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period ?? 60.0)]}
 				</dd>
 			</section>
 

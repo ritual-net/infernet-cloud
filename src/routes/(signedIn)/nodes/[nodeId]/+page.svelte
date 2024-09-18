@@ -355,16 +355,14 @@
 					</section>
 				{/if}
 
-				{#if node.snapshot_sync_sleep || node.snapshot_sync_batch_size}
-					<section class="row wrap">
-						<dt>Snapshot syncing</dt>
+				<section class="row wrap">
+					<dt>Snapshot syncing</dt>
 
-						<dd>
-							<p>{node.snapshot_sync_sleep} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sleep)]} between snapshots</p>
-							<p>{node.snapshot_sync_batch_size} {({ 'one': 'subscription', 'other': 'subscriptions'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_batch_size)]} per batch</p>
-						</dd>
-					</section>
-				{/if}
+					<dd>
+						<p>{(node.snapshot_sync_sleep ?? 1.0).toFixed(1)} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sleep ?? 1.0)]} between snapshots</p>
+						<p>{node.snapshot_sync_batch_size ?? 200} {({ 'one': 'subscription', 'other': 'subscriptions'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_batch_size ?? 200)]} per batch</p>
+					</dd>
+				</section>
 			</dl>
 		</section>
 	{/if}
