@@ -75,7 +75,10 @@
 
 	$: imagesPromise.then(_ => images = _)
 
-	let dockerUserImages: string[] | undefined
+	let dockerUserImages: {
+		value: string,
+		label: string,
+	}[] | undefined
 
 	$: dockerUserImagesQuery = $form.dockerAccountUsername
 		? createQuery({
