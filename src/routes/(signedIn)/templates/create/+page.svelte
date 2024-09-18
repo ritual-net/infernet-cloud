@@ -200,7 +200,7 @@
 				<div class="column inline">
 					<h3 class="row inline">
 						<label for="dockerAccountUsername">
-							Docker Hub Account
+							Docker Hub account
 						</label>
 			
 						<span class="annotation">Optional</span>

@@ -256,7 +256,7 @@
 
 			{#if node.docker_account}
 				<section class="row wrap">
-					<dt>Docker Hub Account</dt>
+					<dt>Docker Hub account</dt>
 
 					<dd>
 						{node.docker_account.username}
