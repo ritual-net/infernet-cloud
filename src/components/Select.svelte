@@ -122,7 +122,11 @@
 						>
 							<div class="row">
 								{#if item.icon}
-									<img src={item.icon} />
+									{#if typeof item.icon === 'string'}
+										<img src={item.icon} />
+									{:else}
+										<svelte:component this={item.icon} />
+									{/if}
 								{/if}
 
 								{item.label}
@@ -142,8 +146,10 @@
 									})}
 								>
 									<div class="row">
-										{#if subitem.icon}
-											<img src={item.icon} />
+										{#if typeof subitem.icon === 'string'}
+											<img src={subitem.icon} />
+										{:else}
+											<svelte:component this={subitem.icon} />
 										{/if}
 
 										<span>{subitem.label}</span>
@@ -163,7 +169,11 @@
 					>
 						<div class="row">
 							{#if item.icon}
-								<img src={item.icon} />
+								{#if typeof item.icon === 'string'}
+									<img src={item.icon} />
+								{:else}
+									<svelte:component this={item.icon} />
+								{/if}
 							{/if}
 
 							<span>{item.label}</span>

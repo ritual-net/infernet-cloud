@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Inputs
-	export let icon: string | undefined
+	export let icon: string | ConstructorOfATypedSvelteComponent | undefined
 	export let alt: string | undefined
 	export let value: string | undefined
 </script>
@@ -8,10 +8,14 @@
 
 <div class="row">
 	<slot name="icon">
-		<img
-			src={icon}
-			{alt}
-		/>
+		{#if typeof icon === 'string'}
+			<img
+				src={icon}
+				{alt}
+			/>
+		{:else if icon}
+			<svelte:component this={icon} />
+		{/if}
 	</slot>
 
 	<slot>
