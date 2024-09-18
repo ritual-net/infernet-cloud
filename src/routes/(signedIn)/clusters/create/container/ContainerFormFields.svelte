@@ -179,7 +179,7 @@
 			items={(
 				[
 					dockerUserImages && {
-						value: 'docker',
+						value: `docker-hub/${nodeConfiguration.dockerAccountUsername}`,
 						label: `Docker Hub › ${nodeConfiguration.dockerAccountUsername}`,
 						items: (
 							dockerUserImages
@@ -218,8 +218,9 @@
 						dockerImagesQueryValue?.trim()
 						&& !(
 							new Set([
+								...dockerUserImages?.map(image => image.value) ?? [],
 								...images ?? [],
-								...dockerImages?.map(image => image.value) ?? []
+								...dockerImages?.map(image => image.value) ?? [],
 							])
 								.has(
 									dockerImagesQueryValue.trim().toLowerCase()
