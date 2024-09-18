@@ -26,6 +26,8 @@
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 	import DropdownMenu from '$/components/DropdownMenu.svelte'
+	import WithIcon from '$/components/WithIcon.svelte'
+	import { DockerIcon } from '$/icons'
 </script>
 
 
@@ -129,7 +131,11 @@
 					<dt>Docker Hub account</dt>
 
 					<dd>
-						{containerTemplate.docker_account.username}
+						<WithIcon
+							icon={DockerIcon}
+						>
+							{containerTemplate.docker_account.username}
+						</WithIcon>
 					</dd>
 				</section>
 			{/if}
@@ -144,7 +150,11 @@
 				<dt>Image</dt>
 
 				<dd>
-					{containerTemplate.image}
+					<WithIcon
+						icon={DockerIcon}
+					>
+						{containerTemplate.image}
+					</WithIcon>
 				</dd>
 			</section>
 
@@ -152,7 +162,11 @@
 				<dt>Service ID</dt>
 
 				<dd>
-					{containerTemplate.container_id}
+					<WithIcon
+						icon={RitualLogo}
+					>
+						{containerTemplate.container_id}
+					</WithIcon>
 				</dd>
 			</section>
 
