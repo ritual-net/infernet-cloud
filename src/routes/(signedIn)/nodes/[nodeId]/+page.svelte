@@ -464,7 +464,7 @@
 				<dt>Last updated</dt>
 
 				<dd>
-					{new Date($logsQuery.dataUpdatedAt).toLocaleString()}
+					{$logsQuery.dataUpdatedAt ? new Date($logsQuery.dataUpdatedAt).toLocaleString() : '–'}
 				</dd>
 			</section>
 
