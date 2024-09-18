@@ -192,8 +192,10 @@
 							use:melt={$groupLabel(item.label)}
 						>
 							<div class="row">
-								{#if item.icon}
+								{#if typeof item.icon === 'string'}
 									<img src={item.icon} />
+								{:else}
+									<svelte:component this={item.icon} />
 								{/if}
 
 								{item.label}
@@ -213,8 +215,10 @@
 									})}
 								>
 									<div class="row">
-										{#if subitem.icon}
+										{#if typeof subitem.icon === 'string'}
 											<img src={subitem.icon} />
+										{:else}
+											<svelte:component this={subitem.icon} />
 										{/if}
 
 										<span>{subitem.label}</span>
@@ -233,8 +237,10 @@
 						})}
 					>
 						<div class="row">
-							{#if item.icon}
+							{#if typeof item.icon === 'string'}
 								<img src={item.icon} />
+							{:else}
+								<svelte:component this={item.icon} />
 							{/if}
 
 							<span>{item.label}</span>
@@ -407,7 +413,8 @@
 		width: 0;
 	}
 
-	img {
+	img,
+	[data-melt-combobox-menu] :global(svg) {
 		width: 1.5em;
 		height: 1.5em;
 		object-fit: contain;

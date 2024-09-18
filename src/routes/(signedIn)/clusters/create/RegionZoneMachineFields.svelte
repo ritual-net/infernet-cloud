@@ -33,12 +33,15 @@
 	export let regionId: string | undefined | null
 	export let zoneId: string | undefined | null
 	export let machineId: string | undefined | null
-	export let machineImageId: string | undefined | null  // Add this line
+	export let machineImageId: string | undefined | null
 	export let hasGpu: boolean | undefined | null
 
 
 	// Internal state
-	let overrideDefaultRegionAndZone = defaults?.region !== regionId || defaults?.zone !== zoneId
+	let overrideDefaultRegionAndZone = Boolean(
+		(defaults?.region && regionId && defaults.region !== regionId)
+		|| (defaults?.zone && zoneId && defaults.zone !== zoneId)
+	)
 
 	$: if(defaults && !overrideDefaultRegionAndZone)
 		regionId = defaults.region
@@ -304,7 +307,11 @@
 				{/if}
 			</div>
 
-			<div class="row equal align-start wrap">
+			<!-- <fieldset
+				class="region-zone-fields row equal align-start wrap"
+				disabled={entityType !== 'cluster' && !overrideDefaultRegionAndZone}
+			> -->
+			<fieldset class="row equal align-start wrap">
 				<div class="column">
 					<div class="column inline">
 						<h4>
@@ -340,6 +347,7 @@
 							name="{namePrefix}.region"
 							labelText="Region"
 							bind:value={regionId}
+							disabled={entityType !== 'cluster' && !overrideDefaultRegionAndZone}
 							{...!regions
 								? {
 									placeholder: 'Loading available regions...',
@@ -450,6 +458,7 @@
 							name="{namePrefix}.zone"
 							labelText="Zone"
 							bind:value={zoneId}
+							disabled={entityType !== 'cluster' && !overrideDefaultRegionAndZone}
 							{...!zones
 								? {
 									placeholder: (
@@ -515,7 +524,7 @@
 						</Collapsible>
 					{/if}
 				</div>
-			</div>
+			</fieldset>
 		</section>
 
 		{#if entityType !== 'cluster'}
@@ -740,5 +749,9 @@
 	.icon {
 		width: 1.5em;
 		height: 1.5em;
+	}
+
+	.region-zone-fields:disabled {
+		opacity: initial;
 	}
 </style>

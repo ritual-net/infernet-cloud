@@ -16,12 +16,14 @@
 	$: clustersPromise.then(_ => { clusters = _ })
 
 
-	// Functions
-	import { resolveRoute } from '$app/paths'
+	// Actions
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
+	import { applyAction } from '$app/forms'
 
 
 	// Components
 	import ClustersTable from '$/routes/(signedIn)/clusters/ClustersTable.svelte'
+	import DropdownMenu from '$/components/DropdownMenu.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 	import RitualLogo from '$/icons/RitualLogo.svelte'
 </script>
@@ -56,6 +58,32 @@
 			})}
 			class="button primary"
 		>Edit account</a> -->
+
+		<DropdownMenu
+			labelText="Service account actions"
+			items={[
+				{
+					value: 'delete',
+					label: 'Disconnect',
+					isDestructive: true,
+					formAction: `?/delete`,
+					formSubmit: async (e) => {
+						const toast = addToast({
+							data: {
+								type: 'default',
+								title: `Disconnecting "${serviceAccount.name}"...`,
+							},
+						})
+
+						return async ({ result }) => {
+							await applyAction(result)
+
+							removeToast(toast.id)
+						}
+					},
+				},
+			]}
+		/>
 	</header>
 
 	<section class="column">
