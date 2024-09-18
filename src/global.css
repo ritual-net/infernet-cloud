@@ -66,7 +66,8 @@
 	font-style: normal;
 	outline-color: inherit;
 	text-align: inherit;
-	text-decoration: none;
+	text-decoration-line: none;
+	text-decoration-color: color-mix(in oklch, currentColor 33%, transparent);
 
 	transition-timing-function: var(--transition-easeOutExpo);
 }
@@ -110,7 +111,8 @@ a {
 	transition: 0.2s color;
 
 	p &:not(.button) {
-		text-decoration: underline;
+		text-decoration-line: underline;
+		text-decoration-color: color-mix(in oklch, currentColor 50%, transparent);
 
 		&:hover {
 			--textColor: var(--accentColor);
@@ -137,6 +139,10 @@ a {
 
 strong, b {
 	font-weight: bold;
+}
+
+u {
+	text-decoration-line: underline;
 }
 
 ol, ul {
