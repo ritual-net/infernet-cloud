@@ -5,7 +5,7 @@ export type MenuItem<Value> = {
 	value: Value,
 	label: string,
 	disabled?: boolean,
-	icon?: string,
+	icon?: string | ConstructorOfATypedSvelteComponent,
 	isDestructive?: boolean,
 	onClick?: (item: MenuItem<Value>) => void,
 	formAction?: string,

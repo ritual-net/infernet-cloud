@@ -100,6 +100,7 @@
 	import Select from '$/components/Select.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import ContainerFormFields from '$/routes/(signedIn)/clusters/create/container/ContainerFormFields.svelte'
+	import { DockerIcon } from '$/icons'
 </script>
 
 
@@ -199,7 +200,7 @@
 				<div class="column inline">
 					<h3 class="row inline">
 						<label for="dockerAccountUsername">
-							Docker Hub Account
+							Docker Hub account
 						</label>
 			
 						<span class="annotation">Optional</span>
@@ -236,6 +237,7 @@
 									label: 'None'
 								},
 								...dockerAccounts.map(dockerAccount => ({
+									icon: DockerIcon,
 									value: dockerAccount.username,
 									label: dockerAccount.username,
 								}))
