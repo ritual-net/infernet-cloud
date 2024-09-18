@@ -167,7 +167,7 @@
 				</label>
 			</h3>
 
-			<p>Choose the image this container is deployed with.</p>
+			<p>Choose the <a href="https://hub.docker.com" target="_blank">Docker Hub image</a> of the container's workflow.</p>
 		</div>
 
 		<Combobox
@@ -251,7 +251,7 @@
 				</label>
 			</h3>
 
-			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_1_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
+			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_2_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
 		</div>
 
 		<Select
@@ -704,7 +704,7 @@
 						class="card warning row"
 						data-before="⚠️"
 					>
-						<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. If using this, be sure to permission the node by setting allowed Addresses and Delegate Addresses under Firewall.</p>
+						<p>Note: <u>Wrong proofs can lead to slashing of your node's wallet</u>. Be sure to permission the node by configuring allowed Addresses and Delegate Addresses under Firewall.</p>
 					</div>
 				{/if}
 			</section>
