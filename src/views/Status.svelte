@@ -8,6 +8,7 @@
 		'failed': 'Failed',
 		'succeeded': 'Succeeded',
 		'unknown': 'Unknown',
+		'pending': 'Pending',
 		'running': 'Running',
 		'stopping': 'Stopping',
 		'stopped': 'Stopped',
@@ -38,6 +39,7 @@
 		}
 
 		&[data-status="updating"],
+		&[data-status="pending"],
 		&[data-status="stopping"],
 		&[data-status="shutting-down"] {
 			--status-color: #b3a316;
