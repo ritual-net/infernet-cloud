@@ -48,7 +48,12 @@
 					start: start?.toString(),
 				})}`,
 			)
-				.then(response => response.json() as ReturnType<BaseNodeClient['getLogs']>)
+				.then(async response => {
+					if(!response.ok)
+						throw await response.text()
+
+					return await response.json() as ReturnType<BaseNodeClient['getLogs']>
+				})
 		),
 
 		getNextPageParam: (lastPage) => lastPage.next,
@@ -471,7 +476,7 @@
 			<section class="column">
 				<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
 
-				<dd>
+				<dd>{$logsQuery.isError}
 					{#if $logsQuery.isLoading}
 						<div class="card loading">
 							<p>Loading logs...</p>
