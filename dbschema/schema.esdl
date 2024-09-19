@@ -227,7 +227,7 @@ module default {
       .cluster.service_account.provider
     );
 
-    provider_id := 'ic-node-' ++ uuid_to_base36(.id);
+    provider_id := 'icn-' ++ uuid_to_base36(.id);
 
     state := (
       with node := (
@@ -283,7 +283,7 @@ module default {
       default := false;
     }
 
-    provider_id := 'ic-cluster-' ++ uuid_to_base36(.id);
+    provider_id := 'icc-' ++ uuid_to_base36(.id);
 
     status := (
       'updating' if .locked else
