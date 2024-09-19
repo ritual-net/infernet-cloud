@@ -190,7 +190,7 @@ export const NodeConfig = z
 
 		'trail_head_blocks': z
 			.number()
-			.positive()
+			.min(0)
 			.optional()
 			.nullable(),
 
