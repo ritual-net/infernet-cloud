@@ -42,8 +42,6 @@ export const GET: RequestHandler = async ({
 				try {
 					const nodeClient = await getNodeClient(client, nodeId)
 
-					console.log({nodeClient})
-
 					let info: NodeInfo | undefined
 					let infoError: string | undefined
 
