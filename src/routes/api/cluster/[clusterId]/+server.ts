@@ -143,10 +143,7 @@ export const PATCH: RequestHandler = async ({
 		} catch (e) {
 			console.error(e)
 		}
-
-		if(result?.error)
-			return error(500, result.error)
-	})();
+	})()
 
 	return json({
 		cluster: updatedCluster,
