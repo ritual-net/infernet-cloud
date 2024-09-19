@@ -5,25 +5,25 @@ import * as _ from "../imports";
 import type * as _std from "./std";
 import type * as _auth from "./ext/auth";
 export type $Address = $.ScalarType<"std::str", string>;
-const Address: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "ceaa41a6-5e72-11ef-b873-759a628391d9", _.syntax.literal);
+const Address: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "cb66871c-6ebb-11ef-b17d-3bf3250130b2", _.syntax.literal);
 
 export type $BigIntString = $.ScalarType<"std::str", string>;
-const BigIntString: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "d12552ea-5e72-11ef-8816-8dc02c95a6eb", _.syntax.literal);
+const BigIntString: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "cc9d960c-6ebb-11ef-9853-0d8150de90f6", _.syntax.literal);
 
 export type $CloudProvider = {
   "AWS": $.$expr_Literal<$CloudProvider>;
   "GCP": $.$expr_Literal<$CloudProvider>;
 } & $.EnumType<"default::CloudProvider", ["AWS", "GCP"]>;
-const CloudProvider: $CloudProvider = $.makeType<$CloudProvider>(_.spec, "bf7dea84-5e72-11ef-a1a9-ab032b9df744", _.syntax.literal);
+const CloudProvider: $CloudProvider = $.makeType<$CloudProvider>(_.spec, "c0423188-6ebb-11ef-a47c-219def5bd5a5", _.syntax.literal);
 
 export type $IpAddress = $.ScalarType<"std::str", string>;
-const IpAddress: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "cead120a-5e72-11ef-ab05-9711e0bccc0c", _.syntax.literal);
+const IpAddress: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "cb67a9b2-6ebb-11ef-80cb-c72bf69d5faf", _.syntax.literal);
 
 export type $IpAddressWithMask = $.ScalarType<"std::str", string>;
-const IpAddressWithMask: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "cece4d76-5e72-11ef-bcbd-5bf58e511666", _.syntax.literal);
+const IpAddressWithMask: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "cb68a8f8-6ebb-11ef-a476-099b7b38bb79", _.syntax.literal);
 
 export type $Secp256k1PrivateKey = $.ScalarType<"std::str", string>;
-const Secp256k1PrivateKey: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "d10581c2-5e72-11ef-ba6e-d554985f3810", _.syntax.literal);
+const Secp256k1PrivateKey: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "cc86729c-6ebb-11ef-8fad-c53f1a392df4", _.syntax.literal);
 
 export type $TerraformAction = {
   "Init": $.$expr_Literal<$TerraformAction>;
@@ -31,7 +31,7 @@ export type $TerraformAction = {
   "Apply": $.$expr_Literal<$TerraformAction>;
   "Destroy": $.$expr_Literal<$TerraformAction>;
 } & $.EnumType<"default::TerraformAction", ["Init", "Plan", "Apply", "Destroy"]>;
-const TerraformAction: $TerraformAction = $.makeType<$TerraformAction>(_.spec, "d440abdc-5e72-11ef-a02d-e55b3dde73dd", _.syntax.literal);
+const TerraformAction: $TerraformAction = $.makeType<$TerraformAction>(_.spec, "ce1b82a0-6ebb-11ef-985a-53c0bdd3949c", _.syntax.literal);
 
 export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "identity": $.LinkDesc<_auth.$Identity, $.Cardinality.One, {}, false, false,  false, false>;
@@ -47,7 +47,7 @@ export type $UserλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c2
 type $User = $.ObjectType<"default::User", $UserλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $User = $.makeType<$User>(_.spec, "bf6c1746-5e72-11ef-8fd3-37ccd6b64a6e", _.syntax.literal);
+const $User = $.makeType<$User>(_.spec, "c0312c58-6ebb-11ef-ad8c-e15c7f45bbf0", _.syntax.literal);
 
 const User: $.$expr_PathNode<$.TypeSet<$User, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($User, $.Cardinality.Many), null);
 
@@ -64,8 +64,8 @@ export type $ClusterλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "nodes": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, true, false,  false, false>;
   "router_state": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, true, false, false>;
-  "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
   "router": $.PropertyDesc<$.NamedTupleType<{region: _std.$str, zone: _std.$str, machine_type: _std.$str, machine_image: _std.$str}>, $.Cardinality.AtMostOne, false, false, false, false>;
+  "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
   "<cluster[is InfernetNode]": $.LinkDesc<$InfernetNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster[is TerraformDeployment]": $.LinkDesc<$TerraformDeployment, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cluster": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -75,7 +75,7 @@ type $Cluster = $.ObjectType<"default::Cluster", $ClusterλShape, null, [
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },service_account: {__element__: $ServiceAccount, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
   {nodes: {__element__: $InfernetNode, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $Cluster = $.makeType<$Cluster>(_.spec, "bf9834de-5e72-11ef-9ece-c1f2916728f8", _.syntax.literal);
+const $Cluster = $.makeType<$Cluster>(_.spec, "c058c88a-6ebb-11ef-b8fa-e30fd44e131b", _.syntax.literal);
 
 const Cluster: $.$expr_PathNode<$.TypeSet<$Cluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Cluster, $.Cardinality.Many), null);
 
@@ -84,7 +84,7 @@ export type $AWSClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 type $AWSCluster = $.ObjectType<"default::AWSCluster", $AWSClusterλShape, null, [
   ...$Cluster['__exclusives__'],
 ]>;
-const $AWSCluster = $.makeType<$AWSCluster>(_.spec, "bfd1f0f2-5e72-11ef-9be9-457f4a8b8f5a", _.syntax.literal);
+const $AWSCluster = $.makeType<$AWSCluster>(_.spec, "c089ece4-6ebb-11ef-bfed-210343ccc30f", _.syntax.literal);
 
 const AWSCluster: $.$expr_PathNode<$.TypeSet<$AWSCluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($AWSCluster, $.Cardinality.Many), null);
 
@@ -101,7 +101,7 @@ type $ServiceAccount = $.ObjectType<"default::ServiceAccount", $ServiceAccountλ
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $ServiceAccount = $.makeType<$ServiceAccount>(_.spec, "bf7df506-5e72-11ef-9d3e-dbbbf3f48ea5", _.syntax.literal);
+const $ServiceAccount = $.makeType<$ServiceAccount>(_.spec, "c0423b38-6ebb-11ef-9ad5-f9366bc74f2e", _.syntax.literal);
 
 const ServiceAccount: $.$expr_PathNode<$.TypeSet<$ServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ServiceAccount, $.Cardinality.Many), null);
 
@@ -112,7 +112,7 @@ export type $AWSServiceAccountλShape = $.typeutil.flatten<Omit<$ServiceAccount�
 type $AWSServiceAccount = $.ObjectType<"default::AWSServiceAccount", $AWSServiceAccountλShape, null, [
   ...$ServiceAccount['__exclusives__'],
 ]>;
-const $AWSServiceAccount = $.makeType<$AWSServiceAccount>(_.spec, "bff9ee2c-5e72-11ef-85cb-dfc481fc6856", _.syntax.literal);
+const $AWSServiceAccount = $.makeType<$AWSServiceAccount>(_.spec, "c0a9080e-6ebb-11ef-bf71-e794d2156cd2", _.syntax.literal);
 
 const AWSServiceAccount: $.$expr_PathNode<$.TypeSet<$AWSServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($AWSServiceAccount, $.Cardinality.Many), null);
 
@@ -137,7 +137,7 @@ export type $ContainerλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
 type $Container = $.ObjectType<"default::Container", $ContainerλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $Container = $.makeType<$Container>(_.spec, "bf77d554-5e72-11ef-b344-dddda526569b", _.syntax.literal);
+const $Container = $.makeType<$Container>(_.spec, "c03c8e9a-6ebb-11ef-9fbe-bb5b64eb0593", _.syntax.literal);
 
 const Container: $.$expr_PathNode<$.TypeSet<$Container, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Container, $.Cardinality.Many), null);
 
@@ -152,7 +152,7 @@ type $ContainerTemplate = $.ObjectType<"default::ContainerTemplate", $ContainerT
   ...$Container['__exclusives__'],
   {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $ContainerTemplate = $.makeType<$ContainerTemplate>(_.spec, "c0454ec6-5e72-11ef-9556-fba5285b9e63", _.syntax.literal);
+const $ContainerTemplate = $.makeType<$ContainerTemplate>(_.spec, "c0e681c0-6ebb-11ef-b269-b7ec267fe886", _.syntax.literal);
 
 const ContainerTemplate: $.$expr_PathNode<$.TypeSet<$ContainerTemplate, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ContainerTemplate, $.Cardinality.Many), null);
 
@@ -168,7 +168,7 @@ type $DockerAccount = $.ObjectType<"default::DockerAccount", $DockerAccountλSha
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {username: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },user: {__element__: $User, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $DockerAccount = $.makeType<$DockerAccount>(_.spec, "cc5f39b0-5e72-11ef-9b10-2be879d6f78f", _.syntax.literal);
+const $DockerAccount = $.makeType<$DockerAccount>(_.spec, "c9f818c8-6ebb-11ef-aeed-47cbae306173", _.syntax.literal);
 
 const DockerAccount: $.$expr_PathNode<$.TypeSet<$DockerAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($DockerAccount, $.Cardinality.Many), null);
 
@@ -177,7 +177,7 @@ export type $GCPClusterλShape = $.typeutil.flatten<$ClusterλShape & {
 type $GCPCluster = $.ObjectType<"default::GCPCluster", $GCPClusterλShape, null, [
   ...$Cluster['__exclusives__'],
 ]>;
-const $GCPCluster = $.makeType<$GCPCluster>(_.spec, "c08f6542-5e72-11ef-8c1f-452de92ffc51", _.syntax.literal);
+const $GCPCluster = $.makeType<$GCPCluster>(_.spec, "c1172776-6ebb-11ef-aa3c-1371beb168b0", _.syntax.literal);
 
 const GCPCluster: $.$expr_PathNode<$.TypeSet<$GCPCluster, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($GCPCluster, $.Cardinality.Many), null);
 
@@ -188,7 +188,7 @@ export type $GCPServiceAccountλShape = $.typeutil.flatten<Omit<$ServiceAccount�
 type $GCPServiceAccount = $.ObjectType<"default::GCPServiceAccount", $GCPServiceAccountλShape, null, [
   ...$ServiceAccount['__exclusives__'],
 ]>;
-const $GCPServiceAccount = $.makeType<$GCPServiceAccount>(_.spec, "c0b96c20-5e72-11ef-8b7e-79e0c7b12657", _.syntax.literal);
+const $GCPServiceAccount = $.makeType<$GCPServiceAccount>(_.spec, "c1385888-6ebb-11ef-9afc-c171c0223c51", _.syntax.literal);
 
 const GCPServiceAccount: $.$expr_PathNode<$.TypeSet<$GCPServiceAccount, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($GCPServiceAccount, $.Cardinality.Many), null);
 
@@ -210,11 +210,11 @@ export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5
   "machine_type": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "region": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "zone": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
   "state": $.PropertyDesc<$.NamedTupleType<{id: _std.$str, ip: _std.$str}>, $.Cardinality.AtMostOne, false, true, false, false>;
   "provider": $.PropertyDesc<$CloudProvider, $.Cardinality.AtMostOne, false, true, false, false>;
   "chain_id": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
   "machine_image": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
   "<nodes[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -224,7 +224,7 @@ type $InfernetNode = $.ObjectType<"default::InfernetNode", $InfernetNodeλShape,
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
   {containers: {__element__: $Container, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ]>;
-const $InfernetNode = $.makeType<$InfernetNode>(_.spec, "bf7abfb2-5e72-11ef-9bda-d9223f26c5a5", _.syntax.literal);
+const $InfernetNode = $.makeType<$InfernetNode>(_.spec, "c03f5436-6ebb-11ef-9136-bb3babf7db2f", _.syntax.literal);
 
 const InfernetNode: $.$expr_PathNode<$.TypeSet<$InfernetNode, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($InfernetNode, $.Cardinality.Many), null);
 
@@ -252,7 +252,7 @@ export type $TerraformDeploymentλShape = $.typeutil.flatten<_std.$Object_8ce8c7
 type $TerraformDeployment = $.ObjectType<"default::TerraformDeployment", $TerraformDeploymentλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $TerraformDeployment = $.makeType<$TerraformDeployment>(_.spec, "d2014750-5e72-11ef-a12e-43ffc3fded3b", _.syntax.literal);
+const $TerraformDeployment = $.makeType<$TerraformDeployment>(_.spec, "cd134154-6ebb-11ef-b3bf-17c54e70a486", _.syntax.literal);
 
 const TerraformDeployment: $.$expr_PathNode<$.TypeSet<$TerraformDeployment, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($TerraformDeployment, $.Cardinality.Many), null);
 
@@ -261,9 +261,33 @@ export type $current_userλShape = $.typeutil.flatten<$UserλShape & {
 type $current_user = $.ObjectType<"default::current_user", $current_userλShape, null, [
   ...$User['__exclusives__'],
 ]>;
-const $current_user = $.makeType<$current_user>(_.spec, "bf779b8e-5e72-11ef-92a7-e167002b8587", _.syntax.literal);
+const $current_user = $.makeType<$current_user>(_.spec, "c03c50ce-6ebb-11ef-afaa-e7a64e8a9c02", _.syntax.literal);
 
 const current_user: $.$expr_PathNode<$.TypeSet<$current_user, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($current_user, $.Cardinality.Many), null);
+
+type uuid_to_base36λFuncExpr<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$uuid>>,
+> = $.$expr_Function<
+  _std.$str, $.cardutil.paramCardinality<P1>
+>;
+function uuid_to_base36<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$uuid>>,
+>(
+  uuid: P1,
+): uuid_to_base36λFuncExpr<P1>;
+function uuid_to_base36(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('default::uuid_to_base36', args, _.spec, [
+    {args: [{typeId: "00000000-0000-0000-0000-000000000100", optional: false, setoftype: false, variadic: false}], returnTypeId: "00000000-0000-0000-0000-000000000101"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "default::uuid_to_base36",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
 
 const $default__globals: {  current_user: _.syntax.$expr_Global<
               // "default::current_user",
@@ -271,7 +295,7 @@ const $default__globals: {  current_user: _.syntax.$expr_Global<
               $.Cardinality.AtMostOne
               >} = {  current_user: _.syntax.makeGlobal(
               "default::current_user",
-              $.makeType(_.spec, "bf779b8e-5e72-11ef-92a7-e167002b8587", _.syntax.literal),
+              $.makeType(_.spec, "c03c50ce-6ebb-11ef-afaa-e7a64e8a9c02", _.syntax.literal),
               $.Cardinality.AtMostOne) as any};
 
 
@@ -299,6 +323,7 @@ type __defaultExports = {
   "InfernetNode": typeof InfernetNode;
   "TerraformDeployment": typeof TerraformDeployment;
   "current_user": typeof current_user;
+  "uuid_to_base36": typeof uuid_to_base36;
   "global": typeof $default__globals
 };
 const __defaultExports: __defaultExports = {
@@ -322,6 +347,7 @@ const __defaultExports: __defaultExports = {
   "InfernetNode": InfernetNode,
   "TerraformDeployment": TerraformDeployment,
   "current_user": current_user,
+  "uuid_to_base36": uuid_to_base36,
   "global": $default__globals
 };
 export default __defaultExports;
