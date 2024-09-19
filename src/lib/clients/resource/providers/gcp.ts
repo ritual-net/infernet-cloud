@@ -167,17 +167,22 @@ export class GCPResourceClient extends BaseResourceClient<ProviderTypeEnum.GCP> 
 	) {
 		const response = await this.googleCompute.images.list({
 			project: 'ubuntu-os-cloud',
-			filter: '(status = READY)',
+			// filter: `status = READY AND family:ubuntu* AND deprecated.state != "OBSOLETE"`,
+			maxResults: 1000,
+			orderBy: 'creationTimestamp desc',
 		})
 
 		return (
 			response.data.items
-				?.map(image => ({
+				?.filter(image =>(
+					image.deprecated?.state !== 'OBSOLETE'
+				))
+				.map(image => ({
 					id: image.name!,
 					name: image.name!,
 					description: image.description || '',
 				}))
-				.sort((a, b) => a.name.localeCompare(b.name))
+				// .sort((a, b) => a.name.localeCompare(b.name))
 			?? []
 		)
 	}
