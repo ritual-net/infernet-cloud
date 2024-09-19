@@ -171,7 +171,7 @@
 
 		display: grid !important;
 		grid:
-			'header' 4rem
+			'header' 4.5rem
 			'main' 1fr
 			'footer' auto
 			/ minmax(0, 1fr);
@@ -200,6 +200,7 @@
 		top: 0;
 
 		backdrop-filter: var(--backdropFilter);
+		background-color: color-mix(in oklab, transparent 20%, var(--page-backgroundColor));
 
 		@media (width <= 50rem) {
 			isolation: isolate;
@@ -207,14 +208,16 @@
 			grid-template-columns: 1fr;
 			overflow: hidden;
 
-			backdrop-filter: blur(8px);
-			background-color: light-dark(rgba(255, 255, 255, 0.85), rgba(0, 0, 0, 0.85));
-
-			transition-property: height;
-			transition-duration: 0.3s;
+			@supports ( height: calc-size(auto) ) {
+				transition-property: height, box-shadow;
+				transition-duration: 0.3s;
+				height: calc-size(auto);
+			}
 
 			&:is(:hover, :focus-within) {
 				height: max-content;
+				height: calc-size(max-content);
+				box-shadow: light-dark(#00000022, #ffffff22) 0 0 2rem;
 
 				~ .main-wrapper {
 					filter: blur(8px);
