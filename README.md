@@ -214,9 +214,8 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* Open a web browser and navigate to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
 
 	* If you're having trouble, double-check that the following values match:
-		* The `SERVER_HOST` environment variable in [`.env.docker`](.env.docker)
+		* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
 		* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql)
-		* The domain name in [`caddy/Caddyfile`](caddy/Caddyfile) (with `http://` or `https://` omitted)
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
