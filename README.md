@@ -140,7 +140,9 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 ## Docker Compose setup (recommended for production)
 
-1. Install [Docker Compose](https://docs.docker.com/compose/install) or an equivalent GUI ([Docker Desktop](https://www.docker.com/products/docker-desktop/), [OrbStack](https://orbstack.dev), [Podman](https://podman-desktop.io), etc.)
+1. Install [Docker Compose](https://docs.docker.com/compose/install).
+
+	* Alternatively, you may install an equivalent GUI — [Docker Desktop](https://www.docker.com/products/docker-desktop/), [OrbStack](https://orbstack.dev), [Podman](https://podman-desktop.io), etc.
 
 2. Install [pnpm](https://pnpm.io/installation).
 
