@@ -180,11 +180,11 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 		For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
-6. If hosting Infernet Cloud on a cloud provider with a public-facing URL, configure the reverse proxy:
+6. Configure the reverse proxy:
 	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
-	* Replace `localhost:3000` with the public-facing domain of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above, with `http://` or `https://` omitted).
+		* Replace `localhost:3000` with the public-facing domain of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above, with `http://` or `https://` omitted).
 	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
-	* Ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
+	* If hosting Infernet Cloud on a cloud provider with a public-facing URL, ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
 
 	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
 
