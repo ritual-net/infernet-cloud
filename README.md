@@ -78,7 +78,7 @@
 	pnpm start:local
 	```
 
-7. Access the Infernet Cloud UI:
+8. Access the Infernet Cloud UI:
 
 	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the URL of your server defined in the `SERVER_HOST` environment variable).
 
