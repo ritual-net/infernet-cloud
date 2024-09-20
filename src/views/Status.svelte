@@ -14,6 +14,7 @@
 		'stopped': 'Stopped',
 		'terminated': 'Stopped',
 		'shutting-down': 'Shutting down',
+		'undeployed': 'Undeployed',
 	}
 
 
@@ -53,6 +54,7 @@
 		&[data-status="stopped"],
 		&[data-status="terminated"],
 		&[data-status="destroyed"],
+		&[data-status="undeployed"],
 		&[data-status="unknown"] {
 			--status-color: gray;
 		}
