@@ -93,7 +93,7 @@
 
 
 <svelte:head>
-	<title>{node?.id ?? 'Node'} | Infernet Cloud</title>
+	<title>Node {node?.state?.id ?? node?.id ?? 'Node'} | Infernet Cloud</title>
 </svelte:head>
 
 
@@ -108,7 +108,7 @@
 
 			<div class="column inline">
 				<h2>
-					{node.id}
+					{node?.state?.id ?? node?.id}
 				</h2>
 
 				<p>Infernet node</p>
