@@ -34,9 +34,22 @@
 
 
 {:else if cellType === CellType.Status}
+	{@const nodeStatus = (
+		nodeWithInfo.node ?
+			nodeWithInfo.node.state?.id ?
+				nodeWithInfo.info?.status ?
+					nodeWithInfo.info.status
+				:
+					'unknown'
+			:
+				'undeployed'
+		:
+			'unknown'
+	)}
+
 	<div class="row">
 		<Status
-			status={nodeWithInfo.info?.status ?? 'unknown'}
+			status={nodeStatus}
 		/>
 	</div>
 {/if}
