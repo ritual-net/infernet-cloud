@@ -8,12 +8,19 @@ export const actions: Actions = {
 	delete: async ({
 		cookies,
 		params: { serviceAccountId },
-        fetch,
+		fetch,
 	}) => {
 		try{
-			await fetch(`/api/service_account/${serviceAccountId}`, {
-                method: 'DELETE',
-            })
+			const result = await fetch(`/api/service_account/${serviceAccountId}`, {
+				method: 'DELETE',
+			})
+				.then(async response => {
+					if (!response.ok) {
+						const error = await response.json()
+						throw new Error(error.message)
+					}
+					return response.json()
+				})
 		}catch(error){
 			return message(
 				{},
