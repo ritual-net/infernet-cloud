@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({
 
 		await nodeClient.start()
 
-		return text('Started node.')
+		return text('The node is in the process of being started.')
 	} catch (e) {
 		return error(500, (e as Error).message)
 	}
