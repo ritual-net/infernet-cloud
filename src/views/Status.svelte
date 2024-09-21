@@ -9,11 +9,14 @@
 		'succeeded': 'Succeeded',
 		'unknown': 'Unknown',
 		'pending': 'Pending',
+		'provisioning': 'Provisioning',
+		'staging': 'Staging',
 		'running': 'Running',
 		'stopping': 'Stopping',
 		'stopped': 'Stopped',
 		'terminated': 'Stopped',
 		'shutting-down': 'Shutting down',
+		'undeployed': 'Undeployed',
 	}
 
 
@@ -40,6 +43,8 @@
 
 		&[data-status="updating"],
 		&[data-status="pending"],
+		&[data-status="provisioning"],
+		&[data-status="staging"],
 		&[data-status="stopping"],
 		&[data-status="shutting-down"] {
 			--status-color: #b3a316;
@@ -53,6 +58,7 @@
 		&[data-status="stopped"],
 		&[data-status="terminated"],
 		&[data-status="destroyed"],
+		&[data-status="undeployed"],
 		&[data-status="unknown"] {
 			--status-color: gray;
 		}
