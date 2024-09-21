@@ -19,12 +19,16 @@
 	// Internal state
 	// (Computed)
 	$: nodeStatus = (
-		info?.status
-			? {
-				'RUNNING': 'running',
-				'TERMINATED': 'terminated',
-			}[info.status] || info.status
-			: 'unknown'
+		node ?
+			node.state?.id ?
+				info?.status ?
+					info.status
+				:
+					'unknown'
+			:
+				'undeployed'
+		:
+			'unknown'
 	)
 
 	// (Output)
