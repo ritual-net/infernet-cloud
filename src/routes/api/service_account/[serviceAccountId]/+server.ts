@@ -31,29 +31,31 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
  * @returns ID of the deleted service account.
  */
 export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
-	const id = params.serviceAccountId;
+	const id = params.serviceAccountId
 
-	if (!id) {
-		return error(400, 'Service account id is required');
-	}
+	if (!id)
+		return error(400, 'Service account id is required')
 
 	// Check if service account is in use by any clusters
-	const clusterCount = await e
-		.select(e.Cluster, (cluster) => ({
-			filter: e.op(cluster.service_account.id, '=', e.uuid(id)),
-		}))
-		.run(client);
+	const clusters = (
+		await e
+			.select(e.Cluster, (cluster) => ({
+				filter: e.op(cluster.service_account.id, '=', e.uuid(id)),
+			}))
+			.run(client)
+	)
 
-	if (clusterCount.length > 0) {
-		return error(400, 'Service account is in use by one or more clusters');
-	}
+	if (clusters.length > 0)
+		return error(400, `This cloud account is still in use by ${clusters.length} cluster${clusters.length === 1 ? '' : 's'}. Destroy and delete them first.`)
 
 	// Delete service account
-	const result = await e
-		.delete(e.ServiceAccount, () => ({
-			filter_single: { id },
-		}))
-		.run(client);
+	const result = (
+		await e
+			.delete(e.ServiceAccount, () => ({
+				filter_single: { id },
+			}))
+			.run(client)
+	)
 
-	return json(result);
+	return json(result)
 };
