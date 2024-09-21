@@ -79,8 +79,11 @@
 	```
 
 8. Access the Infernet Cloud UI:
-
 	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the URL of your server defined in the `SERVER_HOST` environment variable).
+
+	If you're having trouble, double-check that the following values match:
+	* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
+	* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in `dbschema/bootstrap/auth.edgeql`
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
