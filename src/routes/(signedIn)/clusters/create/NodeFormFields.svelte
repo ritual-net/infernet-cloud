@@ -94,6 +94,7 @@
 	import ContainerForm from './container/+page.svelte'
 	import Textarea from '$/components/Textarea.svelte'
 	import RegionZoneMachineFields from './RegionZoneMachineFields.svelte'
+	import { DockerIcon } from '$/icons'
 
 
 	// Shallow Routes
@@ -518,6 +519,7 @@
 					...dockerAccounts.map(dockerAccount => ({
 						value: dockerAccount.username,
 						label: dockerAccount.username,
+						icon: DockerIcon,
 					}))
 				],
 				disabled: dockerAccounts.length === 0,

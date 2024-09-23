@@ -100,6 +100,7 @@
 	import Select from '$/components/Select.svelte'
 	import Switch from '$/components/Switch.svelte'
 	import ContainerFormFields from '$/routes/(signedIn)/clusters/create/container/ContainerFormFields.svelte'
+	import { DockerIcon } from '$/icons'
 </script>
 
 
@@ -236,6 +237,7 @@
 									label: 'None'
 								},
 								...dockerAccounts.map(dockerAccount => ({
+									icon: DockerIcon,
 									value: dockerAccount.username,
 									label: dockerAccount.username,
 								}))

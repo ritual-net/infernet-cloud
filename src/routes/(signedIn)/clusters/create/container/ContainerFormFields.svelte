@@ -21,7 +21,10 @@
 		isPaymentsEnabled?: boolean
 		dockerAccountUsername?: string
 	}
-	export let dockerUserImages: string[] | undefined
+	export let dockerUserImages: {
+		value: string,
+		label: string,
+	}[] | undefined
 
 
 	// API
@@ -102,6 +105,8 @@
 	// Transitions
 	import { scale } from 'svelte/transition'
 	import { expoOut } from 'svelte/easing'
+	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import { DockerIcon } from '$/icons'
 </script>
 
 
@@ -176,7 +181,14 @@
 					dockerUserImages && {
 						value: 'docker',
 						label: `Docker Hub › ${nodeConfiguration.dockerAccountUsername}`,
-						items: dockerUserImages,
+						items: (
+							dockerUserImages
+								.map(image => ({
+									value: image.value,
+									label: image.label,
+									icon: DockerIcon,
+								}))
+						),
 					},
 
 					images && {
@@ -185,13 +197,21 @@
 						items: images.map(image => ({
 							value: image,
 							label: image,
+							icon: RitualLogo,
 						})),
 					},
 
 					dockerImages && {
-						value: 'docker',
+						value: 'docker-hub',
 						label: 'Docker Hub › Community',
-						items: dockerImages,
+						items: (
+							dockerImages
+								.map(image => ({
+									value: image.value,
+									label: image.label,
+									icon: DockerIcon,
+								}))
+						),
 					},
 
 					(
@@ -212,6 +232,7 @@
 							{
 								value: dockerImagesQueryValue.trim().toLowerCase(),
 								label: dockerImagesQueryValue.trim().toLowerCase(),
+								icon: DockerIcon,
 							}
 						].filter(Boolean),
 					},
