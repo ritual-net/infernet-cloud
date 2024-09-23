@@ -375,6 +375,8 @@
 					<dd>
 						<p>{(node.snapshot_sync_sleep ?? 1.0).toFixed(1)} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sleep ?? 1.0)]} between snapshots</p>
 						<p>{node.snapshot_sync_batch_size ?? 200} {({ 'one': 'subscription', 'other': 'subscriptions'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_batch_size ?? 200)]} per batch</p>
+						<p>Start from subscription #{node.snapshot_sync_starting_sub_id ?? 0}</p>
+						<p>Poll chain every {(node.snapshot_sync_sync_period ?? 0.5).toFixed(1)} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sync_period ?? 0.5)]}</p>
 					</dd>
 				</section>
 			</dl>

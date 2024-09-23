@@ -25,6 +25,8 @@ export const createNodeParams = e.tuple({
 		forward_stats: e.bool,
 		snapshot_sync_sleep: e.float32,
 		snapshot_sync_batch_size: e.int16,
+		snapshot_sync_starting_sub_id: e.int32,
+		snapshot_sync_sync_period: e.float32,
 	}),
 	dockerAccountUsername: e.str,
 	containers: e.array(
@@ -77,6 +79,8 @@ export const nodeQueryFields = (
 	forward_stats: node.config.forward_stats,
 	snapshot_sync_batch_size: node.config.snapshot_sync_batch_size,
 	snapshot_sync_sleep: node.config.snapshot_sync_sleep,
+	snapshot_sync_starting_sub_id: node.config.snapshot_sync_starting_sub_id,
+	snapshot_sync_sync_period: node.config.snapshot_sync_sync_period,
 	docker_account: e.select(e.DockerAccount, () => ({
 		filter_single: {
 			user: e.global.current_user,
@@ -126,6 +130,8 @@ export const nodeJsonQueryFields = (
 	forward_stats: e.cast(e.bool, e.json_get(node, 'config', 'forward_stats')),
 	snapshot_sync_batch_size: e.cast(e.int16, e.json_get(node, 'config', 'snapshot_sync_batch_size')),
 	snapshot_sync_sleep: e.cast(e.float32, e.json_get(node, 'config', 'snapshot_sync_sleep')),
+	snapshot_sync_starting_sub_id: e.cast(e.int32, e.json_get(node, 'config', 'snapshot_sync_starting_sub_id')),
+	snapshot_sync_sync_period: e.cast(e.float32, e.json_get(node, 'config', 'snapshot_sync_sync_period')),
 	docker_account: e.select(e.DockerAccount, () => ({
 		filter_single: {
 			user: e.global.current_user,

@@ -215,6 +215,8 @@ export type $InfernetNodeλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5
   "chain_id": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
   "machine_image": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "provider_id": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
+  "snapshot_sync_starting_sub_id": $.PropertyDesc<_std.$int32, $.Cardinality.AtMostOne, false, false, false, false>;
+  "snapshot_sync_sync_period": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
   "<nodes[is Cluster]": $.LinkDesc<$Cluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is AWSCluster]": $.LinkDesc<$AWSCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<nodes[is GCPCluster]": $.LinkDesc<$GCPCluster, $.Cardinality.AtMostOne, {}, false, false,  false, false>;

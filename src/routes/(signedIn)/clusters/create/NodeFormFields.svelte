@@ -451,6 +451,53 @@
 						{...constraints?.config?.snapshot_sync_batch_size}
 					/>
 				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.snapshot_sync_starting_sub_id">
+								Starting subscription
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>Subscription ID to start the syncing process from.</p>
+					</div>
+
+					<input
+						type="number"
+						placeholder="0"
+						id="{namePrefix}.config.snapshot_sync_starting_sub_id"
+						name="{namePrefix}.config.snapshot_sync_starting_sub_id"
+						bind:value={node.config.snapshot_sync_starting_sub_id}
+						{...constraints?.config?.snapshot_sync_starting_sub_id}
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.sync_period">
+								Sync period
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>Number of seconds to poll chain for blocks/subscriptions.</p>
+					</div>
+
+					<input
+						type="number"
+						placeholder="0.5"
+						id="{namePrefix}.config.snapshot_sync_sync_period"
+						name="{namePrefix}.config.snapshot_sync_sync_period"
+						bind:value={node.config.snapshot_sync_sync_period}
+						step="0.1"
+						{...constraints?.config?.snapshot_sync_sync_period}
+					/>
+				</div>
 			</div>
 		</section>
 	</fieldset>
