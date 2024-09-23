@@ -112,6 +112,10 @@
 				--toast-backgroundColor: var(--toast-default-backgroundColor);
 				--toast-borderColor: var(--borderColor);
 
+				&[data-type="loading"] {
+					cursor: progress;
+				}
+
 				&[data-type="success"] {
 					--toast-backgroundColor: var(--toast-typeSuccess-backgroundColor);
 					--toast-borderColor: var(--toast-typeSuccess-borderColor);
