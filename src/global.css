@@ -83,6 +83,7 @@
 	font-family: var(--fontFamily-base);
 	font-size: 18px;
 	line-height: 1.5;
+	tab-size: 2;
 
 	@media (prefers-color-scheme: dark) {
 		color-scheme: dark;
@@ -206,7 +207,6 @@ sup {
 pre {
 	text-align: start;
 	overflow: auto;
-	tab-size: 2;
 }
 
 .stack {
