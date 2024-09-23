@@ -42,6 +42,11 @@
 	<div
 		use:melt={$viewport}
 		{...viewportProps}
+		tabindex="0"
+		on:mouseover
+		on:focus
+		on:mouseout
+		on:blur
 	>
 		<div
 			use:melt={$content}
