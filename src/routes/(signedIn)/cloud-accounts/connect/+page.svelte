@@ -401,7 +401,10 @@
 										<div class="stack">
 											<Textarea
 												name="credentials"
-												rows="13"
+												rows={{
+													['GCP']: 13,
+													['AWS']: 9,
+												}[$form.provider]}
 												placeholder={
 													JSON.stringify(
 														{
@@ -421,6 +424,51 @@
 														)
 														: ''
 												}
+												getDisplayValue={value => {
+													try {
+														const credentials = JSON.parse(value)
+
+														return (
+															$form.provider === 'AWS' ?
+																JSON.stringify(
+																	Object.fromEntries(
+																		Object.entries(credentials)
+																			.map(([key, value]) => [
+																				key,
+																				Object.fromEntries(
+																					Object.entries(value)
+																						.map(([key, value]) => [
+																							key,
+																							['SecretAccessKey', 'AccessKeyId'].includes(key)
+																								? '•'.repeat(value.length)
+																								: value
+																						])
+																				)
+																			])
+																	),
+																	null,
+																	'\t'
+																)
+															: $form.provider === 'GCP' ?
+																JSON.stringify(
+																	Object.fromEntries(
+																		Object.entries(credentials)
+																			.map(([key, value]) => (
+																				['private_key_id', 'private_key'].includes(key)
+																					? [key, '•'.repeat(value.length)]
+																					: [key, value]
+																			))
+																	),
+																	null,
+																	'\t'
+																)
+															:
+																''
+														)
+													}catch(e){
+														return value
+													}
+												}}
 												onblur={(e) => {
 													try {
 														$form.credentials = JSON.parse(e.currentTarget.value)
@@ -438,10 +486,14 @@
 													place-self: end end
 												"
 												on:click={async e => {
-													// $form.credentials = JSON.parse(await navigator.clipboard.readText())
+													try {
+														$form.credentials = JSON.parse(await navigator.clipboard.readText())
+													}catch(e){
+														console.error(e)
+													}
 
 													// @ts-ignore
-													e.target.previousElementSibling.value = await navigator.clipboard.readText()
+													// e.target.previousElementSibling.value = await navigator.clipboard.readText()
 												}}
 											>Paste from clipboard</button>
 										</div>
@@ -481,3 +533,11 @@
 		</svelte:fragment>
 	</Tabs>
 </form>
+
+
+<style>
+	form :global([name="credentials"] + textarea) {
+		font-family: monospace;
+		tab-size: 4;
+	}
+</style>
