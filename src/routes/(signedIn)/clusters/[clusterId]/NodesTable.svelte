@@ -105,7 +105,7 @@
 					const toast = addToast({
 						closeDelay: 0,
 						data: {
-							type: 'default',
+							type: 'loading',
 							title: 'Starting node...',
 						},
 					})
@@ -132,7 +132,7 @@
 					const toast = addToast({
 						closeDelay: 0,
 						data: {
-							type: 'default',
+							type: 'loading',
 							title: 'Stopping node...',
 						},
 					})

@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
 	// Types
 	type ToastData = {
-		type?: 'default' | 'success' | 'error',
+		type?: 'loading' | 'success' | 'error',
 		title: string,
 		description?: string,
 	}

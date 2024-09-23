@@ -63,7 +63,7 @@
 		delayedToast = addToast({
 			closeDelay: 0,
 			data: {
-				type: 'default',
+				type: 'loading',
 				title: `Creating cluster...`,
 				description: `This may take several minutes.`,
 			},

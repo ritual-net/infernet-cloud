@@ -52,7 +52,7 @@
 		delayedToast = addToast({
 			closeDelay: 0,
 			data: {
-				type: 'default',
+				type: 'loading',
 				title: `Adding container template...`,
 			},
 		})

@@ -63,7 +63,7 @@
 				navigatingToast ||= addToast({
 					closeDelay: 0,
 					data: {
-						type: 'default',
+						type: 'loading',
 						title: 'Loading...',
 					},
 				})

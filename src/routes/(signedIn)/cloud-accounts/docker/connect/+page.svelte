@@ -45,7 +45,7 @@
 		delayedToast = addToast({
 			closeDelay: 0,
 			data: {
-				type: 'default',
+				type: 'loading',
 				title: `Connecting Docker account...`,
 			},
 		})
