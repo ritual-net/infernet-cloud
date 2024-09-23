@@ -52,7 +52,12 @@
 					start: start?.toString(),
 				})}`,
 			)
-				.then(response => response.json() as ReturnType<BaseNodeClient['getLogs']>)
+				.then(async response => {
+					if(!response.ok)
+						throw await response.text()
+
+					return await response.json() as ReturnType<BaseNodeClient['getLogs']>
+				})
 		),
 
 		getNextPageParam: (lastPage) => lastPage.next,
@@ -468,50 +473,48 @@
 				<dt>Last updated</dt>
 
 				<dd>
-					{new Date($logsQuery.dataUpdatedAt).toLocaleString()}
+					{$logsQuery.dataUpdatedAt ? new Date($logsQuery.dataUpdatedAt).toLocaleString() : '–'}
 				</dd>
 			</section>
 
-			{#if node.provider === ProviderTypeEnum.GCP}
-				<section class="column">
-					<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
+			<section class="column">
+				<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
 
-					<dd>
-						{#if $logsQuery.isLoading}
-							<div class="card loading">
-								<p>Loading logs...</p>
+				<dd>{$logsQuery.isError}
+					{#if $logsQuery.isLoading}
+						<div class="card loading">
+							<p>Loading logs...</p>
+						</div>
+					{:else if $logsQuery.isError}
+						<div class="card error">
+							<p>Error loading logs: {$logsQuery.error.message}</p>
+						</div>
+					{:else if $logsQuery.data}
+						{@const logs = $logsQuery.data}
+
+						<ScrollArea>
+							<div class="log-container">
+								{#each logs as log, i}
+									{@const previousLog = logs[i - 1]}
+
+									{#if previousLog && previousLog.source !== log.source}
+										<hr>
+									{/if}
+
+									<div
+										class="log"
+										data-source={log.source}
+									>
+										<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> {#if log.source}<span>{log.source}</span>{/if}<code>{log.text}</code></output>
+									</div>
+								{/each}
 							</div>
-						{:else if $logsQuery.isError}
-							<div class="card error">
-								<p>Error loading logs: {$logsQuery.error.message}</p>
-							</div>
-						{:else if $logsQuery.data}
-							{@const logs = $logsQuery.data}
-
-							<ScrollArea>
-								<div class="log-container">
-									{#each logs as log, i}
-										{@const previousLog = logs[i - 1]}
-
-										{#if previousLog && previousLog.source !== log.source}
-											<hr>
-										{/if}
-
-										<div
-											class="log"
-											data-source={log.source}
-										>
-											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> <span>{log.source}</span><code>{log.text}</code></output>
-										</div>
-									{/each}
-								</div>
-							</ScrollArea>
-						{:else}
-							<p>No logs available.</p>
-						{/if}
-					</dd>
-				</section>
-			{/if}
+						</ScrollArea>
+					{:else}
+						<p>No logs available.</p>
+					{/if}
+				</dd>
+			</section>
 		</dl>
 	</section>
 

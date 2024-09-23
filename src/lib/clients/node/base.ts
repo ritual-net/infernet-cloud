@@ -34,7 +34,7 @@ export abstract class BaseNodeClient {
 		next?: number,
 		logs: {
 			timestamp: number,
-			source: number,
+			source?: string,
 			text: string,
 		}[],
 	}>

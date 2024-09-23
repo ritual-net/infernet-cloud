@@ -1,6 +1,7 @@
 import {
 	DescribeInstancesCommand,
 	EC2Client,
+	GetConsoleOutputCommand,
 	RebootInstancesCommand,
 	StartInstancesCommand,
 	StopInstancesCommand,
@@ -79,6 +80,28 @@ export class AWSNodeClient extends BaseNodeClient {
 	}
 
 	async getLogs() {
-		return []
+		const result = await this.client.send(
+			new GetConsoleOutputCommand({
+				InstanceId: this.instanceId,
+			})
+		)
+
+		const output = (
+			result.Output
+				? Buffer.from(result.Output, 'base64')
+					.toString('utf-8')
+				: undefined
+		)
+
+		return {
+			logs: (
+				output
+					?.split('\n')
+					.map(line => ({
+						text: line,
+						timestamp: result.Timestamp,
+					})) ?? []
+			),
+		}
 	}
 }
