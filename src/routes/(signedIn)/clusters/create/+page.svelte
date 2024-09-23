@@ -58,20 +58,6 @@
 
 	export const snapshot = { capture, restore }
 
-	let delayedToast: Toast
-	$: if($delayed){
-		delayedToast = addToast({
-			closeDelay: 0,
-			data: {
-				type: 'loading',
-				title: `Creating cluster...`,
-				description: `This may take several minutes.`,
-			},
-		})
-	}else{
-		if(delayedToast)
-			removeToast(delayedToast.id)
-	}
 
 	// (UI state)
 	let currentFieldset = Fieldset.CreateCluster
@@ -122,6 +108,29 @@
 
 	// (Service account)
 	$: serviceAccount = serviceAccounts.find(serviceAccount => serviceAccount.id === $form.serviceAccountId)
+
+
+	// Actions
+	let delayedToast: Toast
+	$: if($delayed){
+		delayedToast = addToast({
+			closeDelay: 0,
+			data: {
+				type: 'loading',
+				title: `Creating cluster...`,
+				description: `This may take several minutes.`,
+			},
+		})
+	}else{
+		if(delayedToast)
+			removeToast(delayedToast.id)
+	}
+
+	import { onDestroy } from 'svelte'
+
+	onDestroy(() => {
+		removeToast(delayedToast.id)
+	})
 
 
 	// Components
