@@ -31,8 +31,8 @@ export interface Cluster extends std.$Object {
   "zone": string;
   "nodes": InfernetNode[];
   "router_state"?: {id: string, ip: string} | null;
-  "provider_id": string;
   "router"?: {region: string, zone: string, machine_type: string, machine_image: string} | null;
+  "provider_id": string;
 }
 export interface AWSCluster extends Cluster {}
 export interface ServiceAccount extends std.$Object {
@@ -96,11 +96,11 @@ export interface InfernetNode extends std.$Object {
   "machine_type": string;
   "region": string;
   "zone": string;
-  "provider_id": string;
   "state"?: {id: string, ip: string} | null;
   "provider"?: CloudProvider | null;
   "chain_id"?: number | null;
   "machine_image": string;
+  "provider_id": string;
 }
 export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {

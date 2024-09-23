@@ -33,6 +33,22 @@ module default {
     constraint regexp(r'^[0]|[1-9][0-9]*$');
   }
 
+  function uuid_to_base36(uuid: uuid) -> str {
+    using (
+      WITH
+        num := <bigint>('0x' ++ str_trim_start(str_replace(<str>uuid, '-', ''), '0')),
+        base36 := '0123456789abcdefghijklmnopqrstuvwxyz',
+        digits := array_agg((
+          for i in range_unpack(range(0, 25))
+          union (
+            select base36[<int64>((num // (<bigint>36 ^ <bigint>i)) % 36)]
+          )
+        ))
+      SELECT
+        to_str(digits, '')
+    );
+  }
+
   type User {
     required name: str;
     required email: str;
@@ -211,7 +227,7 @@ module default {
       .cluster.service_account.provider
     );
 
-    provider_id := 'infernet-node-' ++ <str>.id;
+    provider_id := 'icn-' ++ uuid_to_base36(.id);
 
     state := (
       with node := (
@@ -267,7 +283,7 @@ module default {
       default := false;
     }
 
-    provider_id := 'ic-' ++ <str>.id;
+    provider_id := 'icc-' ++ uuid_to_base36(.id);
 
     status := (
       'updating' if .locked else
