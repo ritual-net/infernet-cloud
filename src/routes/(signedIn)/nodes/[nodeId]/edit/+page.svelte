@@ -48,6 +48,7 @@
 	let delayedToast: Toast
 	$: if($delayed){
 		delayedToast = addToast({
+			closeDelay: 0,
 			data: {
 				type: 'default',
 				title: `Saving node configuration...`,

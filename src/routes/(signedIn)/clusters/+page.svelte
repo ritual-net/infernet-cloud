@@ -61,6 +61,7 @@
 						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
 									type: 'default',
 									title: `Refreshing data...`,

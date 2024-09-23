@@ -69,6 +69,7 @@
 					formAction: `?/delete`,
 					formSubmit: async (e) => {
 						const toast = addToast({
+							closeDelay: 0,
 							data: {
 								type: 'default',
 								title: `Disconnecting "${serviceAccount.name}"...`,

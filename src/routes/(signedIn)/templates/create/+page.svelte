@@ -50,6 +50,7 @@
 	let delayedToast: Toast
 	$: if($delayed){
 		delayedToast = addToast({
+			closeDelay: 0,
 			data: {
 				type: 'default',
 				title: `Adding container template...`,

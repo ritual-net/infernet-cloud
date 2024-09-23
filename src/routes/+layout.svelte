@@ -61,6 +61,7 @@
 		setTimeout(() => {
 			if($navigating){
 				navigatingToast ||= addToast({
+					closeDelay: 0,
 					data: {
 						type: 'default',
 						title: 'Loading...',
