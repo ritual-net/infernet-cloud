@@ -19,12 +19,16 @@
 	// Internal state
 	// (Computed)
 	$: nodeStatus = (
-		info?.status
-			? {
-				'RUNNING': 'running',
-				'TERMINATED': 'terminated',
-			}[info.status] || info.status
-			: 'unknown'
+		node ?
+			node.state?.id ?
+				info?.status ?
+					info.status
+				:
+					'unknown'
+			:
+				'undeployed'
+		:
+			'unknown'
 	)
 
 	// (Output)
@@ -147,7 +151,7 @@
 							removeToast(toast.id)
 						},
 					},
-					info?.status === 'TERMINATED' && {
+					['stopped', 'terminated'].includes(info?.status) && {
 						value: 'start',
 						label: 'Start node',
 						formAction: `?/start`,
@@ -173,7 +177,7 @@
 							}
 						},
 					},
-					info?.status === 'RUNNING' && {
+					['running'].includes(info?.status) && {
 						value: 'stop',
 						label: 'Stop node',
 						formAction: `?/stop`,

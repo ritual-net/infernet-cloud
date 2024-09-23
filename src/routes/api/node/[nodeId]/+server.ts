@@ -39,22 +39,30 @@ export const GET: RequestHandler = async ({
 			),
 
 			(async () => {
-				const nodeClient = await getNodeClient(client, nodeId)
+				try {
+					const nodeClient = await getNodeClient(client, nodeId)
 
-				let info: NodeInfo | undefined
-				let infoError: string | undefined
+					let info: NodeInfo | undefined
+					let infoError: string | undefined
 
-				if(!nodeClient){
-					infoError = 'Node client could not be retrieved.'
-				} else try {
-					info = await nodeClient.getInfo()
-				} catch (error) {
-					infoError = (error as Error).message
-				}
+					if(!nodeClient){
+						infoError = 'Node client could not be retrieved.'
+					} else try {
+						info = await nodeClient.getInfo()
+					} catch (error) {
+						infoError = (error as Error).message
+					}
 
-				return {
-					info,
-					infoError,
+					return {
+						info,
+						infoError,
+					}
+				}catch(error){
+					console.error(error)
+
+					return {
+						infoError: (error as Error).message,
+					}
 				}
 			})()
 		])

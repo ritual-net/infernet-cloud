@@ -26,18 +26,21 @@ export const getNodeClient = async (
 	if (!cluster)
 		throw Error('Cluster could not be retrieved.')
 
+	if(!node.state)
+		throw Error('Node instance could not be found.')
+
 	return (
 		cluster.service_account.provider === ProviderTypeEnum.GCP ?
 			new GCPNodeClient(
 				(cluster.service_account as GCPServiceAccount).creds,
 				node.zone || cluster.zone,
-				node.provider_id,
+				node.state.id,
 			)
 		: cluster.service_account.provider === ProviderTypeEnum.AWS ?
 			new AWSNodeClient(
 				(cluster.service_account as AWSServiceAccount).creds,
 				node.region || cluster.region,
-				node.provider_id,
+				node.state.id,
 			)
 		:
 			undefined

@@ -237,6 +237,7 @@
 		</div>
 
 		<NodesTable
+			clusterStatus={cluster.status}
 			nodesWithInfo={nodesWithInfoPromise}
 		/>
 	</section>
