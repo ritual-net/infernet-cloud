@@ -105,26 +105,28 @@
 				</dd>
 			</section>
 
-			<section class="row">
-				<dt>Chain</dt>
+			{#if containerTemplate.chain_enabled && containerTemplate.chain_id}
+				<section class="row">
+					<dt>Chain</dt>
 
-				<dd class="row">
-					{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
-						{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
+					<dd class="row">
+						{#if containerTemplate.chain_id && chainsByChainId.has(containerTemplate.chain_id)}
+							{@const chain = chainsByChainId.get(containerTemplate.chain_id)}
 
-						<span class="row inline with-icon">
-							<img
-								src={chain.icon}
-								alt={chain.name}
-								class="icon"
-							/>
-							{chain.name}
-						</span>
-					{:else}
-						{containerTemplate.chain_id}
-					{/if}
-				</dd>
-			</section>
+							<span class="row inline with-icon">
+								<img
+									src={chain.icon}
+									alt={chain.name}
+									class="icon"
+								/>
+								{chain.name}
+							</span>
+						{:else}
+							{containerTemplate.chain_id}
+						{/if}
+					</dd>
+				</section>
+			{/if}
 
 			{#if containerTemplate.docker_account}
 				<section class="row wrap">
@@ -268,8 +270,8 @@
 				<dt>Rate limiting</dt>
 
 				<dd>
-					{containerTemplate.rate_limit_num_requests} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests)]}
-					every {containerTemplate.rate_limit_period} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period)]}
+					{containerTemplate.rate_limit_num_requests ?? 60} {{ 'one': 'request', 'other': 'requests' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_num_requests ?? 60)]}
+					every {(containerTemplate.rate_limit_period ?? 60.0).toFixed(1)} {{ 'one': 'second', 'other': 'seconds' }[new Intl.PluralRules('en-US').select(containerTemplate.rate_limit_period ?? 60.0)]}
 				</dd>
 			</section>
 

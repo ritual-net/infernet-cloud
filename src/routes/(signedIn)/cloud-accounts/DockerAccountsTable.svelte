@@ -49,7 +49,8 @@
 		return [
 			{
 				value: 'delete',
-				label: 'Disconnect Docker Account',
+				label: 'Disconnect',
+				isDestructive: true,
 				formAction: `${dockerAccountRoute}?/delete`,
 				formSubmit: async (e) => {
 					const toast = addToast({

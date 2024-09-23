@@ -176,7 +176,10 @@
 							<button
 								type="button"
 								class="primary"
-								on:click={() => currentFieldset++}
+								on:click={e => {
+									currentFieldset++
+									e.currentTarget.blur()
+								}}
 							>
 								Continue
 							</button>
@@ -456,7 +459,10 @@
 						<div class="row">
 							<button
 								type="button"
-								on:click={() => currentFieldset--}
+								on:click={e => {
+									currentFieldset--
+									e.currentTarget.blur()
+								}}
 							>
 								Back
 							</button>
