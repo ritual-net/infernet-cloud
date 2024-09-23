@@ -6,12 +6,16 @@ ext::auth::AuthConfig::token_time_to_live := <duration>"24 hours";
 
 CONFIGURE CURRENT DATABASE SET
 ext::auth::AuthConfig::allowed_redirect_urls := {
-    'http://localhost:3000',
+	# Local setup
+	'http://localhost:5173',
+
+	# Docker Compose setup
+	# 'http://localhost:3000',
 };
 
 CONFIGURE CURRENT DATABASE
 INSERT ext::auth::EmailPasswordProviderConfig {
-    require_verification := false,
+	require_verification := false,
 };
 
 # SMTP Configuration
