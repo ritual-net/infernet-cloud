@@ -52,15 +52,20 @@
 			),
 		},
 		{
-			header: 'Onchain?',
-			accessor: nodeWithInfo => (
-				nodeWithInfo.node?.chain_enabled ? 'Yes' : 'No'
-			),
-		},
-		{
 			header: 'Containers',
 			accessor: nodeWithInfo => (
 				nodeWithInfo.node?.containers?.length ?? '–'
+			),
+		},
+		{
+			header: 'Chain',
+			accessor: nodeWithInfo => nodeWithInfo,
+			cell: ({ value: nodeWithInfo }) => (
+				createRender(NodesTableCell, {
+					cellType: CellType.Chain,
+					nodeWithInfo,
+					clusterStatus,
+				})
 			),
 		},
 		{
