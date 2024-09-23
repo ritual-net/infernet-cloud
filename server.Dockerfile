@@ -52,4 +52,4 @@ WORKDIR /app
 
 # Entry point for the app
 ENV NODE_ENV=production
-CMD ["dotenvx", "run", "-f", ".env.docker", "--", "node", "build"]
+CMD ["pnpm", "dotenvx", "run", "-f", ".env.docker", "--", "node", "build"]

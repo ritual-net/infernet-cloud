@@ -24,6 +24,14 @@ services:
     depends_on:
       edgedb:
         condition: service_healthy
+    environment:
+      ORIGIN: ${SERVER_HOST}
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      EDGEDB_HOST: ${EDGEDB_HOST:-edgedb}
+      EDGEDB_PORT: ${EDGEDB_PORT:-5656}
+      EDGEDB_BRANCH: ${EDGEDB_BRANCH:-main}
+      EDGEDB_SERVER_PROTOCOL: ${EDGEDB_SERVER_PROTOCOL:-http}
+      EDGEDB_DSN: edgedb://${EDGEDB_SERVER_USER:-edgedb}:${EDGEDB_SERVER_PASSWORD}@${EDGEDB_HOST:-edgedb}:${EDGEDB_PORT:-5656}/${EDGEDB_BRANCH:-main}
 
   edgedb:
     depends_on:
@@ -33,9 +41,13 @@ services:
       context: .
       dockerfile: edgedb.Dockerfile
     environment:
+      EDGEDB_HOST: ${EDGEDB_HOST:-edgedb}
+      EDGEDB_PORT: ${EDGEDB_PORT:-5656}
+      EDGEDB_SERVER_USER: ${EDGEDB_SERVER_USER:-edgedb}
+      EDGEDB_SERVER_PASSWORD: ${EDGEDB_SERVER_PASSWORD:?error}
+      EDGEDB_BRANCH: ${EDGEDB_BRANCH:-main}
       EDGEDB_SERVER_SECURITY: strict
       EDGEDB_SERVER_TLS_CERT_MODE: generate_self_signed
-      EDGEDB_SERVER_PASSWORD: ${EDGEDB_SERVER_PASSWORD:?error}
       EDGEDB_SERVER_BINARY_ENDPOINT_SECURITY: optional # For auth server TLS
       EDGEDB_SERVER_HTTP_ENDPOINT_SECURITY: optional # For auth server TLS
     volumes:
@@ -44,10 +56,10 @@ services:
     expose:
       - '5656'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://edgedb:5656/server/status/ready']
-      interval: 10s
+      test: ['CMD', 'curl', '-f', '${EDGEDB_SERVER_PROTOCOL:-http}://${EDGEDB_HOST:-edgedb}:${EDGEDB_PORT:-5656}/server/status/ready']
+      interval: 5s
       timeout: 10s
-      retries: 5
+      retries: 20
     restart: unless-stopped
 
   smtp:

@@ -47,21 +47,43 @@
 	pnpm local:edgedb:destroy
 	```
 
-5. Configure environment variables by editing the [`.env.local`](.env.local) file:
-	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:5173`](http://localhost:5173) when running locally).
-	* `EDGEDB_BASE_URL`: The URL of your EdgeDB instance (default `http://localhost:10700/main` when using `edgedb` CLI defaults).
-	  * Make sure the port number and branch name match. To find the URL of your [local EdgeDB instance](https://docs.edgedb.com/get-started/instances#listing-instances), run:
+5. Configure environment variables:
+	* Open [`.env.local`](.env.local) in a text editor and adjust the following environment variables:
+		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:5173`](http://localhost:5173) when running locally).
+		* `EDGEDB_HOST`, `EDGEDB_PORT`, `EDGEDB_SERVER_USER`, `EDGEDB_BRANCH`: The connection details of your EdgeDB instance.
+			* Make sure these values match your EdgeDB instance configuration. To find the details of your local EdgeDB instance, run:
+				```bash
+				edgedb instance credentials
+				```
+	* Save [`.env.local`](.env.local).
+
+6. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
+	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
+		* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
+		* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
+		* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
+		* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in; otherwise set it to `false`.
+	* Save [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql).
+	* Apply changes to EdgeDB Auth settings:
+
 		```bash
-		edgedb instance list
+		pnpm local:edgedb:init:auth
 		```
 
-6. Start the server:
+	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
+
+7. Start the server:
 
 	```bash
 	pnpm start:local
 	```
 
-7. Navigate to [`http://localhost:5173`](http://localhost:5173) in your browser to access the Infernet Cloud UI.
+8. Access the Infernet Cloud UI:
+	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the URL of your server defined in the `SERVER_HOST` environment variable).
+
+	If you're having trouble, double-check that the following values match:
+	* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
+	* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in `dbschema/bootstrap/auth.edgeql`
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
@@ -121,7 +143,9 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 ## Docker Compose setup (recommended for production)
 
-1. Install [Docker Compose](https://docs.docker.com/compose/install) or an equivalent GUI ([Docker Desktop](https://www.docker.com/products/docker-desktop/), [OrbStack](https://orbstack.dev), [Podman](https://podman-desktop.io), etc.)
+1. Install [Docker Compose](https://docs.docker.com/compose/install).
+
+	* Alternatively, you may install an equivalent GUI — [Docker Desktop](https://www.docker.com/products/docker-desktop/), [OrbStack](https://orbstack.dev), [Podman](https://podman-desktop.io), etc.
 
 2. Install [pnpm](https://pnpm.io/installation).
 
@@ -134,35 +158,43 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	This script will:
 	* Create an [`.env.docker`](.env.docker) file with default values copied from [`.env.docker.example`](.env.docker.example), if one doesn't already exist
 	* Install package dependencies from npm
+	* Intialize Docker volume for `edgedb` service at [`./edgedb-data/`](edgedb-data), apply default EdgeDB Auth config, and perform schema migrations.
 
-4. Configure environment variables by editing the [`.env.docker`](.env.docker) file:
-	* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when running locally).
-	* `EDGEDB_SERVER_PASSWORD`: The admin password for the EdgeDB database.
-	* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
-		* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
+4. Configure environment variables:
+		* Open [`.env.docker`](.env.docker) in a text editor and adjust the following environment variables:
+			* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when running locally).
+			* `EDGEDB_SERVER_PASSWORD`: The admin password for the EdgeDB database.
+			* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
+				* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
+		* Save [`.env.docker`](.env.docker).
 
-5. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#email-and-password):
-	* Open [`dbschema/auth.edgeql`](dbschema/auth.edgeql) in a text editor.
-	* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
-	* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
-	* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
-	* To require new accounts to verify their email address before logging in, set `ext::auth::AuthConfig::require_verification` to `true`, otherwise set it to `false`.
-	* Save [`dbschema/auth.edgeql`](dbschema/auth.edgeql).
+	### Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration):
+		* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
+			* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
+			* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
+			* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
+			* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in; otherwise set it to `false`.
+		* Save [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql).
+		* Apply changes to EdgeDB Auth settings:
 
-	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#email-and-password).
+			```bash
+			pnpm docker:edgedb:init:auth
+			```
 
-6. If hosting Infernet Cloud on a cloud provider with a public-facing URL, configure the reverse proxy:
+		For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
+
+6. Configure the reverse proxy:
 	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
-	* Replace `my.infernet-cloud.example.com` with the public-facing domain of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above, with `http://` or `https://` omitted).
+		* Replace `localhost:3000` with the public-facing domain of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above, with `http://` or `https://` omitted).
 	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
-	* Ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
+	* If hosting Infernet Cloud on a cloud provider with a public-facing URL, ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
 
 	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
 
 7. Start all services:
 
 	```bash
-	pnpm docker:up
+	pnpm docker:start
 	```
 
 	Docker images for all services will be installed from Docker Hub on first run.
@@ -181,19 +213,19 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 		* First run: initializes Docker volume at [`./edgedb-data/`](edgedb-data), configures EdgeDB Auth, and performs schema migrations.
 		* **IMPORTANT**: **Keep the contents of the `./edgedb-data/` directory safe. If you modify/delete it, you will lose data stored in the database!**
 
-8. Access the Infernet Cloud UI by opening a web browser and navigating to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
+8. Access the Infernet Cloud UI:
+	* Open a web browser and navigate to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
 
 	* If you're having trouble, double-check that the following values match:
-		* The `SERVER_HOST` environment variable in [`.env.docker`](.env.docker)
-		* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/auth.edgeql`](dbschema/auth.edgeql)
-		* The domain name in [`caddy/Caddyfile`](caddy/Caddyfile) (with `http://` or `https://` omitted)
+		* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
+		* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql)
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
 9. Stop all services:
 
 	```bash
-	pnpm docker:down
+	pnpm docker:stop
 	```
 
 ---
