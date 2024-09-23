@@ -122,7 +122,7 @@
 								{chain.name}
 							</span>
 						{:else}
-							{containerTemplate.chain_id}
+							{containerTemplate.chain_id ?? '–'}
 						{/if}
 					</dd>
 				</section>
