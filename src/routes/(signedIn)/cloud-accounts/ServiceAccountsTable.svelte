@@ -8,6 +8,12 @@
 	export let serviceAccounts: Promise<QueriedServiceAccount[]>
 
 
+	// Actions
+	import { addToast, removeToast } from '$/components/Toaster.svelte'
+	import { applyAction } from '$app/forms'
+	import { invalidateAll } from '$app/navigation'
+
+
 	// Functions
 	import { resolveRoute } from '$app/paths'
 
@@ -44,6 +50,33 @@
 			serviceAccountId: serviceAccount.id,
 		})
 	)}
+	contextMenu={serviceAccount => [
+		{
+			value: 'delete',
+			label: 'Disconnect',
+			isDestructive: true,
+			formAction: `${resolveRoute(`/cloud-accounts/[serviceAccountId]`, {
+				serviceAccountId: serviceAccount.id,
+			})}?/delete`,
+			formSubmit: async (e) => {
+				const toast = addToast({
+					data: {
+						type: 'default',
+						title: `Disconnecting "${serviceAccount.name}"...`,
+					},
+				})
+
+				return async ({ result }) => {
+					await applyAction(result)
+
+					if(result.type === 'success')
+						invalidateAll()
+
+					removeToast(toast.id)
+				}
+			},
+		},
+	]}
 >
 	<svelte:fragment slot="loading">
 		<p>Loading cloud accounts...</p>
