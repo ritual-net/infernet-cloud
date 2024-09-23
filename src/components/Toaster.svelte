@@ -17,6 +17,7 @@
 		actions: { portal },
 	} = createToaster<ToastData>({
 		closeDelay: 10000,
+		hover: 'pause-all',
 	})
 	import { createToaster, melt } from '@melt-ui/svelte'
 
