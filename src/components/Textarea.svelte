@@ -2,14 +2,17 @@
 	// Inputs
 	export let name: string
 	export let value: string = ''
+	export let getDisplayValue: ((value: string) => string) | undefined
 
 
 	// Events
+	export let onfocus: (_: FocusEvent & { currentTarget: EventTarget & HTMLTextAreaElement }) => void
 	export let onblur: (_: FocusEvent & { currentTarget: EventTarget & HTMLTextAreaElement }) => void
 
 
 	// Internal state
 	let textareaElement: HTMLTextAreaElement
+	let isFocused = false
 </script>
 
 
@@ -24,9 +27,17 @@
 
 	<textarea
 		bind:this={textareaElement}
-		bind:value
+		value={!isFocused && getDisplayValue ? getDisplayValue(value) : value}
+		on:input={e => { value = e.currentTarget.value }}
 		{...$$restProps}
-		on:blur={onblur}
+		on:focus={e => {
+			isFocused = true
+			onfocus?.(e)
+		}}
+		on:blur={e => {
+			isFocused = false
+			onblur?.(e)
+		}}
 	/>
 </div>
 

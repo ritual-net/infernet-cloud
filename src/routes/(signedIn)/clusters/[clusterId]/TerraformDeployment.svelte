@@ -11,6 +11,10 @@
 	export let isSummary = false
 
 
+	// Internal state
+	let showAllTfvars = true
+
+
 	// Components
 	import ScrollArea from '$/components/ScrollArea.svelte'
 	import SizeTransition from '$/components/SizeTransition.svelte'
@@ -233,9 +237,24 @@
 	<section class="column">
 		<dt>Terraform input variables</dt>
 
-		<dd class="log-container scrollable">
-			<output><code>{deployment.tfvars}</code></output>
-		</dd>
+		<ScrollArea
+			on:mouseover={() => { showAllTfvars = true }}
+			on:focus={() => { showAllTfvars = true }}
+			on:mouseout={() => { showAllTfvars = false }}
+			on:blur={() => { showAllTfvars = false }}
+		>
+			<dd class="log-container scrollable">
+				<output><code>{
+					showAllTfvars
+						? deployment.tfvars
+						: (
+							deployment.tfvars
+								.replace(/access_key_id\s*=\s*"(.*?)"/g, (match, $1) => `access_key_id = "${'•'.repeat($1.length)}"`)
+								.replace(/secret_access_key\s*=\s*"(.*?)"/g, (match, $1) => `secret_access_key = "${'•'.repeat($1.length)}"`)
+						)
+				}</code></output>
+			</dd>
+		</ScrollArea>
 	</section>
 {/if}
 
