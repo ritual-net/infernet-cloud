@@ -15,6 +15,7 @@
 
 	// Components
 	import RitualLogo from '$/icons/RitualLogo.svelte'
+	import Collapsible from '$/components/Collapsible.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 	import { DockerIcon } from '$/icons'
 </script>
@@ -130,15 +131,28 @@
 				<!-- <pre><code>{serializeEnvObject(containerTemplate.env)}</code></pre> -->
 
 				<dl class="card column">
-					{#each Object.entries(container.env) as [key, value] (key)}
-						<section class="row wrap">
-							<dt>{key}</dt>
+					<Collapsible>
+						<svelte:fragment slot="trigger"
+							let:open
+						>
+							<header
+								class="row"
+								data-after={open ? '▴' : '▾'}
+							>
+								{open ? 'Hide' : 'Show'} {Object.entries(container.env).length} {({ 'one': 'environment variable', 'other': 'environment variables'})[new Intl.PluralRules('en-US').select(Object.entries(container.env).length)]}
+							</header>
+						</svelte:fragment>
 
-							<dd>
-								<output>{value}</output>
-							</dd>
-						</section>
-					{/each}
+						{#each Object.entries(container.env) as [key, value] (key)}
+							<section class="row wrap">
+								<dt>{key}</dt>
+
+								<dd>
+									<output>{value}</output>
+								</dd>
+							</section>
+						{/each}
+					</Collapsible>
 				</dl>
 			</dd>
 		</section>
