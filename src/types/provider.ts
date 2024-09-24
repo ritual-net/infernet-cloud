@@ -97,8 +97,7 @@ export type NodeInfo = {
 
 export type InfernetNodeWithInfo = {
 	node: InfernetNode;
-	info?: NodeInfo;
-	infoError?: string | undefined;
+	nodeInfoPromise?: Promise<NodeInfo>;
 }
 
 

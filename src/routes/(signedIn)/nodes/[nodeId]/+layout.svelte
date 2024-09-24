@@ -2,13 +2,7 @@
 	// Context
 	import { page } from '$app/stores'
 
-	let {
-		nodeWithInfo: {
-			node,
-		},
-	} = $page.data
 
-	
 	// Actions
 	import { invalidate } from '$app/navigation'
 	import { onMount } from 'svelte'

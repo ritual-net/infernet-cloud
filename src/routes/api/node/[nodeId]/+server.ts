@@ -1,10 +1,8 @@
 import { error, json } from '@sveltejs/kit'
 import { clusterAction } from '$/lib/terraform/common'
 import { e } from '$/lib/db'
-import { getNodeClient } from '$/lib/clients/node/common'
 import { getClusterByNodeIds, getNodesByIds } from '$/lib/db/queries'
 import { TFAction } from '$/types/terraform'
-import { type InfernetNodeWithInfo, type NodeInfo } from '$/types/provider'
 import type { RequestHandler } from '@sveltejs/kit'
 import { nodeJsonQueryFields } from '$/lib/db/components'
 
@@ -27,53 +25,16 @@ export const GET: RequestHandler = async ({
 		return error(400, 'Node id is required')
 
 	try {
-		const [
-			[node],
-			{ info, infoError }
-		] = await Promise.all([
-			getNodesByIds(
-				client,
-				[nodeId],
-				{
-					includeClusterBacklink,
-					includeClusterTfstate,
-				}
-			),
+		const [node] = await getNodesByIds(
+			client,
+			[nodeId],
+			{
+				includeClusterBacklink,
+				includeClusterTfstate,
+			}
+		)
 
-			(async () => {
-				try {
-					const nodeClient = await getNodeClient(client, nodeId)
-
-					let info: NodeInfo | undefined
-					let infoError: string | undefined
-
-					if(!nodeClient){
-						infoError = 'Node client could not be retrieved.'
-					} else try {
-						info = await nodeClient.getInfo()
-					} catch (error) {
-						infoError = (error as Error).message
-					}
-
-					return {
-						info,
-						infoError,
-					}
-				}catch(error){
-					console.error(error)
-
-					return {
-						infoError: (error as Error).message,
-					}
-				}
-			})()
-		])
-
-		return json({
-			node,
-			info,
-			infoError,
-		} as InfernetNodeWithInfo)
+		return json(node)
 	} catch (e) {
 		return error(400, (e as Error).message)
 	}

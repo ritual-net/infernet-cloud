@@ -18,9 +18,7 @@ export const load: PageLoad = async ({
 	fetch,
 }) => {
 	const {
-		nodeWithInfo: {
-			node,
-		},
+		node,
 	} = await parent()
 
 	if(!node)

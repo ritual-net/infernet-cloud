@@ -16,7 +16,7 @@
 
 
 	// Functions
-	import { createPublicClient, http, type PublicClient } from 'viem'
+	import { createPublicClient, http } from 'viem'
 	import { getChainId } from 'viem/actions'
 
 
@@ -40,16 +40,36 @@
 
 
 	// (Chain)
-	let client: PublicClient | undefined
-	$: if(node.config.rpc_url) {
-		client = createPublicClient({ 
-			transport: http(node.config.rpc_url),
-		})
+	import { createQuery } from '@tanstack/svelte-query'
 
-		if(client)
-			getChainId(client)
-				.then(_ => { node.config.chain_id = _ })
-	}
+	$: chainIdQuery = createQuery({
+		queryKey: ['ChainId', {
+			rpcUrl: node.config.rpc_url,
+		}] as const,
+		queryFn: async ({
+			queryKey: [_, {
+				rpcUrl,
+			}],
+		}) => {
+			if(!rpcUrl) return undefined
+
+			if(!URL.canParse(rpcUrl)) return undefined
+			
+			const client = createPublicClient({ 
+				transport: http(rpcUrl),
+			})
+			
+			return await getChainId(client)
+		},
+		select: result => {
+			node.config.chain_id = result
+			return result
+		}
+	})
+
+	$: if(chainIdQuery && $chainIdQuery.data) (async () => {
+		node.config.chain_id = $chainIdQuery.data
+	})()
 
 
 	// (Payments)

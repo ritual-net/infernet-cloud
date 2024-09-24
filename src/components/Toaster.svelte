@@ -141,6 +141,8 @@
 					--card-paddingY: 0.75em;
 					--card-paddingX: 1em;
 
+					backdrop-filter: var(--backdropFilter);
+
 					width: min(35ch, 100vw - 2rem);
 					row-gap: 0.25em;
 

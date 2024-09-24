@@ -39,7 +39,7 @@
 
 
 	// Events
-	import { goto } from '$app/navigation'
+	import { goto, preloadData } from '$app/navigation'
 
 	export let onRowClick: ((_: Datum) => void) | undefined
 		= datum => {
@@ -139,6 +139,7 @@
 							use:melt={trigger}
 							aria-label={labelText}
 							tabIndex={onRowClick || link ? 0 : undefined}
+							on:mouseenter={link && (() => preloadData(link))}
 							on:click={() => onRowClick?.(datum)}
 							on:keydown|self={e => ['Enter', 'Space'].includes(e.code) && onRowClick?.(datum)}
 						>
