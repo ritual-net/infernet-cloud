@@ -22,18 +22,6 @@
 
 <dl class="card column">
 	<section class="row wrap">
-		<dt>Image</dt>
-
-		<dd>
-			<WithIcon
-				icon={DockerIcon}
-			>
-				{container.image}
-			</WithIcon>
-		</dd>
-	</section>
-
-	<section class="row wrap">
 		<dt>Service ID</dt>
 
 		<dd>
@@ -41,6 +29,18 @@
 				icon={RitualLogo}
 			>
 				{container.container_id}
+			</WithIcon>
+		</dd>
+	</section>
+
+	<section class="row wrap">
+		<dt>Image</dt>
+
+		<dd>
+			<WithIcon
+				icon={DockerIcon}
+			>
+				{container.image}
 			</WithIcon>
 		</dd>
 	</section>
