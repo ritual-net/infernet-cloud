@@ -141,13 +141,16 @@
 
 					setTimeout(() => {
 						invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+						invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
 					}, 500)
 
 					return async ({ result }) => {
 						await applyAction(result)
 
-						if(result.type === 'success')
+						if(result.type === 'success'){
 							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+							invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
+						}
 
 						removeToast(toast.id)
 					}
@@ -168,13 +171,16 @@
 
 					setTimeout(() => {
 						invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+						invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
 					}, 500)
 
 					return async ({ result }) => {
 						await applyAction(result)
 
-						if(result.type === 'success')
+						if(result.type === 'success'){
 							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+							invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
+						}
 
 						removeToast(toast.id)
 					}
