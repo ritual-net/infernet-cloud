@@ -252,7 +252,7 @@
 				</label>
 			</h3>
 
-			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_2_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
+			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_3_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
 		</div>
 
 		<Select
@@ -305,8 +305,8 @@
 	</section>
 
 	<section class="column wrap">
-		<div class="row wrap">
-			<div class="column inline">
+		<div class="row">
+			<div class="column inline" style="flex: 1;">
 				<h3 class="row inline">
 					<label for="hasFirewall">
 						Firewall
@@ -424,28 +424,57 @@
 		/>
 	</section>
 
-	<section class="row wrap">
-		<div class="column inline">
-			<h3 class="row inline">
-				<label for="container.env">
-					Environment variables
-				</label>
+	<section class="column">
+		<div class="row wrap">
+			<div class="column inline">
+				<h3 class="row inline">
+					<label for="container.env">
+						Environment variables
+					</label>
 
-				<span class="annotation">Optional</span>
-			</h3>
+					<span class="annotation">Optional</span>
+				</h3>
 
-			<p>The .env file for this container. One variable per line.</p>
+				<p>The .env file for this container. One variable per line.</p>
+			</div>
+
+			<button
+				type="button"
+				class="small"
+				on:click={async () => {
+					try {
+						container.env = parseEnvString(await navigator.clipboard.readText())
+					}catch(e){
+						console.error(e)
+					}
+				}}
+			>
+				Paste from clipboard
+			</button>
 		</div>
 
 		<Textarea
 			id="container.env"
 			name="container.env"
-			rows="2"
+			rows="5"
 			placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
 			value={serializeEnvObject(container.env)}
 			onblur={e => { container.env = parseEnvString(e.currentTarget.value) }}
 			{...constraints?.env}
 			class="code"
+			getDisplayValue={value => (
+				serializeEnvObject(
+					Object.fromEntries(
+						Object.entries(
+							parseEnvString(value)
+						)
+							.map(([key, value]) => [
+								key,
+								'•'.repeat(value.length)
+							])
+					)
+				)
+			)}
 		/>
 	</section>
 
@@ -599,12 +628,14 @@
 											<button
 												type="button"
 												class="smaller"
-												on:click={() => {
+												on:click={e => {
 													payment.amount = String(
 														Number(payment.amount) === Math.floor(Number(payment.amount))
 															? BigInt(payment.amount) * BigInt(Math.pow(10, selectedToken.decimals))
 															: payment.amount * Math.pow(10, selectedToken.decimals)
 													)
+
+													e.currentTarget?.previousElementSibling?.focus()
 												}}
 												transition:scale={{ duration: 200, easing: expoOut }}
 											>
