@@ -83,13 +83,19 @@ export const formatNodeConfig = (node: InfernetNode) => {
 				password: node.docker_account.password,
 			},
 		}),
-		...((node.snapshot_sync_batch_size || node.snapshot_sync_sleep) && {
+		...((node.snapshot_sync_batch_size || node.snapshot_sync_sleep || node.snapshot_sync_starting_sub_id || node.snapshot_sync_sync_period) && {
 			snapshot_sync: {
 				...(node.snapshot_sync_batch_size && {
 					batch_size: node.snapshot_sync_batch_size,
 				}),
 				...(node.snapshot_sync_sleep && {
 					sleep: node.snapshot_sync_sleep,
+				}),
+				...(node.snapshot_sync_starting_sub_id && {
+					starting_sub_id: node.snapshot_sync_starting_sub_id,
+				}),
+				...(node.snapshot_sync_sync_period && {
+					sync_period: node.snapshot_sync_sync_period,
 				}),
 			},
 		}),
