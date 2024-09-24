@@ -13,7 +13,7 @@
 	} = $page.data as PageData)
 
 	let clusters: Awaited<typeof clustersPromise> | undefined
-	$: clustersPromise.then(_ => { clusters = _ })
+	$: clustersPromise?.then(_ => { clusters = _ })
 
 
 	// Actions

@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { BaseNodeClient } from '$/lib/clients/node/base'
-	import { providers, ProviderTypeEnum } from '$/types/provider'
+	import { providers, ProviderTypeEnum, type NodeInfo } from '$/types/provider'
 	import { chainsByChainId } from '$/lib/chains'
 
 
@@ -10,21 +10,20 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		nodeWithInfo: {
-			node,
-			info,
-			infoError,
-		},
+		node,
+		nodeInfoPromise,
 	} = $page.data as PageData)
 
 
 	// Internal state
 	// (Computed)
+	$: nodeId = node.state?.id ?? node.id
+
 	$: nodeStatus = (
 		node ?
 			node.state?.id ?
-				info?.status ?
-					info.status
+				nodeInfo?.status ?
+					nodeInfo.status
 				:
 					'unknown'
 			:
@@ -32,6 +31,13 @@
 		:
 			'unknown'
 	)
+
+	// (Node info)
+	let nodeInfo: NodeInfo | undefined
+	let nodeInfoError: Error | undefined
+	$: nodeInfoPromise
+		?.then(_ => { nodeInfo = _ })
+		.catch(e => { nodeInfoError = e as unknown as Error })
 
 	// (Output)
 	$: logsQuery = createInfiniteQuery({
@@ -127,7 +133,7 @@
 
 			<div class="column inline">
 				<h2>
-					{node?.state?.id ?? node?.id}
+					{nodeId}
 				</h2>
 
 				<p>Infernet node</p>
@@ -172,7 +178,7 @@
 							removeToast(toast.id)
 						},
 					},
-					['stopped', 'terminated'].includes(info?.status) && {
+					nodeInfo?.status && ['stopped', 'terminated'].includes(nodeInfo.status) && {
 						value: 'start',
 						label: 'Start node',
 						formAction: `?/start`,
@@ -198,7 +204,7 @@
 							}
 						},
 					},
-					['running'].includes(info?.status) && {
+					nodeInfo?.status && ['running'].includes(nodeInfo.status) && {
 						value: 'stop',
 						label: 'Stop node',
 						formAction: `?/stop`,
@@ -284,7 +290,7 @@
 				{/each}
 			{/if}
 
-			{#if info?.instanceInfo || infoError}
+			{#if nodeInfo?.instanceInfo || nodeInfoError}
 				<section class="column">
 					<dt>{node.provider} instance info</dt>
 
@@ -302,16 +308,16 @@
 								</header>
 							</svelte:fragment>
 
-							{#if info?.instanceInfo}
+							{#if nodeInfo?.instanceInfo}
 								<DetailsValue
-									value={info?.instanceInfo}
+									value={nodeInfo?.instanceInfo}
 								/>
 							{/if}
 
-							{#if infoError}
+							{#if nodeInfoError}
 								<div class="card column error">
 									<output>
-								<pre><code>{infoError}</code></pre>
+										<pre><code>{nodeInfoError}</code></pre>
 									</output>
 								</div>
 							{/if}

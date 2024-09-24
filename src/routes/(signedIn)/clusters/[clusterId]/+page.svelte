@@ -238,7 +238,7 @@
 
 		<NodesTable
 			clusterStatus={cluster.status}
-			nodesWithInfo={nodesWithInfoPromise}
+			{nodesWithInfoPromise}
 		/>
 	</section>
 

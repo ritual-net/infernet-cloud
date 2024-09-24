@@ -3,10 +3,13 @@
 	import { page } from '$app/stores'
 
 	let {
-		nodeWithInfo: {
-			node,
-		},
+		node,
 	} = $page.data
+
+
+	// Internal state
+	// (Computed)
+	$: nodeId = node.state?.id ?? node.id
 
 	
 	// Actions
@@ -20,7 +23,7 @@
 		class="row inline"
 	>
 		<span>←</span>
-		<span>{node?.state?.id ?? node?.id ?? 'Node'}</span>
+		<span>{nodeId ?? 'Node'}</span>
 	</a>
 
 	<!-- <a

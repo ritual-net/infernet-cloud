@@ -395,6 +395,12 @@ button, .button {
 		--card-borderColor: var(--card-typeError-borderColor);
 	}
 
+	&.small {
+		--card-paddingX: 1em;
+		--card-paddingY: 0.5em;
+		font-size: 0.66em;
+	}
+
 	/* clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth))); */
 	overflow: hidden;
 	

@@ -12,26 +12,38 @@ export const load: LayoutLoad = async ({
 	params: { nodeId },
 	fetch,
 }) => {
-	const nodeWithInfo = await (async () => {
-		const response = await fetch(
-			`${resolveRoute('/api/node/[nodeId]', {
+	const nodeInfoPromise = (
+		fetch(
+			resolveRoute('/api/node/[nodeId]/info', {
 				nodeId,
-			})}?${new URLSearchParams({
-				includeClusterBacklink: 'true',
-				includeClusterTfstate: 'true',
-			})}`
+			})
 		)
+			.then(response => response.json())
+	)
 
-		if(!response.ok){
-			const result = await response.json()
+	const response = await fetch(
+		`${resolveRoute('/api/node/[nodeId]', {
+			nodeId,
+		})}?${new URLSearchParams({
+			includeClusterBacklink: 'true',
+			includeClusterTfstate: 'true',
+		})}`
+	)
 
-			return error(response.status, result.message)
-		}
+	if(!response.ok){
+		const result = await response.json()
 
-		return await response.json() as InfernetNodeWithInfo
-	})()
+		return error(response.status, result.message)
+	}
 
-	return {
-		nodeWithInfo,
+	try {
+		const node = await response.json()
+
+		return {
+			node,
+			nodeInfoPromise,
+		} as InfernetNodeWithInfo
+	}catch(e){
+		return error(500, e)
 	}
 }
