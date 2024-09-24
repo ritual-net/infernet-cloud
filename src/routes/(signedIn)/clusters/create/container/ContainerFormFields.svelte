@@ -440,12 +440,25 @@
 		<Textarea
 			id="container.env"
 			name="container.env"
-			rows="2"
+			rows="5"
 			placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
 			value={serializeEnvObject(container.env)}
 			onblur={e => { container.env = parseEnvString(e.currentTarget.value) }}
 			{...constraints?.env}
 			class="code"
+			getDisplayValue={value => (
+				serializeEnvObject(
+					Object.fromEntries(
+						Object.entries(
+							parseEnvString(value)
+						)
+							.map(([key, value]) => [
+								key,
+								'•'.repeat(value.length)
+							])
+					)
+				)
+			)}
 		/>
 	</section>
 
