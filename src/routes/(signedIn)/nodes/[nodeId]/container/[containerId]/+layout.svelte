@@ -16,6 +16,14 @@
 
 <nav class="breadcrumb">
 	<a
+		href={resolveRoute(`/nodes/[nodeId]`, { nodeId: node.id })}
+		class="row inline"
+	>
+		<span>←</span>
+		<span>{node?.state?.id ?? node?.id ?? 'Node'}</span>
+	</a>
+
+	<!-- <a
 		href={resolveRoute(`/clusters/[clusterId]`, { clusterId: node.cluster.id })}
 		class="row inline"
 	>
@@ -30,7 +38,7 @@
 		class="row inline"
 	>
 		<span>{node?.state?.id ?? node?.id ?? 'Node'}</span>
-	</a>
+	</a> -->
 </nav>
 
 <slot />
