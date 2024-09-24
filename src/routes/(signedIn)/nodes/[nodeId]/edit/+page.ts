@@ -17,7 +17,11 @@ export const load: PageLoad = async ({
 	parent,
 	fetch,
 }) => {
-	const { node } = await parent()
+	const {
+		nodeWithInfo: {
+			node,
+		},
+	} = await parent()
 
 	if(!node)
 		throw new Error(`Node was not found.`)
