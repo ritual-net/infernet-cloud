@@ -457,22 +457,27 @@
 
 			<div class="row wrap">
 				<button
+					type="button"
 					class="small"
 					on:click={() => {
 						$logsQuery.refetch()
 					}}
+					disabled={$logsQuery.isRefetching}
 				>
-					Refresh
+					{$logsQuery.isRefetching ? 'Loading...' : 'Refresh'}
 				</button>
 
-				<button
-					class="small"
-					on:click={() => {
-						$logsQuery.fetchNextPage()
-					}}
-				>
-					Load more
-				</button>
+				{#if $logsQuery.hasNextPage}
+					<button
+						type="button"
+						class="small"
+						on:click={() => {
+							$logsQuery.fetchNextPage()
+						}}
+					>
+						Load more
+					</button>
+				{/if}
 			</div>
 		</header>
 
