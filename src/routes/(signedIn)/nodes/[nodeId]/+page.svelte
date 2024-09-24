@@ -233,6 +233,7 @@
 		<h3>Containers</h3>
 
 		<NodeContainersTable
+			nodeId={node.id}
 			containers={node.containers}
 		/>
 	</section>

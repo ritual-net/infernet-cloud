@@ -4,6 +4,7 @@
 
 
 	// Inputs
+	export let nodeId: string
 	export let containers: Container[]
 
 
@@ -75,11 +76,12 @@
 			accessor: container => container.generates_proofs ? 'Yes' : 'No',
 		},
 	]}
->
-	<!-- getRowLink={container => (
-		resolveRoute(`/container/[containerId]`, {
+	getRowLink={container => (
+		resolveRoute(`/nodes/[nodeId]/container/[containerId]`, {
+			nodeId,
 			containerId: container.id,
 		})
-	)} -->
+	)}
+>
 	<p>No containers configured.</p>
 </Table>
