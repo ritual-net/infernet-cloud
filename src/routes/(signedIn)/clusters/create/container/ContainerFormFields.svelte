@@ -252,7 +252,7 @@
 				</label>
 			</h3>
 
-			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_2_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
+			<p>Whether this container may used as the <a href="https://docs.ritual.net/infernet/node/configuration/v1_3_0#external-boolean" target="_blank">entry point of a job request</a>.</p>
 		</div>
 
 		<Select
