@@ -145,10 +145,14 @@
 
 						{#each Object.entries(container.env) as [key, value] (key)}
 							<section class="row wrap">
-								<dt>{key}</dt>
+								<dt>
+									<code>{key}</code>
+								</dt>
 
 								<dd>
-									<output>{value}</output>
+									<output>
+										<code>{value}</code>
+									</output>
 								</dd>
 							</section>
 						{/each}
