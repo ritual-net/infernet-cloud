@@ -10,9 +10,11 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		node,
-		info,
-		infoError,
+		nodeWithInfo: {
+			node,
+			info,
+			infoError,
+		},
 	} = $page.data as PageData)
 
 
@@ -32,42 +34,47 @@
 	)
 
 	// (Output)
-	$: logsQuery = createInfiniteQuery({
-		queryKey: ['nodeLogs', {
-			nodeId: node?.id,
-		}] as const,
+	$: logsQuery = (
+		nodeStatus !== 'undeployed' ?
+			createInfiniteQuery({
+				queryKey: ['nodeLogs', {
+					nodeId: node?.id,
+				}] as const,
 
-		initialPageParam: 0,
+				initialPageParam: 0,
 
-		queryFn: async ({
-			queryKey: [_, {
-				nodeId,
-			}],
-			pageParam: start,
-		}) => (
-			await fetch(
-				`${resolveRoute('/api/node/[nodeId]/logs', {
-					nodeId,
-				})}?${new URLSearchParams({
-					start: start?.toString(),
-				})}`,
-			)
-				.then(async response => {
-					if(!response.ok)
-						throw await response.text()
+				queryFn: async ({
+					queryKey: [_, {
+						nodeId,
+					}],
+					pageParam: start,
+				}) => (
+					await fetch(
+						`${resolveRoute('/api/node/[nodeId]/logs', {
+							nodeId,
+						})}?${new URLSearchParams({
+							start: start?.toString(),
+						})}`,
+					)
+						.then(async response => {
+							if(!response.ok)
+								throw await response.text()
 
-					return await response.json() as ReturnType<BaseNodeClient['getLogs']>
-				})
-		),
+							return await response.json() as ReturnType<BaseNodeClient['getLogs']>
+						})
+				),
 
-		getNextPageParam: (lastPage) => lastPage.next,
+				getNextPageParam: (lastPage) => lastPage.next,
 
-		select: result => (
-			result
-				.pages
-				.flatMap(page => page.logs)
-		),
-	})
+				select: result => (
+					result
+						.pages
+						.flatMap(page => page.logs)
+				),
+			})
+		:
+			undefined
+	)
 
 
 	// Functions
@@ -93,13 +100,26 @@
 	import Status from '$/views/Status.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 	import { DockerIcon } from '$/icons'
+	import TerraformResourceDetails from '../../clusters/[clusterId]/TerraformResourceDetails.svelte'
 </script>
 
 
 <svelte:head>
-	<title>Node {node?.state?.id ?? node?.id ?? 'Node'} | Infernet Cloud</title>
+	<title>{node?.state?.id ?? node?.id ? `${node?.state?.id ?? node?.id} | Node` : 'Node'} | Infernet Cloud</title>
 </svelte:head>
 
+
+<nav class="breadcrumb">
+	{#if node.cluster}
+		<a
+			href={resolveRoute(`/clusters/[clusterId]`, { clusterId: node.cluster.id })}
+			class="row inline"
+		>
+			<span>←</span>
+			<span>{node.cluster.name}</span>
+		</a>
+	{/if}
+</nav>
 
 <div class="container column">
 	<header class="row wrap">
@@ -216,6 +236,99 @@
 			/>
 		</div>
 	</header>
+
+	<section>
+		<h3>Containers</h3>
+
+		<NodeContainersTable
+			nodeId={node.id}
+			containers={node.containers}
+		/>
+	</section>
+
+	<section class="column">
+		<h3>Status</h3>
+
+		<dl class="card column">
+			<section class="row wrap">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={nodeStatus}
+					/>
+				</dd>
+			</section>
+
+			{#if node.state?.ip}
+				<section class="row wrap">
+					<dt>IP</dt>
+
+					<dd>
+						{node.state.ip}
+					</dd>
+				</section>
+			{/if}
+
+			{#if node?.state?.id && node.cluster?.latest_deployment?.tfstate}
+				{#each node.cluster.latest_deployment.tfstate.resources as resourceType}
+					{#each resourceType.instances as resource}
+						{#if resource.attributes['id'] === node.state.id}
+						
+							<section class="column">
+								<dt>Terraform resource info</dt>
+
+								<dd>
+									<TerraformResourceDetails
+										deploymentId={node.cluster.latest_deployment.id}
+										provider={node.provider}
+										{resourceType}
+										{resource}
+									/>
+								</dd>
+							</section>
+						{/if}
+					{/each}
+				{/each}
+			{/if}
+
+			{#if nodeStatus !== 'undeployed' && (info?.instanceInfo || infoError)}
+				<section class="column">
+					<dt>{node.provider} instance info</dt>
+
+					<dd>
+						<Collapsible
+							class="card"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={node.provider && providers[node.provider].icon}
+									>
+										{node?.state?.id ?? 'Instance'}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							{#if info?.instanceInfo}
+								<DetailsValue
+									value={info?.instanceInfo}
+								/>
+							{/if}
+
+							{#if infoError}
+								<div class="card column error">
+									<output>
+								<pre><code>{infoError}</code></pre>
+									</output>
+								</div>
+							{/if}
+						</Collapsible>
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
 
 	<section class="column">
 		<h3>Configuration</h3>
@@ -386,154 +499,97 @@
 		</section>
 	{/if}
 
-	<section class="column">
-		<h3>Status</h3>
+	{#if logsQuery}
+		<section class="column">
+			<header class="row wrap">
+				<h3>Logs</h3>
 
-		<dl class="card column">
-			<section class="row wrap">
-				<dt>Status</dt>
+				<div class="row wrap">
+					<button
+						type="button"
+						class="small"
+						on:click={() => {
+							$logsQuery.refetch()
+						}}
+						disabled={$logsQuery.isRefetching}
+					>
+						{$logsQuery.isRefetching ? 'Loading...' : 'Refresh'}
+					</button>
 
-				<dd>
-					<Status
-						status={nodeStatus}
-					/>
-				</dd>
-			</section>
-
-			{#if node.state?.ip}
-				<section class="row wrap">
-					<dt>IP</dt>
-
-					<dd>
-						{node.state.ip}
-					</dd>
-				</section>
-			{/if}
-
-			{#if info?.instanceInfo || infoError}
-				<section class="column">
-					<dt>Instance info</dt>
-
-					<dd>
-						<Collapsible
-							class="card"
+					{#if $logsQuery.hasNextPage}
+						<button
+							type="button"
+							class="small"
+							on:click={() => {
+								$logsQuery.fetchNextPage()
+							}}
 						>
-							<svelte:fragment slot="trigger">
-								<header class="row" data-after="▾">
-									<WithIcon
-										icon={node.provider && providers[node.provider].icon}
-									>
-										{node?.state?.id ?? 'Instance'}
-									</WithIcon>
-								</header>
-							</svelte:fragment>
+							Load more
+						</button>
+					{/if}
+				</div>
+			</header>
 
-							{#if info?.instanceInfo}
-								<DetailsValue
-									value={info?.instanceInfo}
-								/>
-							{/if}
+			<dl class="card column">
+				<section class="row">
+					<dt>Last updated</dt>
 
-							{#if infoError}
-								<div class="card column error">
-									<output>
-								<pre><code>{infoError}</code></pre>
-									</output>
-								</div>
-							{/if}
-						</Collapsible>
+					<dd>
+						{$logsQuery.dataUpdatedAt ? new Date($logsQuery.dataUpdatedAt).toLocaleString() : '–'}
 					</dd>
 				</section>
-			{/if}
-		</dl>
-	</section>
 
-	<section class="column">
-		<header class="row wrap">
-			<h3>Logs</h3>
+				<section class="column">
+					<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
 
-			<div class="row wrap">
-				<button
-					class="small"
-					on:click={() => {
-						$logsQuery.refetch()
-					}}
-				>
-					Refresh
-				</button>
-
-				<button
-					class="small"
-					on:click={() => {
-						$logsQuery.fetchNextPage()
-					}}
-				>
-					Load more
-				</button>
-			</div>
-		</header>
-
-		<dl class="card column">
-			<section class="row">
-				<dt>Last updated</dt>
-
-				<dd>
-					{$logsQuery.dataUpdatedAt ? new Date($logsQuery.dataUpdatedAt).toLocaleString() : '–'}
-				</dd>
-			</section>
-
-			<section class="column">
-				<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
-
-				<dd>{$logsQuery.isError}
-					{#if $logsQuery.isLoading}
-						<div class="card loading">
-							<p>Loading logs...</p>
-						</div>
-					{:else if $logsQuery.isError}
-						<div class="card error">
-							<p>Error loading logs: {$logsQuery.error.message}</p>
-						</div>
-					{:else if $logsQuery.data}
-						{@const logs = $logsQuery.data}
-
-						<ScrollArea>
-							<div class="log-container">
-								{#each logs as log, i}
-									{@const previousLog = logs[i - 1]}
-
-									{#if previousLog && previousLog.source !== log.source}
-										<hr>
-									{/if}
-
-									<div
-										class="log"
-										data-source={log.source}
-									>
-										<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> {#if log.source}<span>{log.source}</span>{/if}<code>{log.text}</code></output>
-									</div>
-								{/each}
+					<dd>
+						{#if $logsQuery.isLoading}
+							<div class="card loading">
+								<p>Loading logs...</p>
 							</div>
-						</ScrollArea>
-					{:else}
-						<p>No logs available.</p>
-					{/if}
-				</dd>
-			</section>
-		</dl>
-	</section>
+						{:else if $logsQuery.isError}
+							<div class="card error">
+								<p>Error loading logs: {$logsQuery.error.message}</p>
+							</div>
+						{:else if $logsQuery.data}
+							{@const logs = $logsQuery.data}
 
-	<section>
-		<h3>Containers</h3>
+							<ScrollArea>
+								<div class="log-container">
+									{#each logs as log, i}
+										{@const previousLog = logs[i - 1]}
 
-		<NodeContainersTable
-			containers={node.containers}
-		/>
-	</section>
+										{#if previousLog && previousLog.source !== log.source}
+											<hr>
+										{/if}
+
+										<div
+											class="log"
+											data-source={log.source}
+										>
+											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> {#if log.source}<span>{log.source}</span>{/if}<code>{log.text}</code></output>
+										</div>
+									{/each}
+								</div>
+							</ScrollArea>
+						{:else}
+							<p>No logs available.</p>
+						{/if}
+					</dd>
+				</section>
+			</dl>
+		</section>
+	{/if}
 </div>
 
 
 <style>
+	nav {
+		& a {
+			opacity: 0.5;
+		}
+	}
+	
 	.container {
 		gap: 2rem;
 	}

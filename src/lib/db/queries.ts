@@ -16,18 +16,28 @@ export const getNodesByIds = async (
 	nodeIds: string[],
 	{
 		includeClusterBacklink = false,
+		includeClusterTfstate = false,
 	}: {
 		includeClusterBacklink?: boolean,
+		includeClusterTfstate?: boolean,
 	} = {}
 ) => {
 	return await e
 		.params({ nodeIds: e.array(e.uuid) }, ({ nodeIds }) =>
 			e.select(e.InfernetNode, (node) => ({
 				...e.InfernetNode['*'],
-				...includeClusterBacklink && {
+				...(includeClusterBacklink || includeClusterTfstate) && {
 					cluster: {
-						id: true,
-						name: true,
+						...includeClusterBacklink && {
+							id: true,
+							name: true,
+						},
+						...includeClusterTfstate && {
+							latest_deployment: {
+								id: true,
+								tfstate: true,
+							},
+						},
 					},
 				},
 				docker_account: {
