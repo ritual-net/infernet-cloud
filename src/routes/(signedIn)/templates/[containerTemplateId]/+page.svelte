@@ -68,8 +68,9 @@
 						formAction: `?/delete`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: `Deleting container template "${containerTemplate.name}"...`,
 								},
 							})
@@ -118,7 +119,7 @@
 								{chain.name}
 							</span>
 						{:else}
-							{containerTemplate.chain_id}
+							{containerTemplate.chain_id ?? '–'}
 						{/if}
 					</dd>
 				</section>

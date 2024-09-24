@@ -266,8 +266,8 @@ export const NodeConfig = z
 			.required()
 			.default(false),
 		
-		'snapshot_sync_sleep': z.
-			number()
+		'snapshot_sync_sleep': z
+			.number()
 			.positive()
 			.optional()
 			.nullable(),
@@ -276,6 +276,19 @@ export const NodeConfig = z
 			.number()
 			.positive()
 			.integer()
+			.optional()
+			.nullable(),
+
+		'snapshot_sync_starting_sub_id': z
+			.number()
+			.integer()
+			.positive()
+			.optional()
+			.nullable(),
+
+		'snapshot_sync_sync_period': z
+			.number()
+			.positive()
 			.optional()
 			.nullable(),
 	})
@@ -362,5 +375,7 @@ export const setDefaultNodeValues = (node: z.InferType<typeof Node>) => {
 	node.config.allowed_sim_errors ??= []
 	node.config.snapshot_sync_sleep ??= 1.0
 	node.config.snapshot_sync_batch_size ??= 200
+	node.config.snapshot_sync_starting_sub_id ??= 0
+	node.config.snapshot_sync_sync_period ??= 0.5
 	node.dockerAccountUsername ??= ''
 }

@@ -91,8 +91,9 @@
 				formAction: `${clusterRoute}?/apply`,
 				formSubmit: async (e) => {
 					const toast = addToast({
+						closeDelay: 0,
 						data: {
-							type: 'default',
+							type: 'loading',
 							title: (
 								cluster.status !== 'destroyed' ?
 									`Applying changes to cluster "${cluster.name}"...`
@@ -125,8 +126,9 @@
 						formAction: `${clusterRoute}?/destroy`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: `Destroying cluster "${cluster.name}"...`,
 								},
 							})
@@ -148,8 +150,9 @@
 						formAction: `${clusterRoute}?/delete`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: `Deleting cluster "${cluster.name}"...`,
 								},
 							})

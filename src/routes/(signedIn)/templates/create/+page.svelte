@@ -47,11 +47,14 @@
 
 	export const snapshot = { capture, restore }
 
+
+	// Actions
 	let delayedToast: Toast
 	$: if($delayed){
 		delayedToast = addToast({
+			closeDelay: 0,
 			data: {
-				type: 'default',
+				type: 'loading',
 				title: `Adding container template...`,
 			},
 		})
@@ -59,6 +62,12 @@
 		if(delayedToast)
 			removeToast(delayedToast.id)
 	}
+
+	import { onDestroy } from 'svelte'
+
+	onDestroy(() => {
+		removeToast(delayedToast.id)
+	})
 
 
 	// (Docker images)

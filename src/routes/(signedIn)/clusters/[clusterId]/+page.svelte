@@ -122,8 +122,9 @@
 						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: `Refreshing data...`,
 								},
 							})
@@ -143,8 +144,9 @@
 						formAction: `?/apply`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: (
 										cluster.status !== 'destroyed' ?
 											`Applying changes to cluster "${cluster.name}"...`
@@ -177,8 +179,9 @@
 								formAction: `?/destroy`,
 								formSubmit: async (e) => {
 									const toast = addToast({
+										closeDelay: 0,
 										data: {
-											type: 'default',
+											type: 'loading',
 											title: `Destroying cluster "${cluster.name}"...`,
 										},
 									})
@@ -200,8 +203,9 @@
 								formAction: `?/delete`,
 								formSubmit: async (e) => {
 									const toast = addToast({
+										closeDelay: 0,
 										data: {
-											type: 'default',
+											type: 'loading',
 											title: `Deleting cluster "${cluster.name}"...`,
 										},
 									})

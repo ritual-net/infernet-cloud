@@ -101,6 +101,8 @@ export interface InfernetNode extends std.$Object {
   "chain_id"?: number | null;
   "machine_image": string;
   "provider_id": string;
+  "snapshot_sync_starting_sub_id"?: number | null;
+  "snapshot_sync_sync_period"?: number | null;
 }
 export type TerraformAction = "Init" | "Plan" | "Apply" | "Destroy";
 export interface TerraformDeployment extends std.$Object {

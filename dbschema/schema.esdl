@@ -216,6 +216,10 @@ module default {
 
     snapshot_sync_batch_size: int16;
 
+		snapshot_sync_starting_sub_id: int32;
+
+		snapshot_sync_sync_period: float32;
+
     docker_account: DockerAccount;
 
     multi containers: Container {

@@ -215,10 +215,10 @@
 						<label for="{namePrefix}.config.registry_address">
 							Registry address
 						</label>
-		
+
 						<p>The address of the <a href="https://docs.ritual.net/infernet/sdk/reference/Registry" target="_blank">Infernet SDK Registry</a> smart contract.</p>
 					</div>
-		
+
 					<Combobox
 						labelText="Registry Address"
 						placeholder="0xabcdef...1234567890"
@@ -252,7 +252,7 @@
 						}
 					/>
 				</div>
-	
+
 				<div class="column">
 					<div class="column inline">
 						<span class="row inline">
@@ -316,7 +316,7 @@
 							<span class="annotation">Optional</span>
 						</div>
 
-						<p>Maximum gas units to spend when sending a transaction from the node wallet.</p>
+						<p>Maximum gas units to spend when sending a transaction.</p>
 					</div>
 
 					<input
@@ -332,11 +332,13 @@
 
 			<div class="column">
 				<div class="column inline">
-					<h3 class="row inline">
+					<h4 class="row inline">
 						<label for="{namePrefix}.config.allowed_sim_errors">
 							Ignored errors
 						</label>
-					</h3>
+
+						<span class="annotation">Optional</span>
+					</h4>
 
 					<p>
 						Substrings of error messages to ignore when simulating transactions. Case-insensitive; one per line.
@@ -437,7 +439,7 @@
 
 						<p>Number of seconds to sleep between snapshots.</p>
 					</div>
-	
+
 					<input
 						type="number"
 						placeholder="1.0"
@@ -461,7 +463,7 @@
 
 						<p>Number of subscriptions to sync per batch.</p>
 					</div>
-	
+
 					<input
 						type="number"
 						placeholder="200"
@@ -469,6 +471,53 @@
 						name="{namePrefix}.config.snapshot_sync_batch_size"
 						bind:value={node.config.snapshot_sync_batch_size}
 						{...constraints?.config?.snapshot_sync_batch_size}
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.snapshot_sync_starting_sub_id">
+								Starting subscription
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>Subscription ID to start the syncing process from.</p>
+					</div>
+
+					<input
+						type="number"
+						placeholder="0"
+						id="{namePrefix}.config.snapshot_sync_starting_sub_id"
+						name="{namePrefix}.config.snapshot_sync_starting_sub_id"
+						bind:value={node.config.snapshot_sync_starting_sub_id}
+						{...constraints?.config?.snapshot_sync_starting_sub_id}
+					/>
+				</div>
+
+				<div class="column">
+					<div class="column inline">
+						<div class="row inline">
+							<label for="{namePrefix}.config.sync_period">
+								Sync period
+							</label>
+
+							<span class="annotation">Optional</span>
+						</div>
+
+						<p>Number of seconds to poll chain for blocks/subscriptions.</p>
+					</div>
+
+					<input
+						type="number"
+						placeholder="0.5"
+						id="{namePrefix}.config.snapshot_sync_sync_period"
+						name="{namePrefix}.config.snapshot_sync_sync_period"
+						bind:value={node.config.snapshot_sync_sync_period}
+						step="0.1"
+						{...constraints?.config?.snapshot_sync_sync_period}
 					/>
 				</div>
 			</div>
@@ -484,7 +533,7 @@
 			</label>
 		</h3>
 
-		<p>If checked, register this node to be shown publicly on the Infernet explorer.</p>
+		<p>Register this node with <a href="https://infernet.ritual.net" target="_blank">Infernet Explorer</a> to let anyone browse resource usage, containers and fulfilled jobs.</p>
 	</div>
 
 	<Switch
@@ -556,7 +605,7 @@
 				Containers
 			</h3>
 
-			<p>Assign container configurations to this node.</p>
+			<p>Configure containers and services to run on this node.</p>
 		</div>
 
 		<a

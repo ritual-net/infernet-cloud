@@ -40,42 +40,47 @@
 		.catch(e => { nodeInfoError = e as unknown as Error })
 
 	// (Output)
-	$: logsQuery = createInfiniteQuery({
-		queryKey: ['nodeLogs', {
-			nodeId: node?.id,
-		}] as const,
+	$: logsQuery = (
+		nodeStatus !== 'undeployed' ?
+			createInfiniteQuery({
+				queryKey: ['nodeLogs', {
+					nodeId: node?.id,
+				}] as const,
 
-		initialPageParam: 0,
+				initialPageParam: 0,
 
-		queryFn: async ({
-			queryKey: [_, {
-				nodeId,
-			}],
-			pageParam: start,
-		}) => (
-			await fetch(
-				`${resolveRoute('/api/node/[nodeId]/logs', {
-					nodeId,
-				})}?${new URLSearchParams({
-					start: start?.toString(),
-				})}`,
-			)
-				.then(async response => {
-					if(!response.ok)
-						throw await response.text()
+				queryFn: async ({
+					queryKey: [_, {
+						nodeId,
+					}],
+					pageParam: start,
+				}) => (
+					await fetch(
+						`${resolveRoute('/api/node/[nodeId]/logs', {
+							nodeId,
+						})}?${new URLSearchParams({
+							start: start?.toString(),
+						})}`,
+					)
+						.then(async response => {
+							if(!response.ok)
+								throw await response.text()
 
-					return await response.json() as ReturnType<BaseNodeClient['getLogs']>
-				})
-		),
+							return await response.json() as ReturnType<BaseNodeClient['getLogs']>
+						})
+				),
 
-		getNextPageParam: (lastPage) => lastPage.next,
+				getNextPageParam: (lastPage) => lastPage.next,
 
-		select: result => (
-			result
-				.pages
-				.flatMap(page => page.logs)
-		),
-	})
+				select: result => (
+					result
+						.pages
+						.flatMap(page => page.logs)
+				),
+			})
+		:
+			undefined
+	)
 
 
 	// Functions
@@ -167,8 +172,9 @@
 						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: `Refreshing data...`,
 								},
 							})
@@ -184,8 +190,9 @@
 						formAction: `?/start`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: 'Starting node...',
 								},
 							})
@@ -210,8 +217,9 @@
 						formAction: `?/stop`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: 'Stopping node...',
 								},
 							})
@@ -290,7 +298,7 @@
 				{/each}
 			{/if}
 
-			{#if nodeInfo?.instanceInfo || nodeInfoError}
+			{#if nodeStatus !== 'undeployed' && (nodeInfo?.instanceInfo || nodeInfoError)}
 				<section class="column">
 					<dt>{node.provider} instance info</dt>
 
@@ -489,91 +497,95 @@
 					<dd>
 						<p>{(node.snapshot_sync_sleep ?? 1.0).toFixed(1)} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sleep ?? 1.0)]} between snapshots</p>
 						<p>{node.snapshot_sync_batch_size ?? 200} {({ 'one': 'subscription', 'other': 'subscriptions'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_batch_size ?? 200)]} per batch</p>
+						<p>Start from subscription #{node.snapshot_sync_starting_sub_id ?? 0}</p>
+						<p>Poll chain every {(node.snapshot_sync_sync_period ?? 0.5).toFixed(1)} {({ 'one': 'second', 'other': 'seconds'})[new Intl.PluralRules('en-US').select(node.snapshot_sync_sync_period ?? 0.5)]}</p>
 					</dd>
 				</section>
 			</dl>
 		</section>
 	{/if}
 
-	<section class="column">
-		<header class="row wrap">
-			<h3>Logs</h3>
+	{#if logsQuery}
+		<section class="column">
+			<header class="row wrap">
+				<h3>Logs</h3>
 
-			<div class="row wrap">
-				<button
-					type="button"
-					class="small"
-					on:click={() => {
-						$logsQuery.refetch()
-					}}
-					disabled={$logsQuery.isRefetching}
-				>
-					{$logsQuery.isRefetching ? 'Loading...' : 'Refresh'}
-				</button>
-
-				{#if $logsQuery.hasNextPage}
+				<div class="row wrap">
 					<button
 						type="button"
 						class="small"
 						on:click={() => {
-							$logsQuery.fetchNextPage()
+							$logsQuery.refetch()
 						}}
+						disabled={$logsQuery.isRefetching}
 					>
-						Load more
+						{$logsQuery.isRefetching ? 'Loading...' : 'Refresh'}
 					</button>
-				{/if}
-			</div>
-		</header>
 
-		<dl class="card column">
-			<section class="row">
-				<dt>Last updated</dt>
-
-				<dd>
-					{$logsQuery.dataUpdatedAt ? new Date($logsQuery.dataUpdatedAt).toLocaleString() : '–'}
-				</dd>
-			</section>
-
-			<section class="column">
-				<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
-
-				<dd>
-					{#if $logsQuery.isLoading}
-						<div class="card loading">
-							<p>Loading logs...</p>
-						</div>
-					{:else if $logsQuery.isError}
-						<div class="card error">
-							<p>Error loading logs: {$logsQuery.error.message}</p>
-						</div>
-					{:else if $logsQuery.data}
-						{@const logs = $logsQuery.data}
-
-						<ScrollArea>
-							<div class="log-container">
-								{#each logs as log, i}
-									{@const previousLog = logs[i - 1]}
-
-									{#if previousLog && previousLog.source !== log.source}
-										<hr>
-									{/if}
-
-									<div
-										class="log"
-										data-source={log.source}
-									>
-										<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> {#if log.source}<span>{log.source}</span>{/if}<code>{log.text}</code></output>
-									</div>
-								{/each}
-							</div>
-						</ScrollArea>
-					{:else}
-						<p>No logs available.</p>
+					{#if $logsQuery.hasNextPage}
+						<button
+							type="button"
+							class="small"
+							on:click={() => {
+								$logsQuery.fetchNextPage()
+							}}
+						>
+							Load more
+						</button>
 					{/if}
-				</dd>
-			</section>
-		</dl>
-	</section>
+				</div>
+			</header>
+
+			<dl class="card column">
+				<section class="row">
+					<dt>Last updated</dt>
+
+					<dd>
+						{$logsQuery.dataUpdatedAt ? new Date($logsQuery.dataUpdatedAt).toLocaleString() : '–'}
+					</dd>
+				</section>
+
+				<section class="column">
+					<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
+
+					<dd>
+						{#if $logsQuery.isLoading}
+							<div class="card loading">
+								<p>Loading logs...</p>
+							</div>
+						{:else if $logsQuery.isError}
+							<div class="card error">
+								<p>Error loading logs: {$logsQuery.error.message}</p>
+							</div>
+						{:else if $logsQuery.data}
+							{@const logs = $logsQuery.data}
+
+							<ScrollArea>
+								<div class="log-container">
+									{#each logs as log, i}
+										{@const previousLog = logs[i - 1]}
+
+										{#if previousLog && previousLog.source !== log.source}
+											<hr>
+										{/if}
+
+										<div
+											class="log"
+											data-source={log.source}
+										>
+											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> {#if log.source}<span>{log.source}</span>{/if}<code>{log.text}</code></output>
+										</div>
+									{/each}
+								</div>
+							</ScrollArea>
+						{:else}
+							<p>No logs available.</p>
+						{/if}
+					</dd>
+				</section>
+			</dl>
+		</section>
+	{/if}
 </div>
 
 
