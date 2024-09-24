@@ -58,6 +58,16 @@
 			),
 		},
 		{
+			header: 'Docker account',
+			accessor: nodeWithInfo => nodeWithInfo,
+			cell: ({ value: nodeWithInfo }) => (
+				createRender(NodesTableCell, {
+					cellType: CellType.DockerAccount,
+					nodeWithInfo,
+				})
+			),
+		},
+		{
 			header: 'Chain',
 			accessor: nodeWithInfo => nodeWithInfo,
 			cell: ({ value: nodeWithInfo }) => (
@@ -79,16 +89,6 @@
 		// 		nodeWithInfo.node.allowed_sim_errors?.length ? `${nodeWithInfo.node.allowed_sim_errors.length} substrings` : '–',
 		// 	),
 		// },
-		{
-			header: 'Docker account',
-			accessor: nodeWithInfo => nodeWithInfo,
-			cell: ({ value: nodeWithInfo }) => (
-				createRender(NodesTableCell, {
-					cellType: CellType.DockerAccount,
-					nodeWithInfo,
-				})
-			),
-		},
 	]}
 	getRowLink={nodeWithInfo => (
 		nodeWithInfo.node && resolveRoute(`/nodes/[nodeId]`, {
