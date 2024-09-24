@@ -10,9 +10,11 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		node,
-		info,
-		infoError,
+		nodeWithInfo: {
+			node,
+			info,
+			infoError,
+		},
 	} = $page.data as PageData)
 
 

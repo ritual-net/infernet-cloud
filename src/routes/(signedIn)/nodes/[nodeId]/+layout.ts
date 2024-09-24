@@ -9,38 +9,29 @@ import { resolveRoute } from '$app/paths'
 import { error } from '@sveltejs/kit'
 
 export const load: LayoutLoad = async ({
-	parent,
 	params: { nodeId },
 	fetch,
 }) => {
-	const [
-		parentData,
-		nodeWithInfo,
-	] = await Promise.all([
-		parent(),
+	const nodeWithInfo = await (async () => {
+		const response = await fetch(
+			`${resolveRoute('/api/node/[nodeId]', {
+				nodeId,
+			})}?${new URLSearchParams({
+				includeClusterBacklink: 'true',
+				includeClusterTfstate: 'true',
+			})}`
+		)
 
-		(async () => {
-			const response = await fetch(
-				`${resolveRoute('/api/node/[nodeId]', {
-					nodeId,
-				})}?${new URLSearchParams({
-					includeClusterBacklink: 'true',
-					includeClusterTfstate: 'true',
-				})}`
-			)
+		if(!response.ok){
+			const result = await response.json()
 
-			if(!response.ok){
-				const result = await response.json()
+			return error(response.status, result.message)
+		}
 
-				return error(response.status, result.message)
-			}
-
-			return await response.json() as InfernetNodeWithInfo
-		})()
-	])
+		return await response.json() as InfernetNodeWithInfo
+	})()
 
 	return {
-		...parentData,
-		...nodeWithInfo,
+		nodeWithInfo,
 	}
 }

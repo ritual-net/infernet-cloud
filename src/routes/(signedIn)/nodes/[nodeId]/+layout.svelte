@@ -3,7 +3,9 @@
 	import { page } from '$app/stores'
 
 	let {
-		node
+		nodeWithInfo: {
+			node,
+		},
 	} = $page.data
 
 	
