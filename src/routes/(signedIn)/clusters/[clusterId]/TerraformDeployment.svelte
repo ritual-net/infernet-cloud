@@ -12,7 +12,7 @@
 
 
 	// Internal state
-	let showAllTfvars = true
+	let showAllTfvars = false
 
 
 	// Components
