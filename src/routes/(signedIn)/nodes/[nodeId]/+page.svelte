@@ -214,6 +214,76 @@
 		</div>
 	</header>
 
+	<section>
+		<h3>Containers</h3>
+
+		<NodeContainersTable
+			containers={node.containers}
+		/>
+	</section>
+
+	<section class="column">
+		<h3>Status</h3>
+
+		<dl class="card column">
+			<section class="row wrap">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={nodeStatus}
+					/>
+				</dd>
+			</section>
+
+			{#if node.state?.ip}
+				<section class="row wrap">
+					<dt>IP</dt>
+
+					<dd>
+						{node.state.ip}
+					</dd>
+				</section>
+			{/if}
+
+			{#if info?.instanceInfo || infoError}
+				<section class="column">
+					<dt>Instance info</dt>
+
+					<dd>
+						<Collapsible
+							class="card"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={node.provider && providers[node.provider].icon}
+									>
+										{node?.state?.id ?? 'Instance'}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							{#if info?.instanceInfo}
+								<DetailsValue
+									value={info?.instanceInfo}
+								/>
+							{/if}
+
+							{#if infoError}
+								<div class="card column error">
+									<output>
+								<pre><code>{infoError}</code></pre>
+									</output>
+								</div>
+							{/if}
+						</Collapsible>
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
+
 	<section class="column">
 		<h3>Configuration</h3>
 
@@ -382,68 +452,6 @@
 	{/if}
 
 	<section class="column">
-		<h3>Status</h3>
-
-		<dl class="card column">
-			<section class="row wrap">
-				<dt>Status</dt>
-
-				<dd>
-					<Status
-						status={nodeStatus}
-					/>
-				</dd>
-			</section>
-
-			{#if node.state?.ip}
-				<section class="row wrap">
-					<dt>IP</dt>
-
-					<dd>
-						{node.state.ip}
-					</dd>
-				</section>
-			{/if}
-
-			{#if info?.instanceInfo || infoError}
-				<section class="column">
-					<dt>Instance info</dt>
-
-					<dd>
-						<Collapsible
-							class="card"
-						>
-							<svelte:fragment slot="trigger">
-								<header class="row" data-after="▾">
-									<WithIcon
-										icon={node.provider && providers[node.provider].icon}
-									>
-										{node?.state?.id ?? 'Instance'}
-									</WithIcon>
-								</header>
-							</svelte:fragment>
-
-							{#if info?.instanceInfo}
-								<DetailsValue
-									value={info?.instanceInfo}
-								/>
-							{/if}
-
-							{#if infoError}
-								<div class="card column error">
-									<output>
-								<pre><code>{infoError}</code></pre>
-									</output>
-								</div>
-							{/if}
-						</Collapsible>
-					</dd>
-				</section>
-			{/if}
-		</dl>
-	</section>
-
-	<section class="column">
 		<header class="row wrap">
 			<h3>Logs</h3>
 
@@ -480,7 +488,7 @@
 			<section class="column">
 				<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
 
-				<dd>{$logsQuery.isError}
+				<dd>
 					{#if $logsQuery.isLoading}
 						<div class="card loading">
 							<p>Loading logs...</p>
@@ -516,14 +524,6 @@
 				</dd>
 			</section>
 		</dl>
-	</section>
-
-	<section>
-		<h3>Containers</h3>
-
-		<NodeContainersTable
-			containers={node.containers}
-		/>
 	</section>
 </div>
 
