@@ -305,8 +305,8 @@
 	</section>
 
 	<section class="column wrap">
-		<div class="row wrap">
-			<div class="column inline">
+		<div class="row">
+			<div class="column inline" style="flex: 1;">
 				<h3 class="row inline">
 					<label for="hasFirewall">
 						Firewall
