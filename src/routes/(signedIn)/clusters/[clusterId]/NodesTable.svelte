@@ -64,7 +64,6 @@
 				createRender(NodesTableCell, {
 					cellType: CellType.Chain,
 					nodeWithInfo,
-					clusterStatus,
 				})
 			),
 		},
@@ -82,8 +81,12 @@
 		// },
 		{
 			header: 'Docker account',
-			accessor: nodeWithInfo => (
-				nodeWithInfo.node?.docker_account ? nodeWithInfo.node.docker_account.username : '–'
+			accessor: nodeWithInfo => nodeWithInfo,
+			cell: ({ value: nodeWithInfo }) => (
+				createRender(NodesTableCell, {
+					cellType: CellType.DockerAccount,
+					nodeWithInfo,
+				})
 			),
 		},
 	]}

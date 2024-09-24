@@ -3,6 +3,7 @@
 		IpAndId,
 		Status,
 		Chain,
+		DockerAccount,
 	}
 </script>
 
@@ -22,6 +23,7 @@
 	// Components
 	import WithIcon from '$/components/WithIcon.svelte'
 	import Status from '$/views/Status.svelte'
+	import { DockerIcon } from '$/icons';
 </script>
 
 
@@ -67,6 +69,18 @@
 		</WithIcon>
 	{:else}
 		{nodeWithInfo.node?.chain_id ?? '–'}
+	{/if}
+
+
+{:else if cellType === CellType.DockerAccount}
+	{#if nodeWithInfo.node?.docker_account}
+		<WithIcon
+			icon={DockerIcon}
+		>
+			{nodeWithInfo.node.docker_account.username}
+		</WithIcon>
+	{:else}
+		{'–'}
 	{/if}
 
 {/if}
