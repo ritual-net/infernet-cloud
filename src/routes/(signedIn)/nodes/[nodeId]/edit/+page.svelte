@@ -64,7 +64,8 @@
 	import { onDestroy } from 'svelte'
 
 	onDestroy(() => {
-		removeToast(delayedToast.id)
+		if(delayedToast)
+			removeToast(delayedToast.id)
 	})
 
 
