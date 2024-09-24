@@ -599,12 +599,14 @@
 											<button
 												type="button"
 												class="smaller"
-												on:click={() => {
+												on:click={e => {
 													payment.amount = String(
 														Number(payment.amount) === Math.floor(Number(payment.amount))
 															? BigInt(payment.amount) * BigInt(Math.pow(10, selectedToken.decimals))
 															: payment.amount * Math.pow(10, selectedToken.decimals)
 													)
+
+													e.currentTarget?.previousElementSibling?.focus()
 												}}
 												transition:scale={{ duration: 200, easing: expoOut }}
 											>
