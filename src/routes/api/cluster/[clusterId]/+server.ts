@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({
 	} catch (e) {
 		console.error(e)
 
-		return error(500, e)
+		return error(500, e.message)
 	}
 
 	if(result.error)
