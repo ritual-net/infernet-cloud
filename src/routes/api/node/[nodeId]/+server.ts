@@ -21,6 +21,7 @@ export const GET: RequestHandler = async ({
 	url,
 }) => {
 	const includeClusterBacklink = url.searchParams.has('includeClusterBacklink')
+	const includeClusterTfstate = url.searchParams.has('includeClusterTfstate')
 
 	if (!nodeId)
 		return error(400, 'Node id is required')
@@ -35,6 +36,7 @@ export const GET: RequestHandler = async ({
 				[nodeId],
 				{
 					includeClusterBacklink,
+					includeClusterTfstate,
 				}
 			),
 

@@ -93,6 +93,7 @@
 	import Status from '$/views/Status.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 	import { DockerIcon } from '$/icons'
+	import TerraformResourceDetails from '../../clusters/[clusterId]/TerraformResourceDetails.svelte'
 </script>
 
 
@@ -246,9 +247,31 @@
 				</section>
 			{/if}
 
+			{#if node?.state?.id && node.cluster?.latest_deployment?.tfstate}
+				{#each node.cluster.latest_deployment.tfstate.resources as resourceType}
+					{#each resourceType.instances as resource}
+						{#if resource.attributes['id'] === node.state.id}
+						
+							<section class="column">
+								<dt>Terraform resource info</dt>
+
+								<dd>
+									<TerraformResourceDetails
+										deploymentId={node.cluster.latest_deployment.id}
+										provider={node.provider}
+										{resourceType}
+										{resource}
+									/>
+								</dd>
+							</section>
+						{/if}
+					{/each}
+				{/each}
+			{/if}
+
 			{#if info?.instanceInfo || infoError}
 				<section class="column">
-					<dt>Instance info</dt>
+					<dt>{node.provider} instance info</dt>
 
 					<dd>
 						<Collapsible
