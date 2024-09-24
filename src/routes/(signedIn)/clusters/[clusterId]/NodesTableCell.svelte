@@ -2,6 +2,8 @@
 	export enum CellType {
 		IpAndId,
 		Status,
+		Chain,
+		DockerAccount,
 	}
 </script>
 
@@ -9,6 +11,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { InfernetNodeWithInfo } from '$/types/provider'
+	import { chainsByChainId } from '$/lib/chains'
 
 
 	// Inputs
@@ -18,7 +21,9 @@
 
 
 	// Components
+	import WithIcon from '$/components/WithIcon.svelte'
 	import Status from '$/views/Status.svelte'
+	import { DockerIcon } from '$/icons';
 </script>
 
 
@@ -36,7 +41,7 @@
 {:else if cellType === CellType.Status}
 	{@const nodeStatus = (
 		nodeWithInfo.node ?
-			nodeWithInfo.node.state?.id ?
+			nodeWithInfo.node?.state?.id ?
 				nodeWithInfo.info?.status ?
 					nodeWithInfo.info.status
 				:
@@ -52,6 +57,32 @@
 			status={nodeStatus}
 		/>
 	</div>
+
+{:else if cellType === CellType.Chain}
+	{#if nodeWithInfo.node?.chain_enabled && chainsByChainId.has(nodeWithInfo.node?.chain_id)}
+		{@const chain = chainsByChainId.get(nodeWithInfo.node?.chain_id)}
+
+		<WithIcon
+			icon={chain.icon}
+		>
+			{chain.name}
+		</WithIcon>
+	{:else}
+		{nodeWithInfo.node?.chain_id ?? '–'}
+	{/if}
+
+
+{:else if cellType === CellType.DockerAccount}
+	{#if nodeWithInfo.node?.docker_account}
+		<WithIcon
+			icon={DockerIcon}
+		>
+			{nodeWithInfo.node.docker_account.username}
+		</WithIcon>
+	{:else}
+		{'–'}
+	{/if}
+
 {/if}
 
 

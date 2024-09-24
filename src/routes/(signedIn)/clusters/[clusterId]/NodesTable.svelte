@@ -52,15 +52,29 @@
 			),
 		},
 		{
-			header: 'Onchain?',
-			accessor: nodeWithInfo => (
-				nodeWithInfo.node?.chain_enabled ? 'Yes' : 'No'
-			),
-		},
-		{
 			header: 'Containers',
 			accessor: nodeWithInfo => (
 				nodeWithInfo.node?.containers?.length ?? '–'
+			),
+		},
+		{
+			header: 'Docker account',
+			accessor: nodeWithInfo => nodeWithInfo,
+			cell: ({ value: nodeWithInfo }) => (
+				createRender(NodesTableCell, {
+					cellType: CellType.DockerAccount,
+					nodeWithInfo,
+				})
+			),
+		},
+		{
+			header: 'Chain',
+			accessor: nodeWithInfo => nodeWithInfo,
+			cell: ({ value: nodeWithInfo }) => (
+				createRender(NodesTableCell, {
+					cellType: CellType.Chain,
+					nodeWithInfo,
+				})
 			),
 		},
 		{
@@ -75,12 +89,6 @@
 		// 		nodeWithInfo.node.allowed_sim_errors?.length ? `${nodeWithInfo.node.allowed_sim_errors.length} substrings` : '–',
 		// 	),
 		// },
-		{
-			header: 'Docker account',
-			accessor: nodeWithInfo => (
-				nodeWithInfo.node?.docker_account ? nodeWithInfo.node.docker_account.username : '–'
-			),
-		},
 	]}
 	getRowLink={nodeWithInfo => (
 		nodeWithInfo.node && resolveRoute(`/nodes/[nodeId]`, {
