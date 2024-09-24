@@ -41,7 +41,7 @@
 
 	// (Chain)
 	let client: PublicClient | undefined
-	$: if(node.config.rpc_url) {
+	$: if(node.config.rpc_url && URL.canParse(node.config.rpc_url)) {
 		client = createPublicClient({ 
 			transport: http(node.config.rpc_url),
 		})
