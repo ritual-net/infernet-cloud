@@ -37,11 +37,16 @@
 		<dt>Image</dt>
 
 		<dd>
-			<WithIcon
-				icon={DockerIcon}
+			<a
+				href={`https://hub.docker.com/r/${container.image.split(':')[0]}`}
+				target="_blank"
 			>
-				{container.image}
-			</WithIcon>
+				<WithIcon
+					icon={DockerIcon}
+				>
+					{container.image}
+				</WithIcon>
+			</a>
 		</dd>
 	</section>
 
