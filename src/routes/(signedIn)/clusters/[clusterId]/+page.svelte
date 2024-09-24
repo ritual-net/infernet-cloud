@@ -380,7 +380,7 @@
 			</section>
 
 			<section class="row wrap">
-				<dt>Has deployed router?</dt>
+				<dt>Has router?</dt>
 
 				<dd>
 					{cluster.router ? 'Yes' : 'No'}

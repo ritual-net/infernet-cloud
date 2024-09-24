@@ -10,9 +10,11 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		node,
-		info,
-		infoError,
+		nodeWithInfo: {
+			node,
+			info,
+			infoError,
+		},
 	} = $page.data as PageData)
 
 
@@ -93,13 +95,26 @@
 	import Status from '$/views/Status.svelte'
 	import WithIcon from '$/components/WithIcon.svelte'
 	import { DockerIcon } from '$/icons'
+	import TerraformResourceDetails from '../../clusters/[clusterId]/TerraformResourceDetails.svelte'
 </script>
 
 
 <svelte:head>
-	<title>Node {node?.state?.id ?? node?.id ?? 'Node'} | Infernet Cloud</title>
+	<title>{node?.state?.id ?? node?.id ? `${node?.state?.id ?? node?.id} | Node` : 'Node'} | Infernet Cloud</title>
 </svelte:head>
 
+
+<nav class="breadcrumb">
+	{#if node.cluster}
+		<a
+			href={resolveRoute(`/clusters/[clusterId]`, { clusterId: node.cluster.id })}
+			class="row inline"
+		>
+			<span>←</span>
+			<span>{node.cluster.name}</span>
+		</a>
+	{/if}
+</nav>
 
 <div class="container column">
 	<header class="row wrap">
@@ -216,6 +231,99 @@
 			/>
 		</div>
 	</header>
+
+	<section>
+		<h3>Containers</h3>
+
+		<NodeContainersTable
+			nodeId={node.id}
+			containers={node.containers}
+		/>
+	</section>
+
+	<section class="column">
+		<h3>Status</h3>
+
+		<dl class="card column">
+			<section class="row wrap">
+				<dt>Status</dt>
+
+				<dd>
+					<Status
+						status={nodeStatus}
+					/>
+				</dd>
+			</section>
+
+			{#if node.state?.ip}
+				<section class="row wrap">
+					<dt>IP</dt>
+
+					<dd>
+						{node.state.ip}
+					</dd>
+				</section>
+			{/if}
+
+			{#if node?.state?.id && node.cluster?.latest_deployment?.tfstate}
+				{#each node.cluster.latest_deployment.tfstate.resources as resourceType}
+					{#each resourceType.instances as resource}
+						{#if resource.attributes['id'] === node.state.id}
+						
+							<section class="column">
+								<dt>Terraform resource info</dt>
+
+								<dd>
+									<TerraformResourceDetails
+										deploymentId={node.cluster.latest_deployment.id}
+										provider={node.provider}
+										{resourceType}
+										{resource}
+									/>
+								</dd>
+							</section>
+						{/if}
+					{/each}
+				{/each}
+			{/if}
+
+			{#if info?.instanceInfo || infoError}
+				<section class="column">
+					<dt>{node.provider} instance info</dt>
+
+					<dd>
+						<Collapsible
+							class="card"
+						>
+							<svelte:fragment slot="trigger">
+								<header class="row" data-after="▾">
+									<WithIcon
+										icon={node.provider && providers[node.provider].icon}
+									>
+										{node?.state?.id ?? 'Instance'}
+									</WithIcon>
+								</header>
+							</svelte:fragment>
+
+							{#if info?.instanceInfo}
+								<DetailsValue
+									value={info?.instanceInfo}
+								/>
+							{/if}
+
+							{#if infoError}
+								<div class="card column error">
+									<output>
+								<pre><code>{infoError}</code></pre>
+									</output>
+								</div>
+							{/if}
+						</Collapsible>
+					</dd>
+				</section>
+			{/if}
+		</dl>
+	</section>
 
 	<section class="column">
 		<h3>Configuration</h3>
@@ -387,89 +495,32 @@
 	{/if}
 
 	<section class="column">
-		<h3>Status</h3>
-
-		<dl class="card column">
-			<section class="row wrap">
-				<dt>Status</dt>
-
-				<dd>
-					<Status
-						status={nodeStatus}
-					/>
-				</dd>
-			</section>
-
-			{#if node.state?.ip}
-				<section class="row wrap">
-					<dt>IP</dt>
-
-					<dd>
-						{node.state.ip}
-					</dd>
-				</section>
-			{/if}
-
-			{#if info?.instanceInfo || infoError}
-				<section class="column">
-					<dt>Instance info</dt>
-
-					<dd>
-						<Collapsible
-							class="card"
-						>
-							<svelte:fragment slot="trigger">
-								<header class="row" data-after="▾">
-									<WithIcon
-										icon={node.provider && providers[node.provider].icon}
-									>
-										{node?.state?.id ?? 'Instance'}
-									</WithIcon>
-								</header>
-							</svelte:fragment>
-
-							{#if info?.instanceInfo}
-								<DetailsValue
-									value={info?.instanceInfo}
-								/>
-							{/if}
-
-							{#if infoError}
-								<div class="card column error">
-									<output>
-								<pre><code>{infoError}</code></pre>
-									</output>
-								</div>
-							{/if}
-						</Collapsible>
-					</dd>
-				</section>
-			{/if}
-		</dl>
-	</section>
-
-	<section class="column">
 		<header class="row wrap">
 			<h3>Logs</h3>
 
 			<div class="row wrap">
 				<button
+					type="button"
 					class="small"
 					on:click={() => {
 						$logsQuery.refetch()
 					}}
+					disabled={$logsQuery.isRefetching}
 				>
-					Refresh
+					{$logsQuery.isRefetching ? 'Loading...' : 'Refresh'}
 				</button>
 
-				<button
-					class="small"
-					on:click={() => {
-						$logsQuery.fetchNextPage()
-					}}
-				>
-					Load more
-				</button>
+				{#if $logsQuery.hasNextPage}
+					<button
+						type="button"
+						class="small"
+						on:click={() => {
+							$logsQuery.fetchNextPage()
+						}}
+					>
+						Load more
+					</button>
+				{/if}
 			</div>
 		</header>
 
@@ -485,7 +536,7 @@
 			<section class="column">
 				<dt>{node.provider === ProviderTypeEnum.GCP ? 'Serial Port 1' : 'Logs'}</dt>
 
-				<dd>{$logsQuery.isError}
+				<dd>
 					{#if $logsQuery.isLoading}
 						<div class="card loading">
 							<p>Loading logs...</p>
@@ -522,18 +573,16 @@
 			</section>
 		</dl>
 	</section>
-
-	<section>
-		<h3>Containers</h3>
-
-		<NodeContainersTable
-			containers={node.containers}
-		/>
-	</section>
 </div>
 
 
 <style>
+	nav {
+		& a {
+			opacity: 0.5;
+		}
+	}
+	
 	.container {
 		gap: 2rem;
 	}
