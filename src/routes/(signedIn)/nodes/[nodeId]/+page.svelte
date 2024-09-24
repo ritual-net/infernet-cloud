@@ -98,7 +98,7 @@
 
 
 <svelte:head>
-	<title>Node {node?.state?.id ?? node?.id ?? 'Node'} | Infernet Cloud</title>
+	<title>{node?.state?.id ?? node?.id ? `${node?.state?.id ?? node?.id} | Node` : 'Node'} | Infernet Cloud</title>
 </svelte:head>
 
 
