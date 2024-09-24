@@ -424,17 +424,33 @@
 		/>
 	</section>
 
-	<section class="row wrap">
-		<div class="column inline">
-			<h3 class="row inline">
-				<label for="container.env">
-					Environment variables
-				</label>
+	<section class="column">
+		<div class="row wrap">
+			<div class="column inline">
+				<h3 class="row inline">
+					<label for="container.env">
+						Environment variables
+					</label>
 
-				<span class="annotation">Optional</span>
-			</h3>
+					<span class="annotation">Optional</span>
+				</h3>
 
-			<p>The .env file for this container. One variable per line.</p>
+				<p>The .env file for this container. One variable per line.</p>
+			</div>
+
+			<button
+				type="button"
+				class="small"
+				on:click={async () => {
+					try {
+						container.env = parseEnvString(await navigator.clipboard.readText())
+					}catch(e){
+						console.error(e)
+					}
+				}}
+			>
+				Paste from clipboard
+			</button>
 		</div>
 
 		<Textarea
