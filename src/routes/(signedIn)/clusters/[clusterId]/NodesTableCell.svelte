@@ -53,13 +53,9 @@
 			'undeployed'
 	)}
 
-	{#if nodeStatus}
-		<Status
-			status={nodeStatus}
-		/>
-	{:else}
-		<p class="card small loading">Loading...</p>
-	{/if}
+	<Status
+		status={nodeStatus}
+	/>
 {/if}
 
 

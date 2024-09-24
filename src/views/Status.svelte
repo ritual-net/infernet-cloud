@@ -21,15 +21,15 @@
 
 
 	// Inputs
-	export let status: keyof typeof statusLabels
+	export let status: keyof typeof statusLabels | undefined
 </script>
 
 
 <div
 	class="status"
-	data-status={status}
+	data-status={status ?? 'loading'}
 >
-	{statusLabels[status] ?? status ?? 'Unknown'}
+	{status ? (statusLabels[status] ?? status) : 'Loading'}
 </div>
 
 
@@ -63,6 +63,11 @@
 			--status-color: gray;
 		}
 
+		&[data-status="loading"] {
+			--status-color: gray;
+			color: color-mix(in oklch, transparent, currentColor 50%);
+		}
+
 		&:before {
 			transition: background-color 0.3s;
 
@@ -74,6 +79,19 @@
 			border-radius: 50%;
 			vertical-align: 0.05em;
 			background-color: var(--status-color);
+		}
+
+		&[data-status="loading"]:before {
+			animation: Loading 0.75s infinite alternate both ease-in-out;
+		}
+	}
+
+	@keyframes Loading {
+		from, 10% { 
+			opacity: 1;
+		}
+		to {
+			opacity: 0;
 		}
 	}
 </style>
