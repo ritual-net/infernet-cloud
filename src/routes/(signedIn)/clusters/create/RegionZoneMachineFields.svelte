@@ -28,6 +28,9 @@
 
 	export let constraints: Pick<InputConstraints<z.InferType<typeof ClusterConfig> | z.InferType<typeof RouterConfig> | z.InferType<typeof NodeConfig>>, 'region' | 'zone' | 'machine_type' | 'machine_image'> | undefined 
 
+	// (Events)
+	export let onChooseCloudAccount: () => void
+
 
 	// Outputs
 	export let regionId: string | undefined | null
@@ -716,7 +719,15 @@
 			class="floating-status card warning"
 			transition:scale|global
 		>
-			<p>Choose a cloud account first.</p>
+			<p>
+				<a
+					href
+					on:click={e => {console.log('onChooseCloudAccount')
+						onChooseCloudAccount?.()
+						e.preventDefault()
+					}}
+				>Choose a cloud account</a> first.
+			</p>
 		</div>
 	{:else}
 		{#if $regionsQuery.isPending}
