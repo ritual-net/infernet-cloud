@@ -49,11 +49,16 @@
 
 	export const snapshot = { capture, restore }
 
+	let currentFieldset = Fieldset.ChooseCloudProvider
+
+
+	// Actions
 	let delayedToast: Toast
 	$: if($delayed){
 		delayedToast = addToast({
+			closeDelay: 0,
 			data: {
-				type: 'default',
+				type: 'loading',
 				title: `Connecting cloud account...`,
 			},
 		})
@@ -62,7 +67,11 @@
 			removeToast(delayedToast.id)
 	}
 
-	let currentFieldset = Fieldset.ChooseCloudProvider
+	import { onDestroy } from 'svelte'
+
+	onDestroy(() => {
+		removeToast(delayedToast.id)
+	})
 
 
 	// Components

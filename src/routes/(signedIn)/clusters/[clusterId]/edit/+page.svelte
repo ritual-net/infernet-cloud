@@ -44,19 +44,6 @@
 
 	export const snapshot = { capture, restore }
 
-	let delayedToast: Toast
-	$: if($delayed){
-		delayedToast = addToast({
-			data: {
-				type: 'default',
-				title: `Saving cluster...`,
-			},
-		})
-	}else{
-		if(delayedToast)
-			removeToast(delayedToast.id)
-	}
-
 
 	// (Firewall)
 	let httpFirewallMode: 'all' | 'allowlist' | 'none' = (
@@ -99,6 +86,28 @@
 		:
 			undefined
 	)
+
+
+	// Actions
+	let delayedToast: Toast
+	$: if($delayed){
+		delayedToast = addToast({
+			closeDelay: 0,
+			data: {
+				type: 'loading',
+				title: `Saving cluster...`,
+			},
+		})
+	}else{
+		if(delayedToast)
+			removeToast(delayedToast.id)
+	}
+
+	import { onDestroy } from 'svelte'
+
+	onDestroy(() => {
+		removeToast(delayedToast.id)
+	})
 
 
 	// Functions

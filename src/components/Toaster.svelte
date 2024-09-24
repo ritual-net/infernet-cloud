@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
 	// Types
 	type ToastData = {
-		type?: 'default' | 'success' | 'error',
+		type?: 'loading' | 'success' | 'error',
 		title: string,
 		description?: string,
 	}
@@ -17,6 +17,7 @@
 		actions: { portal },
 	} = createToaster<ToastData>({
 		closeDelay: 10000,
+		hover: 'pause-all',
 	})
 	import { createToaster, melt } from '@melt-ui/svelte'
 
@@ -110,6 +111,10 @@
 			& [data-melt-toast-content] {
 				--toast-backgroundColor: var(--toast-default-backgroundColor);
 				--toast-borderColor: var(--borderColor);
+
+				&[data-type="loading"] {
+					cursor: progress;
+				}
 
 				&[data-type="success"] {
 					--toast-backgroundColor: var(--toast-typeSuccess-backgroundColor);

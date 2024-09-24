@@ -111,8 +111,9 @@
 				formAction: `${nodeRoute}?/start`,
 				formSubmit: async (e) => {
 					const toast = addToast({
+						closeDelay: 0,
 						data: {
-							type: 'default',
+							type: 'loading',
 							title: 'Starting node...',
 						},
 					})
@@ -137,8 +138,9 @@
 				formAction: `${nodeRoute}?/stop`,
 				formSubmit: async (e) => {
 					const toast = addToast({
+						closeDelay: 0,
 						data: {
-							type: 'default',
+							type: 'loading',
 							title: 'Stopping node...',
 						},
 					})

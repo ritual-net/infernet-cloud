@@ -45,11 +45,14 @@
 
 	export const snapshot = { capture, restore }
 
+
+	// Actions
 	let delayedToast: Toast
 	$: if($delayed){
 		delayedToast = addToast({
+			closeDelay: 0,
 			data: {
-				type: 'default',
+				type: 'loading',
 				title: `Saving node configuration...`,
 			},
 		})
@@ -57,6 +60,12 @@
 		if(delayedToast)
 			removeToast(delayedToast.id)
 	}
+
+	import { onDestroy } from 'svelte'
+
+	onDestroy(() => {
+		removeToast(delayedToast.id)
+	})
 
 
 	// Components

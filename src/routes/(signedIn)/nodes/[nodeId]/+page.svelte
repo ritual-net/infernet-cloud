@@ -146,8 +146,9 @@
 						label: 'Refresh data',
 						onClick: async () => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: `Refreshing data...`,
 								},
 							})
@@ -163,8 +164,9 @@
 						formAction: `?/start`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: 'Starting node...',
 								},
 							})
@@ -189,8 +191,9 @@
 						formAction: `?/stop`,
 						formSubmit: async (e) => {
 							const toast = addToast({
+								closeDelay: 0,
 								data: {
-									type: 'default',
+									type: 'loading',
 									title: 'Stopping node...',
 								},
 							})
