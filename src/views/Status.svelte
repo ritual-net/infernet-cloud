@@ -48,6 +48,7 @@
 		&[data-status="stopping"],
 		&[data-status="shutting-down"] {
 			--status-color: #b3a316;
+			animation: Loading 0.75s infinite alternate both ease-in-out;
 		}
 
 		&[data-status="failed"],
