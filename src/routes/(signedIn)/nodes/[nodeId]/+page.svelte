@@ -102,6 +102,18 @@
 </svelte:head>
 
 
+<nav class="breadcrumb">
+	{#if node.cluster}
+		<a
+			href={resolveRoute(`/clusters/[clusterId]`, { clusterId: node.cluster.id })}
+			class="row inline"
+		>
+			<span>←</span>
+			<span>{node.cluster.name}</span>
+		</a>
+	{/if}
+</nav>
+
 <div class="container column">
 	<header class="row wrap">
 		<div class="row">
@@ -557,6 +569,12 @@
 
 
 <style>
+	nav {
+		& a {
+			opacity: 0.5;
+		}
+	}
+	
 	.container {
 		gap: 2rem;
 	}
