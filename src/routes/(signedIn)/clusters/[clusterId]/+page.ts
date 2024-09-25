@@ -15,17 +15,30 @@ export const load: PageLoad = async ({
 
 	const nodesWithInfoPromise = Promise.all(
 		cluster.nodes
-			.map(async node => (
-				await fetch(
-					resolveRoute('/api/node/[nodeId]', {
-						nodeId: node.id,
-					})
+			.map(async ({ id: nodeId }) => {
+				const nodeInfoPromise = (
+					fetch(
+						resolveRoute('/api/node/[nodeId]/info', {
+							nodeId: nodeId,
+						})
+					)
+						.then(response => response.json())
 				)
-					.then(response => response.json())
-					.catch(error => ({
-						infoError: error,
-					}))
-			) as InfernetNodeWithInfo)
+
+				const node = (
+					await fetch(
+						resolveRoute('/api/node/[nodeId]', {
+							nodeId: nodeId,
+						})
+					)
+						.then(response => response.json())
+				)
+
+				return {
+					node,
+					nodeInfoPromise,
+				} as InfernetNodeWithInfo
+			})
 	)
 
 	return {

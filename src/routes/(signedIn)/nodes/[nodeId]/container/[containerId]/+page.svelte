@@ -4,9 +4,7 @@
 	import { page } from '$app/stores'
 
 	$: ({
-		nodeWithInfo: {
-			node,
-		},
+		node,
 		container,
 	} = $page.data as PageData)
 

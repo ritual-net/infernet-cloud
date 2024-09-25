@@ -1,11 +1,31 @@
 <script lang="ts">
 	// Types/constants
-	import type { InfernetNodeWithInfo } from '$/types/provider'
+	import type { InfernetNode } from '$schema/interfaces'
+	import type { InfernetNodeWithInfo, NodeInfo } from '$/types/provider'
 
 
 	// Inputs
 	export let clusterStatus: string
-	export let nodesWithInfo: InfernetNodeWithInfo[]
+	export let nodesWithInfoPromise: Promise<InfernetNodeWithInfo[]>
+
+
+	// Internal state
+	let nodesWithInfo: {
+		node: InfernetNode,
+		info: NodeInfo | undefined,
+	}[]
+
+	$: nodesWithInfoPromise?.then(_ => {
+		nodesWithInfo = _.map(nodeWithInfo => ({
+			node: nodeWithInfo.node,
+			info: undefined,
+		}))
+
+		_.forEach((nodeWithInfo, i) => {
+			nodeWithInfo.nodeInfoPromise?.then(_ => { nodesWithInfo[i].info = _ })
+		})
+	})
+
 
 
 	// Functions
@@ -27,7 +47,8 @@
 
 
 <Table
-	data={nodesWithInfo}
+	getId={nodeWithInfo => nodeWithInfo.node.id}
+	data={nodesWithInfo ?? nodesWithInfoPromise}
 	columns={[
 		{
 			header: 'IP / ID',
@@ -120,13 +141,16 @@
 
 					setTimeout(() => {
 						invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+						invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
 					}, 500)
 
 					return async ({ result }) => {
 						await applyAction(result)
 
-						if(result.type === 'success')
+						if(result.type === 'success'){
 							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+							invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
+						}
 
 						removeToast(toast.id)
 					}
@@ -147,13 +171,16 @@
 
 					setTimeout(() => {
 						invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+						invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
 					}, 500)
 
 					return async ({ result }) => {
 						await applyAction(result)
 
-						if(result.type === 'success')
+						if(result.type === 'success'){
 							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+							invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
+						}
 
 						removeToast(toast.id)
 					}
