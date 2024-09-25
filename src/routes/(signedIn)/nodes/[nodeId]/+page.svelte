@@ -555,7 +555,11 @@
 							</div>
 						{:else if $logsQuery.isError}
 							<div class="card error">
-								<p>Error loading logs: {$logsQuery.error.message}</p>
+								<p>Error loading logs.</p>
+
+								{#if $logsQuery.error.message}
+									<output><code>{$logsQuery.error.message}</code></output>
+								{/if}
 							</div>
 						{:else if $logsQuery.data}
 							{@const logs = $logsQuery.data}
