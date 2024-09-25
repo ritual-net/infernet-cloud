@@ -83,5 +83,7 @@
 		})
 	)}
 >
-	<p>No containers configured.</p>
+	<svelte:fragment slot="empty">
+		<p>No containers configured.</p>
+	</svelte:fragment>
 </Table>

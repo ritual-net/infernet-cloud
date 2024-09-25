@@ -66,10 +66,49 @@
 	</svelte:fragment>
 
 	<section
-		id="terraform-resource-{deploymentId}-{resourceType.type}-{resource.attributes.id}"
 		class="column"
 	>
 		<dl class="card column">
+			{#if resource.attributes?.arn}
+				<section class="row wrap">
+					<dt>ARN</dt>
+					<dd>
+						<p>
+							<a
+								href={getAwsConsoleLink(resource.attributes.arn)}
+								target="_blank"
+								class="row inline with-icon"
+							>
+								<img
+									src={providers[ProviderTypeEnum.AWS].icon}
+									width="20"
+									height="20"
+								/>
+
+								{resource.attributes.arn}
+							</a>
+						</p>
+					</dd>
+				</section>
+			{/if}
+
+			{#if resource.dependencies?.length}
+				<section class="row wrap">
+					<dt>Dependencies</dt>
+					<dd>
+						{#each resource.dependencies as dependency}
+							{@const [type, name] = dependency.split('.')}
+
+							<p>
+								<a href="#/terraform-resourceType/{deploymentId}/{type}/{name}">
+									{formatResourceType(type)} – {name}
+								</a>
+							</p>
+						{/each}
+					</dd>
+				</section>
+			{/if}
+
 			{#if resource.attributes?.tags?.Name}
 				<section class="row wrap">
 					<dt>Tag</dt>
@@ -102,29 +141,6 @@
 				</section>
 			{/if}
 
-			{#if resource.attributes?.arn}
-				<section class="row wrap">
-					<dt>ARN</dt>
-					<dd>
-						<p>
-							<a
-								href={getAwsConsoleLink(resource.attributes.arn)}
-								target="_blank"
-								class="row inline with-icon"
-							>
-								<img
-									src={providers[ProviderTypeEnum.AWS].icon}
-									width="20"
-									height="20"
-								/>
-
-								{resource.attributes.arn}
-							</a>
-						</p>
-					</dd>
-				</section>
-			{/if}
-
 			{#each Object.entries(resource.attributes) as [key, value]}
 				{#if (
 					!['tags', 'tags_all', 'id', 'arn'].includes(key)
@@ -133,40 +149,35 @@
 					<section class="row wrap">
 						<dt>{key}</dt>
 						<dd>
-							<DetailsValue
-								{value}
-							/>
+							{#if ['managed_policy_arns', 'policy_arn'].includes(key) || (typeof value === 'string' && value.startsWith('arn:'))}
+								<a
+									href={getAwsConsoleLink(value)}
+									target="_blank"
+									class="row inline with-icon"
+								>
+									<img
+										src={providers[ProviderTypeEnum.AWS].icon}
+										width="20"
+										height="20"
+									/>
+
+									{value}
+								</a>
+							{:else}
+								<DetailsValue
+									{value}
+								/>
+							{/if}
 						</dd>
 					</section>
 				{/if}
 			{/each}
-
-			{#if resource.dependencies?.length}
-				<section class="row wrap">
-					<dt>Dependencies</dt>
-					<dd>
-						{#each resource.dependencies as dependency}
-							{@const [type, name] = dependency.split('.')}
-
-							<p>
-								<a href="#terraform-resource-{deploymentId}-{type}-{name}">
-									{name} ({type})
-								</a>
-							</p>
-						{/each}
-					</dd>
-				</section>
-			{/if}
 		</dl>
 	</section>
 </Collapsible>
 
 
 <style>
-	output {
-		font-size: 0.75em;
-	}
-
 	code {
 		white-space: pre-wrap;
 		word-break: break-word;

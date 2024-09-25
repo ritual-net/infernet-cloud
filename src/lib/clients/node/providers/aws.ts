@@ -9,6 +9,7 @@ import {
 import { ProviderTypeEnum } from '$/types/provider'
 import type { AWSServiceAccount } from '$schema/interfaces'
 import { BaseNodeClient } from '$/lib/clients/node/base'
+import { removeAnsiEscapeCodes } from '$/lib/utils/system'
 
 export class AWSNodeClient extends BaseNodeClient {
 	#client: EC2Client | undefined
@@ -95,7 +96,7 @@ export class AWSNodeClient extends BaseNodeClient {
 
 		return {
 			logs: (
-				output
+				removeAnsiEscapeCodes(output)
 					?.split('\n')
 					.map(line => ({
 						text: line,

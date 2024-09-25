@@ -4,6 +4,7 @@ export type Chain = {
 	chainId: number
 	icon?: string
 	isTestnet?: boolean
+	explorer?: string
 }
 
 
@@ -18,17 +19,20 @@ export const chains = [
 		name: 'Ethereum',
 		chainId: 1,
 		icon: ETHIcon,
+		explorer: 'https://eth.blockscout.com',
 	},
 	{
 		name: 'Base',
 		chainId: 8453,
 		icon: BaseIcon,
+		explorer: 'https://base.blockscout.com',
 	},
 	{
 		name: 'Base Sepolia',
 		chainId: 84532,
 		icon: BaseIcon,
 		isTestnet: true,
+		explorer: 'https://base-sepolia.blockscout.com',
 	},
 ] as const satisfies Chain[]
 
