@@ -481,6 +481,16 @@
 					</section>
 				{/if}
 
+				{#if node.payment_address}
+					<section class="row wrap">
+						<dt>Payment address</dt>
+
+						<dd>
+							<a href={`${chainsByChainId.get(node.chain_id).explorer}/address/${node.payment_address}`} target="_blank">{node.payment_address}</a>
+						</dd>
+					</section>
+				{/if}
+
 				{#if node.private_key}
 					<section class="row wrap">
 						<dt>Private key</dt>
