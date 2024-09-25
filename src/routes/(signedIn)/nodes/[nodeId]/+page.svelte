@@ -438,11 +438,11 @@
 						<dt>Chain</dt>
 
 						<dd>
-							{#if chainsByChainId[node.chain_id]}
+							{#if chainsByChainId.has(node.chain_id)}
 								<WithIcon
-									icon={chainsByChainId[node.chain_id].icon}
+									icon={chainsByChainId.get(node.chain_id).icon}
 								>
-									{chainsByChainId[node.chain_id].name}
+									{chainsByChainId.get(node.chain_id).name}
 								</WithIcon>
 							{:else}
 								{node.chain_id}
