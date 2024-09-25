@@ -69,6 +69,29 @@
 		class="column"
 	>
 		<dl class="card column">
+			{#if resource.attributes?.arn}
+				<section class="row wrap">
+					<dt>ARN</dt>
+					<dd>
+						<p>
+							<a
+								href={getAwsConsoleLink(resource.attributes.arn)}
+								target="_blank"
+								class="row inline with-icon"
+							>
+								<img
+									src={providers[ProviderTypeEnum.AWS].icon}
+									width="20"
+									height="20"
+								/>
+
+								{resource.attributes.arn}
+							</a>
+						</p>
+					</dd>
+				</section>
+			{/if}
+
 			{#if resource.attributes?.tags?.Name}
 				<section class="row wrap">
 					<dt>Tag</dt>
@@ -97,29 +120,6 @@
 						{:else}
 							<output><code>{resource.attributes.id}</code></output>
 						{/if}
-					</dd>
-				</section>
-			{/if}
-
-			{#if resource.attributes?.arn}
-				<section class="row wrap">
-					<dt>ARN</dt>
-					<dd>
-						<p>
-							<a
-								href={getAwsConsoleLink(resource.attributes.arn)}
-								target="_blank"
-								class="row inline with-icon"
-							>
-								<img
-									src={providers[ProviderTypeEnum.AWS].icon}
-									width="20"
-									height="20"
-								/>
-
-								{resource.attributes.arn}
-							</a>
-						</p>
 					</dd>
 				</section>
 			{/if}
