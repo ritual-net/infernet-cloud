@@ -85,6 +85,8 @@
 	line-height: 1.5;
 	tab-size: 2;
 
+	scroll-behavior: smooth;
+
 	@media (prefers-color-scheme: dark) {
 		color-scheme: dark;
 	}
