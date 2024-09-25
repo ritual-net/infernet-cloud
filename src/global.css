@@ -477,3 +477,8 @@ hr {
 .smaller {
 	font-size: smaller;
 }
+
+:target {
+	outline: 2px double var(--accentColor);
+	outline-offset: -2px;
+}
