@@ -428,7 +428,7 @@
 						<dt>RPC URL</dt>
 
 						<dd>
-							{node.rpc_url}
+							<a href={node.rpc_url} target="_blank">{node.rpc_url}</a>
 						</dd>
 					</section>
 				{/if}
