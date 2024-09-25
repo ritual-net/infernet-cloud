@@ -162,10 +162,6 @@
 
 
 <style>
-	output {
-		font-size: 0.75em;
-	}
-
 	code {
 		white-space: pre-wrap;
 		word-break: break-word;
