@@ -1,6 +1,13 @@
 # Infernet Cloud
 
-**Infernet Cloud** is a self-hostable UI for configuring, deploying and monitoring [Infernet](https://docs.ritual.net/infernet/about) [node](https://docs.ritual.net/infernet/node/introduction) clusters and Infernet-compatible [containers](https://docs.ritual.net/infernet/node/containers) using major cloud hosting providers ([AWS](https://aws.amazon.com), [Google Cloud](https://cloud.google.com)).
+**Infernet Cloud** is an open-source, self-hostable UI for configuring, deploying and monitoring [Infernet Node](https://github.com/ritual-net/infernet-node) clusters and Infernet-compatible [containers](https://docs.ritual.net/infernet/node/containers) using major cloud hosting providers.
+
+You can use Infernet Cloud to:
+
+* generate credentials to connect cloud provider accounts such as [Amazon Web Services](https://aws.amazon.com) or [Google Cloud Platform](https://cloud.google.com)
+* run private images from Docker Hub by connecting your Docker Hub account (optional)
+* manage configurations for container templates, clusters, [nodes](https://docs.ritual.net/infernet/node/introduction) and [routers](https://docs.ritual.net/infernet/routers/introduction)
+* monitor deployed nodes and provisioned cloud resources with integrated logs and cloud console links
 
 
 ## Table of contents
