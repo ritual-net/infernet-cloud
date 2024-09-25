@@ -216,7 +216,6 @@
 					{#each deployment.tfstate.resources as resourceType}
 						<div
 							id="/terraform-resourceType/{deployment.id}/{resourceType.type}/{resourceType.name}"
-							class="column"
 						>
 							{#each resourceType.instances as resource}
 								<div
