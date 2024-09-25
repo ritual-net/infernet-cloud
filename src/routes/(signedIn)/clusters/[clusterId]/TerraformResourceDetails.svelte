@@ -92,6 +92,23 @@
 				</section>
 			{/if}
 
+			{#if resource.dependencies?.length}
+				<section class="row wrap">
+					<dt>Dependencies</dt>
+					<dd>
+						{#each resource.dependencies as dependency}
+							{@const [type, name] = dependency.split('.')}
+
+							<p>
+								<a href="#/terraform-resourceType/{deploymentId}/{type}/{name}">
+									{formatResourceType(type)} – {name}
+								</a>
+							</p>
+						{/each}
+					</dd>
+				</section>
+			{/if}
+
 			{#if resource.attributes?.tags?.Name}
 				<section class="row wrap">
 					<dt>Tag</dt>
@@ -132,30 +149,29 @@
 					<section class="row wrap">
 						<dt>{key}</dt>
 						<dd>
-							<DetailsValue
-								{value}
-							/>
+							{#if ['managed_policy_arns', 'policy_arn'].includes(key) || (typeof value === 'string' && value.startsWith('arn:'))}
+								<a
+									href={getAwsConsoleLink(value)}
+									target="_blank"
+									class="row inline with-icon"
+								>
+									<img
+										src={providers[ProviderTypeEnum.AWS].icon}
+										width="20"
+										height="20"
+									/>
+
+									{value}
+								</a>
+							{:else}
+								<DetailsValue
+									{value}
+								/>
+							{/if}
 						</dd>
 					</section>
 				{/if}
 			{/each}
-
-			{#if resource.dependencies?.length}
-				<section class="row wrap">
-					<dt>Dependencies</dt>
-					<dd>
-						{#each resource.dependencies as dependency}
-							{@const [type, name] = dependency.split('.')}
-
-							<p>
-								<a href="#/terraform-resourceType/{deploymentId}/{type}/{name}">
-									{formatResourceType(type)} – {name}
-								</a>
-							</p>
-						{/each}
-					</dd>
-				</section>
-			{/if}
 		</dl>
 	</section>
 </Collapsible>
