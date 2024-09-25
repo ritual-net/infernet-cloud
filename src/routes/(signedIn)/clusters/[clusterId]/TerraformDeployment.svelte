@@ -15,6 +15,10 @@
 	let showAllTfvars = true
 
 
+	// Functions
+	import { formatResourceType } from '$/lib/terraform/format'
+
+
 	// Components
 	import ScrollArea from '$/components/ScrollArea.svelte'
 	import SizeTransition from '$/components/SizeTransition.svelte'
@@ -172,14 +176,14 @@
 						<Mermaid
 							init={{
 								'flowchart': {
-									'defaultRenderer': 'forceGraph',
+									// 'defaultRenderer': 'forceGraph',
 								},
 							}}
 							diagram={`
 								flowchart BT
 									${deployment.tfstate.resources.map(resourceType => `
-										subgraph resourceType.${resourceType.type} [
-											${resourceType.type}
+										subgraph resourceType.${resourceType.type}.${resourceType.name} [
+											${formatResourceType(resourceType.type)} – ${resourceType.name}
 										]
 											${resourceType.instances.map(resource => `
 												resource.${resource.attributes.id}(
@@ -192,10 +196,10 @@
 									${deployment.tfstate?.resources.flatMap(resourceType =>
 										resourceType.instances?.flatMap(resource => (
 											resource.dependencies?.map(dependencyId => {
-												const [dependencyResourceType, dependencyName] = dependencyId.split('.')
+												const [dependencyResourceType, dependencyResourceTypeName] = dependencyId.split('.')
 
 												return `
-													resource.${resource.attributes.id} --> resourceType.${dependencyResourceType}
+													resource.${resource.attributes.id} --> resourceType.${dependencyResourceType}.${dependencyResourceTypeName}
 												`
 											})
 										))
@@ -447,7 +451,6 @@
 			height: 1em;
 			overflow: visible;
 		}
-
 		:global(#mermaid .node rect) {
 			fill: light-dark(#fff, #222);
 			stroke: var(--borderColor);
@@ -458,7 +461,7 @@
 		}
 		:global(#mermaid .flowchart-link) {
 			stroke: currentColor;
-			stroke-opacity: 0.5;
+			stroke-opacity: 0.33;
 		}
 		:global(#mermaid .marker) {
 			fill: currentColor;
