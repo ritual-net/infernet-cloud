@@ -424,22 +424,37 @@
 		transition: grid-auto-columns 0.3s;
 
 		&:is(:hover, :focus-within) {
-			grid-auto-columns: 2000px;
+			grid-auto-columns: 3000px;
 		}
 
 		:global(#mermaid .cluster rect) {
 			fill: light-dark(#f6f6f6, #333);
 			stroke: var(--borderColor);
 		}
+		:global(#mermaid foreignObject > div) {
+			display: grid !important;
+			max-width: none !important;
+			width: calc(100% + 10em * 2) !important;
+			margin-inline: -10em;
+			padding: 0.25em;
+			height: 100%;
+    		align-items: center;
+		}
 		:global(#mermaid .cluster-label) {
 			font-size: 1em;
 		}
+		:global(#mermaid .cluster-label > foreignObject) {
+			height: 1em;
+			overflow: visible;
+		}
+
 		:global(#mermaid .node rect) {
 			fill: light-dark(#fff, #222);
 			stroke: var(--borderColor);
 		}
 		:global(#mermaid .nodeLabel) {
 			color: light-dark(#000, #fff);
+			font-size: 0.7em;
 		}
 		:global(#mermaid .flowchart-link) {
 			stroke: currentColor;
