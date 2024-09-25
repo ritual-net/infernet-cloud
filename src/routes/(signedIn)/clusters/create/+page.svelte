@@ -358,6 +358,9 @@
 										region: $constraints.config?.region,
 										zone: $constraints.config?.zone,
 									}}
+									onChooseCloudAccount={() => {
+										document.querySelector(`[name="serviceAccountId"]`)?.focus()
+									}}
 								/>
 							</fieldset>
 						</Collapsible>
@@ -420,6 +423,9 @@
 								bind:machineId={$form.router.machine_type}
 								bind:machineImageId={$form.router.machine_image}
 								constraints={$constraints.router}
+								onChooseCloudAccount={() => {
+									document.querySelector(`[name="serviceAccountId"]`)?.focus()
+								}}
 							/>
 						</Collapsible>
 					</div>
