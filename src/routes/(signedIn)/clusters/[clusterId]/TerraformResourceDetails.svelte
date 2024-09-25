@@ -149,7 +149,7 @@
 
 							<p>
 								<a href="#/terraform-resourceType/{deploymentId}/{type}/{name}">
-									{name} ({type})
+									{formatResourceType(type)} – {name}
 								</a>
 							</p>
 						{/each}
