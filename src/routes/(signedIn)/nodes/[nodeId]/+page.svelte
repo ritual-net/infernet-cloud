@@ -456,7 +456,7 @@
 						<dt>Registry address</dt>
 
 						<dd>
-							{node.registry_address}
+							<a href={`${chainsByChainId.get(node.chain_id).explorer}/address/${node.registry_address}`} target="_blank">{node.registry_address}</a>
 						</dd>
 					</section>
 				{/if}
