@@ -111,7 +111,7 @@ a {
 	color: var(--textColor);
 	transition: 0.2s color;
 
-	p &:not(.button) {
+	:is(p, dd) &:not(.button) {
 		text-decoration-line: underline;
 		text-decoration-color: color-mix(in oklch, currentColor 50%, transparent);
 
