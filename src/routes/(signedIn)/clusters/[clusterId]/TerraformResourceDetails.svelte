@@ -66,7 +66,6 @@
 	</svelte:fragment>
 
 	<section
-		id="terraform-resource-{deploymentId}-{resourceType.type}-{resource.attributes.id}"
 		class="column"
 	>
 		<dl class="card column">
@@ -149,7 +148,7 @@
 							{@const [type, name] = dependency.split('.')}
 
 							<p>
-								<a href="#terraform-resource-{deploymentId}-{type}-{name}">
+								<a href="#/terraform-resourceType/{deploymentId}/{type}/{name}">
 									{name} ({type})
 								</a>
 							</p>

@@ -214,18 +214,27 @@
 			> -->
 				<div class="resources card column">
 					{#each deployment.tfstate.resources as resourceType}
-						{#each resourceType.instances as resource}
-							<TerraformResourceDetails
-								deploymentId={deployment.id}
-								{provider}
-								{resourceType}
-								{resource}
-							/>
-						<!-- {:else}
-							<div class="card column">
-								<p>No resources found.</p>
-							</div> -->
-						{/each}
+						<div
+							id="/terraform-resourceType/{deployment.id}/{resourceType.type}/{resourceType.name}"
+							class="column"
+						>
+							{#each resourceType.instances as resource}
+								<div
+									id="/terraform-resource/{deployment.id}/{resourceType.type}/{resourceType.name}/{resource.attributes.name || resource.attributes.id}"
+								>
+									<TerraformResourceDetails
+										deploymentId={deployment.id}
+										{provider}
+										{resourceType}
+										{resource}
+									/>
+								</div>
+							<!-- {:else}
+								<div class="card column">
+									<p>No resources found.</p>
+								</div> -->
+							{/each}
+						</div>
 					{/each}
 				</div>
 			<!-- </ScrollArea> -->
