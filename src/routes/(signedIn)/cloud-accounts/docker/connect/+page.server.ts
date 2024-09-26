@@ -46,7 +46,7 @@ export const actions: Actions = {
 				formData,
 				{
 					title: `Couldn't connect Docker account.`,
-					description: error.message,
+					description: (error as unknown as Error).message,
 				},
 				{
 					status: 400,

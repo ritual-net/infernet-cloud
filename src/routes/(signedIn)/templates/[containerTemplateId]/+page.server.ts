@@ -25,7 +25,7 @@ export const actions: Actions = {
 				{},
 				{
 					title: `Couldn't delete container template.`,
-					description: error.message,
+					description: (error as unknown as Error).message,
 				},
 				{
 					status: 500,
