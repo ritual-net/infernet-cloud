@@ -65,7 +65,7 @@ export const actions: Actions = {
 		if (!formData.valid)
 			return fail(400, { formData })
 
-		delete formData.data.containerTemplate.id
+		delete (formData.data.containerTemplate as { id?: string }).id
 
 		const response = await fetch('/api/container_template', {
 			method: 'POST',
