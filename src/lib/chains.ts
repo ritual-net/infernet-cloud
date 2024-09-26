@@ -14,7 +14,7 @@ import BaseIcon from '$/icons/networks/Base.svg'
 
 
 // Constants
-export const chains = [
+export const chains: Chain[] = [
 	{
 		name: 'Ethereum',
 		chainId: 1,
@@ -34,6 +34,6 @@ export const chains = [
 		isTestnet: true,
 		explorer: 'https://base-sepolia.blockscout.com',
 	},
-] as const satisfies Chain[]
+]
 
 export const chainsByChainId = new Map(chains.map(chain => [chain.chainId, chain]))
