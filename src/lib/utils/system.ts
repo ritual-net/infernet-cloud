@@ -1,5 +1,5 @@
-import { exec, type ExecException } from 'child_process'
-import { promises as fs } from 'fs'
+import { exec, type ExecException } from 'node:child_process'
+import { promises as fs } from 'node:fs'
 
 /**
  * Removes a directory and all of its contents.
