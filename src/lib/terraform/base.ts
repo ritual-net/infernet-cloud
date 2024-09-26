@@ -10,6 +10,7 @@ import {
 } from '$/lib/terraform/utils'
 import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider'
 import type { InfernetNode } from '$schema/interfaces'
+import { isTruthy } from '$/lib/utils/isTruthy'
 
 /**
  * Base class for Terraform deployments.
@@ -149,7 +150,7 @@ export abstract class BaseTerraform {
 						errorMessage: 'Error destroying resources.',
 					},
 				]
-					.filter(Boolean)
+					.filter(isTruthy)
 			)
 
 			const result = []

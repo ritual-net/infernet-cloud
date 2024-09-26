@@ -1,5 +1,6 @@
 import { promises as fs } from 'node:fs'
 import type { InfernetNode } from '$schema/interfaces'
+import { isTruthy } from '../utils/isTruthy'
 
 const BASE_TEMP_DIR = `${process.cwd()}/tmp/`
 
@@ -151,6 +152,6 @@ export const formatTfVars = (config: Record<string, any>): string => {
 export const parseJsonLines = (stdout: string): any[] => (
 	stdout
 		.split('\n')
-		.filter(Boolean)
+		.filter(isTruthy)
 		.map((line) => JSON.parse(line))
 )

@@ -21,6 +21,10 @@
 	} = $page.data as PageData
 
 
+	// Functions
+	import { isTruthy } from '$/lib/utils/isTruthy'
+
+
 	// Actions
 	import { type Toast, addToast, removeToast } from '$/components/Toaster.svelte'
 
@@ -508,7 +512,7 @@
 											>Paste from clipboard</button>
 										</div>
 
-										{#each Object.values($errors.credentials ?? []).filter(Boolean) as error}
+										{#each Object.values($errors.credentials ?? []).filter(isTruthy) as error}
 											<p>{error}</p>
 										{/each}
 									<!-- {/if}

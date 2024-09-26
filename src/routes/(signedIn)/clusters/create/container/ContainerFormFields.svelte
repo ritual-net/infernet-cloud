@@ -92,6 +92,10 @@
 	)
 
 
+	// Functions
+	import { isTruthy } from '$/lib/utils/isTruthy'
+
+
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Combobox from '$/components/Combobox.svelte'
@@ -230,15 +234,19 @@
 					) && {
 						value: 'custom',
 						label: 'Custom',
-						items: [
-							{
-								value: dockerImagesQueryValue.trim().toLowerCase(),
-								label: dockerImagesQueryValue.trim().toLowerCase(),
-								icon: DockerIcon,
-							}
-						].filter(Boolean),
+						items: (
+							[
+								{
+									value: dockerImagesQueryValue.trim().toLowerCase(),
+									label: dockerImagesQueryValue.trim().toLowerCase(),
+									icon: DockerIcon,
+								}
+							]
+								.filter(isTruthy)
+						),
 					},
-				].filter(Boolean)
+				]
+					.filter(isTruthy)
 			)}
 			placeholder={`Choose or search for an image...`}
 			{...constraints?.image}

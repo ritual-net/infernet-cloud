@@ -17,6 +17,7 @@
 	// Functions
 	import { resolveRoute } from '$app/paths'
 	import { createQuery } from '@tanstack/svelte-query'
+	import { isTruthy } from '$/lib/utils/isTruthy'
 
 
 	// Actions
@@ -232,16 +233,19 @@
 					{...!dockerAccounts
 						? {
 							placeholder: 'Loading...',
-							items: [
-								{
-									value: '',
-									label: 'None'
-								},
-								$form.dockerAccountUsername && {
-									value: $form.dockerAccountUsername,
-									label: $form.dockerAccountUsername,
-								}
-							].filter(Boolean),
+							items: (
+								[
+									{
+										value: '',
+										label: 'None'
+									},
+									$form.dockerAccountUsername && {
+										value: $form.dockerAccountUsername,
+										label: $form.dockerAccountUsername,
+									}
+								]
+									.filter(isTruthy)
+							),
 							visuallyDisabled: true,
 						}
 						: {

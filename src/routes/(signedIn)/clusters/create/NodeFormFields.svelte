@@ -99,6 +99,10 @@
 	).toString()
 
 
+	// Functions
+	import { isTruthy } from '$/lib/utils/isTruthy'
+
+
 	// Actions
 	import { addToast, removeToast } from '$/components/Toaster.svelte'
 
@@ -565,16 +569,19 @@
 		{...!dockerAccounts
 			? {
 				placeholder: 'Loading...',
-				items: [
-					{
-						value: '',
-						label: 'None'
-					},
-					node.dockerAccountUsername && {
-						value: node.dockerAccountUsername,
-						label: node.dockerAccountUsername,
-					}
-				].filter(Boolean),
+				items: (
+					[
+						{
+							value: '',
+							label: 'None'
+						},
+						node.dockerAccountUsername && {
+							value: node.dockerAccountUsername,
+							label: node.dockerAccountUsername,
+						}
+					]
+						.filter(isTruthy)
+				),
 				loading: true,
 				visuallyDisabled: true,
 			}
