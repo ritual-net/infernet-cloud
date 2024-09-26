@@ -100,7 +100,7 @@ export class AWSNodeClient extends BaseNodeClient {
 					?.split('\n')
 					.map(line => ({
 						text: line,
-						timestamp: result.Timestamp,
+						timestamp: result.Timestamp!,
 					})) ?? []
 			),
 		}
