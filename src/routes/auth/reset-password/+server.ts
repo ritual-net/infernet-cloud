@@ -19,21 +19,14 @@ export const POST: RequestHandler = async ({
 		password: string
 	}
 
-	if (!reset_token || !password) {
-		return error(
-			400,
-			"Request body malformed. Expected JSON body with 'reset_token' and 'password' keys",
-		)
-	}
+	if (!reset_token || !password)
+		return error(400, "Request body malformed. Expected JSON body with 'reset_token' and 'password' keys")
 
 	const provider = 'builtin::local_emailpassword'
 	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER)
-	if (!verifier) {
-		return error(
-			400,
-			`Could not find 'verifier' in the cookie store. Is this the same user agent/browser that started the authorization flow?`,
-		)
-	}
+
+	if (!verifier)
+		return error(400, `Could not find 'verifier' in the cookie store. Is this the same user agent/browser that started the authorization flow?`)
 
 	const resetResponse = await fetch(
 		EDGEDB_AUTH_URLS.RESET_PASSWORD,

@@ -52,9 +52,8 @@ export const actions: Actions = {
 	}) => {
 		const formData = await superValidate(request, yup(PasswordFormData))
 
-		if (!formData.valid) {
+		if (!formData.valid)
 			return fail(400, { formData })
-		}
 
 		const response = await fetch('/auth/reset-password', {
 			method: 'POST',

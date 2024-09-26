@@ -113,11 +113,10 @@ export class GCPNodeClient extends BaseNodeClient {
 					.map(log => {
 						const match = log.match(/^(?<timestamp>\w+ \d+ \d+:\d+:\d+) (?<hostname>\S+) (?<process>\S+)\[(?<pid>\d+)\]: (?<message>.*)$/)
 
-						if(!match?.groups) {
+						if (!match?.groups)
 							return {
 								text: log,
 							}
-						}
 
 						if (match && match.groups) {
 							const { timestamp, process, pid, message } = match.groups

@@ -9,28 +9,16 @@ import { EDGEDB_AUTH_URLS, EDGEDB_AUTH_COOKIES } from '$/lib/auth'
  * @param fetch - The fetch function.
  * @param request - The request object containing 'code'.
  */
-export const GET: RequestHandler = async ({
-	url,
-	cookies,
-	fetch,
-}) => {
+export const GET: RequestHandler = async ({ url, cookies, fetch }) => {
 	const code = url.searchParams.get('code')
-	if (!code) {
-		const _error = url.searchParams.get('error')
 
-		return error(
-			400,
-			`OAuth callback is missing 'code'. OAuth provider responded with error: ${_error}`,
-		)
-	}
+	if (!code)
+		return error(400, `OAuth callback is missing 'code'. OAuth provider responded with error: ${url.searchParams.get('error')}`)
 
 	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER)
-	if (!verifier) {
-		return error(
-			400,
-			'Could not find "verifier" in the cookie store. Is this the same user agent/browser that started the authorization flow?',
-		)
-	}
+
+	if (!verifier)
+		return error(400, 'Could not find "verifier" in the cookie store. Is this the same user agent/browser that started the authorization flow?')
 
 	const codeExchangeResponse = await fetch(
 		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({

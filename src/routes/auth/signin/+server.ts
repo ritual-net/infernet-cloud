@@ -16,12 +16,8 @@ export const POST: RequestHandler = async ({ fetch, request, cookies }) => {
 		provider: string
 	}
 
-	if (!email || !password || !provider) {
-		return error(
-			400,
-			"Request body malformed. Expected JSON body with 'email', 'password', and 'provider' keys",
-		)
-	}
+	if (!email || !password || !provider)
+		return error(400, "Request body malformed. Expected JSON body with 'email', 'password', and 'provider' keys")
 
 	const authenticateResponse = await fetch(
 		EDGEDB_AUTH_URLS.SIGN_IN,

@@ -16,9 +16,8 @@ import { EDGEDB_AUTH_COOKIES } from './lib/auth'
  */
 export const handle: Handle = async ({ event, resolve }) => {
 	// Allow requests to the auth server
-	if (event.url.pathname.startsWith('/auth')) {
+	if (event.url.pathname.startsWith('/auth'))
 		return await resolve(event)
-	}
 
 	// Extract token from cookie
 	const token = event.cookies.get(EDGEDB_AUTH_COOKIES.AUTH_TOKEN)

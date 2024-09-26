@@ -31,9 +31,8 @@ export const actions: Actions = {
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
-		if (!formData.valid) {
+		if (!formData.valid)
 			return fail(400, { formData })
-		}
 
 		try {
 			await e.insert(e.DockerAccount, {

@@ -13,11 +13,11 @@ import type { RequestHandler } from '@sveltejs/kit'
 export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.serviceAccountId
 
-	if (!id) {
+	if (!id)
 		return error(400, 'Service account id is required')
-	}
 
 	const result = await getServiceAccountById(client, id, false)
+
 	return json(result)
 }
 

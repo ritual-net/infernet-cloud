@@ -13,9 +13,9 @@ import type { DockerHubCreds } from '$/types/docker'
 export const GET: RequestHandler = async ({ request }: RequestEvent) => {
 	const user = request.headers.get('user')
 	const pat = request.headers.get('pat')
-	if (!user || !pat) {
+
+	if (!user || !pat)
 		return error(400, 'Missing user or pat in headers.')
-	}
 
 	return json(
 		await new DockerHubClient().getAllTaggedRepos({

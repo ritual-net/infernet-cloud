@@ -24,9 +24,8 @@ import { e } from '$/lib/db'
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 	const { node, clusterId } = (await request.json()) as z.InferType<typeof FormData>
 
-	if (!node || !clusterId) {
+	if (!node || !clusterId)
 		return error(400, 'Data and cluster id are required')
-	}
 
 	// setDefaultNodeValues(node);
 
@@ -34,9 +33,9 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 		includeServiceAccountCredentials: true,
 		includeNodeDetails: true,
 	})
-	if (!cluster) {
+
+	if (!cluster)
 		return error(400, `Cluster ID ${clusterId} does not exist`)
-	}
 
 	let updatedCluster: {
 		id: string

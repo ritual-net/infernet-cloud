@@ -12,9 +12,8 @@ import type { RequestHandler } from '@sveltejs/kit'
 export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const id = params.containerTemplateId
 
-	if (!id) {
+	if (!id)
 		return error(400, 'Container template id is required')
-	}
 
 	const result = await e
 		.select(e.ContainerTemplate, () => ({

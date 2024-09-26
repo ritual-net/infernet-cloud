@@ -62,9 +62,8 @@ export const actions: Actions = {
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
-		if (!formData.valid) {
+		if (!formData.valid)
 			return fail(400, { formData })
-		}
 
 		delete formData.data.containerTemplate.id
 

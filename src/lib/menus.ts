@@ -37,7 +37,7 @@ export const findMenuItem = <Value>(
 				return found
 		} else if ('value' in itemOrGroup) {
 			if (itemOrGroup.value === value)
-					return itemOrGroup
+				return itemOrGroup
 		}
 	}
 

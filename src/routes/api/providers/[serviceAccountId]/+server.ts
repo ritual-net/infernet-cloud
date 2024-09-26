@@ -16,14 +16,12 @@ import type { RequestHandler } from '@sveltejs/kit'
  */
 export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 	const serviceAccountId = params.serviceAccountId
-	if (!serviceAccountId) {
+	if (!serviceAccountId)
 		return error(400, `Service account ID is required.`)
-	}
 
 	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true)
-	if (!serviceAccount) {
+	if (!serviceAccount)
 		return error(400, `Service account ID ${serviceAccountId} does not exist.`)
-	}
 
 	return json(
 		getProviderInfoWithRegionLabels(

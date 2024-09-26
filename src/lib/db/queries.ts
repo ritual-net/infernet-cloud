@@ -148,9 +148,9 @@ export const getClusterById = async (
 		}))
 		.run(client)
 
-	if (!generic) {
+	if (!generic)
 		return null
-	}
+
 	const provider = generic.service_account.provider
 
 	// Get cluster with provider-specific data
@@ -240,9 +240,9 @@ export const getClusterByRouterId = async (
 		}))
 		.run(client)
 
-	if (!generic) {
+	if (!generic)
 		return null
-	}
+
 	const clusterId = generic.id
 	const provider = generic.service_account.provider
 
