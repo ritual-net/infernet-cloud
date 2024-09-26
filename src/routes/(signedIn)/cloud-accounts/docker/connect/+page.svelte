@@ -23,7 +23,7 @@
 	const {
 		form,
 		enhance,
-		errors,	
+		errors,
 		allErrors,
 		constraints,
 
@@ -43,7 +43,7 @@
 
 	// Actions
 	let delayedToast: Toast
-	$: if($delayed){
+	$: if ($delayed) {
 		delayedToast = addToast({
 			closeDelay: 0,
 			data: {
@@ -51,15 +51,15 @@
 				title: `Connecting Docker account...`,
 			},
 		})
-	}else{
-		if(delayedToast)
+	} else {
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	}
 
 	import { onDestroy } from 'svelte'
 
 	onDestroy(() => {
-		if(delayedToast)
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	})
 

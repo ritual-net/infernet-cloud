@@ -1,7 +1,7 @@
-import { error, json } from '@sveltejs/kit';
-import type { RequestHandler, RequestEvent } from '@sveltejs/kit';
-import { DockerHubClient } from '$/lib/docker/docker';
-import type { DockerHubCreds } from '$/types/docker';
+import { error, json } from '@sveltejs/kit'
+import type { RequestHandler, RequestEvent } from '@sveltejs/kit'
+import { DockerHubClient } from '$/lib/docker/docker'
+import type { DockerHubCreds } from '$/types/docker'
 
 /**
  * Fetch all images (public or private) owned by user or an organization the user is in.
@@ -11,16 +11,16 @@ import type { DockerHubCreds } from '$/types/docker';
  * @returns Flat array of image ids (including tag).
  */
 export const GET: RequestHandler = async ({ request }: RequestEvent) => {
-	const user = request.headers.get('user');
-	const pat = request.headers.get('pat');
+	const user = request.headers.get('user')
+	const pat = request.headers.get('pat')
 	if (!user || !pat) {
-		return error(400, 'Missing user or pat in headers.');
+		return error(400, 'Missing user or pat in headers.')
 	}
 
 	return json(
 		await new DockerHubClient().getAllTaggedRepos({
 			username: user,
 			password: pat,
-		} as DockerHubCreds)
-	);
-};
+		} as DockerHubCreds),
+	)
+}

@@ -11,8 +11,8 @@
 
 	// Internal state
 	let nodesWithInfo: {
-		node: InfernetNode,
-		info: NodeInfo | undefined,
+		node: InfernetNode
+		info: NodeInfo | undefined
 	}[]
 
 	$: nodesWithInfoPromise?.then(_ => {
@@ -22,7 +22,9 @@
 		}))
 
 		_.forEach((nodeWithInfo, i) => {
-			nodeWithInfo.nodeInfoPromise?.then(_ => { nodesWithInfo[i].info = _ })
+			nodeWithInfo.nodeInfoPromise?.then((_) => {
+				nodesWithInfo[i].info = _
+			})
 		})
 	})
 
@@ -119,7 +121,7 @@
 	contextMenu={nodeWithInfo => {
 		const { node, info } = nodeWithInfo
 
-		if(!node) return []
+		if (!node) return []
 
 		const nodeRoute = resolveRoute(`/nodes/[nodeId]`, {
 			nodeId: node.id,
@@ -147,7 +149,7 @@
 					return async ({ result }) => {
 						await applyAction(result)
 
-						if(result.type === 'success'){
+						if (result.type === 'success') {
 							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
 							invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
 						}
@@ -177,7 +179,7 @@
 					return async ({ result }) => {
 						await applyAction(result)
 
-						if(result.type === 'success'){
+						if (result.type === 'success') {
 							invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
 							invalidate(resolveRoute(`/api/node/[nodeId]/info`, { nodeId: node.id }))
 						}

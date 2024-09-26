@@ -301,7 +301,7 @@
 		}
 	}
 
-	[data-melt-select-hidden-input]	{
+	[data-melt-select-hidden-input] {
 		display: block;
 		position: static !important;
 		transform: none !important;

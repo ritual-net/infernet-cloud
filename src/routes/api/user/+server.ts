@@ -16,12 +16,12 @@ export const GET: RequestHandler = async ({
 				name: true,
 				email: true,
 			}))
-			.run(client);
+			.run(client)
 
 		return json(user)
-	}catch(e){
+	} catch (e) {
 		console.error(e)
 
 		return error(500, e.toString())
 	}
-};
+}

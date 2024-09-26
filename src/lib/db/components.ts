@@ -1,8 +1,8 @@
-import { ClusterSpreadParamsByProvider, ServiceAccountTypeByProvider, e } from '.';
-import type { $expr_ForVar } from '$schema/edgeql-js/for';
-import type { $expr_Param } from '$schema/edgeql-js/params';
-import type { CloudProvider } from '$schema/interfaces';
-import type { $json } from '$schema/edgeql-js/modules/std';
+import { ClusterSpreadParamsByProvider, ServiceAccountTypeByProvider, e } from '.'
+import type { $expr_ForVar } from '$schema/edgeql-js/for'
+import type { $expr_Param } from '$schema/edgeql-js/params'
+import type { CloudProvider } from '$schema/interfaces'
+import type { $json } from '$schema/edgeql-js/modules/std'
 
 /**
  * Generic params for inserting an InfernetNode
@@ -47,12 +47,12 @@ export const createNodeParams = e.tuple({
 				e.tuple({
 					address: e.Address,
 					amount: e.BigIntString,
-				})
+				}),
 			),
 			generates_proofs: e.bool,
-		})
+		}),
 	),
-});
+})
 
 /**
  * Query to insert an InfernetNode
@@ -61,7 +61,7 @@ export const createNodeParams = e.tuple({
  * @returns Fields to pass to an insert or update query
  */
 export const nodeQueryFields = (
-	node: $expr_ForVar<typeof createNodeParams> | $expr_Param<'node', typeof createNodeParams>
+	node: $expr_ForVar<typeof createNodeParams> | $expr_Param<'node', typeof createNodeParams>,
 ) => ({
 	region: node.config.region,
 	zone: node.config.zone,
@@ -107,13 +107,11 @@ export const nodeQueryFields = (
 			// 	e.to_bigint(payment.amount),
 			// ])),
 			generates_proofs: container.generates_proofs,
-		})
+		}),
 	),
-} as const)
+}) as const
 
-export const nodeJsonQueryFields = (
-	node: $expr_ForVar<$json> | $expr_Param<'node', $json>,
-) => ({
+export const nodeJsonQueryFields = (node: $expr_ForVar<$json> | $expr_Param<'node', $json>) => ({
 	region: e.cast(e.str, e.json_get(node, 'config', 'region')),
 	zone: e.cast(e.str, e.json_get(node, 'config', 'zone')),
 	machine_type: e.cast(e.str, e.json_get(node, 'config', 'machine_type')),
@@ -123,15 +121,27 @@ export const nodeJsonQueryFields = (
 	rpc_url: e.cast(e.str, e.json_get(node, 'config', 'rpc_url')),
 	chain_id: e.cast(e.int64, e.json_get(node, 'config', 'chain_id')),
 	registry_address: e.cast(e.Address, e.json_get(node, 'config', 'registry_address')),
-	allowed_sim_errors: e.cast(e.array(e.str), e.json_get(node, 'config', 'allowed_sim_errors')),
+	allowed_sim_errors: e.cast(
+		e.array(e.str),
+		e.json_get(node, 'config', 'allowed_sim_errors'),
+	),
 	payment_address: e.cast(e.Address, e.json_get(node, 'config', 'payment_address')),
 	max_gas_limit: e.cast(e.int64, e.json_get(node, 'config', 'max_gas_limit')),
 	private_key: e.cast(e.str, e.json_get(node, 'config', 'private_key')),
 	forward_stats: e.cast(e.bool, e.json_get(node, 'config', 'forward_stats')),
-	snapshot_sync_batch_size: e.cast(e.int16, e.json_get(node, 'config', 'snapshot_sync_batch_size')),
+	snapshot_sync_batch_size: e.cast(
+		e.int16,
+		e.json_get(node, 'config', 'snapshot_sync_batch_size'),
+	),
 	snapshot_sync_sleep: e.cast(e.float32, e.json_get(node, 'config', 'snapshot_sync_sleep')),
-	snapshot_sync_starting_sub_id: e.cast(e.int32, e.json_get(node, 'config', 'snapshot_sync_starting_sub_id')),
-	snapshot_sync_sync_period: e.cast(e.float32, e.json_get(node, 'config', 'snapshot_sync_sync_period')),
+	snapshot_sync_starting_sub_id: e.cast(
+		e.int32,
+		e.json_get(node, 'config', 'snapshot_sync_starting_sub_id'),
+	),
+	snapshot_sync_sync_period: e.cast(
+		e.float32,
+		e.json_get(node, 'config', 'snapshot_sync_sync_period'),
+	),
 	docker_account: e.select(e.DockerAccount, () => ({
 		filter_single: {
 			user: e.global.current_user,
@@ -144,31 +154,40 @@ export const nodeJsonQueryFields = (
 			container_id: e.cast(e.str, e.json_get(container, 'container_id')),
 			description: e.cast(e.str, e.json_get(container, 'description')),
 			external: e.cast(e.bool, e.json_get(container, 'external')),
-			allowed_addresses: e.cast(e.array(e.Address), e.json_get(container, 'allowed_addresses')),
-			allowed_delegate_addresses: e.cast(e.array(e.Address), e.json_get(container, 'allowed_delegate_addresses')),
+			allowed_addresses: e.cast(
+				e.array(e.Address),
+				e.json_get(container, 'allowed_addresses'),
+			),
+			allowed_delegate_addresses: e.cast(
+				e.array(e.Address),
+				e.json_get(container, 'allowed_delegate_addresses'),
+			),
 			allowed_ips: e.cast(e.array(e.IpAddress), e.json_get(container, 'allowed_ips')),
 			command: e.cast(e.str, e.json_get(container, 'command')),
 			env: e.cast(e.json, e.json_get(container, 'env')),
 			gpu: e.cast(e.bool, e.json_get(container, 'gpu')),
-			rate_limit_num_requests: e.cast(e.int64, e.json_get(container, 'rate_limit_num_requests')),
+			rate_limit_num_requests: e.cast(
+				e.int64,
+				e.json_get(container, 'rate_limit_num_requests'),
+			),
 			rate_limit_period: e.cast(e.float32, e.json_get(container, 'rate_limit_period')),
 			accepted_payments: e.cast(
 				e.array(
 					e.tuple({
 						address: e.Address,
 						amount: e.BigIntString,
-					})
+					}),
 				),
-				e.json_get(container, 'accepted_payments')
+				e.json_get(container, 'accepted_payments'),
 			),
 			generates_proofs: e.cast(e.bool, e.json_get(container, 'generates_proofs')),
-		})
+		}),
 	),
-} as const)
+}) as const
 
 /**
  * Generic params for selecting a Cluster
- * 
+ *
  * @returns The select params
  */
 export const getClusterSelectParams = (
@@ -182,23 +201,23 @@ export const getClusterSelectParams = (
 		/**
 		 * Whether to include sensitive Service Account credentials
 		 */
-		includeServiceAccountCredentials?: boolean,
+		includeServiceAccountCredentials?: boolean
 
 		/**
 		 * Whether to include Node and Container details
 		 */
-		includeNodeDetails?: boolean,
+		includeNodeDetails?: boolean
 
 		/**
 		 * Whether to include Docker Credentials from Nodes
 		 */
-		includeDockerAccountCredentials?: boolean,
+		includeDockerAccountCredentials?: boolean
 
 		/**
 		 * Whether to include Terraform deployment details
 		 */
-		includeTerraformDeploymentDetails?: boolean,
-	}
+		includeTerraformDeploymentDetails?: boolean
+	},
 ) => {
 	return {
 		service_account: {
@@ -210,7 +229,7 @@ export const getClusterSelectParams = (
 			},
 			...e.ServiceAccount['*'],
 			...(includeServiceAccountCredentials && {
-				...e.is(ServiceAccountTypeByProvider[provider], { creds: true })
+				...e.is(ServiceAccountTypeByProvider[provider], { creds: true }),
 			}),
 		},
 		nodes: (
@@ -234,17 +253,17 @@ export const getClusterSelectParams = (
 		...e.Cluster['*'],
 		...ClusterSpreadParamsByProvider[provider],
 
-		...includeTerraformDeploymentDetails && {
+		...(includeTerraformDeploymentDetails && {
 			deployments: deployment => ({
 				...e.TerraformDeployment['*'],
 				order_by: {
-					expression: deployment.timestamp, 
+					expression: deployment.timestamp,
 					direction: e.DESC,
 				},
 			}),
 			latest_deployment: {
 				...e.TerraformDeployment['*'],
 			},
-		},
-	};
-};
+		}),
+	}
+}

@@ -1,8 +1,8 @@
-import { ClusterTypeByProvider, e, ServiceAccountTypeByProvider } from '$/lib/db';
-import { getClusterSelectParams } from './components';
-import type { Client } from 'edgedb';
-import type { InfernetNode } from '$schema/interfaces';
-import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider';
+import { ClusterTypeByProvider, e, ServiceAccountTypeByProvider } from '$/lib/db'
+import { getClusterSelectParams } from './components'
+import type { Client } from 'edgedb'
+import type { InfernetNode } from '$schema/interfaces'
+import type { ProviderCluster, ProviderServiceAccount } from '$/types/provider'
 
 /**
  * Get node data by node ids
@@ -18,28 +18,28 @@ export const getNodesByIds = async (
 		includeClusterBacklink = false,
 		includeClusterTfstate = false,
 	}: {
-		includeClusterBacklink?: boolean,
-		includeClusterTfstate?: boolean,
-	} = {}
+		includeClusterBacklink?: boolean
+		includeClusterTfstate?: boolean
+	} = {},
 ) => {
 	return await e
 		.params({ nodeIds: e.array(e.uuid) }, ({ nodeIds }) =>
 			e.select(e.InfernetNode, (node) => ({
 				...e.InfernetNode['*'],
-				...(includeClusterBacklink || includeClusterTfstate) && {
+				...((includeClusterBacklink || includeClusterTfstate) && {
 					cluster: {
-						...includeClusterBacklink && {
+						...(includeClusterBacklink && {
 							id: true,
 							name: true,
-						},
-						...includeClusterTfstate && {
+						}),
+						...(includeClusterTfstate && {
 							latest_deployment: {
 								id: true,
 								tfstate: true,
 							},
-						},
+						}),
 					},
-				},
+				}),
 				docker_account: {
 					username: true,
 				},
@@ -47,12 +47,12 @@ export const getNodesByIds = async (
 					...e.Container['*'],
 				},
 				filter: e.op(node.id, 'in', e.array_unpack(nodeIds)),
-			}))
+			})),
 		)
 		.run(client, {
 			nodeIds,
-		});
-};
+		})
+}
 
 /**
  * Get service account data by id
@@ -65,7 +65,7 @@ export const getNodesByIds = async (
 export const getServiceAccountById = async (
 	client: Client,
 	id: string,
-	creds: boolean
+	creds: boolean,
 ): Promise<ProviderServiceAccount | null> => {
 	// Get cloud provider from generic service account
 	const generic = await e
@@ -73,12 +73,12 @@ export const getServiceAccountById = async (
 			provider: true,
 			filter_single: { id },
 		}))
-		.run(client);
+		.run(client)
 
 	if (!generic) {
-		return null;
+		return null
 	}
-	const provider = generic.provider;
+	const provider = generic.provider
 
 	// Get service account with provider-specific data
 	const result = await e
@@ -90,14 +90,14 @@ export const getServiceAccountById = async (
 			filter_single: { id },
 			...e.ServiceAccount['*'],
 		}))
-		.run(client);
+		.run(client)
 
-	return result as ProviderServiceAccount | null;
-};
+	return result as ProviderServiceAccount | null
+}
 
 /**
  * Get cluster data by id
- * 
+ *
  * @returns ProviderCluster if found
  */
 export const getClusterById = async (
@@ -120,22 +120,22 @@ export const getClusterById = async (
 		/**
 		 * Whether to include sensitive Service Account credentials
 		 */
-		includeServiceAccountCredentials: boolean,
+		includeServiceAccountCredentials: boolean
 
 		/**
 		 * Whether to include Node and Container details
 		 */
-		includeNodeDetails: boolean,
+		includeNodeDetails: boolean
 
 		/**
 		 * Whether to include Docker Credentials from Nodes
 		 */
-		includeDockerAccountCredentials?: boolean,
+		includeDockerAccountCredentials?: boolean
 
 		/**
 		 * Whether to include Terraform Deployment details
 		 */
-		includeTerraformDeploymentDetails?: boolean,
+		includeTerraformDeploymentDetails?: boolean
 	},
 ): Promise<ProviderCluster | null> => {
 	// Get cloud provider from generic cluster
@@ -146,12 +146,12 @@ export const getClusterById = async (
 			},
 			filter_single: { id },
 		}))
-		.run(client);
+		.run(client)
 
 	if (!generic) {
-		return null;
+		return null
 	}
-	const provider = generic.service_account.provider;
+	const provider = generic.service_account.provider
 
 	// Get cluster with provider-specific data
 	const cluster = await e
@@ -164,10 +164,10 @@ export const getClusterById = async (
 			}),
 			filter_single: { id },
 		}))
-		.run(client);
+		.run(client)
 
-	return cluster as ProviderCluster | null;
-};
+	return cluster as ProviderCluster | null
+}
 
 /**
  * Get cluster data by node id
@@ -181,7 +181,7 @@ export const getClusterById = async (
 export const getClusterByNodeIds = async (
 	client: Client,
 	ids: string[],
-	includeServiceAccountCredentials = false
+	includeServiceAccountCredentials = false,
 ): Promise<ProviderCluster | null> => {
 	const genericQuery = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.Cluster, (cluster) => ({
@@ -195,16 +195,16 @@ export const getClusterByNodeIds = async (
 					filter: e.op(node.id, 'in', e.array_unpack(ids)),
 				})),
 				'in',
-				cluster.nodes
+				cluster.nodes,
 			),
-		}))
-	);
-	const generic = await genericQuery.run(client, { ids });
+		})),
+	)
+	const generic = await genericQuery.run(client, { ids })
 	if (!generic || generic.length !== 1) {
-		throw Error('Unable to find exactly one cluster for nodes.');
+		throw Error('Unable to find exactly one cluster for nodes.')
 	}
-	const provider = generic[0].service_account.provider;
-	const clusterId = generic[0].id;
+	const provider = generic[0].service_account.provider
+	const clusterId = generic[0].id
 
 	// Get cluster with provider-specific data
 	const cluster = await e
@@ -212,9 +212,9 @@ export const getClusterByNodeIds = async (
 			...getClusterSelectParams(provider, { includeServiceAccountCredentials }),
 			filter_single: { id: clusterId },
 		}))
-		.run(client);
-	return cluster as ProviderCluster | null;
-};
+		.run(client)
+	return cluster as ProviderCluster | null
+}
 
 /**
  * Get cluster data by router id
@@ -228,7 +228,7 @@ export const getClusterByNodeIds = async (
 export const getClusterByRouterId = async (
 	client: Client,
 	id: string,
-	includeServiceAccountCredentials = false
+	includeServiceAccountCredentials = false,
 ): Promise<ProviderCluster | null> => {
 	const generic = await e
 		.select(e.Cluster, (cluster) => ({
@@ -238,13 +238,13 @@ export const getClusterByRouterId = async (
 			},
 			filter_single: e.op(cluster.router_state?.id, '=', id),
 		}))
-		.run(client);
+		.run(client)
 
 	if (!generic) {
-		return null;
+		return null
 	}
-	const clusterId = generic.id;
-	const provider = generic.service_account.provider;
+	const clusterId = generic.id
+	const provider = generic.service_account.provider
 
 	// Get cluster with provider-specific data
 	const cluster = await e
@@ -252,10 +252,10 @@ export const getClusterByRouterId = async (
 			...getClusterSelectParams(provider, { includeServiceAccountCredentials }),
 			filter_single: { id: clusterId },
 		}))
-		.run(client);
+		.run(client)
 
-	return cluster as ProviderCluster | null;
-};
+	return cluster as ProviderCluster | null
+}
 
 /**
  * Get clusters
@@ -264,15 +264,12 @@ export const getClusterByRouterId = async (
  * @param {optional} serviceAccountId filter by clusters created with service account
  * @returns Cluster array
  */
-export const getClusters = async (
-	client: Client,
-	serviceAccountId?: string,
-) => (
+export const getClusters = async (client: Client, serviceAccountId?: string) =>
 	await e
 		.select(e.Cluster, (cluster) => ({
-			...serviceAccountId && {
+			...(serviceAccountId && {
 				filter: e.op(cluster.service_account.id, '=', e.uuid(serviceAccountId)),
-			},
+			}),
 			service_account: {
 				id: true,
 				name: true,
@@ -287,4 +284,3 @@ export const getClusters = async (
 			locked: true,
 		}))
 		.run(client)
-);

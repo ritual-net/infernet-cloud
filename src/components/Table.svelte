@@ -279,7 +279,8 @@
 		}
 	}
 
-	th, td {
+	th,
+	td {
 		padding: 1em;
 
 		&[data-align="start"] {
@@ -311,7 +312,7 @@
 
 		> :global(button) {
 			--button-backgroundColor: transparent;
-    		--button-borderWidth: 0;
+			--button-borderWidth: 0;
 			--button-paddingY: 1em;
 			--button-paddingX: 1em;
 			width: 100%;

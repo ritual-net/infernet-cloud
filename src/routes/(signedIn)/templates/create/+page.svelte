@@ -50,7 +50,7 @@
 
 	// Actions
 	let delayedToast: Toast
-	$: if($delayed){
+	$: if ($delayed) {
 		delayedToast = addToast({
 			closeDelay: 0,
 			data: {
@@ -58,28 +58,29 @@
 				title: `Adding container template...`,
 			},
 		})
-	}else{
-		if(delayedToast)
+	} else {
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	}
 
 	import { onDestroy } from 'svelte'
 
 	onDestroy(() => {
-		if(delayedToast)
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	})
-
 
 	// (Docker images)
 	let images: string[] | undefined
 
 	$: imagesPromise.then(_ => images = _)
 
-	let dockerUserImages: {
-		value: string,
-		label: string,
-	}[] | undefined
+	let dockerUserImages:
+		| {
+			value: string
+			label: string
+		}[]
+		| undefined
 
 	$: dockerUserImagesQuery = $form.dockerAccountUsername
 		? createQuery({

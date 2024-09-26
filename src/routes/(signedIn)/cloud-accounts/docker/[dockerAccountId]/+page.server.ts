@@ -18,7 +18,7 @@ export const actions: Actions = {
 				},
 			}))
 				.run(client)
-		}catch(error){
+		} catch (error) {
 			return message(
 				{},
 				{
@@ -27,7 +27,7 @@ export const actions: Actions = {
 				},
 				{
 					status: 500,
-				}
+				},
 			)
 		}
 

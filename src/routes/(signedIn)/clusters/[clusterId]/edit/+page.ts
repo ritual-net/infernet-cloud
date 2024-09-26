@@ -29,7 +29,7 @@ export const load: PageLoad = async ({
 				machine_image: cluster.router?.machine_image,
 			},
 		},
-		yup(FormData)
+		yup(FormData),
 	)
 
 	return {

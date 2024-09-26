@@ -24,7 +24,7 @@
 		mediaQuery.addEventListener(
 			'change',
 			(event) => { set(event.matches) },
-			{ signal: controller.signal }
+			{ signal: controller.signal },
 		)
 
 		return () => controller.abort()
@@ -37,18 +37,18 @@
 			if(!browser) return
 
 			const controller = new AbortController()
-			
+
 			globalThis.addEventListener(
 				'storage',
-				event => { 
-					if(event instanceof StorageEvent && event.key === themeOverrideKey)
+				(event) => {
+					if (event instanceof StorageEvent && event.key === themeOverrideKey)
 						set(event.newValue as Theme)
 				},
-				{ signal: controller.signal }
+				{ signal: controller.signal },
 			)
 
 			return () => controller.abort()
-		}
+		},
 	)
 
 

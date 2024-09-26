@@ -52,7 +52,8 @@
 	[data-melt-collapsible] {
 		gap: var(--borderWidth);
 
-		&:empty, &:not(:has(*)) {
+		&:empty,
+		&:not(:has(*)) {
 			display: contents;
 		}
 	}

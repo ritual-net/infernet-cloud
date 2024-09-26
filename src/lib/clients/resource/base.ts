@@ -15,14 +15,14 @@ export abstract class BaseResourceClient<T extends ProviderTypeEnum = ProviderTy
 	 * @param JSON object containing credentials for the cloud provider.
 	 * @returns A promise that resolves when authentication is complete.
 	 */
-	abstract auth(credentials: Record<string, any>): Promise<void>;
+	abstract auth(credentials: Record<string, any>): Promise<void>
 
 	/**
 	 * Get the list of regions available on the cloud provider.
 	 *
 	 * @returns Flat array of all region IDs.
 	 */
-	abstract getRegions(): Promise<Region<T>[]>;
+	abstract getRegions(): Promise<Region<T>[]>
 
 	/**
 	 * Get the list of zones in a region.
@@ -30,7 +30,7 @@ export abstract class BaseResourceClient<T extends ProviderTypeEnum = ProviderTy
 	 * @param regionId The name of the region.
 	 * @returns Flat array of all zones in the region.
 	 */
-	abstract getZones(regionId: string): Promise<Zone<T>[]>;
+	abstract getZones(regionId: string): Promise<Zone<T>[]>
 
 	/**
 	 * Get the list of machine types in a zone.
@@ -38,7 +38,7 @@ export abstract class BaseResourceClient<T extends ProviderTypeEnum = ProviderTy
 	 * @param zoneId The name of the zone.
 	 * @returns Flat array of all machine types in a zone.
 	 */
-	abstract getMachines(zoneId: string): Promise<Machine<T>[]>;
+	abstract getMachines(zoneId: string): Promise<Machine<T>[]>
 
 	/**
 	 * End to end method to get all provider info (regions, zones, machines).
@@ -64,8 +64,8 @@ export abstract class BaseResourceClient<T extends ProviderTypeEnum = ProviderTy
 						}) as ZoneInfo)
 					),
 				} as ProviderInfo
-			})
-		);
+			}),
+		)
 	}
 
 	abstract getMachineInfo(

@@ -1,9 +1,9 @@
-import { error, json } from '@sveltejs/kit';
-import { getProviderInfoWithRegionLabels } from '$/lib/utils/providers/common';
-import { getServiceAccountById } from '$/lib/db/queries';
-import { ProviderClient } from '$/lib/index';
-import { ProviderTypeEnum } from '$/types/provider';
-import type { RequestHandler } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit'
+import { getProviderInfoWithRegionLabels } from '$/lib/utils/providers/common'
+import { getServiceAccountById } from '$/lib/db/queries'
+import { ProviderClient } from '$/lib/index'
+import { ProviderTypeEnum } from '$/types/provider'
+import type { RequestHandler } from '@sveltejs/kit'
 
 /**
  * Fetch nested provider info (regions, zones, machines) from cloud providers
@@ -15,20 +15,22 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @returns Flat array of ProviderInfo objects.
  */
 export const GET: RequestHandler = async ({ locals: { client }, params }) => {
-	const serviceAccountId = params.serviceAccountId;
+	const serviceAccountId = params.serviceAccountId
 	if (!serviceAccountId) {
-		return error(400, `Service account ID is required.`);
+		return error(400, `Service account ID is required.`)
 	}
 
-	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true);
+	const serviceAccount = await getServiceAccountById(client, serviceAccountId, true)
 	if (!serviceAccount) {
-		return error(400, `Service account ID ${serviceAccountId} does not exist.`);
+		return error(400, `Service account ID ${serviceAccountId} does not exist.`)
 	}
 
 	return json(
 		getProviderInfoWithRegionLabels(
 			ProviderTypeEnum[serviceAccount.provider],
-			await new ProviderClient[serviceAccount.provider]().getProviderInfo(serviceAccount.creds)
-		)
-	);
-};
+			await new ProviderClient[serviceAccount.provider]().getProviderInfo(
+				serviceAccount.creds,
+			),
+		),
+	)
+}

@@ -13,4 +13,4 @@ export const GET: RequestHandler = async ({
 	)
 
 	return json(dockerAccounts)
-};
+}

@@ -13,7 +13,7 @@ export const load: ServerLoad = async ({
 }) => {
 	const reset_token = url.searchParams.get('reset_token')
 
-	if(!reset_token)
+	if (!reset_token)
 		return flashRedirect(
 			400,
 			`/login`,
@@ -31,7 +31,7 @@ export const load: ServerLoad = async ({
 			reset_token,
 			password: '',
 		},
-		yup(PasswordFormData)
+		yup(PasswordFormData),
 	)
 
 	return {
@@ -61,7 +61,7 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		if(!response.ok){
+		if (!response.ok) {
 			const result = await response.json()
 
 			return message(

@@ -1,7 +1,7 @@
-import { e } from '$/lib/db';
-import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import * as z from 'yup';
+import { e } from '$/lib/db'
+import { error, json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
+import type * as z from 'yup'
 import type { FormData } from '$/routes/(signedIn)/templates/create/schema'
 
 /**
@@ -18,10 +18,10 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
 				username: true,
 			},
 		}))
-		.run(client);
+		.run(client)
 
-	return json(result);
-};
+	return json(result)
+}
 
 /**
  * Create a new container template.
@@ -48,9 +48,9 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					},
 				})),
 			})
-			.run(client);
-		return json(template);
+			.run(client)
+		return json(template)
 	} catch (e) {
-		return error(400, (e as Error).message);
+		return error(400, (e as Error).message)
 	}
-};
+}

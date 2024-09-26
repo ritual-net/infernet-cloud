@@ -16,8 +16,8 @@ import { getRegionName } from '$/lib/utils/providers/common'
  * Google Cloud Provider extension of BaseResourceClient abstract class.
  */
 export class GCPResourceClient extends BaseResourceClient<ProviderTypeEnum.GCP> {
-	googleCompute!: compute_v1.Compute;
-	projectId: string = '';
+	googleCompute!: compute_v1.Compute
+	projectId: string = ''
 
 	/**
 	 * GCP auth function

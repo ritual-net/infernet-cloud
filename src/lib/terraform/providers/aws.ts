@@ -1,17 +1,16 @@
-import { ProviderTypeEnum } from '$/types/provider';
-import { BaseTerraform, createTerraformVarsFile } from '$/lib/terraform/base';
-import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces';
-
+import { ProviderTypeEnum } from '$/types/provider'
+import { BaseTerraform, createTerraformVarsFile } from '$/lib/terraform/base'
+import type { AWSCluster, AWSServiceAccount } from '$schema/interfaces'
 
 // Functions
-import { formatTfVars } from '../utils';
+import { formatTfVars } from '../utils'
 
 export class AWSTerraform extends BaseTerraform {
-	public readonly type = ProviderTypeEnum.AWS;
+	public readonly type = ProviderTypeEnum.AWS
 
 	public override getTerraformVars(
 		cluster: AWSCluster,
-		serviceAccount: AWSServiceAccount
+		serviceAccount: AWSServiceAccount,
 	): string {
 		return formatTfVars({
 			access_key_id: serviceAccount.creds.access_key_id,
@@ -73,7 +72,7 @@ export class AWSTerraform extends BaseTerraform {
 	protected override async writeTerraformFiles(
 		tempDir: string,
 		cluster: AWSCluster,
-		serviceAccount: AWSServiceAccount
+		serviceAccount: AWSServiceAccount,
 	): Promise<void> {
 		const terraformVars = this.getTerraformVars(cluster, serviceAccount)
 

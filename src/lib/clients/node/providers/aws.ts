@@ -22,13 +22,13 @@ export class AWSNodeClient extends BaseNodeClient {
 	}
 
 	get client() {
-		return this.#client ??= new EC2Client({
+		return (this.#client ??= new EC2Client({
 			region: this.region,
 			credentials: {
 				accessKeyId: this.credentials.access_key_id,
 				secretAccessKey: this.credentials.secret_access_key,
 			},
-		})
+		}))
 	}
 
 	get type() {
@@ -39,7 +39,7 @@ export class AWSNodeClient extends BaseNodeClient {
 		return await this.client.send(
 			new StartInstancesCommand({
 				InstanceIds: [this.instanceId],
-			})
+			}),
 		)
 	}
 
@@ -47,7 +47,7 @@ export class AWSNodeClient extends BaseNodeClient {
 		return await this.client.send(
 			new StopInstancesCommand({
 				InstanceIds: [this.instanceId],
-			})
+			}),
 		)
 	}
 
@@ -55,7 +55,7 @@ export class AWSNodeClient extends BaseNodeClient {
 		return await this.client.send(
 			new RebootInstancesCommand({
 				InstanceIds: [this.instanceId],
-			})
+			}),
 		)
 	}
 
@@ -63,7 +63,7 @@ export class AWSNodeClient extends BaseNodeClient {
 		const result = await this.client.send(
 			new DescribeInstancesCommand({
 				InstanceIds: [this.instanceId],
-			})
+			}),
 		)
 
 		const instance = result.Reservations?.[0]?.Instances?.[0]
@@ -83,7 +83,7 @@ export class AWSNodeClient extends BaseNodeClient {
 		const result = await this.client.send(
 			new GetConsoleOutputCommand({
 				InstanceId: this.instanceId,
-			})
+			}),
 		)
 
 		const output = (

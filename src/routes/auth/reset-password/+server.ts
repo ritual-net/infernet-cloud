@@ -1,5 +1,5 @@
-import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_URLS, EDGEDB_AUTH_COOKIES } from '$/lib/auth';
+import { error, type RequestHandler } from '@sveltejs/kit'
+import { EDGEDB_AUTH_URLS, EDGEDB_AUTH_COOKIES } from '$/lib/auth'
 
 /**
  * Send new password with reset token to EdgeDB Auth.
@@ -15,24 +15,24 @@ export const POST: RequestHandler = async ({
 	request,
 }) => {
 	const { reset_token, password } = (await request.json()) as {
-		reset_token: string;
-		password: string;
-	};
+		reset_token: string
+		password: string
+	}
 
 	if (!reset_token || !password) {
 		return error(
 			400,
-			"Request body malformed. Expected JSON body with 'reset_token' and 'password' keys"
-		);
+			"Request body malformed. Expected JSON body with 'reset_token' and 'password' keys",
+		)
 	}
 
-	const provider = 'builtin::local_emailpassword';
-	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER);
+	const provider = 'builtin::local_emailpassword'
+	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER)
 	if (!verifier) {
 		return error(
 			400,
-			`Could not find 'verifier' in the cookie store. Is this the same user agent/browser that started the authorization flow?`
-		);
+			`Could not find 'verifier' in the cookie store. Is this the same user agent/browser that started the authorization flow?`,
+		)
 	}
 
 	const resetResponse = await fetch(
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({
 				password,
 			}),
 		}
-	);
+	)
 
 	if (!resetResponse.ok) {
 		const result = await resetResponse
@@ -58,23 +58,23 @@ export const POST: RequestHandler = async ({
 					const json = JSON.parse(text)
 					console.error(json)
 					return JSON.parse(text).error.message as string
-				}catch(e){
+				} catch (e) {
 					console.error(text)
 					return text
 				}
-			});
+			})
 
-		return error(500, result);
+		return error(500, result)
 	}
 
-	const { code } = await resetResponse.json();
+	const { code } = await resetResponse.json()
 
 	const tokenResponse = await fetch(
 		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
 			code,
 			verifier,
-		})}`
-	);
+		})}`,
+	)
 
 	if (!tokenResponse.ok) {
 		const result = await tokenResponse
@@ -84,13 +84,13 @@ export const POST: RequestHandler = async ({
 					const json = JSON.parse(text)
 					console.error(json)
 					return JSON.parse(text).error.message as string
-				}catch(e){
+				} catch (e) {
 					console.error(text)
 					return text
 				}
-			});
+			})
 
-		return error(500, result);
+		return error(500, result)
 	}
 
 	// const { auth_token } = await tokenResponse.json();
@@ -105,5 +105,5 @@ export const POST: RequestHandler = async ({
 	// 	},
 	// );
 
-	return new Response(null, { status: 204 });
-};
+	return new Response(null, { status: 204 })
+}

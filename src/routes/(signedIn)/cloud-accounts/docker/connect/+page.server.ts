@@ -42,7 +42,7 @@ export const actions: Actions = {
 				user: e.global.current_user,
 			})
 				.run(client)
-		}catch(error){
+		} catch (error) {
 			return message(
 				formData,
 				{

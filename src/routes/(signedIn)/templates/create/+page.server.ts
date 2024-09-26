@@ -73,7 +73,7 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		if(!response.ok){
+		if (!response.ok) {
 			const result = await response.json()
 
 			return message(

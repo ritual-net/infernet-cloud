@@ -6,7 +6,7 @@ import type { GCPServiceAccount } from '$schema/interfaces'
 export class GCPNodeClient extends BaseNodeClient {
 	public projectId: string
 
-	#client: InstancesClient | undefined;
+	#client: InstancesClient | undefined
 
 	constructor(
 		private credentials: GCPServiceAccount['creds'],
@@ -19,13 +19,13 @@ export class GCPNodeClient extends BaseNodeClient {
 	}
 
 	get client(): InstancesClient {
-		return this.#client ??= new InstancesClient({
+		return (this.#client ??= new InstancesClient({
 			projectId: this.credentials.project_id,
 			credentials: {
 				client_email: this.credentials.client_email,
 				private_key: this.credentials.private_key.split(String.raw`\n`).join('\n'),
 			},
-		})
+		}))
 	}
 
 	get type() {

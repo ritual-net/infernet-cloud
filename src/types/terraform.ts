@@ -6,42 +6,42 @@ export enum TFAction {
 }
 
 export type TFState = {
-	version: number;
-	terraform_version: string;
-	serial: number;
-	lineage: string;
+	version: number
+	terraform_version: string
+	serial: number
+	lineage: string
 	outputs: {
 		nodes?: {
 			value?: {
-				id: string;
-				ip: string;
-				key: string;
-			}[];
-		};
+				id: string
+				ip: string
+				key: string
+			}[]
+		}
 		router?: {
 			value?: {
-				id: string;
-				ip: string;
-			};
-		};
-	};
+				id: string
+				ip: string
+			}
+		}
+	}
 	resources: {
-		name: string;
-		type: string;
-		mode: string;
+		name: string
+		type: string
+		mode: string
 		instances: {
 			attributes: {
 				tags?: {
-					Name: string;
-				};
-				id: string;
-				arn?: string;
-				self_link?: string;
-				[key: string]: any;
+					Name: string
+				}
+				id: string
+				arn?: string
+				self_link?: string
+				[key: string]: any
 			}
-			dependencies: string[];
-			id: string;
-		}[];
-	}[];
-	check_results: boolean | null;
-};
+			dependencies: string[]
+			id: string
+		}[]
+	}[]
+	check_results: boolean | null
+}

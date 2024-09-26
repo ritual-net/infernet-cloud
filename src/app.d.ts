@@ -10,36 +10,34 @@ declare global {
 		// interface Error {}
 
 		interface Locals {
-			client: Client;
-			user: User;
+			client: Client
+			user: User
 		}
 
 		interface PageData {
 			flash?: {
-				type: 'success' | 'error',
+				type: 'success' | 'error'
 				message: {
-					title?: string,
-					description?: string,
-				},
-			};
+					title?: string
+					description?: string
+				}
+			}
 		}
 
 		interface PageState {
-			showContainerForm: 'create' | 'edit',
-			nodeId: string,
-			containerId?: string,
-			pageData?: ContainerForm['$$prop_def']['data'],
+			showContainerForm: 'create' | 'edit'
+			nodeId: string
+			containerId?: string
+			pageData?: ContainerForm['$$prop_def']['data']
 		}
 
 		// interface Platform {}
 
 		namespace Superforms {
 			type Message = {
-				title?: string,
-				description?: string,
+				title?: string
+				description?: string
 			}
 		}
 	}
 }
-
-export {}

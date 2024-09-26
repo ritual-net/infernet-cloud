@@ -48,7 +48,7 @@
 
 	// Actions
 	let delayedToast: Toast
-	$: if($delayed){
+	$: if ($delayed) {
 		delayedToast = addToast({
 			closeDelay: 0,
 			data: {
@@ -56,15 +56,15 @@
 				title: `Saving node configuration...`,
 			},
 		})
-	}else{
-		if(delayedToast)
+	} else {
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	}
 
 	import { onDestroy } from 'svelte'
 
 	onDestroy(() => {
-		if(delayedToast)
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	})
 

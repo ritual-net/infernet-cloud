@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Context
-  	import { browser } from '$app/environment'
+	import { browser } from '$app/environment'
 
 
 	// Libraries

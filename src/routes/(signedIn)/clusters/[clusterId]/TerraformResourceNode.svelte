@@ -6,9 +6,9 @@
 
 	// Inputs
 	export let data: {
-		provider: ProviderTypeEnum,
-		resourceType: TFState['resources'][number],
-		resource: TFState['resources'][0]['instances'][number],
+		provider: ProviderTypeEnum
+		resourceType: TFState['resources'][number]
+		resource: TFState['resources'][0]['instances'][number]
 	}
 
 
@@ -72,7 +72,7 @@
 
 <style>
 	.node {
-		--xy-handle-background-color: transparent; 
+		--xy-handle-background-color: transparent;
 		--xy-handle-border-color: transparent;
 
 		display: grid;

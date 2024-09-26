@@ -13,7 +13,7 @@
 
 	// Internal state
 	import { melt, createDialog, createSync } from '@melt-ui/svelte'
-	
+
 	const {
 		elements: {
 			trigger,

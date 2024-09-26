@@ -65,7 +65,7 @@ export const actions: Actions = {
 			return fail(400, { formData })
 		}
 
-		for(const node of formData.data.nodes ?? []){
+		for (const node of formData.data.nodes ?? []) {
 			delete node.id
 
 			for(const container of node.containers)
@@ -77,7 +77,7 @@ export const actions: Actions = {
 			body: JSON.stringify(formData.data),
 		})
 
-		if(!response.ok){
+		if (!response.ok) {
 			const result = await response.json()
 
 			return message(

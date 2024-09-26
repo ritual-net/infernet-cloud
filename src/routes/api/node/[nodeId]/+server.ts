@@ -102,12 +102,12 @@ export const PATCH: RequestHandler = async ({
 		} catch (e) {
 			console.error(e)
 		}
-	})();
+	})()
 
 	return json({
 		node: updatedNode,
 	})
-};
+}
 
 /**
  * Delete a node by its ID.
@@ -117,7 +117,7 @@ export const PATCH: RequestHandler = async ({
  * @returns Deleted node ID.
  */
 export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
-	const id = params.nodeId;
+	const id = params.nodeId
 
 	if (!id)
 		return error(400, 'Node id is required')
@@ -140,7 +140,7 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 				},
 			},
 		}))
-		.run(client);
+		.run(client)
 
 	if(!deletedNode)
 		return error(500, 'No node to delete.')
@@ -167,4 +167,4 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 	return json({
 		node: deletedNode,
 	})
-};
+}

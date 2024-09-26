@@ -46,7 +46,7 @@
 
 <button
 	use:melt={$root}
-	id="{buttonId}"
+	id={buttonId}
 	aria-labelledby="{buttonId}-label"
 >
 	<span class="thumb" />
@@ -62,9 +62,9 @@
 
 <style>
 	:root {
-		--switch-default-backgroundColor: #D9D9D940;
+		--switch-default-backgroundColor: #d9d9d940;
 		--switch-checked-backgroundColor: var(--accentColor);
-		--switch-backgroundColor: #D9D9D988;
+		--switch-backgroundColor: #d9d9d988;
 		--switch-thumb-backgroundColor: #fff;
 		--switch-width: 2.5em;
 		--switch-height: 1.5em;

@@ -1,6 +1,6 @@
-import { e } from '$/lib/db';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
+import { e } from '$/lib/db'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
 
 /**
  * Fetch all compute providers.
@@ -12,7 +12,7 @@ export const GET: RequestHandler = async () => {
 	const providers = e.CloudProvider.__values__.map((provider) => {
 		return {
 			id: provider,
-		};
-	});
-	return json(providers);
-};
+		}
+	})
+	return json(providers)
+}

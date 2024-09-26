@@ -21,11 +21,12 @@
 		isPaymentsEnabled?: boolean
 		dockerAccountUsername?: string
 	}
-	export let dockerUserImages: {
-		value: string,
-		label: string,
-	}[] | undefined
-
+	export let dockerUserImages:
+		| {
+			value: string
+			label: string
+		}[]
+		| undefined
 
 	// API
 	import type { DockerHubClient } from '$/lib/docker/docker'

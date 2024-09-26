@@ -1,6 +1,6 @@
 import { error, type Handle } from '@sveltejs/kit'
 import { createClient } from './lib/db'
-import { EDGEDB_AUTH_COOKIES } from './lib/auth';
+import { EDGEDB_AUTH_COOKIES } from './lib/auth'
 
 /**
  * Global middleware for the server.
@@ -21,11 +21,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	// Extract token from cookie
-	const token = event.cookies.get(EDGEDB_AUTH_COOKIES.AUTH_TOKEN);
+	const token = event.cookies.get(EDGEDB_AUTH_COOKIES.AUTH_TOKEN)
 
 	// Attach client to the event
 	event.locals.client = createClient().withGlobals({
 		'ext::auth::client_token': token,
-	});
-	return await resolve(event);
-};
+	})
+	return await resolve(event)
+}

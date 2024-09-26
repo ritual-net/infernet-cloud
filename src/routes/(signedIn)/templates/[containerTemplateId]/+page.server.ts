@@ -1,6 +1,5 @@
-
 // Actions
-import { type Actions } from '@sveltejs/kit'
+import type { Actions } from '@sveltejs/kit'
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 import { message } from 'sveltekit-superforms/server'
 import { resolveRoute } from '$app/paths'
@@ -21,7 +20,7 @@ export const actions: Actions = {
 				},
 			)
 				.then(response => response.json())
-		}catch(error){
+		} catch (error) {
 			return message(
 				{},
 				{
@@ -30,7 +29,7 @@ export const actions: Actions = {
 				},
 				{
 					status: 500,
-				}
+				},
 			)
 		}
 

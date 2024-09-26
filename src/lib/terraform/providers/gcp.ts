@@ -24,7 +24,7 @@ export class GCPTerraform extends BaseTerraform {
 			is_production: true,
 			ip_allow_ssh: cluster.ip_allow_ssh ?? ['0.0.0.0/0'],
 			ip_allow_http: cluster.ip_allow_http ?? ['0.0.0.0/0'],
-			ip_allow_http_ports: ["4000"],
+			ip_allow_http_ports: ['4000'],
 
 			router: (	
 				cluster.router ?
@@ -56,8 +56,8 @@ export class GCPTerraform extends BaseTerraform {
 
 						// image: node.has_gpu ? 'nvidia-tesla-t4' : 'ubuntu-2004-focal-v20231101',
 						// has_gpu: node.has_gpu,
-					}
-				])
+					},
+				]),
 			),
 		})
 	}
@@ -72,7 +72,7 @@ export class GCPTerraform extends BaseTerraform {
 	protected override async writeTerraformFiles(
 		tempDir: string,
 		cluster: GCPCluster,
-		serviceAccount: GCPServiceAccount
+		serviceAccount: GCPServiceAccount,
 	): Promise<void> {
 		await createTerraformVarsFile(
 			tempDir,

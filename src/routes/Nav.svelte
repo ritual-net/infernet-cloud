@@ -5,9 +5,9 @@
 
 	// Internal state
 	let navItems: {
-		href: string,
-		label: string,
-		type?: 'link' | 'button',
+		href: string
+		label: string
+		type?: 'link' | 'button'
 	}[][]
 
 	$: navItems = [
@@ -36,7 +36,7 @@
 					href: '/account',
 					label: $page.data.user.name || $page.data.user.email,
 					type: 'button',
-				}
+				},
 			],
 	]
 
@@ -67,9 +67,13 @@
 			<ul class="row wrap">
 				{#each items as item}
 					<li>
-						<a	
+						<a
 							href={item.href}
-							aria-current={$page.url.pathname.startsWith(item.href) ? 'page' : undefined}
+							aria-current={
+								$page.url.pathname.startsWith(item.href)
+									? 'page'
+									: undefined
+							}
 							class:button={item.type === 'button'}
 						>
 							{item.label}
@@ -187,7 +191,7 @@
 				font-size: 1.5rem;
 				content: '☰';
 
-				:global(header:is(:hover, :focus-within) &) { 
+				:global(header:is(:hover, :focus-within) &) {
 					opacity: 0;
 				}
 			}
