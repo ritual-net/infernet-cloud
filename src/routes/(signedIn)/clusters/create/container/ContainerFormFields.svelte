@@ -590,8 +590,12 @@
 					<div class="column">
 						{#each container.accepted_payments ?? [] as payment, i (i)}
 							{@const selectedToken = (
-								tokensByChainId[nodeConfiguration.chainId]
-									?.find(token => token.address === payment.address)
+								nodeConfiguration.chainId
+								&& nodeConfiguration.chainId in tokensByChainId
+								&& (
+									tokensByChainId[nodeConfiguration.chainId]
+										?.find(token => token.address === payment.address)
+								)
 							)}
 
 							<div class="row token-payment">
