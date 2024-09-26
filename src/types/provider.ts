@@ -90,7 +90,7 @@ export type ZoneInfo = {
 // Node client types
 export type NodeInfo = {
 	instanceId: string
-	status?: import('$/views/Status.svelte').default['$$prop_def']['status']
+	status?: import('$/views/Status.svelte').default['$$prop_def']['status'] | string
 	ip?: string
 	instanceInfo: any
 }
