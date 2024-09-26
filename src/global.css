@@ -85,6 +85,8 @@
 	line-height: 1.5;
 	tab-size: 2;
 
+	scroll-behavior: smooth;
+
 	@media (prefers-color-scheme: dark) {
 		color-scheme: dark;
 	}
@@ -116,7 +118,7 @@ a {
 	color: var(--textColor);
 	transition: 0.2s color;
 
-	p &:not(.button) {
+	:is(p, dd) &:not(.button) {
 		text-decoration-line: underline;
 		text-decoration-color: color-mix(in oklch, currentColor 50%, transparent);
 
@@ -482,4 +484,9 @@ hr {
 
 .smaller {
 	font-size: smaller;
+}
+
+:target {
+	outline: 2px double var(--accentColor);
+	outline-offset: -2px;
 }

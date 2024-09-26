@@ -434,7 +434,7 @@
 						<dt>RPC URL</dt>
 
 						<dd>
-							{node.rpc_url}
+							<a href={node.rpc_url} target="_blank">{node.rpc_url}</a>
 						</dd>
 					</section>
 				{/if}
@@ -444,11 +444,11 @@
 						<dt>Chain</dt>
 
 						<dd>
-							{#if chainsByChainId[node.chain_id]}
+							{#if chainsByChainId.has(node.chain_id)}
 								<WithIcon
-									icon={chainsByChainId[node.chain_id].icon}
+									icon={chainsByChainId.get(node.chain_id).icon}
 								>
-									{chainsByChainId[node.chain_id].name}
+									{chainsByChainId.get(node.chain_id).name}
 								</WithIcon>
 							{:else}
 								{node.chain_id}
@@ -462,7 +462,7 @@
 						<dt>Registry address</dt>
 
 						<dd>
-							{node.registry_address}
+							<a href={`${chainsByChainId.get(node.chain_id).explorer}/address/${node.registry_address}`} target="_blank">{node.registry_address}</a>
 						</dd>
 					</section>
 				{/if}
@@ -483,6 +483,16 @@
 
 						<dd>
 							{formatNumberCompact(node.max_gas_limit)}
+						</dd>
+					</section>
+				{/if}
+
+				{#if node.payment_address}
+					<section class="row wrap">
+						<dt>Payment address</dt>
+
+						<dd>
+							<a href={`${chainsByChainId.get(node.chain_id).explorer}/address/${node.payment_address}`} target="_blank">{node.payment_address}</a>
 						</dd>
 					</section>
 				{/if}
@@ -561,7 +571,11 @@
 							</div>
 						{:else if $logsQuery.isError}
 							<div class="card error">
-								<p>Error loading logs: {$logsQuery.error.message}</p>
+								<p>Error loading logs.</p>
+
+								{#if $logsQuery.error.message}
+									<output><code>{$logsQuery.error.message}</code></output>
+								{/if}
 							</div>
 						{:else if $logsQuery.data}
 							{@const logs = $logsQuery.data}

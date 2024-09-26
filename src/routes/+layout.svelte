@@ -250,6 +250,10 @@
 
 		gap: 2rem 1rem;
 		padding-block-end: 10rem;
+
+		:global([id]) {
+			scroll-margin-top: calc(4.5rem + var(--borderWidth));
+		}
 	}
 
 	footer {

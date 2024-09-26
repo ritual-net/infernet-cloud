@@ -314,7 +314,6 @@
 						href={resolveRoute(`/cloud-accounts/[serviceAccountId]`, {
 							serviceAccountId: cluster.service_account.id,
 						})}
-						class="row inline with-icon"
 					>
 						<WithIcon
 							icon={providers[cluster.service_account.provider].icon}
