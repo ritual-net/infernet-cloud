@@ -467,7 +467,7 @@
 			name="container.env"
 			rows="5"
 			placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
-			value={serializeEnvObject(container.env)}
+			value={serializeEnvObject(container.env ?? {})}
 			onblur={e => { container.env = parseEnvString(e.currentTarget.value) }}
 			{...constraints?.env}
 			class="code"
@@ -704,7 +704,7 @@
 					class="floating-status card row warning"
 					transition:scale
 				>
-					{#if chainsByChainId.has(nodeConfiguration.chainId)}
+					{#if nodeConfiguration.chainId && chainsByChainId.has(nodeConfiguration.chainId)}
 						<img class="icon" src={chainsByChainId.get(nodeConfiguration.chainId)?.icon} />
 					{/if}
 
