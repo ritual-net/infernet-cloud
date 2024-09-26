@@ -621,7 +621,7 @@
 										}
 										required
 										menuPlaceholder={
-											nodeConfiguration.chainId in tokensByChainId ?
+											nodeConfiguration.chainId && nodeConfiguration.chainId in tokensByChainId ?
 												undefined
 											:
 												`Select a chain ID first to see suggestions.`
@@ -635,7 +635,7 @@
 										<label for="container.accepted_payments.{i}.amount">Minimum Payout</label>
 
 										{#if selectedToken && payment.amount && (
-											Math.log10(payment.amount) < selectedToken.decimals - 2
+											Math.log10(Number(payment.amount)) < selectedToken.decimals - 2
 											|| Number(payment.amount) !== Math.floor(Number(payment.amount))
 										)}
 											<button
@@ -645,7 +645,7 @@
 													payment.amount = String(
 														Number(payment.amount) === Math.floor(Number(payment.amount))
 															? BigInt(payment.amount) * BigInt(Math.pow(10, selectedToken.decimals))
-															: payment.amount * Math.pow(10, selectedToken.decimals)
+															: Number(payment.amount) * Math.pow(10, selectedToken.decimals)
 													)
 
 													e.currentTarget?.previousElementSibling?.focus()
@@ -679,7 +679,7 @@
 										type="button"
 										class="small destructive"
 										on:click={() => {
-											container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
+											container.accepted_payments = container.accepted_payments?.toSpliced(i, 1)
 										}}
 									>
 										Delete
