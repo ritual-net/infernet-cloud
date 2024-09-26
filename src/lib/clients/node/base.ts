@@ -33,7 +33,7 @@ export abstract class BaseNodeClient {
 		start?: number
 		next?: number
 		logs: {
-			timestamp: number
+			timestamp?: number
 			source?: string
 			text: string
 		}[]

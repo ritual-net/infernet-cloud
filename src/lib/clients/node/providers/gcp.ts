@@ -91,21 +91,24 @@ export class GCPNodeClient extends BaseNodeClient {
 	}
 
 	async getLogs(start?: number) {
-		const result = await this.client.getSerialPortOutput({
-			project: this.projectId,
-			zone: this.zone,
-			instance: this.instanceId,
-			port: 1,
-			start,
-		}, {
-			autoPaginate: true,
-		})
+		const result = await this.client.getSerialPortOutput(
+			{
+				project: this.projectId,
+				zone: this.zone,
+				instance: this.instanceId,
+				port: 1,
+				start,
+			},
+			{
+				autoPaginate: true,
+			},
+		)
 
 		const { contents, ...output } = result[0]
 
 		return {
-			start: (output.start ?? undefined) && Number(output.start),
-			next: (output.next ?? undefined) && Number(output.next),
+			start: typeof output.start === 'number' ? output.start : output.next ? Number(output.next) : undefined,
+			next: typeof output.next === 'number' ? output.next : output.next ? Number(output.next) : undefined,
 			logs: (
 				contents
 					?.split('\r\n')
@@ -118,14 +121,12 @@ export class GCPNodeClient extends BaseNodeClient {
 								text: log,
 							}
 
-						if (match && match.groups) {
-							const { timestamp, process, pid, message } = match.groups
+						const { timestamp, process, pid, message } = match.groups
 
-							return {
-								timestamp: new Date(`${timestamp} ${new Date().getFullYear()}`).getTime(),
-								source: `${process}[${pid}]`,
-								text: message,
-							}
+						return {
+							timestamp: new Date(`${timestamp} ${new Date().getFullYear()}`).getTime(),
+							source: `${process}[${pid}]`,
+							text: message,
 						}
 					})
 				?? []
