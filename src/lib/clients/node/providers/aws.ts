@@ -96,12 +96,15 @@ export class AWSNodeClient extends BaseNodeClient {
 
 		return {
 			logs: (
-				removeAnsiEscapeCodes(output)
-					?.split('\n')
-					.map(line => ({
-						text: line,
-						timestamp: result.Timestamp!,
-					})) ?? []
+				output &&
+					removeAnsiEscapeCodes(output)
+						?.split('\n')
+						.map(line => ({
+							text: line,
+							timestamp: result.Timestamp!.valueOf(),
+						}))
+				||
+					[]
 			),
 		}
 	}
