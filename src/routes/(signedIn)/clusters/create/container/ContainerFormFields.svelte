@@ -117,7 +117,9 @@
 
 <fieldset class="card column">
 	<header>
-		Customize container
+		<slot name="title">
+			Customize container
+		</slot>
 	</header>
 
 	<section class="row wrap">
