@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ cookies, fetch, request }) => {
 		.run(client)
 
 	if (!user)
-			return error(500, `Failed to create user.`)
+		return error(500, `Failed to create user.`)
 
 	cookies.set(
 		EDGEDB_AUTH_COOKIES.PKCE_VERIFIER,
