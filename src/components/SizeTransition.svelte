@@ -18,8 +18,18 @@
 
 <style>
 	.size-transition {
-		contain: size;
-		contain-intrinsic-block-size: auto var(--blockSize);
-		transition: contain-intrinsic-block-size 0.3s var(--transition-easeOutExpo);
+		@supports (contain-intrinsic-block-size: auto) {
+			contain: size;
+			contain-intrinsic-block-size: auto var(--blockSize);
+			transition: contain-intrinsic-block-size 0.3s var(--transition-easeOutExpo);
+			will-change: contain-intrinsic-block-size;
+		}
+
+		@supports not (contain-intrinsic-block-size: auto) {
+			clip-path: inset(calc(-1 * var(--borderWidth)));
+			height: var(--blockSize);
+			transition: height 0.3s var(--transition-easeOutExpo);
+			will-change: height;
+		}
 	}
 </style>
