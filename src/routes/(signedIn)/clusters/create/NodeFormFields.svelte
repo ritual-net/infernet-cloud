@@ -272,7 +272,7 @@
 	
 					<input
 						type="number"
-						placeholder="{5}"
+						placeholder={`${5}`}
 						id="{namePrefix}.config.trail_head_blocks"
 						name="{namePrefix}.config.trail_head_blocks"
 						bind:value={node.config.trail_head_blocks}
@@ -325,7 +325,7 @@
 
 					<input
 						type="number"
-						placeholder="{5000000}"
+						placeholder={`${5000000}`}
 						id="{namePrefix}.config.max_gas_limit"
 						name="{namePrefix}.config.max_gas_limit"
 						bind:value={node.config.max_gas_limit}
@@ -446,7 +446,7 @@
 
 					<input
 						type="number"
-						placeholder="1.0"
+						placeholder={`${1.0}`}
 						id="{namePrefix}.config.snapshot_sync_sleep"
 						name="{namePrefix}.config.snapshot_sync_sleep"
 						bind:value={node.config.snapshot_sync_sleep}
@@ -470,7 +470,7 @@
 
 					<input
 						type="number"
-						placeholder="200"
+						placeholder={`${200}`}
 						id="{namePrefix}.config.snapshot_sync_batch_size"
 						name="{namePrefix}.config.snapshot_sync_batch_size"
 						bind:value={node.config.snapshot_sync_batch_size}
