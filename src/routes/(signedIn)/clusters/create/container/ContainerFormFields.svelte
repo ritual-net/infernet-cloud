@@ -609,7 +609,7 @@
 										name="container.accepted_payments.{i}.address"
 										bind:value={payment.address}
 										tokens={
-											nodeConfiguration.chainId in tokensByChainId
+											nodeConfiguration.chainId && nodeConfiguration.chainId in tokensByChainId
 												? tokensByChainId[nodeConfiguration.chainId]
 													.filter(token => (
 														!new Set(
