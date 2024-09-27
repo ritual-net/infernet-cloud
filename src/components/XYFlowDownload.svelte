@@ -9,7 +9,7 @@
 	const nodes = useNodes()
 	
 
-	// Internal state    
+	// Internal state
 	const imageWidth = 1024
 	const imageHeight = 768
 

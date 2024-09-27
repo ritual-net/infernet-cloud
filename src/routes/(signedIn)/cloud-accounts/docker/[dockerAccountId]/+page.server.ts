@@ -18,16 +18,16 @@ export const actions: Actions = {
 				},
 			}))
 				.run(client)
-		}catch(error){
+		} catch (error) {
 			return message(
 				{},
 				{
 					title: `Couldn't disconnect Docker account.`,
-					description: error.message,
+					description: (error as unknown as Error).message,
 				},
 				{
 					status: 500,
-				}
+				},
 			)
 		}
 

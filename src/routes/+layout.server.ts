@@ -12,7 +12,7 @@ export const load: LayoutServerLoad = loadFlash(async ({
 }) => {
 	const response = await fetch('/api/user')
 
-	if(!response.ok){
+	if (!response.ok) {
 		const result = await response.json()
 
 		setFlash(
@@ -21,7 +21,7 @@ export const load: LayoutServerLoad = loadFlash(async ({
 				message: {
 					title: `Authentication error`,
 					description: result.message,
-				}
+				},
 			},
 			cookies,
 		)

@@ -3,8 +3,8 @@
 	export let submitting: boolean
 
 	export let allErrors: {
-		path: string;
-		messages: string[];
+		path: string
+		messages: string[]
 	}[]
 
 	export let submitLabel: string

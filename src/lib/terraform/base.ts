@@ -1,10 +1,16 @@
-import path from 'path';
-import { promises as fs } from 'fs';
-import { TFAction, type TFState } from '$/types/terraform';
-import * as SystemUtils from '$/lib/utils/system';
-import { createTempDir, formatTfVars, formatNodeConfig, parseJsonLines } from '$/lib/terraform/utils';
-import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider';
-import type { InfernetNode } from "$schema/interfaces";
+import path from 'node:path'
+import { promises as fs } from 'node:fs'
+import { TFAction, type TFState } from '$/types/terraform'
+import * as SystemUtils from '$/lib/utils/system'
+import {
+	createTempDir,
+	formatTfVars,
+	formatNodeConfig,
+	parseJsonLines,
+} from '$/lib/terraform/utils'
+import type { ProviderCluster, ProviderServiceAccount, ProviderTypeEnum } from '$/types/provider'
+import type { InfernetNode } from '$schema/interfaces'
+import { isTruthy } from '$/lib/utils/isTruthy'
 
 /**
  * Base class for Terraform deployments.
@@ -16,7 +22,7 @@ export abstract class BaseTerraform {
 	/**
 	 * The provider type.
 	 */
-	public abstract readonly type: ProviderTypeEnum;
+	public abstract readonly type: ProviderTypeEnum
 
 	/**
 	 * Writes Terraform files to the temporary directory.
@@ -32,8 +38,8 @@ export abstract class BaseTerraform {
 	protected abstract writeTerraformFiles(
 		tempDir: string,
 		cluster: ProviderCluster,
-		serviceAccount: ProviderServiceAccount
-	): Promise<void>;
+		serviceAccount: ProviderServiceAccount,
+	): Promise<void>
 
 	/**
 	 * Returns formatted Terraform input variables for the given cluster and service account.
@@ -44,8 +50,8 @@ export abstract class BaseTerraform {
 	 */
 	public abstract getTerraformVars(
 		cluster: ProviderCluster,
-		serviceAccount: ProviderServiceAccount
-	): string;
+		serviceAccount: ProviderServiceAccount,
+	): string
 
 	/**
 	 * Applies a Terraform action:
@@ -64,7 +70,7 @@ export abstract class BaseTerraform {
 	public async action(
 		cluster: ProviderCluster,
 		serviceAccount: ProviderServiceAccount,
-		action: TFAction
+		action: TFAction,
 	) {
 		let tempDir: string | undefined = undefined
 
@@ -95,7 +101,7 @@ export abstract class BaseTerraform {
 
 			await SystemUtils.executeCommands(
 				`${cwd}/infernet-deploy/deploy`,
-				`tar --numeric-owner --exclude=".DS_Store" -czvf "${tempDir}/deploy.tar.gz" *`
+				`tar --numeric-owner --exclude=".DS_Store" -czvf "${tempDir}/deploy.tar.gz" *`,
 			)
 
 			// Create terraform files
@@ -144,13 +150,13 @@ export abstract class BaseTerraform {
 						errorMessage: 'Error destroying resources.',
 					},
 				]
-					.filter(Boolean)
+					.filter(isTruthy)
 			)
 
 			const result = []
 
-			for(const command of commands){
-				if(!command) continue
+			for (const command of commands) {
+				if (!command) continue
 
 				console.log(command.statusMessage, tempDir)
 
@@ -160,16 +166,16 @@ export abstract class BaseTerraform {
 					stderr,
 				} = await SystemUtils.executeCommands(
 					tempDir,
-					command.command
+					command.command,
 				)
 
-				if(error){
+				if (error) {
 					console.error(command.errorMessage)
 					console.error(error)
 				}
 
 				const tfstate = await SystemUtils.readJsonFromFile<TFState>(
-					path.join(tempDir, 'terraform.tfstate')
+					path.join(tempDir, 'terraform.tfstate'),
 				)
 					.catch(e => {
 						console.error(e)
@@ -194,13 +200,13 @@ export abstract class BaseTerraform {
 			}
 
 			return result
-		}finally{
+		} finally {
 			// Remove temporary directory
-			if(tempDir){
+			if (tempDir) {
 				try {
 					await SystemUtils.removeDir(tempDir)
-					console.log(`Removed working directory for Terraform ${tempDir}`); 
-				}catch(e){
+					console.log(`Removed working directory for Terraform ${tempDir}`)
+				} catch (e) {
 					console.error(e)
 				}
 			}
@@ -235,22 +241,21 @@ const createNodeConfigFiles = async (
 	nodes: InfernetNode[]
 ): Promise<void> => {
 	// Create configs/ directory
-	console.log(`Creating node configs...`, tempDir);
-	console.log(`mkdir -p "configs"`);
-	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true });
+	console.log(`Creating node configs...`, tempDir)
+	console.log(`mkdir -p "configs"`)
+	await fs.mkdir(path.join(tempDir, 'configs'), { recursive: true })
 
 	// Create node config files under configs/
 	for (const node of nodes) {
-		const nodeId = node.provider_id;
+		const nodeId = node.provider_id
 
-		const jsonConfig = formatNodeConfig(node);
+		const jsonConfig = formatNodeConfig(node)
 
 		await SystemUtils.writeJsonToFile(
 			path.join(tempDir, 'configs', `${nodeId}.json`),
-			jsonConfig
-		);
+			jsonConfig,
+		)
 
-		console.log(`Created: configs/${nodeId}.json`);
+		console.log(`Created: configs/${nodeId}.json`)
 	}
-};
-
+}

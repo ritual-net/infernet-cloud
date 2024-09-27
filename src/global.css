@@ -3,23 +3,23 @@
 	--fontFamily-display: 'Izoard', sans-serif;
 
 	--color-ritualBlack: light-dark(#000, #fff);
-	--color-ritualGreen: #40FFAF;
-	--color-ritualGreen-light: #46E28E;
-	--color-ritualGreen-dark: #28C470;
-	--color-ritualPurple: #8840FF;
-	--color-ritualPurple-light: #8E6EFF;
-	--color-ritualPurple-dark: #6E4EF1;
-	--color-ritualOrange: #E88239;
-	--color-ritualOrange-light: #FF9C3A;
-	--color-ritualOrange-dark: #E97E1C;
+	--color-ritualGreen: #40ffaf;
+	--color-ritualGreen-light: #46e28e;
+	--color-ritualGreen-dark: #28c470;
+	--color-ritualPurple: #8840ff;
+	--color-ritualPurple-light: #8e6eff;
+	--color-ritualPurple-dark: #6e4ef1;
+	--color-ritualOrange: #e88239;
+	--color-ritualOrange-light: #ff9c3a;
+	--color-ritualOrange-dark: #e97e1c;
 
 	--accentColor: light-dark(var(--color-ritualPurple), var(--color-ritualPurple-light));
 	--accentColor-light: var(--color-ritualPurple-light);
 	--accentColor-dark: var(--color-ritualPurple-dark);
-	
+
 	--textColor: var(--color-ritualBlack);
 
-	--page-backgroundColor: light-dark(#FBFBFB, #101010);
+	--page-backgroundColor: light-dark(#fbfbfb, #101010);
 
 	--borderColor: light-dark(#e5e5e5, #565656);
 	--borderWidth: 1px;
@@ -92,7 +92,12 @@
 	}
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	text-wrap: balance;
 }
 
@@ -140,7 +145,8 @@ a {
 	}
 }
 
-strong, b {
+strong,
+b {
 	font-weight: bold;
 }
 
@@ -148,7 +154,8 @@ u {
 	text-decoration-line: underline;
 }
 
-ol, ul {
+ol,
+ul {
 	padding-inline-start: 1.5em;
 
 	& > li {
@@ -176,11 +183,11 @@ ol {
 			width: 1.66em;
 			height: 1.66em;
 			padding: 0.33em;
-			
+
 			background-color: hsl(from var(--accentColor) h s l / 20%);
 			background-color: color-mix(in oklch, var(--accentColor) 20%, transparent);
 			border-radius: 50%;
-			
+
 			line-height: 1.66em;
 			font-weight: bold;
 			color: var(--accentColor-dark);
@@ -322,8 +329,8 @@ textarea {
 	opacity: 0.5;
 }
 
-
-button, .button {
+button,
+.button {
 	--button-paddingX: 1em;
 	--button-paddingY: 0.5em;
 	--button-backgroundColor: var(--button-default-backgroundColor);
@@ -405,7 +412,7 @@ button, .button {
 
 	/* clip-path: inset(calc(-1 * var(--card-borderWidth)) round calc(var(--card-cornerRadius) + var(--card-borderWidth))); */
 	overflow: hidden;
-	
+
 	padding: var(--card-paddingY) var(--card-paddingX);
 	background-color: var(--card-backgroundColor);
 	box-shadow: 0 0 0 var(--card-borderWidth) var(--card-borderColor);
@@ -452,7 +459,8 @@ fieldset {
 	}
 }
 
-code, .code {
+code,
+.code {
 	font-family: monospace;
 	font-size-adjust: from-font;
 	font-size: 0.9em;

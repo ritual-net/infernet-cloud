@@ -28,7 +28,7 @@
 	// Components
 	import WithIcon from '$/components/WithIcon.svelte'
 	import Status from '$/views/Status.svelte'
-	import { DockerIcon } from '$/icons';
+	import { DockerIcon } from '$/icons'
 </script>
 
 

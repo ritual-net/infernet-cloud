@@ -55,7 +55,7 @@ export const actions: Actions = {
 			},
 		)
 
-		if(!response.ok){
+		if (!response.ok) {
 			const result = await response.json()
 
 			return message(

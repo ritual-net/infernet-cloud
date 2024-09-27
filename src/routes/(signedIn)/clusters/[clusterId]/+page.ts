@@ -38,7 +38,7 @@ export const load: PageLoad = async ({
 					node,
 					nodeInfoPromise,
 				} as InfernetNodeWithInfo
-			})
+			}),
 	)
 
 	return {

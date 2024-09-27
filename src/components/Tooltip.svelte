@@ -59,16 +59,16 @@
 		--tooltip-borderWidth: var(--borderWidth);
 		--tooltip-cornerRadius: 0.33em;
 	}
-	
+
 	[data-melt-tooltip-trigger] {
 		all: unset;
 		display: flex;
 	}
-	
+
 	[data-melt-tooltip-content] {
 		z-index: 2;
 		padding: 0.25em 0.66em;
-		
+
 		box-shadow: 0 0 0 var(--tooltip-borderWidth) var(--tooltip-borderColor);
 		background-color: var(--tooltip-backgroundColor);
 		backdrop-filter: var(--backdropFilter);

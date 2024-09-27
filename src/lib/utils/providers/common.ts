@@ -1,5 +1,5 @@
-import { ProviderTypeEnum } from '$/types/provider';
-import type { ProviderInfo } from '$/types/provider';
+import { ProviderTypeEnum } from '$/types/provider'
+import type { ProviderInfo } from '$/types/provider'
 
 export const providerRegionsAndZones = {
 	[ProviderTypeEnum.AWS]: {
@@ -736,7 +736,7 @@ export const providerRegionsAndZones = {
 		machineTypesLink: 'https://cloud.google.com/compute/docs/machine-resource',
 		machineImagesLink: 'https://cloud.google.com/compute/docs/images',
 	},
-} as const;
+} as const
 
 /**
  * Returns the human-readable region name.
@@ -746,16 +746,16 @@ export const providerRegionsAndZones = {
  * @returns human-readable region name string
  */
 export const getRegionName = (regionId: string, provider: ProviderTypeEnum): string => {
-	const regions = providerRegionsAndZones[provider].regions;
+	const regions = providerRegionsAndZones[provider].regions
 
-	const region = regions.find(region => region.id === regionId);
+	const region = regions.find((region) => region.id === regionId)
 
 	if (!region) {
-		throw new Error(`Region ${regionId} not found for provider ${provider}`);
+		throw new Error(`Region ${regionId} not found for provider ${provider}`)
 	}
 
-	return region.name;
-};
+	return region.name
+}
 
 /**
  * Returns a human readable provider info object.
@@ -766,7 +766,7 @@ export const getRegionName = (regionId: string, provider: ProviderTypeEnum): str
  */
 export const getProviderInfoWithRegionLabels = (
 	provider: ProviderTypeEnum,
-	providerInfo: ProviderInfo[]
+	providerInfo: ProviderInfo[],
 ): ProviderInfo[] => (
 	providerInfo.map((providerInfo) => ({
 		region: {

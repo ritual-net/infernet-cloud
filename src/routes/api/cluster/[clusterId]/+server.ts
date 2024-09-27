@@ -1,11 +1,11 @@
-import z from 'yup'
+import type z from 'yup'
 import type { FormData } from '$/routes/(signedIn)/clusters/[clusterId]/edit/schema'
-import { error, json } from '@sveltejs/kit';
-import { clusterAction } from '$/lib/terraform/common';
-import { e } from '$/lib/db';
-import { getClusterById } from '$/lib/db/queries';
-import { TFAction } from '$/types/terraform';
-import type { RequestHandler } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit'
+import { clusterAction } from '$/lib/terraform/common'
+import { e } from '$/lib/db'
+import { getClusterById } from '$/lib/db/queries'
+import { TFAction } from '$/types/terraform'
+import type { RequestHandler } from '@sveltejs/kit'
 
 /**
  * Retrieve a cluster by its ID.
@@ -15,18 +15,20 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @returns Cluster object.
  */
 export const GET: RequestHandler = async ({ locals: { client }, params }) => {
-	const id = params.clusterId;
+	const id = params.clusterId
 
 	if (!id) {
-		return error(400, 'Cluster id is required');
+		return error(400, 'Cluster id is required')
 	}
 
-	return json(await getClusterById(client, id, {
-		includeServiceAccountCredentials: false,
-		includeNodeDetails: false,
-		includeTerraformDeploymentDetails: true,
-	}))
-};
+	return json(
+		await getClusterById(client, id, {
+			includeServiceAccountCredentials: false,
+			includeNodeDetails: false,
+			includeTerraformDeploymentDetails: true,
+		}),
+	)
+}
 
 /**
  * Apply Terraform changes to cluster.
@@ -65,15 +67,17 @@ export const POST: RequestHandler = async ({
 		return error(500, e.message)
 	}
 
-	if(result.error)
+	if (result.error)
 		return error(500, result.error)
 
-	return json(await getClusterById(client, clusterId, {
-		includeServiceAccountCredentials: false,
-		includeNodeDetails: false,
-		includeTerraformDeploymentDetails: true,
-	}))
-};
+	return json(
+		await getClusterById(client, clusterId, {
+			includeServiceAccountCredentials: false,
+			includeNodeDetails: false,
+			includeTerraformDeploymentDetails: true,
+		}),
+	)
+}
 
 /**
  * Update a cluster by its ID.
@@ -148,7 +152,7 @@ export const PATCH: RequestHandler = async ({
 	return json({
 		cluster: updatedCluster,
 	})
-};
+}
 
 /**
  * Delete a cluster by its ID.
@@ -175,10 +179,10 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 	if (!cluster)
 		return error(400, 'No cluster to delete.')
 
-	if(cluster.locked)
+	if (cluster.locked)
 		return error(500, `The cluster is already in the process of being updated. Please wait and try again.`)
 
-	if(cluster.status !== 'destroyed')
+	if (cluster.status !== 'destroyed')
 		return error(500, `Cannot delete cluster that has not been destroyed.`)
 
 	// Delete cluster, nodes and containers deleted through cascade
@@ -186,12 +190,12 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		.delete(e.Cluster, (cluster) => ({
 			filter_single: e.op(cluster.id, '=', e.uuid(id)),
 		}))
-		.run(client);
+		.run(client)
 
-	if(!deletedCluster)
+	if (!deletedCluster)
 		return error(500, 'No cluster was deleted.')
 
 	return json({
-		cluster: deletedCluster
+		cluster: deletedCluster,
 	})
-};
+}

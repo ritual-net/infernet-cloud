@@ -80,9 +80,8 @@ export const actions: Actions = {
 	}) => {
 		const signInFormData = await superValidate(request, yup(SignInFormData))
 
-		if (!signInFormData.valid) {
+		if (!signInFormData.valid)
 			return fail(400, { signInFormData })
-		}
 
 		const response = await fetch('/auth/signin', {
 			method: 'POST',

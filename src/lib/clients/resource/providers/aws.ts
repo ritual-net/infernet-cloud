@@ -22,8 +22,8 @@ import { isTruthy } from '$/lib/utils/isTruthy'
  * Amazon Web Services extension of BaseResourceClient abstract class.
  */
 export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> {
-	amazonCompute!: EC2Client;
-	creds!: AWSServiceAccount['creds'];
+	amazonCompute!: EC2Client
+	creds!: AWSServiceAccount['creds']
 
 	/**
 	 * Helper method to create an EC2 instance from region.
@@ -102,7 +102,7 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 	) {
 		this.amazonCompute = await this.createInstance(regionId)
 
-		const command = new DescribeAvailabilityZonesCommand({});
+		const command = new DescribeAvailabilityZonesCommand({})
 
 		const response = await this.amazonCompute.send(command)
 
@@ -136,7 +136,7 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 		const regionId = zoneId.slice(0, -1)
 
 		this.amazonCompute = await this.createInstance(regionId)
-	
+
 		const response = await this.amazonCompute.send(
 			new DescribeInstanceTypeOfferingsCommand({
 				LocationType: 'availability-zone',
@@ -146,7 +146,7 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 						Values: [zoneId],
 					},
 				],
-			})
+			}),
 		)
 
 		return (
@@ -166,7 +166,7 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 		const detailsResponse = await this.amazonCompute.send(
 			new DescribeInstanceTypesCommand({
 				InstanceTypes: [machineId],
-			})
+			}),
 		)
 
 		const instanceTypeInfo = detailsResponse.InstanceTypes?.[0]
@@ -226,7 +226,7 @@ export class AWSResourceClient extends BaseResourceClient<ProviderTypeEnum.AWS> 
 		const response = await this.amazonCompute.send(
 			new DescribeImagesCommand({
 				ImageIds: [imageId],
-			})
+			}),
 		)
 
 		const image = response.Images?.[0]

@@ -16,9 +16,9 @@
 		let isMounted = true
 
 		;(async () => {
-			while(isMounted) {
-				await new Promise(resolve => setTimeout(resolve, 5000))
-				if(!isMounted) return
+			while (isMounted) {
+				await new Promise((resolve) => setTimeout(resolve, 5000))
+				if (!isMounted) return
 
 				await invalidate('/api/cluster')
 			}

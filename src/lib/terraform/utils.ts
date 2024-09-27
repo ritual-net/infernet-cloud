@@ -1,10 +1,11 @@
-import { promises as fs } from 'fs';
-import type { InfernetNode } from '$schema/interfaces';
+import { promises as fs } from 'node:fs'
+import type { InfernetNode } from '$schema/interfaces'
+import { isTruthy } from '../utils/isTruthy'
 
-const BASE_TEMP_DIR = `${process.cwd()}/tmp/`;
+const BASE_TEMP_DIR = `${process.cwd()}/tmp/`
 
 // Touch temporary directory to ensure it exists
-await fs.mkdir(BASE_TEMP_DIR, { recursive: true });
+await fs.mkdir(BASE_TEMP_DIR, { recursive: true })
 
 /**
  * Creates a temporary directory for deployment files.
@@ -12,10 +13,10 @@ await fs.mkdir(BASE_TEMP_DIR, { recursive: true });
  */
 export const createTempDir = async (): Promise<string> => {
 	// Create a temporary directory
-	const tempDir = await fs.mkdtemp(BASE_TEMP_DIR);
+	const tempDir = await fs.mkdtemp(BASE_TEMP_DIR)
 
-	return tempDir;
-};
+	return tempDir
+}
 
 /**
  * Format an InfernetNode object into a JSON object that can be used as a
@@ -30,7 +31,7 @@ export const createTempDir = async (): Promise<string> => {
  */
 export const formatNodeConfig = (node: InfernetNode) => {
 	// Auto-assign container ports in reverse order
-	let port = 4999;
+	let port = 4999
 
 	return {
 		chain: {
@@ -108,8 +109,8 @@ export const formatNodeConfig = (node: InfernetNode) => {
 			host: 'redis',
 			port: 6379,
 		},
-	};
-};
+	}
+}
 
 /**
  * Format an arbitrary, flat (non-nested) object into a string that can be
@@ -119,27 +120,25 @@ export const formatNodeConfig = (node: InfernetNode) => {
  * @param config Generic object to format. Should be flat (non-nested).
  * @returns Terraform variables file as a formatted string.
  */
-export const formatTfVars = (
-	config: Record<string, any>
-): string => {
+export const formatTfVars = (config: Record<string, any>): string => {
 	const formatValue = (value: any): string => {
 		if (Array.isArray(value)) {
 			// Format array, recursively format each element
-			return `[${value.map((v) => formatValue(v)).join(', ')}]`;
+			return `[${value.map((v) => formatValue(v)).join(', ')}]`
 		} else if (typeof value === 'object') {
 			// Format object as a map, recursively format each value
 			const objectValue = `{${Object.entries(value)
 				.map(([k, v]) => `"${k}" = ${formatValue(v)}`)
-				.join(', ')}}`;
-			return objectValue;
+				.join(', ')}}`
+			return objectValue
 		} else if (typeof value === 'string') {
 			// Wrap string values in quotes
-			return `"${value}"`;
+			return `"${value}"`
 		} else {
 			// Return non-string, non-array, non-object types (e.g., numbers, booleans)
-			return `${value}`;
+			return `${value}`
 		}
-	};
+	}
 
 	const vars: string[] = (
 		Object.entries(config)
@@ -148,10 +147,11 @@ export const formatTfVars = (
 	)
 
 	return vars.join('\n')
-};
+}
 
 export const parseJsonLines = (stdout: string): any[] => (
-	stdout.split('\n')
-		.filter(Boolean)
+	stdout
+		.split('\n')
+		.filter(isTruthy)
 		.map((line) => JSON.parse(line))
 )

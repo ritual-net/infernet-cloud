@@ -13,7 +13,7 @@ import USDCIcon from '$/icons/tokens/USDC.svg'
 
 
 // Constants
-export const tokensByChainId = {
+export const tokensByChainId: Record<number, Token[]> = {
 	1: [
 		{
 			name: 'ETH',
@@ -58,4 +58,4 @@ export const tokensByChainId = {
 			icon: USDCIcon,
 		},
 	],
-} as const satisfies Record<number, Token[]>
+} satisfies Record<number, Token[]>

@@ -40,7 +40,7 @@
 
 		dagreGraph.setDefaultEdgeLabel(() => ({}))
 
-		for(const node of nodes)
+		for (const node of nodes)
 			dagreGraph.setNode(
 				node.id,
 				{
@@ -51,24 +51,24 @@
 
 		dagre.layout(dagreGraph)
 
-		for(const node of nodes)
+		for (const node of nodes)
 			if (node.parentId)
 				try {
 					dagreGraph.setParent(
 						node.id,
 						node.parentId
 					)
-				}catch(e){
+				} catch (e) {
 					console.warn(e)
 				}
 
 		try {
 			dagre.layout(dagreGraph)
-		}catch(e){
+		} catch (e) {
 			console.warn(e)
 		}
 
-		for(const edge of edges)
+		for (const edge of edges)
 			dagreGraph.setEdge(
 				edge.source,
 				edge.target
@@ -76,7 +76,7 @@
 
 		try {
 			dagre.layout(dagreGraph)
-		}catch(e){
+		} catch (e) {
 			console.warn(e)
 		}
 
@@ -85,8 +85,18 @@
 
 			return {
 				...node,
-				targetPosition: { 'LR': Position.Left, 'TB': Position.Top, 'BT': Position.Bottom, 'RL': Position.Right }[direction],
-				sourcePosition: { 'LR': Position.Right, 'TB': Position.Bottom, 'BT': Position.Top, 'RL': Position.Left }[direction],
+				targetPosition: {
+					'LR': Position.Left,
+					'TB': Position.Top,
+					'BT': Position.Bottom,
+					'RL': Position.Right,
+				}[direction],
+				sourcePosition: {
+					'LR': Position.Right,
+					'TB': Position.Bottom,
+					'BT': Position.Top,
+					'RL': Position.Left,
+				}[direction],
 				width: node.width ?? nodeWidth,
 				height: node.height ?? nodeHeight,
 				position: {

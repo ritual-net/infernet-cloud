@@ -38,9 +38,9 @@ export enum EDGEDB_AUTH_COOKIES {
  * @returns {Object} The verifier and challenge strings
  */
 export const generatePKCE = () => {
-	const verifier = crypto.randomBytes(32).toString('base64url');
+	const verifier = crypto.randomBytes(32).toString('base64url')
 
-	const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
+	const challenge = crypto.createHash('sha256').update(verifier).digest('base64url')
 
-	return { verifier, challenge };
+	return { verifier, challenge }
 }

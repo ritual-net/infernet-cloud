@@ -62,18 +62,17 @@ export const actions: Actions = {
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
-		if (!formData.valid) {
+		if (!formData.valid)
 			return fail(400, { formData })
-		}
 
-		delete formData.data.containerTemplate.id
+		delete (formData.data.containerTemplate as { id?: string }).id
 
 		const response = await fetch('/api/container_template', {
 			method: 'POST',
 			body: JSON.stringify(formData.data),
 		})
 
-		if(!response.ok){
+		if (!response.ok) {
 			const result = await response.json()
 
 			return message(

@@ -128,7 +128,7 @@
 					return async ({ result }) => {
 						await applyAction(result)
 
-						if(result.type === 'success')
+						if (result.type === 'success')
 							invalidate(`/api/container_template`)
 
 						removeToast(toast.id)

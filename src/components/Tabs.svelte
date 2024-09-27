@@ -5,8 +5,8 @@
 
 	// Inputs
 	export let items: {
-		id: TabId,
-		label?: string,
+		id: TabId
+		label?: string
 	}[]
 	export let value: TabId | undefined
 	export let labelText: string

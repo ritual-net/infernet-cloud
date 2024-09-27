@@ -31,9 +31,8 @@ export const actions: Actions = {
 	}) => {
 		const formData = await superValidate(request, yup(FormData))
 
-		if (!formData.valid) {
+		if (!formData.valid)
 			return fail(400, { formData })
-		}
 
 		try {
 			await e.insert(e.DockerAccount, {
@@ -42,12 +41,12 @@ export const actions: Actions = {
 				user: e.global.current_user,
 			})
 				.run(client)
-		}catch(error){
+		} catch (error) {
 			return message(
 				formData,
 				{
 					title: `Couldn't connect Docker account.`,
-					description: error.message,
+					description: (error as unknown as Error).message,
 				},
 				{
 					status: 400,

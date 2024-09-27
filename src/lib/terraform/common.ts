@@ -56,7 +56,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 		includeNodeDetails: true,
 		includeDockerAccountCredentials: true,
 		includeTerraformDeploymentDetails: true,
-	});
+	})
 
 	if (!cluster)
 		throw new Error(`Cluster not found.`)
@@ -185,7 +185,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 
 		// Insert snapshots individually
 		const insertedSnapshots = []
-		
+
 		for (const snapshot of snapshots) {
 			const insertedSnapshot = await e
 				.insert(
@@ -226,7 +226,7 @@ export const clusterAction = async (client: Client, clusterId: string, action: T
 			snapshots: insertedSnapshots,
 			error,
 		}
-	}finally{
+	} finally {
 		await cleanUp()
 		removeCleanupListener(cleanUp)
 	}

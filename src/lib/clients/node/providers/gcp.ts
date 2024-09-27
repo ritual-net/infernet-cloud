@@ -6,7 +6,7 @@ import type { GCPServiceAccount } from '$schema/interfaces'
 export class GCPNodeClient extends BaseNodeClient {
 	public projectId: string
 
-	#client: InstancesClient | undefined;
+	#client: InstancesClient | undefined
 
 	constructor(
 		private credentials: GCPServiceAccount['creds'],
@@ -19,13 +19,13 @@ export class GCPNodeClient extends BaseNodeClient {
 	}
 
 	get client(): InstancesClient {
-		return this.#client ??= new InstancesClient({
+		return (this.#client ??= new InstancesClient({
 			projectId: this.credentials.project_id,
 			credentials: {
 				client_email: this.credentials.client_email,
 				private_key: this.credentials.private_key.split(String.raw`\n`).join('\n'),
 			},
-		})
+		}))
 	}
 
 	get type() {
@@ -91,21 +91,24 @@ export class GCPNodeClient extends BaseNodeClient {
 	}
 
 	async getLogs(start?: number) {
-		const result = await this.client.getSerialPortOutput({
-			project: this.projectId,
-			zone: this.zone,
-			instance: this.instanceId,
-			port: 1,
-			start,
-		}, {
-			autoPaginate: true,
-		})
+		const result = await this.client.getSerialPortOutput(
+			{
+				project: this.projectId,
+				zone: this.zone,
+				instance: this.instanceId,
+				port: 1,
+				start,
+			},
+			{
+				autoPaginate: true,
+			},
+		)
 
 		const { contents, ...output } = result[0]
 
 		return {
-			start: (output.start ?? undefined) && Number(output.start),
-			next: (output.next ?? undefined) && Number(output.next),
+			start: typeof output.start === 'number' ? output.start : output.next ? Number(output.next) : undefined,
+			next: typeof output.next === 'number' ? output.next : output.next ? Number(output.next) : undefined,
 			logs: (
 				contents
 					?.split('\r\n')
@@ -113,20 +116,17 @@ export class GCPNodeClient extends BaseNodeClient {
 					.map(log => {
 						const match = log.match(/^(?<timestamp>\w+ \d+ \d+:\d+:\d+) (?<hostname>\S+) (?<process>\S+)\[(?<pid>\d+)\]: (?<message>.*)$/)
 
-						if(!match?.groups) {
+						if (!match?.groups)
 							return {
 								text: log,
 							}
-						}
 
-						if (match && match.groups) {
-							const { timestamp, process, pid, message } = match.groups
+						const { timestamp, process, pid, message } = match.groups
 
-							return {
-								timestamp: new Date(`${timestamp} ${new Date().getFullYear()}`).getTime(),
-								source: `${process}[${pid}]`,
-								text: message,
-							}
+						return {
+							timestamp: new Date(`${timestamp} ${new Date().getFullYear()}`).getTime(),
+							source: `${process}[${pid}]`,
+							text: message,
 						}
 					})
 				?? []

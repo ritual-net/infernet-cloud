@@ -54,7 +54,7 @@ export const load: PageLoad = async ({
 					containers: node.containers,
 				},
 			},
-			yup(FormData)
+			yup(FormData),
 		),
 
 		(

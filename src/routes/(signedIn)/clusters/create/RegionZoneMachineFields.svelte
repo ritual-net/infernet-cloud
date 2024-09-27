@@ -12,6 +12,7 @@
 	// Functions
 	import { createQuery } from '@tanstack/svelte-query'
 	import { resolveRoute } from '$app/paths'
+	import { isTruthy } from '$/lib/utils/isTruthy'
 
 
 	// Inputs
@@ -354,12 +355,15 @@
 							{...!regions
 								? {
 									placeholder: 'Loading available regions...',
-									items: [
-										regionId && {
-											value: regionId,
-											label: regionId,
-										}
-									].filter(Boolean),
+									items: (
+										[
+											regionId && {
+												value: regionId,
+												label: regionId,
+											}
+										]
+											.filter(isTruthy)
+									),
 									loading: true,
 									visuallyDisabled: true,
 								}
@@ -469,12 +473,15 @@
 											? 'Loading available zones...'
 											: 'Choose a region first.'
 									),
-									items: [
-										zoneId && {
-											value: zoneId,
-											label: zoneId,
-										}
-									].filter(Boolean),
+									items: (
+										[
+											zoneId && {
+												value: zoneId,
+												label: zoneId,
+											}
+										]
+											.filter(isTruthy)
+									),
 									loading: true,
 									visuallyDisabled: true,
 								}
@@ -571,12 +578,15 @@
 												? 'Loading available machine types...'
 												: 'Choose a zone first.'
 										),
-										items: [
-											machineId && {
-												value: machineId,
-												label: machineId,
-											}
-										].filter(Boolean),
+										items: (
+											[
+												machineId && {
+													value: machineId,
+													label: machineId,
+												}
+											]
+												.filter(isTruthy)
+										),
 										loading: true,
 										visuallyDisabled: true,
 									}
@@ -662,12 +672,15 @@
 												? 'Loading available machine images...'
 												: 'Choose a machine type first.'
 										),
-										items: [
-											machineImageId && {
-												value: machineImageId,
-												label: machineImageId,
-											}
-										].filter(Boolean),
+										items: (
+											[
+												machineImageId && {
+													value: machineImageId,
+													label: machineImageId,
+												}
+											]
+												.filter(isTruthy)
+										),
 										loading: true,
 										visuallyDisabled: true,
 									}

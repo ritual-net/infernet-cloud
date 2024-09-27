@@ -260,7 +260,6 @@
 
 
 <style>
-	
 	:root {
 		--combobox-minWidth: 20rem;
 		--combobox-paddingX: 1em;
@@ -405,7 +404,7 @@
 		}
 	}
 
-	[data-melt-combobox-hidden-input]	{
+	[data-melt-combobox-hidden-input] {
 		display: block;
 		position: static !important;
 		transform: none !important;

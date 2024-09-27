@@ -11,6 +11,8 @@
 
 
 	// Functions
+	import { isTruthy } from '$/lib/utils/isTruthy'
+
 	const isAddress = (address: string) => (
 		Address.isValidSync(address)
 	)
@@ -42,28 +44,34 @@
 				: `Enter token address...`
 		)
 	}
-	items={[
-		tokens?.length && {
-			value: 'common',
-			label: 'Common',
-			items: tokens.map(token => ({
-				value: token.address,
-				label: token.name,
-				icon: token.icon,
-			})),
-		},
-		(
-			isAddress(inputValue)
-			&& !tokens?.some(token => token.address.toLowerCase() === inputValue.trim().toLowerCase())
-		) && {
-			value: 'custom',
-			label: 'Custom',
-			items: [
-				{
-					value: inputValue.trim(),
-					label: inputValue.trim(),
-				}
-			].filter(Boolean),
-		},
-	].filter(Boolean)}
+	items={
+		[
+			tokens?.length && {
+				value: 'common',
+				label: 'Common',
+				items: tokens.map(token => ({
+					value: token.address,
+					label: token.name,
+					icon: token.icon,
+				})),
+			},
+			(
+				isAddress(inputValue)
+				&& !tokens?.some(token => token.address.toLowerCase() === inputValue.trim().toLowerCase())
+			) && {
+				value: 'custom',
+				label: 'Custom',
+				items: (
+					[
+						{
+							value: inputValue.trim(),
+							label: inputValue.trim(),
+						}
+					]
+						.filter(isTruthy)
+				),
+			},
+		]
+			.filter(isTruthy)
+	}
 />

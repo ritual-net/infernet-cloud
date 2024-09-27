@@ -9,7 +9,7 @@
 	import { browser } from '$app/environment'
 
 	import { getFlash } from 'sveltekit-flash-message'
- 	const flash = getFlash(page)
+	const flash = getFlash(page)
 
 
 	// Global state
@@ -27,13 +27,13 @@
 	// Actions
 	import { addToast, removeToast, type Toast } from '$/components/Toaster.svelte'
 
-	$: if($page.form?.form?.message){
+	$: if ($page.form?.form?.message) {
 		const {
 			title,
 			description,
 		} = $page.form.form.message as {
-			title?: string,
-			description?: string,
+			title?: string
+			description?: string
 		}
 
 		addToast({
@@ -45,7 +45,7 @@
 		})
 	}
 
-	$: if(browser && $flash){
+	$: if (browser && $flash) {
 		addToast({
 			data: {
 				type: $flash.type,
@@ -57,9 +57,9 @@
 
 	let navigatingToast: Toast | undefined
 
-	$: if($navigating){
+	$: if ($navigating) {
 		setTimeout(() => {
-			if($navigating){
+			if ($navigating) {
 				navigatingToast ||= addToast({
 					closeDelay: 0,
 					data: {
@@ -69,21 +69,26 @@
 				})
 			}
 		}, 1000)
-	}else{
-		if(navigatingToast){
+	} else {
+		if (navigatingToast) {
 			removeToast(navigatingToast.id)
 			navigatingToast = undefined
 		}
 	}
 
 	let currentTheme: Theme
-	$: if(browser){
-		if(currentTheme){
+	$: if (browser) {
+		if (currentTheme) {
 			globalThis.document.documentElement.style.colorScheme = currentTheme
-			globalThis.document.documentElement.style.setProperty('--csstools-color-scheme--dark', currentTheme === 'dark' ? 'initial' : ' ')
-		}else{
+			globalThis.document.documentElement.style.setProperty(
+				'--csstools-color-scheme--dark',
+				currentTheme === 'dark' ? 'initial' : ' ',
+			)
+		} else {
 			globalThis.document.documentElement.style.removeProperty('color-scheme')
-			globalThis.document.documentElement.style.removeProperty('--csstools-color-scheme--dark')
+			globalThis.document.documentElement.style.removeProperty(
+				'--csstools-color-scheme--dark',
+			)
 		}
 	}
 
@@ -209,7 +214,7 @@
 			grid-template-columns: 1fr;
 			overflow: hidden;
 
-			@supports ( height: calc-size(auto) ) {
+			@supports (height: calc-size(auto)) {
 				transition-property: height, box-shadow;
 				transition-duration: 0.3s;
 				height: calc-size(auto);
@@ -254,7 +259,7 @@
 	footer {
 		grid-area: footer;
 		padding-block: clamp(1rem, 100vw - (50rem + 1rem), 1.5rem);
-		
+
 		/* z-index: 1;
 		position: sticky;
 		bottom: 0; */

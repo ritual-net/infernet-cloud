@@ -17,6 +17,7 @@
 	// Functions
 	import { resolveRoute } from '$app/paths'
 	import { createQuery } from '@tanstack/svelte-query'
+	import { isTruthy } from '$/lib/utils/isTruthy'
 
 
 	// Actions
@@ -50,7 +51,7 @@
 
 	// Actions
 	let delayedToast: Toast
-	$: if($delayed){
+	$: if ($delayed) {
 		delayedToast = addToast({
 			closeDelay: 0,
 			data: {
@@ -58,15 +59,15 @@
 				title: `Adding container template...`,
 			},
 		})
-	}else{
-		if(delayedToast)
+	} else {
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	}
 
 	import { onDestroy } from 'svelte'
 
 	onDestroy(() => {
-		if(delayedToast)
+		if (delayedToast)
 			removeToast(delayedToast.id)
 	})
 
@@ -76,7 +77,12 @@
 
 	$: imagesPromise.then(_ => images = _)
 
-	let dockerUserImages: string[] | undefined
+	let dockerUserImages:
+		| {
+			value: string
+			label: string
+		}[]
+		| undefined
 
 	$: dockerUserImagesQuery = $form.dockerAccountUsername
 		? createQuery({
@@ -227,16 +233,19 @@
 					{...!dockerAccounts
 						? {
 							placeholder: 'Loading...',
-							items: [
-								{
-									value: '',
-									label: 'None'
-								},
-								$form.dockerAccountUsername && {
-									value: $form.dockerAccountUsername,
-									label: $form.dockerAccountUsername,
-								}
-							].filter(Boolean),
+							items: (
+								[
+									{
+										value: '',
+										label: 'None'
+									},
+									$form.dockerAccountUsername && {
+										value: $form.dockerAccountUsername,
+										label: $form.dockerAccountUsername,
+									}
+								]
+									.filter(isTruthy)
+							),
 							visuallyDisabled: true,
 						}
 						: {

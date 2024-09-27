@@ -1,9 +1,9 @@
-import { e } from '$/lib/db';
+import { e } from '$/lib/db'
 import type { Client } from 'edgedb'
-import { ProviderClient } from '$/lib/index';
-import { ProviderTypeEnum } from '$/types/provider';
-import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
+import { ProviderClient } from '$/lib/index'
+import { ProviderTypeEnum } from '$/types/provider'
+import { error, json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
 
 /**
  * Retrieve all service accounts for the current user.
@@ -25,12 +25,12 @@ export type QueriedServiceAccount = Awaited<ReturnType<typeof getServiceAccounts
 
 export const GET: RequestHandler = async ({ locals: { client } }) => {
 	try {
-		const serviceAccounts = await getServiceAccounts(client);
-		return json(serviceAccounts);
+		const serviceAccounts = await getServiceAccounts(client)
+		return json(serviceAccounts)
 	} catch (err) {
-		return error(400, `Error getting service accounts: ${(err as Error).message}`);
+		return error(400, `Error getting service accounts: ${(err as Error).message}`)
 	}
-};
+}
 
 /**
  * Create a new service account.
@@ -40,19 +40,19 @@ export const GET: RequestHandler = async ({ locals: { client } }) => {
  * @returns Newly created ServiceAccount object.
  */
 export const POST: RequestHandler = async ({ locals: { client }, request }) => {
-	const { name, provider, credentials } = await request.json();
+	const { name, provider, credentials } = await request.json()
 
 	if (!name || !provider || !credentials) {
-		return error(400, 'name, provider, and credentials are required');
+		return error(400, 'name, provider, and credentials are required')
 	}
 
-	let query;
+	let query
 	switch (provider) {
 		case ProviderTypeEnum.GCP: {
 			try {
-				await new ProviderClient[ProviderTypeEnum.GCP]().auth(credentials);
+				await new ProviderClient[ProviderTypeEnum.GCP]().auth(credentials)
 			} catch (err) {
-				return error(400, `Error validating credentials: ${(err as Error).message}`);
+				return error(400, `Error validating credentials: ${(err as Error).message}`)
 			}
 			query = e.insert(e.GCPServiceAccount, {
 				user: e.global.current_user,
@@ -70,8 +70,8 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					client_x509_cert_url: e.str(credentials.client_x509_cert_url),
 					universe_domain: e.str(credentials.universe_domain),
 				}),
-			});
-			break;
+			})
+			break
 		}
 		case ProviderTypeEnum.AWS: {
 			try {
@@ -81,9 +81,9 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					status: credentials.AccessKey.Status,
 					secret_access_key: credentials.AccessKey.SecretAccessKey,
 					create_date: credentials.AccessKey.CreateDates,
-				});
+				})
 			} catch (err) {
-				return error(400, `Error validating credentials: ${(err as Error).message}`);
+				return error(400, `Error validating credentials: ${(err as Error).message}`)
 			}
 			query = e.insert(e.AWSServiceAccount, {
 				user: e.global.current_user,
@@ -95,17 +95,17 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 					secret_access_key: e.str(credentials.AccessKey.SecretAccessKey),
 					create_date: e.str(credentials.AccessKey.CreateDate),
 				}),
-			});
-			break;
+			})
+			break
 		}
 		default:
-			return error(400, 'Provider not supported.');
+			return error(400, 'Provider not supported.')
 	}
 
 	try {
-		const newServiceAccount = await query.run(client);
-		return json(newServiceAccount);
+		const newServiceAccount = await query.run(client)
+		return json(newServiceAccount)
 	} catch (e) {
-		return error(400, (e as Error).message);
+		return error(400, (e as Error).message)
 	}
-};
+}

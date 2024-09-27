@@ -21,11 +21,12 @@
 		isPaymentsEnabled?: boolean
 		dockerAccountUsername?: string
 	}
-	export let dockerUserImages: {
-		value: string,
-		label: string,
-	}[] | undefined
-
+	export let dockerUserImages:
+		| {
+			value: string
+			label: string
+		}[]
+		| undefined
 
 	// API
 	import type { DockerHubClient } from '$/lib/docker/docker'
@@ -91,6 +92,10 @@
 	)
 
 
+	// Functions
+	import { isTruthy } from '$/lib/utils/isTruthy'
+
+
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
 	import Combobox from '$/components/Combobox.svelte'
@@ -112,7 +117,9 @@
 
 <fieldset class="card column">
 	<header>
-		Customize container
+		<slot name="title">
+			Customize container
+		</slot>
 	</header>
 
 	<section class="row wrap">
@@ -229,15 +236,19 @@
 					) && {
 						value: 'custom',
 						label: 'Custom',
-						items: [
-							{
-								value: dockerImagesQueryValue.trim().toLowerCase(),
-								label: dockerImagesQueryValue.trim().toLowerCase(),
-								icon: DockerIcon,
-							}
-						].filter(Boolean),
+						items: (
+							[
+								{
+									value: dockerImagesQueryValue.trim().toLowerCase(),
+									label: dockerImagesQueryValue.trim().toLowerCase(),
+									icon: DockerIcon,
+								}
+							]
+								.filter(isTruthy)
+						),
 					},
-				].filter(Boolean)
+				]
+					.filter(isTruthy)
 			)}
 			placeholder={`Choose or search for an image...`}
 			{...constraints?.image}
@@ -458,7 +469,7 @@
 			name="container.env"
 			rows="5"
 			placeholder={`EXAMPLE_VARIABLE_1=hello\nEXAMPLE_VARIABLE_2=world`}
-			value={serializeEnvObject(container.env)}
+			value={serializeEnvObject(container.env ?? {})}
 			onblur={e => { container.env = parseEnvString(e.currentTarget.value) }}
 			{...constraints?.env}
 			class="code"
@@ -581,8 +592,12 @@
 					<div class="column">
 						{#each container.accepted_payments ?? [] as payment, i (i)}
 							{@const selectedToken = (
-								tokensByChainId[nodeConfiguration.chainId]
-									?.find(token => token.address === payment.address)
+								nodeConfiguration.chainId
+								&& nodeConfiguration.chainId in tokensByChainId
+								&& (
+									tokensByChainId[nodeConfiguration.chainId]
+										?.find(token => token.address === payment.address)
+								)
 							)}
 
 							<div class="row token-payment">
@@ -596,7 +611,7 @@
 										name="container.accepted_payments.{i}.address"
 										bind:value={payment.address}
 										tokens={
-											nodeConfiguration.chainId in tokensByChainId
+											nodeConfiguration.chainId && nodeConfiguration.chainId in tokensByChainId
 												? tokensByChainId[nodeConfiguration.chainId]
 													.filter(token => (
 														!new Set(
@@ -608,7 +623,7 @@
 										}
 										required
 										menuPlaceholder={
-											nodeConfiguration.chainId in tokensByChainId ?
+											nodeConfiguration.chainId && nodeConfiguration.chainId in tokensByChainId ?
 												undefined
 											:
 												`Select a chain ID first to see suggestions.`
@@ -622,7 +637,7 @@
 										<label for="container.accepted_payments.{i}.amount">Minimum Payout</label>
 
 										{#if selectedToken && payment.amount && (
-											Math.log10(payment.amount) < selectedToken.decimals - 2
+											Math.log10(Number(payment.amount)) < selectedToken.decimals - 2
 											|| Number(payment.amount) !== Math.floor(Number(payment.amount))
 										)}
 											<button
@@ -632,7 +647,7 @@
 													payment.amount = String(
 														Number(payment.amount) === Math.floor(Number(payment.amount))
 															? BigInt(payment.amount) * BigInt(Math.pow(10, selectedToken.decimals))
-															: payment.amount * Math.pow(10, selectedToken.decimals)
+															: Number(payment.amount) * Math.pow(10, selectedToken.decimals)
 													)
 
 													e.currentTarget?.previousElementSibling?.focus()
@@ -666,7 +681,7 @@
 										type="button"
 										class="small destructive"
 										on:click={() => {
-											container.accepted_payments = container.accepted_payments.toSpliced(i, 1)
+											container.accepted_payments = container.accepted_payments?.toSpliced(i, 1)
 										}}
 									>
 										Delete
@@ -691,7 +706,7 @@
 					class="floating-status card row warning"
 					transition:scale
 				>
-					{#if chainsByChainId.has(nodeConfiguration.chainId)}
+					{#if nodeConfiguration.chainId && chainsByChainId.has(nodeConfiguration.chainId)}
 						<img class="icon" src={chainsByChainId.get(nodeConfiguration.chainId)?.icon} />
 					{/if}
 

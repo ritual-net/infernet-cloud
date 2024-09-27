@@ -1,5 +1,5 @@
-import { error, type RequestHandler } from '@sveltejs/kit';
-import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS } from '$lib/auth';
+import { error, type RequestHandler } from '@sveltejs/kit'
+import { EDGEDB_AUTH_COOKIES, EDGEDB_AUTH_URLS } from '$lib/auth'
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server'
 
 /**
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({
 	cookies,
 	fetch,
 }) => {
-	const verification_token = url.searchParams.get('verification_token');
+	const verification_token = url.searchParams.get('verification_token')
 	if (!verification_token) {
 		// return error(
 		// 	400,
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({
 		)
 	}
 
-	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER);
+	const verifier = cookies.get(EDGEDB_AUTH_COOKIES.PKCE_VERIFIER)
 	if (!verifier) {
 		// return error(
 		// 	400,
@@ -70,10 +70,10 @@ export const GET: RequestHandler = async ({
 				provider: 'builtin::local_emailpassword',
 			}),
 		},
-	);
+	)
 
 	if (!verifyResponse.ok) {
-		const result = await verifyResponse.text();
+		const result = await verifyResponse.text()
 
 		// return error(400, `Error from the auth server: ${result}`);
 
@@ -91,17 +91,17 @@ export const GET: RequestHandler = async ({
 		)
 	}
 
-	const { code } = (await verifyResponse.json()) as { code: string };
+	const { code } = (await verifyResponse.json()) as { code: string }
 
 	const tokenResponse = await fetch(
 		`${EDGEDB_AUTH_URLS.GET_TOKEN}?${new URLSearchParams({
 			code,
 			verifier,
-		})}`
-	);
+		})}`,
+	)
 
 	if (!tokenResponse.ok) {
-		const result = await tokenResponse.text();
+		const result = await tokenResponse.text()
 
 		// return error(400, `Error from the auth server: ${result}`);
 
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({
 		)
 	}
 
-	const { auth_token } = (await tokenResponse.json()) as { auth_token: string };
+	const { auth_token } = (await tokenResponse.json()) as { auth_token: string }
 
 	cookies.set(
 		EDGEDB_AUTH_COOKIES.AUTH_TOKEN,
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({
 			sameSite: 'strict',
 			maxAge: 24 * 60 * 60,
 		},
-	);
+	)
 
 	// return new Response(null, { status: 204 });
 
@@ -146,4 +146,4 @@ export const GET: RequestHandler = async ({
 		},
 		cookies,
 	)
-};
+}

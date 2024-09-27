@@ -1,9 +1,9 @@
 <script lang="ts" context="module">
 	// Types
 	type ToastData = {
-		type?: 'loading' | 'success' | 'error',
-		title: string,
-		description?: string,
+		type?: 'loading' | 'success' | 'error'
+		title: string
+		description?: string
 	}
 
 	export { type Toast } from '@melt-ui/svelte'

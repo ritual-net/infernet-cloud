@@ -1,7 +1,7 @@
-import { e } from '$/lib/db';
-import { getServiceAccountById } from '$/lib/db/queries';
-import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
+import { e } from '$/lib/db'
+import { getServiceAccountById } from '$/lib/db/queries'
+import { error, json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
 
 /**
  * Retrieve a Service Account by its ID.
@@ -11,15 +11,15 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @returns Service Account object.
  */
 export const GET: RequestHandler = async ({ locals: { client }, params }) => {
-	const id = params.serviceAccountId;
+	const id = params.serviceAccountId
 
-	if (!id) {
-		return error(400, 'Service account id is required');
-	}
+	if (!id)
+		return error(400, 'Service account id is required')
 
-	const result = await getServiceAccountById(client, id, false);
-	return json(result);
-};
+	const result = await getServiceAccountById(client, id, false)
+
+	return json(result)
+}
 
 /**
  * Delete a Service Account by its ID.
@@ -58,4 +58,4 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 	)
 
 	return json(result)
-};
+}

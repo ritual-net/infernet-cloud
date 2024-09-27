@@ -1,6 +1,6 @@
-import { e } from '$/lib/db';
-import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
+import { e } from '$/lib/db'
+import { error, json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
 
 /**
  * Retrieve a Container Template by its ID.
@@ -10,11 +10,10 @@ import type { RequestHandler } from '@sveltejs/kit';
  * @returns ContainerTemplate object.
  */
 export const GET: RequestHandler = async ({ locals: { client }, params }) => {
-	const id = params.containerTemplateId;
+	const id = params.containerTemplateId
 
-	if (!id) {
-		return error(400, 'Container template id is required');
-	}
+	if (!id)
+		return error(400, 'Container template id is required')
 
 	const result = await e
 		.select(e.ContainerTemplate, () => ({
@@ -24,9 +23,9 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
 			},
 			filter_single: { id },
 		}))
-		.run(client);
-	return json(result);
-};
+		.run(client)
+	return json(result)
+}
 
 /**
  * Delete a Container Template by its ID.
@@ -36,10 +35,10 @@ export const GET: RequestHandler = async ({ locals: { client }, params }) => {
  * @returns ID of the deleted container template.
  */
 export const DELETE: RequestHandler = async ({ locals: { client }, params }) => {
-	const id = params.containerTemplateId;
+	const id = params.containerTemplateId
 
 	if (!id) {
-		return error(400, 'Container template id is required');
+		return error(400, 'Container template id is required')
 	}
 
 	// Delete container template
@@ -47,7 +46,7 @@ export const DELETE: RequestHandler = async ({ locals: { client }, params }) => 
 		.delete(e.ContainerTemplate, () => ({
 			filter_single: { id },
 		}))
-		.run(client);
+		.run(client)
 
-	return json(result);
-};
+	return json(result)
+}

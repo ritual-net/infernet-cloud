@@ -16,7 +16,7 @@ export const load: LayoutLoad = async ({
 		fetch(
 			resolveRoute('/api/node/[nodeId]/info', {
 				nodeId,
-			})
+			}),
 		)
 			.then(response => response.json())
 	)
@@ -27,10 +27,10 @@ export const load: LayoutLoad = async ({
 		})}?${new URLSearchParams({
 			includeClusterBacklink: 'true',
 			includeClusterTfstate: 'true',
-		})}`
+		})}`,
 	)
 
-	if(!response.ok){
+	if (!response.ok) {
 		const result = await response.json()
 
 		return error(response.status, result.message)
@@ -43,7 +43,7 @@ export const load: LayoutLoad = async ({
 			node,
 			nodeInfoPromise,
 		} as InfernetNodeWithInfo
-	}catch(e){
+	} catch (e) {
 		return error(500, e)
 	}
 }

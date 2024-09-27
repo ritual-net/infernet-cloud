@@ -521,7 +521,7 @@
 		</section>
 	{/if}
 
-	{#if logsQuery}
+	{#if logsQuery && $logsQuery}
 		<section class="column">
 			<header class="row wrap">
 				<h3>Logs</h3>

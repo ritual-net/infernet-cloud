@@ -1,5 +1,5 @@
-import { exec, type ExecException } from 'child_process';
-import { promises as fs } from 'fs';
+import { exec, type ExecException } from 'node:child_process'
+import { promises as fs } from 'node:fs'
 
 /**
  * Removes a directory and all of its contents.
@@ -7,8 +7,8 @@ import { promises as fs } from 'fs';
  * @param directory The path to the directory.
  */
 export const removeDir = async (directory: string): Promise<void> => {
-	await fs.rm(directory, { recursive: true });
-};
+	await fs.rm(directory, { recursive: true })
+}
 
 /**
  * Reads a JSON file and returns as an object.
@@ -17,8 +17,8 @@ export const removeDir = async (directory: string): Promise<void> => {
  * @returns The parsed JSON object.
  */
 export const readJsonFromFile = async <T>(filePath: string) => {
-	return JSON.parse(await fs.readFile(filePath, { encoding: 'utf8' })) as T;
-};
+	return JSON.parse(await fs.readFile(filePath, { encoding: 'utf8' })) as T
+}
 
 /**
  * Writes a JSON object to a file.
@@ -27,8 +27,8 @@ export const readJsonFromFile = async <T>(filePath: string) => {
  * @param data The JSON object to write.
  */
 export const writeJsonToFile = async (filePath: string, data: object): Promise<void> => {
-	await fs.writeFile(filePath, JSON.stringify(data, null, '\t'), { encoding: 'utf8' });
-};
+	await fs.writeFile(filePath, JSON.stringify(data, null, '\t'), { encoding: 'utf8' })
+}
 
 /**
  * Executes a command in a given directory.
@@ -37,13 +37,16 @@ export const writeJsonToFile = async (filePath: string, data: object): Promise<v
  * @param command The command to execute.
  * @returns The stdout of the command.
  */
-export const executeCommands = async (directory: string, command: string): Promise<{
-	error: ExecException | null;
-	stdout: string;
-	stderr: string;
+export const executeCommands = async (
+	directory: string,
+	command: string,
+): Promise<{
+	error: ExecException | null
+	stdout: string
+	stderr: string
 }> => {
-	console.log(`Executing command in directory "${directory}":`);
-	console.log(command);
+	console.log(`Executing command in directory "${directory}":`)
+	console.log(command)
 
 	return new Promise((resolve, reject) => {
 		const process = exec(command, { cwd: directory }, (error, stdout, stderr) => {
@@ -55,11 +58,11 @@ export const executeCommands = async (directory: string, command: string): Promi
 		})
 
 		process.on('message', (message) => {
-			console.log(directory, command, message);
+			console.log(directory, command, message)
 		})
 
 		process.on('error', (message) => {
-			console.error(directory, command, message);
+			console.error(directory, command, message)
 		})
 	})
 }
@@ -77,4 +80,4 @@ export const removeAnsiEscapeCodes = (string: string): string => (
 			),
 			''
 		)
-);
+)
