@@ -6,7 +6,7 @@
 		"init:local": "cp -n .env.local.example .env.local; pnpm run local:server:init; pnpm run local:edgedb:init",
 		"init:docker": "cp -n .env.docker.example .env.docker; pnpm install; pnpm run docker:edgedb:init",
 		"start:local": "pnpm store prune; pnpm run local:server:start",
-		"start:docker": "pnpm run docker:clean; pnpm run docker:start",
+		"start:docker": "pnpm run docker:start",
 		"local:server:init": "pnpm install",
 		"local:server:start": "vite dev",
 		"local:server:debug": "NODE_OPTIONS='--inspect=localhost:9229' vite dev",
