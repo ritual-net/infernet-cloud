@@ -8,7 +8,7 @@
 		"start:local": "pnpm store prune; pnpm run local:server:start",
 		"start:docker": "pnpm run docker:start",
 		"local:server:init": "pnpm install",
-		"local:server:start": "vite dev",
+		"local:server:start": "vite dev --host",
 		"local:server:debug": "NODE_OPTIONS='--inspect=localhost:9229' vite dev",
 		"local:edgedb:init": "edgedb project init; pnpm run local:edgedb:migrate",
 		"local:edgedb:init:auth": "edgedb query -f ./dbschema/bootstrap/auth.edgeql",
