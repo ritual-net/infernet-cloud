@@ -185,11 +185,14 @@
 										subgraph resourceType.${resourceType.type}.${resourceType.name} [
 											${formatResourceType(resourceType.type)} – ${resourceType.name}
 										]
-											${resourceType.instances.map(resource => `
-												resource.${resource.attributes.id}(
-													${resource.attributes.id}
-												)
-											`).join('\n')}
+											${resourceType.instances.length
+												? resourceType.instances.map(resource => `
+													resource.${resource.attributes.id}(
+														${resource.attributes.name || resource.attributes.id}
+													)
+												`).join('\n')
+												: `_(("(no resources)"))`
+											}
 										end
 									`).join('\n')}
 
@@ -438,11 +441,13 @@
 		:global(#mermaid foreignObject > div) {
 			display: grid !important;
 			max-width: none !important;
-			width: calc(100% + 10em * 2) !important;
-			margin-inline: -10em;
 			padding: 0.25em;
 			height: 100%;
-    		align-items: center;
+			align-items: center;
+		}
+		:global(#mermaid .clusters foreignObject > div) {
+			width: calc(100% + 10em * 2) !important;
+			margin-inline: -10em;
 		}
 		:global(#mermaid .cluster-label) {
 			font-size: 1em;

@@ -27,7 +27,7 @@
 	// Actions
 	import { addToast, removeToast, type Toast } from '$/components/Toaster.svelte'
 
-	$: if ($page.form?.form?.message) {
+	$: if (browser && $page.form?.form?.message) {
 		const {
 			title,
 			description,
@@ -169,23 +169,14 @@
 	:global(body) {
 		min-height: 100vh;
 		min-height: 100dvh;
-	/* } */
-
-	/* :global(body > div) { */
-		min-height: 100vh;
-		min-height: 100dvh;
 
 		display: grid !important;
 		grid:
 			'header' 4.5rem
 			'main' 1fr
 			'footer' auto
-			/ minmax(0, 1fr);
+			/ minmax(0, 1fr)
 		;
-
-		/* & > div { */
-			/* isolation: isolate; */
-		/* } */
 	}
 
 	header,
@@ -259,12 +250,6 @@
 	footer {
 		grid-area: footer;
 		padding-block: clamp(1rem, 100vw - (50rem + 1rem), 1.5rem);
-
-		/* z-index: 1;
-		position: sticky;
-		bottom: 0; */
-
-		/* backdrop-filter: var(--backdropFilter); */
 
 		nav {
 			> :first-child {

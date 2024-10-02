@@ -18,7 +18,7 @@
 	export let required: boolean = false
 	export let disabled: boolean = false
 	export let multiple: boolean = false
-	
+
 	// (View options)
 	export let loading: boolean = false
 	export let placement: NonNullable<FloatingConfig>['placement'] = 'bottom-end'
