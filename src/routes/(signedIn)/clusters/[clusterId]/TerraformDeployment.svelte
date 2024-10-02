@@ -187,7 +187,7 @@
 										]
 											${resourceType.instances.map(resource => `
 												resource.${resource.attributes.id}(
-													${resource.attributes.id}
+													${resource.attributes.name || resource.attributes.id}
 												)
 											`).join('\n')}
 										end
