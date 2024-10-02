@@ -27,7 +27,7 @@
 	// Actions
 	import { addToast, removeToast, type Toast } from '$/components/Toaster.svelte'
 
-	$: if ($page.form?.form?.message) {
+	$: if (browser && $page.form?.form?.message) {
 		const {
 			title,
 			description,
