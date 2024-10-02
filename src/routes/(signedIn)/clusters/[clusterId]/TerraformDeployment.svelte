@@ -185,11 +185,14 @@
 										subgraph resourceType.${resourceType.type}.${resourceType.name} [
 											${formatResourceType(resourceType.type)} – ${resourceType.name}
 										]
-											${resourceType.instances.map(resource => `
-												resource.${resource.attributes.id}(
-													${resource.attributes.name || resource.attributes.id}
-												)
-											`).join('\n')}
+											${resourceType.instances.length
+												? resourceType.instances.map(resource => `
+													resource.${resource.attributes.id}(
+														${resource.attributes.name || resource.attributes.id}
+													)
+												`).join('\n')
+												: `_(("(no resources)"))`
+											}
 										end
 									`).join('\n')}
 
