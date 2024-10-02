@@ -90,9 +90,9 @@ export const POST: RequestHandler = async ({ locals: { client }, request }) => {
 			.run(client, { nodes })
 	} catch (e) {
 		console.error(e)
+
 		if ((e as unknown as Error).message?.includes(`violates exclusivity constraint`))
-		if ((e as unknown as Error).message?.includes(`violates exclusivity constraint`)) {
-		}
+			return error(500, `A cluster with name "${config.name}" already exists.`)
 
 		return error(500, (e as Error).message)
 	}
