@@ -10,8 +10,8 @@ services:
             - '443:443/udp'
         volumes:
             - ./caddy/docker.Caddyfile:/etc/caddy/Caddyfile
-            - ./caddy_data:/data
-            - ./caddy_config:/config
+            - ./caddy/data:/data
+            - ./caddy/config:/config
 
     server:
         container_name: server
