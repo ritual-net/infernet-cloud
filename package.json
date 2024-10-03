@@ -6,7 +6,7 @@
 		"init:local": "cp -n .env.local.example .env.local; pnpm run local:server:init; pnpm run local:edgedb:init",
 		"init:docker": "cp -n .env.docker.example .env.docker; pnpm install; pnpm run docker:edgedb:init",
 		"start:local": "pnpm store prune; pnpm run local:server:start",
-		"start:local:host": "pnpm store prune; pnpm run local:caddy:start && pnpm run local:server:start:host",
+		"start:local:host": "pnpm store prune; pnpm run local:caddy:start; pnpm run local:server:start:host",
 		"start:docker": "pnpm run docker:start",
 		"local:caddy:start": "caddy --config ./caddy/local.Caddyfile --envfile .env.local start || sudo caddy --config ./caddy/local.Caddyfile --envfile .env.local start",
 		"local:caddy:run": "caddy --config ./caddy/local.Caddyfile --envfile .env.local run || sudo caddy --config ./caddy/local.Caddyfile --envfile .env.local run",
