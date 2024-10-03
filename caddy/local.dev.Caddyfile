@@ -1,5 +1,7 @@
 # Local dev setup
 {$SERVER_HOST} {
+	tls internal
+
 	# Reverse proxy to Vite dev server
 	reverse_proxy localhost:5173 {
 		flush_interval 1s
