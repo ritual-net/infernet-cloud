@@ -9,6 +9,7 @@
 		"start:local:host": "pnpm store prune; pnpm run local:caddy:start && pnpm run local:server:start:host",
 		"start:docker": "pnpm run docker:start",
 		"local:caddy:start": "caddy --config ./caddy/local.Caddyfile --envfile .env.local start",
+		"local:caddy:run": "caddy --config ./caddy/local.Caddyfile --envfile .env.local run",
 		"local:caddy:reload": "caddy --config ./caddy/local.Caddyfile reload", 
 		"local:caddy:stop": "caddy stop", 
 		"local:server:init": "pnpm install && pnpm run build",
