@@ -13,7 +13,7 @@
 		"local:caddy:stop": "caddy stop", 
 		"local:server:init": "pnpm install",
 		"local:server:start": "pnpm run build && pnpm run preview",
-		"local:server:start:host": "pnpm run preview --host", 
+		"local:server:start:host": "pnpm run build && pnpm run preview --host", 
 		"local:server:dev": "vite dev",
 		"local:server:dev:debug": "NODE_OPTIONS='--inspect=localhost:9229' vite dev",
 		"local:edgedb:init": "edgedb project init; pnpm run local:edgedb:migrate",
