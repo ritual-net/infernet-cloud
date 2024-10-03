@@ -12,6 +12,8 @@ services:
             - ./caddy/docker.Caddyfile:/etc/caddy/Caddyfile
             - ./caddy/data:/data
             - ./caddy/config:/config
+        env_file:
+            - ./.env.docker
 
     server:
         container_name: server
