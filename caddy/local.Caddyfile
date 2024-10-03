@@ -1,5 +1,7 @@
 # Local setup
 {$SERVER_HOST} {
+	tls internal
+
 	reverse_proxy localhost:4173 {
 		flush_interval 1s
 	}
