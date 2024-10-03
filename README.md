@@ -36,7 +36,9 @@ You can use Infernet Cloud to:
 
 3. Install [Terraform](https://developer.hashicorp.com/terraform/install).
 
-4. Initialize the local setup:
+4. Install [Caddy](https://caddyserver.com/docs/install) (optional; this will allow you to access and authenticate with the Infernet Cloud UI using HTTPS outside of [`http://localhost:5173`](http://localhost:5173)).
+
+5. Initialize the local setup:
 
 	```bash
 	pnpm init:local
@@ -54,9 +56,9 @@ You can use Infernet Cloud to:
 	pnpm local:edgedb:destroy
 	```
 
-5. Configure environment variables:
+6. Configure environment variables:
 	* Open [`.env.local`](.env.local) in a text editor and adjust the following environment variables:
-		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:5173`](http://localhost:5173) when running locally).
+		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:5173`](http://localhost:5173) when accessing locally; otherwise `https://<ip-or-domain>`).
 		* `EDGEDB_HOST`, `EDGEDB_PORT`, `EDGEDB_SERVER_USER`, `EDGEDB_BRANCH`: The connection details of your EdgeDB instance.
 			* Make sure these values match your EdgeDB instance configuration. To find the details of your local EdgeDB instance, run:
 				```bash
@@ -64,7 +66,7 @@ You can use Infernet Cloud to:
 				```
 	* Save [`.env.local`](.env.local).
 
-6. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
+7. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
 	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
 		* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 		* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
@@ -79,14 +81,20 @@ You can use Infernet Cloud to:
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
-7. Start the server:
+8. Configure the reverse proxy (optional):
+	* Open [`caddy/local.Caddyfile`](caddy/local.Caddyfile) in a text editor.
+		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable from above. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
+	* Save [`caddy/local.Caddyfile`](caddy/local.Caddyfile).
+	* If hosting Infernet Cloud on a machine with a public-facing URL, ensure the corresponding port (default `3000`) is forwarded and whitelisted in your machine's firewall settings.
+
+9. Start the server:
 
 	```bash
 	pnpm start:local
 	```
 
-8. Access the Infernet Cloud UI:
-	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the URL of your server defined in the `SERVER_HOST` environment variable).
+10. Access the Infernet Cloud UI:
+	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the `https://` URL of your server defined in the `SERVER_HOST` environment variable).
 
 	If you're having trouble, double-check that the following values match:
 	* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
@@ -170,7 +178,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 4. Configure environment variables:
 
 	* Open [`.env.docker`](.env.docker) in a text editor and adjust the following environment variables:
-		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when running locally).
+		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when accessing locally; otherwise `https://<ip-or-domain>`).
 		* `EDGEDB_SERVER_PASSWORD`: The admin password for the EdgeDB database.
 		* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
 			* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
@@ -191,10 +199,10 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
-6. Configure the reverse proxy:
-	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
-		* Replace `localhost:3000` with the public-facing domain of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above, with `http://` or `https://` omitted).
-	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
+6. Configure the reverse proxy (optional):
+	* Open [`caddy/docker.Caddyfile`](caddy/docker.Caddyfile) in a text editor.
+		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable from above. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
+	* Save [`caddy/docker.Caddyfile`](caddy/docker.Caddyfile).
 	* If hosting Infernet Cloud on a cloud provider with a public-facing URL, ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
 
 	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
@@ -222,7 +230,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 		* **IMPORTANT**: **Keep the contents of the `./edgedb-data/` directory safe. If you modify/delete it, you will lose data stored in the database!**
 
 8. Access the Infernet Cloud UI:
-	* Open a web browser and navigate to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
+	* Open a web browser and navigate to [`http://localhost:3000`](http://localhost:3000) (or the public `https://` URL of your server defined in the `SERVER_HOST` environment variable).
 
 	* If you're having trouble, double-check that the following values match:
 		* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
