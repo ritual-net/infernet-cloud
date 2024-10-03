@@ -34,7 +34,7 @@
 		"docker:edgedb:destroy": "sh -c 'read -p \"Destroy EdgeDB Docker volume? (y/N): \" confirm && case $confirm in y|Y) pnpm run docker-compose down edgedb && rm -rf edgedb-data ;; *) echo \"Operation cancelled\" ;; esac'",
 		"docker:edgedb:cli": "sh -c '. .env.docker && printf \"%s\\n\" \"$EDGEDB_SERVER_PASSWORD\" | pnpm run docker-compose exec -T edgedb edgedb --tls-security insecure --password-from-stdin'",
 		"docker-compose": "docker compose --env-file .env.docker",
-		"build": "vite build",
+		"build": "vite build --logLevel error",
 		"preview": "vite preview",
 		"edgedb:generate": "pnpm exec generate interfaces && pnpm exec generate edgeql-js --target ts",
 		"test": "pnpm run test:integration && pnpm run test:unit",
