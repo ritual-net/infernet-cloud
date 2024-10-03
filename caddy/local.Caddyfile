@@ -1,0 +1,6 @@
+# Local setup
+{$SERVER_HOST} {
+	reverse_proxy localhost:4173 {
+		flush_interval 1s
+	}
+}
