@@ -87,11 +87,21 @@ You can use Infernet Cloud to:
 	* Save [`caddy/local.Caddyfile`](caddy/local.Caddyfile).
 	* If hosting Infernet Cloud on a machine with a public-facing URL, ensure the corresponding port (default `3000`) is forwarded and whitelisted in your machine's firewall settings.
 
-9. Start the server:
+9. Start the Infernet Cloud UI:
+
+	Localhost mode – UI will be accessible from browsers running on the same machine via `localhost`.
 
 	```bash
 	pnpm start:local
 	```
+
+	Hosted mode – UI will be exposed to other machines to connect via HTTPS.
+
+	```bash
+	pnpm start:local:host
+	```
+
+	* Ensure `SERVER_HOST` in [`.env.local`](.env.local) matches the desired public-facing URL of your Infernet Cloud server.
 
 10. Access the Infernet Cloud UI:
 	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the `https://` URL of your server defined in the `SERVER_HOST` environment variable).
