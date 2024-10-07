@@ -36,7 +36,7 @@ You can use Infernet Cloud to:
 
 3. Install [Terraform](https://developer.hashicorp.com/terraform/install).
 
-4. Install [Caddy](https://caddyserver.com/docs/install) (optional; this will allow you to access and authenticate with the Infernet Cloud UI using HTTPS outside of [`http://localhost:5173`](http://localhost:5173)).
+4. Install [Caddy](https://caddyserver.com/docs/install) (optional; this will allow you to access and authenticate with the Infernet Cloud UI using HTTPS outside of [`http://localhost:4173`](http://localhost:4173)).
 
 5. Initialize the local setup:
 
@@ -58,7 +58,7 @@ You can use Infernet Cloud to:
 
 6. Configure environment variables:
 	* Open [`.env.local`](.env.local) in a text editor and adjust the following environment variables:
-		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:5173`](http://localhost:5173) when accessing locally; otherwise `https://<ip-or-domain>`).
+		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:4173`](http://localhost:4173) when accessing locally; otherwise `https://<ip-or-domain>`).
 		* `EDGEDB_HOST`, `EDGEDB_PORT`, `EDGEDB_SERVER_USER`, `EDGEDB_BRANCH`: The connection details of your EdgeDB instance.
 			* Make sure these values match your EdgeDB instance configuration. To find the details of your local EdgeDB instance, run:
 				```bash
@@ -104,7 +104,7 @@ You can use Infernet Cloud to:
 	* Ensure `SERVER_HOST` in [`.env.local`](.env.local) matches the desired public-facing URL of your Infernet Cloud server.
 
 10. Access the Infernet Cloud UI:
-	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the `https://` URL of your server defined in the `SERVER_HOST` environment variable).
+	* Open a web browser and navigate to [`http://localhost:4173`](http://localhost:4173) (or the `https://` URL of your server defined in the `SERVER_HOST` environment variable).
 
 	If you're having trouble, double-check that the following values match:
 	* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
