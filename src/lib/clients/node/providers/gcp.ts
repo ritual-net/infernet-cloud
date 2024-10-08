@@ -111,10 +111,15 @@ export class GCPNodeClient extends BaseNodeClient {
 			next: typeof output.next === 'number' ? output.next : output.next ? Number(output.next) : undefined,
 			logs: (
 				contents
+					?.trim()
 					?.split('\r\n')
 					.slice(1)
 					.map(log => {
-						const match = log.match(/^(?<timestamp>\w+ \d+ \d+:\d+:\d+) (?<hostname>\S+) (?<process>\S+)\[(?<pid>\d+)\]: (?<message>.*)$/)
+						const match = (
+							log
+								.trim()
+								.match(/^(?<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}(?:\+\d{2}:\d{2})?)\s+(?<hostname>\S+)\s+(?<process>\S+)(?:\[(?<pid>\d+)\])?:\s+(?<message>.*)$/)
+						)
 
 						if (!match?.groups)
 							return {
@@ -123,9 +128,11 @@ export class GCPNodeClient extends BaseNodeClient {
 
 						const { timestamp, process, pid, message } = match.groups
 
+						console.log({timestamp}, new Date(timestamp).getTime())
+
 						return {
-							timestamp: new Date(`${timestamp} ${new Date().getFullYear()}`).getTime(),
-							source: `${process}[${pid}]`,
+							timestamp: new Date(timestamp).getTime(),
+							source: `${process}${pid ? `[${pid}]` : ''}`,
 							text: message,
 						}
 					})
