@@ -28,7 +28,7 @@
 		},
 
 		closeOnOutsideClick: true,
-		closeOnEscape: true,
+		closeOnItemClick: true,
 	})
 
 
