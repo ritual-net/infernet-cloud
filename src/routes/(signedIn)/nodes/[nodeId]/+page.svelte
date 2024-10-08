@@ -20,16 +20,13 @@
 	$: nodeId = node.state?.id ?? node.id
 
 	$: nodeStatus = (
-		node ?
-			node.state?.id ?
-				nodeInfo?.status ?
-					nodeInfo.status
-				:
-					'unknown'
+		node.state?.id ?
+			nodeInfo?.status ?
+				nodeInfo.status
 			:
-				'undeployed'
+				undefined
 		:
-			'unknown'
+			'undeployed'
 	)
 
 	// (Node info)
@@ -526,7 +523,7 @@
 			<header class="row wrap">
 				<h3>Logs</h3>
 
-				<div class="row wrap">
+				<div class="row inline wrap">
 					<button
 						type="button"
 						class="small"
@@ -593,7 +590,7 @@
 											class="log"
 											data-source={log.source}
 										>
-											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> {#if log.source}<span>{log.source}</span>{/if}<code>{log.text}</code></output>
+											<output>{#if log.timestamp}<date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date>&nbsp;{/if}{#if log.source}<code class="source">{log.source}</code><code>&nbsp;</code>{/if}<code>{log.text}</code></output>
 										</div>
 									{/each}
 								</div>
