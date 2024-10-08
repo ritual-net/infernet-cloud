@@ -9,11 +9,14 @@ import type { ServerLoad } from '@sveltejs/kit'
 
 export const load: ServerLoad = async ({
 	parent,
+	url,
 }) => {
 	const { user } = await parent()
 
+	const redirectTo = url.searchParams.get('redirect')
+
 	if(user)
-		redirect(303, '/')
+		redirect(303, redirectTo ? decodeURIComponent(redirectTo) : '/')
 
 	const signUpFormData = await superValidate(yup(SignUpFormData))
 	const signInFormData = await superValidate(yup(SignInFormData))
