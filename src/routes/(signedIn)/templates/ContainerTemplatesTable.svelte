@@ -92,7 +92,7 @@
 		// },
 		{
 			header: 'GPU?',
-			accessor: container => container.gpu,
+			accessor: container => container.gpu ? 'Yes' : 'No',
 		},
 	]}
 	getRowLink={containerTemplate => (
