@@ -28,16 +28,18 @@ export const load: PageServerLoad = async ({
 	] = await Promise.all([
 		superValidate(yup(FormData)),
 
-		dockerAccountUsername && (
-			fetch(resolveRoute('/api/docker_images/[dockerAccountUsername]', { dockerAccountUsername }))
-				.then(response => response.json())
-				.then(results => (
-					results.map(slug => ({
-						value: slug,
-						label: slug,
-					}))
-				))
-		),
+		dockerAccountUsername
+			? (
+				fetch(resolveRoute('/api/docker_images/[dockerAccountUsername]', { dockerAccountUsername }))
+					.then(response => response.json())
+					.then(results => (
+						(results as string[]).map((slug: string) => ({
+							value: slug,
+							label: slug,
+						}))
+					))
+			)
+			: undefined,
 	])
 
 	return {
