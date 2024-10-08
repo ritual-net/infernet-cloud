@@ -65,7 +65,7 @@
 	let containerTemplates: ContainerTemplate[] | undefined
 	$: if(containerTemplatesPromise) (async () => { containerTemplates = await containerTemplatesPromise })()
 
-	let containerTemplateId: string
+	let containerTemplateId: string | undefined
 
 	$: if(containerTemplates && containerTemplateId){
 		const containerTemplate = containerTemplates.find(containerTemplate => containerTemplate.id === containerTemplateId)
