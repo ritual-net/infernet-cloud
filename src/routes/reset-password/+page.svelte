@@ -56,6 +56,7 @@
 			type="password"
 			name="password"
 			placeholder="Password"
+			autocomplete="new-password"
 			bind:value={$form.password}
 			{...$constraints.password}
 		/>

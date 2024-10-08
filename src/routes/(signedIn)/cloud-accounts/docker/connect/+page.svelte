@@ -157,6 +157,7 @@
 						type="password"
 						name="dockerAccount.password"
 						placeholder="dckr_pat_..."
+						autocomplete="current-password"
 						bind:value={$form.password}
 						{...$constraints.password}
 					/>

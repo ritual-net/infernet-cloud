@@ -302,6 +302,7 @@
 					<input
 						type="password"
 						placeholder="0xabcdef...1234567890"
+						autocomplete="off"
 						id="{namePrefix}.config.private_key"
 						name="{namePrefix}.config.private_key"
 						bind:value={node.config.private_key}
