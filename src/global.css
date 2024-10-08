@@ -13,6 +13,8 @@
 	--color-ritualOrange-light: #ff9c3a;
 	--color-ritualOrange-dark: #e97e1c;
 
+	--color-destructive: #ff1111;
+
 	--accentColor: light-dark(var(--color-ritualPurple), var(--color-ritualPurple-light));
 	--accentColor-light: var(--color-ritualPurple-light);
 	--accentColor-dark: var(--color-ritualPurple-dark);
@@ -372,7 +374,7 @@ button,
 	}
 
 	&.destructive {
-		--button-textColor: #ff1111;
+		--button-textColor: var(--color-destructive);
 	}
 
 	&:disabled,
