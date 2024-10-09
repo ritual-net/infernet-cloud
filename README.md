@@ -28,7 +28,9 @@ You can use Infernet Cloud to:
 	7. [Monitor and manage nodes](#7-monitor-and-manage-nodes)
 
 
-## Local setup
+## Local setup ("localhost" mode)
+
+Follow these steps to create an Infernet Cloud instance and access the UI from a browser running on the same machine.
 
 1. Install [Node.js](https://nodejs.org/en/download/package-manager) and [pnpm](https://pnpm.io/installation#using-npm).
 
@@ -36,9 +38,7 @@ You can use Infernet Cloud to:
 
 3. Install [Terraform](https://developer.hashicorp.com/terraform/install).
 
-4. Install [Caddy](https://caddyserver.com/docs/install) (optional; this will allow you to access and authenticate with the Infernet Cloud UI using HTTPS outside of [`http://localhost:4173`](http://localhost:4173)).
-
-5. Initialize the local setup:
+4. Initialize the local setup:
 
 	```bash
 	pnpm init:local
@@ -56,17 +56,57 @@ You can use Infernet Cloud to:
 	pnpm local:edgedb:destroy
 	```
 
+5. Start the Infernet Cloud UI:
+
+	```bash
+	pnpm start:local
+	```
+
+6. Access the Infernet Cloud UI:
+	* Open a web browser and navigate to [`http://localhost:4173`](http://localhost:4173).
+
+	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
+
+---
+
+### Local setup ("hosted" mode)
+
+To access the Infernet Cloud UI from a different machine, you will need to set up HTTPS. Follow steps 1-4 from ["localhost" mode](#local-setup-localhost-mode) above, then follow these additional steps.
+
+5. Install [Caddy](https://caddyserver.com/docs/install).
+
 6. Configure environment variables:
+
 	* Open [`.env.local`](.env.local) in a text editor and adjust the following environment variables:
+
 		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:4173`](http://localhost:4173) when accessing locally; otherwise `https://<ip-or-domain>`).
+
+			* To list all the local network addresses through which an outside machine may access the Infernet Cloud UI, run the following command:
+
+				```bash
+				node -e 'for(const interface of Object.values(require("os").networkInterfaces())) for(const { address, family, internal } of interface) if(family === "IPv4" && !internal) console.log(address)'
+				```
+
 		* `EDGEDB_HOST`, `EDGEDB_PORT`, `EDGEDB_SERVER_USER`, `EDGEDB_BRANCH`: The connection details of your EdgeDB instance.
 			* Make sure these values match your EdgeDB instance configuration. To find the details of your local EdgeDB instance, run:
 				```bash
 				edgedb instance credentials
 				```
+
 	* Save [`.env.local`](.env.local).
 
-7. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
+7. Configure Caddy (optional):
+
+	* Open [`caddy/local.Caddyfile`](caddy/local.Caddyfile) in a text editor.
+		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
+
+	* Save [`caddy/local.Caddyfile`](caddy/local.Caddyfile).
+
+	* If hosting Infernet Cloud on a machine with a public-facing URL, ensure the appropriate ports are forwarded and whitelisted in your machine's firewall settings.
+
+	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
+
+8. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
 	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
 		* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 		* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
@@ -81,21 +121,7 @@ You can use Infernet Cloud to:
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
-8. Configure the reverse proxy (optional):
-	* Open [`caddy/local.Caddyfile`](caddy/local.Caddyfile) in a text editor.
-		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable from above. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
-	* Save [`caddy/local.Caddyfile`](caddy/local.Caddyfile).
-	* If hosting Infernet Cloud on a machine with a public-facing URL, ensure the corresponding port (default `3000`) is forwarded and whitelisted in your machine's firewall settings.
-
 9. Start the Infernet Cloud UI:
-
-	Localhost mode – UI will be accessible from browsers running on the same machine via `localhost`.
-
-	```bash
-	pnpm start:local
-	```
-
-	Hosted mode – UI will be exposed to other machines to connect via HTTPS.
 
 	```bash
 	pnpm start:local:host
@@ -104,7 +130,7 @@ You can use Infernet Cloud to:
 	* Ensure `SERVER_HOST` in [`.env.local`](.env.local) matches the desired public-facing URL of your Infernet Cloud server.
 
 10. Access the Infernet Cloud UI:
-	* Open a web browser and navigate to [`http://localhost:4173`](http://localhost:4173) (or the `https://` URL of your server defined in the `SERVER_HOST` environment variable).
+	* Open a web browser and navigate to the `https://` URL of your server defined in the `SERVER_HOST` environment variable.
 
 	If you're having trouble, double-check that the following values match:
 	* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
