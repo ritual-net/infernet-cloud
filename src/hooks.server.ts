@@ -1,6 +1,7 @@
-import { error, type Handle } from '@sveltejs/kit'
+import type { Handle } from '@sveltejs/kit'
 import { createClient } from './lib/db'
 import { EDGEDB_AUTH_COOKIES } from './lib/auth'
+import { SERVER_HOST } from '$env/static/private'
 
 /**
  * Global middleware for the server.
@@ -15,6 +16,16 @@ import { EDGEDB_AUTH_COOKIES } from './lib/auth'
  * @returns The event with the client attached,
  */
 export const handle: Handle = async ({ event, resolve }) => {
+	// CORS: add headers
+	if (event.request.method === 'OPTIONS')
+		return new Response(null, {
+			headers: {
+				'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE',
+				'Access-Control-Allow-Origin': SERVER_HOST,
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+			},
+		})
+
 	// Allow requests to the auth server
 	if (event.url.pathname.startsWith('/auth'))
 		return await resolve(event)
@@ -26,5 +37,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.client = createClient().withGlobals({
 		'ext::auth::client_token': token,
 	})
-	return await resolve(event)
+
+	// CORS: specify $SERVER_HOST as an allowed origin
+	const response = await resolve(event)
+	response.headers.append('Access-Control-Allow-Origin', SERVER_HOST)
+
+	return response
 }
