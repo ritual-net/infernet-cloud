@@ -13,6 +13,8 @@ You can use Infernet Cloud to:
 ## Table of contents
 
 * **[Local setup](#local-setup)**
+	* ["Localhost" mode](#localhost-mode)
+	* ["Hosted" mode](#hosted-mode)
 	* [Development scripts](#development-scripts-local-setup)
 
 * **[Docker Compose setup](#docker-compose-setup)**
@@ -30,7 +32,7 @@ You can use Infernet Cloud to:
 
 ## Local setup
 
-### Local setup – "Localhost" mode
+### "Localhost" mode
 
 Follow these steps to create an Infernet Cloud instance and access the UI from a browser running on the same machine.
 
@@ -71,9 +73,9 @@ Follow these steps to create an Infernet Cloud instance and access the UI from a
 
 ---
 
-### Local setup – "hosted" mode
+### "Hosted" mode
 
-To access the Infernet Cloud UI from a different machine, you will need to set up HTTPS. Follow steps 1-4 from ["localhost" mode](#local-setup-localhost-mode) above, then follow these additional steps.
+To access the Infernet Cloud UI from a different machine, you will need to set up HTTPS. Follow steps 1-4 from ["Localhost" mode](#localhost-mode) above, then follow these additional steps.
 
 5. Install [Caddy](https://caddyserver.com/docs/install).
 
