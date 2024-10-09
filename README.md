@@ -99,18 +99,7 @@ To access the Infernet Cloud UI from a different machine, you will need to set u
 
 	* Save [`.env.local`](.env.local).
 
-7. Configure Caddy (optional):
-
-	* Open [`caddy/local.Caddyfile`](caddy/local.Caddyfile) in a text editor.
-		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
-
-	* Save [`caddy/local.Caddyfile`](caddy/local.Caddyfile).
-
-	* If hosting Infernet Cloud on a machine with a public-facing URL, ensure the appropriate ports are forwarded and whitelisted in your machine's firewall settings.
-
-	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
-
-8. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
+7. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
 	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
 		* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 		* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
@@ -125,7 +114,48 @@ To access the Infernet Cloud UI from a different machine, you will need to set u
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
-9. Start the Infernet Cloud UI:
+8. Configure Caddy (optional):
+
+	* Open [`caddy/local.Caddyfile`](caddy/local.Caddyfile) in a text editor.
+		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
+
+	* Save [`caddy/local.Caddyfile`](caddy/local.Caddyfile).
+
+	* If hosting Infernet Cloud on a machine with a public-facing URL, ensure the appropriate ports are forwarded and whitelisted in your machine's firewall settings.
+
+	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
+
+9. Trust Caddy's root certificate:
+
+	* Start Caddy:
+
+		```bash
+		pnpm local:caddy:start
+		```
+
+	* Export the contents of `/pki/authorities/local/root.crt` under [Caddy's data directory](https://caddyserver.com/docs/conventions#data-directory):
+
+		Linux / BSD:
+
+		```bash
+		cat $HOME/.local/share/caddy/pki/authorities/local/root.crt
+		```
+
+		macOS:
+
+		```bash
+		cat "$HOME/Library/Application Support/Caddy/pki/authorities/local/root.crt"
+		```
+
+		Windows:
+
+		```powershell
+		Get-Content "$env:APPDATA\Caddy\pki\authorities\local\root.crt"
+		```
+
+	* On the machine you'd like to access Infernet Cloud from, save the contents as a `.crt` file and [install it as a trusted certificate](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/user-side-certificates/install-cloudflare-cert/#add-the-certificate-to-operating-systems).
+
+10. Start the Infernet Cloud UI:
 
 	```bash
 	pnpm start:local:host
@@ -133,7 +163,7 @@ To access the Infernet Cloud UI from a different machine, you will need to set u
 
 	* Ensure `SERVER_HOST` in [`.env.local`](.env.local) matches the desired public-facing URL of your Infernet Cloud server.
 
-10. Access the Infernet Cloud UI:
+11. Access the Infernet Cloud UI:
 	* Open a web browser and navigate to the `https://` URL of your server defined in the `SERVER_HOST` environment variable.
 
 	If you're having trouble, double-check that the following values match:
