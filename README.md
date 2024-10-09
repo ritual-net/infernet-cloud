@@ -28,7 +28,9 @@ You can use Infernet Cloud to:
 	7. [Monitor and manage nodes](#7-monitor-and-manage-nodes)
 
 
-## Local setup ("localhost" mode)
+## Local setup
+
+### Local setup – "Localhost" mode
 
 Follow these steps to create an Infernet Cloud instance and access the UI from a browser running on the same machine.
 
@@ -69,7 +71,7 @@ Follow these steps to create an Infernet Cloud instance and access the UI from a
 
 ---
 
-### Local setup ("hosted" mode)
+### Local setup – "hosted" mode
 
 To access the Infernet Cloud UI from a different machine, you will need to set up HTTPS. Follow steps 1-4 from ["localhost" mode](#local-setup-localhost-mode) above, then follow these additional steps.
 
