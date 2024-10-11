@@ -168,7 +168,7 @@ To access the Infernet Cloud UI from a different machine, you will need to set u
 
 	If you're having trouble, double-check that the following values match:
 	* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
-	* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in `dbschema/bootstrap/auth.edgeql`
+	* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql)
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
