@@ -5,7 +5,7 @@ import type { OAuth2Client } from 'google-auth-library'
 
 
 // Functions
-import { compute_v1, google } from 'googleapis'
+import { type compute_v1, google } from 'googleapis'
 import { BaseResourceClient } from '$/lib/clients/resource/base'
 
 import { isTruthy } from '$/lib/utils/isTruthy'

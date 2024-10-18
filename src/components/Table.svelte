@@ -14,6 +14,7 @@
 	export let contextMenu: ((_: Datum) => MenuItems<MenuItemValue>[]) | undefined
 	export let getRowLink: ((_: Datum) => string | undefined) | undefined
 	export let showMenuColumn = Boolean(contextMenu)
+	export let showMenuColumnLabel = false
 
 	// (View options)
 	export let layout: 'default' | 'card' = 'default'
@@ -112,7 +113,7 @@
 								data-align="end"
 								data-column="menu"
 							>
-								<span hidden>Actions</span>
+								<span hidden={!showMenuColumnLabel}>Actions</span>
 							</th>
 						{/if}
 					</tr>
@@ -222,7 +223,7 @@
 		text-wrap: nowrap;
 
 		& th {
-			opacity: 0.5;
+			color: color-mix(in oklch, currentColor 50%, transparent);
 		}
 
 		& tr {
@@ -297,6 +298,10 @@
 		&.sticky {
 			position: sticky;
 			backdrop-filter: blur(20px);
+
+			&:is(th:not(:has(> :not([hidden])))) {
+				opacity: 0;
+			}
 
 			&:last-child {
 				inset-inline-end: 0;

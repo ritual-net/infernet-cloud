@@ -65,7 +65,7 @@
 	let containerTemplates: ContainerTemplate[] | undefined
 	$: if(containerTemplatesPromise) (async () => { containerTemplates = await containerTemplatesPromise })()
 
-	let containerTemplateId: string
+	let containerTemplateId: string | undefined
 
 	$: if(containerTemplates && containerTemplateId){
 		const containerTemplate = containerTemplates.find(containerTemplate => containerTemplate.id === containerTemplateId)
@@ -164,8 +164,8 @@
 									items: containerTemplates.map(containerTemplate => ({
 										value: containerTemplate.id,
 										label: containerTemplate.name,
-										disabled: containerTemplate.docker_account && containerTemplate.docker_account.username !== nodeConfiguration.dockerAccountUsername,
-									}))
+										disabled: containerTemplate.docker_account && nodeConfiguration.dockerAccountUsername && containerTemplate.docker_account.username !== nodeConfiguration.dockerAccountUsername,
+									})),
 								}),
 							)
 							: []

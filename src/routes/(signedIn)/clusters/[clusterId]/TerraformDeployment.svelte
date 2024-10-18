@@ -381,6 +381,7 @@
 
 	.log-container {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		align-items: center;
 
 		padding: 0.66em 1em;
@@ -396,22 +397,27 @@
 				background-color: light-dark(rgb(255, 246, 246), rgb(50, 0, 0));
 				color: light-dark(rgb(150, 0, 0), rgb(255, 100, 100));
 			}
+
+			&:hover {
+				box-shadow: 0 0 0 100vmax inset light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+			}
 		}
 
 		date {
 			position: sticky;
-			top: 0.25em;
+			top: 1em;
+			bottom: 1em;
 			right: 0;
 			float: right;
-			margin-left: 1em;
-			line-height: 2.4;
+			margin-left: 1.5ch;
+			line-height: 2.8;
+			margin-bottom: -1.5em;
+			padding-bottom: 1.05em;
 			font-size: smaller;
 			opacity: 0.5;
+			/* color: color-mix(in oklch, currentColor 50%, transparent);
+			backdrop-filter: blur(10px); */
 		}
-
-		/* code {
-			white-space: pre-line;
-		} */
 	}
 
 	.resources {

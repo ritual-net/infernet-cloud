@@ -27,7 +27,7 @@
 		},
 
 		closeOnOutsideClick: true,
-		closeOnEscape: true,
+		closeOnItemClick: true,
 	})
 
 
@@ -173,6 +173,10 @@
 		cursor: pointer;
 
 		transition: 0.1s;
+
+		&.destructive {
+			color: var(--color-destructive);
+		}
 
 		&:is(:hover, [data-highlighted]) {
 			background-color: var(--contextMenu-item-selected-backgroundColor);

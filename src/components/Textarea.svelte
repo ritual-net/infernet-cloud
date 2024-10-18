@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Inputs
 	export let name: string
+	export let id: string
 	export let value: string = ''
 	export let getDisplayValue: ((value: string) => string) | undefined
 
@@ -26,6 +27,7 @@
 	/>
 
 	<textarea
+		{id}
 		bind:this={textareaElement}
 		value={!isFocused && getDisplayValue ? getDisplayValue(value) : value}
 		on:input={e => { value = e.currentTarget.value }}

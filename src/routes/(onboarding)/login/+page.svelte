@@ -160,6 +160,7 @@
 					<input
 						type="password"
 						name="password"
+						autocomplete="new-password"
 						placeholder="Password"
 						bind:value={$signUpForm.password}
 						{...$signUpConstraints.password}
@@ -202,6 +203,7 @@
 					<input
 						type="password"
 						name="password"
+						autocomplete="current-password"
 						placeholder="Password"
 						bind:value={$signInForm.password}
 						{...$signInConstraints.password}

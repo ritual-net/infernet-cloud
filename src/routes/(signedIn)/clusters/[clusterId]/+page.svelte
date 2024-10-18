@@ -55,6 +55,16 @@
 		}
 	})
 
+	const invalidatePage = async () => {
+		await Promise.all([
+			invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId })),
+
+			...cluster.nodes.map(node => (
+				invalidate(resolveRoute(`/api/node/[nodeId]`, { nodeId: node.id }))
+			))
+		])
+	}
+
 
 	// Components
 	import Collapsible from '$/components/Collapsible.svelte'
@@ -157,14 +167,14 @@
 							})
 
 							setTimeout(() => {
-								invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+								invalidatePage()
 							}, 500)
 
 							return async ({ result }) => {
 								await applyAction(result)
 
 								if(result.type === 'success')
-									invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+									invalidatePage()
 
 								removeToast(toast.id)
 							}
@@ -190,7 +200,7 @@
 										await applyAction(result)
 
 										if(result.type === 'success')
-											invalidate(resolveRoute(`/api/cluster/[clusterId]`, { clusterId: $page.params.clusterId }))
+											invalidatePage()
 
 										removeToast(toast.id)
 									}
@@ -214,7 +224,7 @@
 										await applyAction(result)
 
 										if(result.type === 'success')
-											invalidate(`/api/cluster`)
+											invalidatePage()
 
 										removeToast(toast.id)
 									}

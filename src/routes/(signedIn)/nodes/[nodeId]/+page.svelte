@@ -20,16 +20,13 @@
 	$: nodeId = node.state?.id ?? node.id
 
 	$: nodeStatus = (
-		node ?
-			node.state?.id ?
-				nodeInfo?.status ?
-					nodeInfo.status
-				:
-					'unknown'
+		node.state?.id ?
+			nodeInfo?.status ?
+				nodeInfo.status
 			:
-				'undeployed'
+				undefined
 		:
-			'unknown'
+			'undeployed'
 	)
 
 	// (Node info)
@@ -526,7 +523,7 @@
 			<header class="row wrap">
 				<h3>Logs</h3>
 
-				<div class="row wrap">
+				<div class="row inline wrap">
 					<button
 						type="button"
 						class="small"
@@ -593,7 +590,7 @@
 											class="log"
 											data-source={log.source}
 										>
-											<output><date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date> {#if log.source}<span>{log.source}</span>{/if}<code>{log.text}</code></output>
+											<output>{#if log.timestamp}<date date={log.timestamp}>{new Date(log.timestamp).toLocaleString()}</date>&nbsp;{/if}{#if log.source}<code class="source">{log.source}</code><code>&nbsp;</code>{/if}<code>{log.text}</code></output>
 										</div>
 									{/each}
 								</div>
@@ -667,27 +664,48 @@
 
 	.log-container {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		align-items: center;
 
 		padding: 0.66em 1em;
-		background: rgba(0, 0, 0, 0.05);
+		background-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 		border-radius: 0.5em;
 
 		.log {
 			margin-inline: -1rem;
 			padding-inline: 1rem;
 			padding-block: 0.1rem;
+
+			&:hover {
+				box-shadow: 0 0 0 100vmax inset light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+			}
+		}
+
+		.source {
+			/* position: sticky;
+			top: 0;
+			left: 0; */
+			float: left;
+			margin-top: 0.85em;
+			line-height: 1;
+			font-weight: 700;
+			opacity: 0.5;
 		}
 
 		date {
 			position: sticky;
-			top: 0.25em;
+			top: 1em;
+			bottom: 1em;
 			right: 0;
 			float: right;
-			margin-left: 1em;
-			line-height: 2.4;
+			margin-left: 1.5ch;
+			line-height: 2.8;
+			margin-bottom: -1.5em;
+			padding-bottom: 1.05em;
 			font-size: smaller;
 			opacity: 0.5;
+			/* color: color-mix(in oklch, currentColor 50%, transparent);
+			backdrop-filter: blur(10px); */
 		}
 	}
 
