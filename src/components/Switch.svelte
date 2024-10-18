@@ -31,7 +31,7 @@
 
 	$: createSync(options).disabled(disabled, _ => { disabled = _ })
 
-	const buttonId = `switch-${crypto.randomUUID()}`
+	const buttonId = `switch-${crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)}`
 </script>
 
 

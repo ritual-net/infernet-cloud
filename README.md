@@ -13,6 +13,8 @@ You can use Infernet Cloud to:
 ## Table of contents
 
 * **[Local setup](#local-setup)**
+	* ["Localhost" mode](#localhost-mode)
+	* ["Hosted" mode](#hosted-mode)
 	* [Development scripts](#development-scripts-local-setup)
 
 * **[Docker Compose setup](#docker-compose-setup)**
@@ -29,6 +31,10 @@ You can use Infernet Cloud to:
 
 
 ## Local setup
+
+### "Localhost" mode
+
+Follow these steps to create an Infernet Cloud instance and access the UI from a browser running on the same machine.
 
 1. Install [Node.js](https://nodejs.org/en/download/package-manager) and [pnpm](https://pnpm.io/installation#using-npm).
 
@@ -54,17 +60,46 @@ You can use Infernet Cloud to:
 	pnpm local:edgedb:destroy
 	```
 
-5. Configure environment variables:
+5. Start the Infernet Cloud UI:
+
+	```bash
+	pnpm start:local
+	```
+
+6. Access the Infernet Cloud UI:
+	* Open a web browser and navigate to [`http://localhost:4173`](http://localhost:4173).
+
+	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
+
+---
+
+### "Hosted" mode
+
+To access the Infernet Cloud UI from a different machine, you will need to set up HTTPS. Follow steps 1-4 from ["Localhost" mode](#localhost-mode) above, then follow these additional steps.
+
+5. Install [Caddy](https://caddyserver.com/docs/install).
+
+6. Configure environment variables:
+
 	* Open [`.env.local`](.env.local) in a text editor and adjust the following environment variables:
-		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:5173`](http://localhost:5173) when running locally).
+
+		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:4173`](http://localhost:4173) when accessing locally; otherwise `https://<ip-or-domain>`).
+
+			* To list all the local network addresses through which an outside machine may access the Infernet Cloud UI, run the following command:
+
+				```bash
+				node -e 'for(const interface of Object.values(require("os").networkInterfaces())) for(const { address, family, internal } of interface) if(family === "IPv4" && !internal) console.log(address)'
+				```
+
 		* `EDGEDB_HOST`, `EDGEDB_PORT`, `EDGEDB_SERVER_USER`, `EDGEDB_BRANCH`: The connection details of your EdgeDB instance.
 			* Make sure these values match your EdgeDB instance configuration. To find the details of your local EdgeDB instance, run:
 				```bash
 				edgedb instance credentials
 				```
+
 	* Save [`.env.local`](.env.local).
 
-6. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
+7. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration)
 	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
 		* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
 		* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
@@ -79,18 +114,61 @@ You can use Infernet Cloud to:
 
 	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
 
-7. Start the server:
+8. Configure Caddy (optional):
+
+	* Open [`caddy/local.Caddyfile`](caddy/local.Caddyfile) in a text editor.
+		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
+
+	* Save [`caddy/local.Caddyfile`](caddy/local.Caddyfile).
+
+	* If hosting Infernet Cloud on a machine with a public-facing URL, ensure the appropriate ports are forwarded and whitelisted in your machine's firewall settings.
+
+	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
+
+9. Trust Caddy's root certificate:
+
+	* Start Caddy:
+
+		```bash
+		pnpm local:caddy:start
+		```
+
+	* Export the contents of `/pki/authorities/local/root.crt` under [Caddy's data directory](https://caddyserver.com/docs/conventions#data-directory):
+
+		Linux / BSD:
+
+		```bash
+		cat $HOME/.local/share/caddy/pki/authorities/local/root.crt
+		```
+
+		macOS:
+
+		```bash
+		cat "$HOME/Library/Application Support/Caddy/pki/authorities/local/root.crt"
+		```
+
+		Windows:
+
+		```powershell
+		Get-Content "$env:APPDATA\Caddy\pki\authorities\local\root.crt"
+		```
+
+	* On the machine you'd like to access Infernet Cloud from, save the contents as a `.crt` file and [install it as a trusted certificate](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/user-side-certificates/install-cloudflare-cert/#add-the-certificate-to-operating-systems).
+
+10. Start the Infernet Cloud UI:
 
 	```bash
-	pnpm start:local
+	pnpm start:local:host
 	```
 
-8. Access the Infernet Cloud UI:
-	* Open a web browser and navigate to [`http://localhost:5173`](http://localhost:5173) (or the URL of your server defined in the `SERVER_HOST` environment variable).
+	* Ensure `SERVER_HOST` in [`.env.local`](.env.local) matches the desired public-facing URL of your Infernet Cloud server.
+
+11. Access the Infernet Cloud UI:
+	* Open a web browser and navigate to the `https://` URL of your server defined in the `SERVER_HOST` environment variable.
 
 	If you're having trouble, double-check that the following values match:
 	* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)
-	* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in `dbschema/bootstrap/auth.edgeql`
+	* The value of `ext::auth::AuthConfig::allowed_redirect_urls` in [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql)
 
 	* Jump to **[Using Infernet Cloud](#using-infernet-cloud)** to get started with deploying an Infernet Node.
 
@@ -168,32 +246,33 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* Intialize Docker volume for `edgedb` service at [`./edgedb-data/`](edgedb-data), apply default EdgeDB Auth config, and perform schema migrations.
 
 4. Configure environment variables:
-		* Open [`.env.docker`](.env.docker) in a text editor and adjust the following environment variables:
-			* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when running locally).
-			* `EDGEDB_SERVER_PASSWORD`: The admin password for the EdgeDB database.
-			* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
-				* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
-		* Save [`.env.docker`](.env.docker).
 
-	### Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration):
-		* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
-			* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
-			* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
-			* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
-			* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in; otherwise set it to `false`.
-		* Save [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql).
-		* Apply changes to EdgeDB Auth settings:
+	* Open [`.env.docker`](.env.docker) in a text editor and adjust the following environment variables:
+		* `SERVER_HOST`: The public-facing URL of your Infernet Cloud server (default [`http://localhost:3000`](http://localhost:3000) when accessing locally; otherwise `https://<ip-or-domain>`).
+		* `EDGEDB_SERVER_PASSWORD`: The admin password for the EdgeDB database.
+		* `SENDGRID_KEY` (optional): A [SendGrid API Key](https://www.twilio.com/docs/sendgrid/api-reference) used to authenticate the SendGrid email relay service.
+			* To use a different email relay service, modify the environment variables found at [`docker-compose.yml`](docker-compose.yml) › `services` › `smtp` › `environment`.
+	* Save [`.env.docker`](.env.docker).
 
-			```bash
-			pnpm docker:edgedb:init:auth
-			```
+5. Configure [EdgeDB Auth](https://docs.edgedb.com/guides/auth#extension-configuration):
+	* Open [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql) in a text editor.
+		* Set `ext::auth::AuthConfig::allowed_redirect_urls` to the public-facing URL of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above).
+		* Set `ext::auth::AuthConfig::auth_signing_key` to a unique high-entropy value.
+		* Set `ext::auth::SMTPConfig::sender` to the email address to send verification emails from. Configure the other SMTP configuration values according to your email relay service as needed.
+		* Under `ext::auth::EmailPasswordProviderConfig`, set `require_verification` to `true` to require new accounts to verify their email address before logging in; otherwise set it to `false`.
+	* Save [`dbschema/bootstrap/auth.edgeql`](dbschema/bootstrap/auth.edgeql).
+	* Apply changes to EdgeDB Auth settings:
 
-		For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
+		```bash
+		pnpm docker:edgedb:init:auth
+		```
 
-6. Configure the reverse proxy:
-	* Open [`caddy/Caddyfile`](caddy/Caddyfile) in a text editor.
-		* Replace `localhost:3000` with the public-facing domain of your Infernet Cloud server (matching the `SERVER_HOST` environment variable from above, with `http://` or `https://` omitted).
-	* Save [`caddy/Caddyfile`](caddy/Caddyfile).
+	For more information, see the [EdgeDB Auth documentation](https://docs.edgedb.com/guides/auth#extension-configuration).
+
+6. Configure the reverse proxy (optional):
+	* Open [`caddy/docker.Caddyfile`](caddy/docker.Caddyfile) in a text editor.
+		* By default, Caddy will serve the Infernet Cloud UI through the site address (IP or domain) defined in the `SERVER_HOST` environment variable from above. For every additional site address through which you want to access Infernet Cloud, duplicate the site block and replace the site address with the desired value.
+	* Save [`caddy/docker.Caddyfile`](caddy/docker.Caddyfile).
 	* If hosting Infernet Cloud on a cloud provider with a public-facing URL, ensure the corresponding port (default `3000`) is forwarded and whitelisted in your cloud provider's firewall settings.
 
 	For more information, see the [Caddyfile documentation](https://caddyserver.com/docs/caddyfile).
@@ -221,7 +300,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 		* **IMPORTANT**: **Keep the contents of the `./edgedb-data/` directory safe. If you modify/delete it, you will lose data stored in the database!**
 
 8. Access the Infernet Cloud UI:
-	* Open a web browser and navigate to [`http://localhost:3000`](http://localhost:3000) (or the public URL of your server defined in the `SERVER_HOST` environment variable).
+	* Open a web browser and navigate to [`http://localhost:3000`](http://localhost:3000) (or the public `https://` URL of your server defined in the `SERVER_HOST` environment variable).
 
 	* If you're having trouble, double-check that the following values match:
 		* The `SERVER_HOST` environment variable in [`.env.local`](.env.local)

@@ -15,7 +15,6 @@ tests
 edgedb-data/
 edgedb-data.backup*/
 
-# Docker › Caddy
-caddy
-caddy_data
-caddy_config
+# Caddy
+caddy/data
+caddy/config

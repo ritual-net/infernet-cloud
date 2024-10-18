@@ -1,4 +1,5 @@
-localhost:3000 {
+# Docker Compose setup
+{$SERVER_HOST} {
 	reverse_proxy server:3000 {
 		flush_interval 1s
 	}
