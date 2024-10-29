@@ -1,13 +1,19 @@
 # Infernet Cloud
 
-**Infernet Cloud** is an open-source, self-hostable UI for configuring, deploying and monitoring [Infernet Node](https://github.com/ritual-net/infernet-node) clusters and Infernet-compatible [containers](https://docs.ritual.net/infernet/node/containers) using major cloud hosting providers. Currently, [Amazon Web Services](https://aws.amazon.com) and [Google Cloud Platform](https://cloud.google.com) are supported.
+**Infernet Cloud** is an open-source, self-hostable UI for configuring, deploying and monitoring [Infernet Node](https://github.com/ritual-net/infernet-node) clusters using major cloud hosting providers. Currently, [Amazon Web Services](https://aws.amazon.com) (AWS) and [Google Cloud Platform](https://cloud.google.com) (GCP) are supported.
 
 You can use Infernet Cloud to:
 
-* generate credentials to connect cloud provider accounts
-* run private Docker images by connecting a Docker Hub account (optional)
-* create and edit configurations for container templates, clusters, [nodes](https://docs.ritual.net/infernet/node/introduction) and [routers](https://docs.ritual.net/infernet/routers/introduction)
-* monitor and manage deployed nodes and provisioned cloud resources with integrated logs and cloud console links
+* generate credentials for cloud providers such as [AWS](https://aws.amazon.com) or [GCP](https://cloud.google.com)
+* connect your [Docker Hub](https://hub.docker.com) account to run private Docker images
+* configure and deploy clusters of [nodes](https://docs.ritual.net/infernet/node/introduction), [routers](https://docs.ritual.net/infernet/routers/introduction) and [containers](https://docs.ritual.net/infernet/node/containers)
+* monitor status and logs of provisioned cloud resources
+
+Under the hood, Infernet Cloud uses:
+* [Terraform](https://www.terraform.io) to provision cloud resources, with scripts from [infernet-deploy](https://github.com/ritual-net/infernet-deploy)
+* [EdgeDB](https://edgedb.com) to manage accounts, deployment state and deployment history
+* [AWS SDK for JavaScript](https://npmjs.com/package/aws-sdk) / [@google-cloud/compute](https://npmjs.com/package/@google-cloud/compute) to interact with cloud resources
+* [SvelteKit](https://svelte.dev) for the UI layer and server functionality
 
 
 ## Table of contents
@@ -422,7 +428,7 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 * Under "Node configuration", specify the conditions needed for a node to run the container.
 	* To use a private Docker image, choose the owner's Docker Hub account.
 
-* Under "Customize container", specify the container's configuration.
+* Under "Container configuration", specify parameters needed to run the desired AI/ML workflow.
 	* To use a private Docker image, look for image IDs grouped under the owner's Docker Hub username.
 
 * Click **Add container template**.
@@ -433,14 +439,17 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 * Choose a connected cloud account to deploy the cluster with.
 
+	* (Alternatively, navigate to **Accounts** › [Account] › **Create cluster**.)
+
 * Set a name, firewall rules, and default region and zone for the [Infernet Router](https://docs.ritual.net/infernet/router/introduction) and [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction).
 
-* If desired, configure the location and machine type of the [Infernet Router](https://docs.ritual.net/infernet/router/introduction).
+* Configure the location and machine type for the [Infernet Router](https://docs.ritual.net/infernet/router/introduction) (optional).
 
 * Configure one or more [Infernet Nodes](https://docs.ritual.net/infernet/node/introduction) and their containers.
+
 	* To add a container to a node, click "Add container". You can choose an existing container template or create a new one.
 
-* Click "Create cluster".
+* Click "Create cluster". It may take several minutes for the cloud resources to be provisioned.
 
 ### 6. Monitor and manage a cluster (and router)
 
@@ -453,7 +462,12 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 	* **Recreate cluster**: recreate a destroyed cluster by reusing the existing configuration.
 	* **Delete cluster**: PERMANENTLY delete the configuration and deployment history of a destroyed cluster.
 
-* Scroll down to browse details about the cluster's cloud resources and deployment history.
+* Scroll down to browse details about the cluster:
+	* **Nodes**: Infernet Nodes that are part of the cluster and their statuses.
+	* **Router**: configuration parameters for the Infernet Router (if the cluster was configured to deploy one).
+	* **Configuration**: configuration parameters for the cluster
+	* **Deployment**: logs, errors and created cloud resources from the last Terraform command run (representing the cluster's current state).
+	* **History**: all past Terraform commands triggered by Infernet Cloud and their inputs, outputs, and created cloud resources.
 
 ### 7. Monitor and manage nodes
 
@@ -466,4 +480,8 @@ Find more commands and their definitions in the `scripts` section of [`package.j
 
 * To add a node to an existing cluster, click "Add node".
 
-* Scroll down to browse logs and container details.
+* Scroll down to browse details about the node:
+	* **Containers**: configured containers for this node.
+	* **Status**: status, IP and instance information for the node.
+	* **Configuration**: configuration parameters for the node.
+	* **Logs**: logs from the compute instance's serial port.
