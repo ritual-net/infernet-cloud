@@ -11,7 +11,10 @@ ext::auth::AuthConfig::token_time_to_live := <duration>"24 hours";
 CONFIGURE CURRENT BRANCH SET
 ext::auth::AuthConfig::allowed_redirect_urls := {
 	# Local setup
-	'http://localhost:5173',
+	'http://localhost:4173',
+
+	# Local setup (dev)
+	# 'http://localhost:5173',
 
 	# Docker Compose setup
 	# 'http://localhost:3000',
