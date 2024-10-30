@@ -128,7 +128,7 @@
 				<ul class="row">
 					<li class="row">
 						<a
-							href="https://docs.ritual.net/infernet/about"
+							href="https://docs.ritual.net/infernet/general/introduction"
 							target="_blank"
 						>
 							Infernet Docs
