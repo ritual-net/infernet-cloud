@@ -21,6 +21,9 @@ FROM base AS build
 
 COPY .env.docker .env.docker
 
+# Also copy to .env to allow SvelteKit to read as $env/static/private
+COPY .env.docker .env
+
 # pnpm install
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
