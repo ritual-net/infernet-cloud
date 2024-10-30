@@ -232,7 +232,7 @@ To access the Infernet Cloud UI from a different machine, you will need to set u
 Find more commands and their definitions in the `scripts` section of [`package.json`](package.json).
 
 
-## Docker Compose setup (recommended for production)
+## Docker Compose setup
 
 1. Install [Docker Compose](https://docs.docker.com/compose/install).
 
