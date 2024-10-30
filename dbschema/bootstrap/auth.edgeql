@@ -28,7 +28,7 @@ INSERT ext::auth::EmailPasswordProviderConfig {
 
 # SMTP Configuration
 CONFIGURE CURRENT BRANCH SET
-ext::auth::SMTPConfig::sender := 'infernet-cloud@ritual.net';
+ext::auth::SMTPConfig::sender := 'your-sender-email@example.com';
 CONFIGURE CURRENT BRANCH SET
 ext::auth::SMTPConfig::host := 'smtp';
 CONFIGURE CURRENT BRANCH SET
